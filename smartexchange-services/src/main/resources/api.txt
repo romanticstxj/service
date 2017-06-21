@@ -1,0 +1,1009 @@
+{
+    "/media": {
+        "get": {
+            "_summary": "媒体列表",
+            "parameters": {
+                "query": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "delFlg": "<||string||comment:禁用标志>",
+                            "id": "<||integer||comment:自增id>",
+                            "adspaceCount": "<||integer||comment:媒体的广告位数量>",
+		                    "name": "<*||string||comment:媒体名字>",
+		                    "type": "<*||string||comment:媒体类型>",
+		                    "attribute": "<*||string||comment:媒体属性>",
+		                    "interactionType": "<*||string||comment:接口类型>",
+		                    "advertiserVerifyType": "<*||string||comment:广告主审核方式>",
+		                    "materialVerifyType": "<*||string||comment:物料审核方式>",
+		                    "timeoutPermitted": "<*||string||comment:允许超时时间>",
+		                    "createTime": "<||string||comment:媒体创建时间>",
+		                    "remark": "<||string||comment:描述>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/media/add": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "name": "<*||string||comment:媒体名字>",
+                    "type": "<*||string||comment:媒体类型>",
+                    "attribute": "<*||string||comment:媒体属性>",
+                    "interactionType": "<*||string||comment:接口类型>",
+                    "advertiserVerifyType": "<*||string||comment:广告主审核方式>",
+                    "materialVerifyType": "<*||string||comment:物料审核方式>",
+                    "timeoutPermitted": "<*||string||comment:允许超时时间>",
+                    "remark": "<||string||comment:描述>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/media/get/{supplierMediaId}": {
+        "post": {
+            "_summary": "",
+            "parameters": {},
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "delFlg": "",
+                            "id": "",
+		                    "name": "",
+		                    "type": "",
+		                    "attribute": "",
+		                    "interactionType": "",
+		                    "advertiserVerifyType": "",
+		                    "materialVerifyType": "",
+		                    "timeoutPermitted": "",
+		                    "isHttpsSupported": "",
+		                    "createTime": "",
+		                    "remark": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/media/update/{supplierMediaId}": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "delFlg": "",
+                    "id": "",
+                    "name": "",
+                    "type": "",
+                    "attribute": "",
+                    "interactionType": "",
+                    "advertiserVerifyType": "",
+                    "materialVerifyType": "",
+                    "timeoutPermitted": "",
+                    "isHttpsSupported": "",
+                    "remark": "",
+                    "updateType": ""
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/list/{supplierMediaId}": {
+        "post": {
+            "_summary": "广告位列表，若未提供媒体id则全局查询，否则根据媒体id查询",
+            "parameters": {
+                "body": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "delFlg": "",
+                            "id": "",
+                            "creativeSize": "",
+                            "name": "",
+		                    "mediaId": "",
+		                    "type": "",
+		                    "form": "",
+		                    "limitation": "",
+		                    "creativeType": "",
+		                    "width": "",
+		                    "height": "",
+		                    "creativeKBites": "",
+		                    "basePrice": "",
+		                    "priceType": "",
+		                    "adspacePosition": "",
+		                    "picWidth": "",
+		                    "picHeight": "",
+		                    "titleMaxLength": "",
+		                    "descMaxLength": "",
+		                    "videoDuration": "",
+		                    "remark": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/add": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"name": "",
+                    "mediaId": "",
+                    "type": "",
+                    "form": "",
+                    "limitation": "",
+                    "creativeType": "",
+                    "width": "",
+                    "height": "",
+                    "creativeKBites": "",
+                    "basePrice": "",
+                    "priceType": "",
+                    "adspacePosition": "",
+                    "picWidth": "",
+                    "picHeight": "",
+                    "titleMaxLength": "",
+                    "descMaxLength": "",
+                    "videoDuration": "",
+                    "remark": ""
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/get/{supplierAdspaceId}": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "delFlg": "",
+                            "id": "",
+                            "creativeSize": "",
+                            "name": "",
+		                    "mediaId": "",
+		                    "type": "",
+		                    "form": "",
+		                    "limitation": "",
+		                    "creativeType": "",
+		                    "width": "",
+		                    "height": "",
+		                    "creativeKBites": "",
+		                    "basePrice": "",
+		                    "priceType": "",
+		                    "adspacePosition": "",
+		                    "picWidth": "",
+		                    "picHeight": "",
+		                    "titleMaxLength": "",
+		                    "descMaxLength": "",
+		                    "videoDuration": "",
+		                    "remark": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/update/{supplierMediaId}": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "delFlg": "",
+                    "creativeSize": "",
+                    "name": "",
+                    "mediaId": "",
+                    "type": "",
+                    "form": "",
+                    "limitation": "",
+                    "creativeType": "",
+                    "width": "",
+                    "height": "",
+                    "creativeKBites": "",
+                    "basePrice": "",
+                    "priceType": "",
+                    "adspacePosition": "",
+                    "picWidth": "",
+                    "picHeight": "",
+                    "titleMaxLength": "",
+                    "descMaxLength": "",
+                    "videoDuration": "",
+                    "remark": ""
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspaceLimitation": {
+        "post": {
+            "_summary": "广告限制列表",
+            "parameters": {
+                "body": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "delFlg": "",
+                            "id": "",
+                            "name": "",
+		                    "hasIndustry": "1",
+		                    "industries": "1,2,3",
+		                    "hasAdvertiser": "1",
+		                    "advertisers": "http://www.baidu.com,http://www.163.com"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspaceLimitation/add": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"name": "",
+                	"hasIndustry": "1",
+                    "industries": "1,2,3",
+                    "hasAdvertiser": "1",
+                    "advertisers": "http://www.baidu.com,http://www.163.com"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspaceLimitation/get/{adspaceLimitationId}": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "delFlg": "",
+                            "id": "",
+                            "name": "",
+		                    "hasIndustry": "1",
+		                    "industries": "1,2,3",
+		                    "hasAdvertiser": "1",
+		                    "advertisers": "http://www.baidu.com,http://www.163.com"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspaceLimitation/update/{adspaceLimitationId}": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "delFlg": "",
+                    "id": "",
+                    "name": "",
+                    "hasIndustry": "0",
+                    "industries": "",
+                    "hasAdvertiser": "1",
+                    "advertisers": "http://www.163.com"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/materialVerification": {
+        "post": {
+            "_summary": "物料审核列表",
+            "parameters": {
+                "body": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "verificationStatus": "",
+                            "id": "",
+		                    "creativeId": "",
+                            "name": "",
+                            "materialUrl": "",
+		                    "uploadTime": "",
+                            "advertiser": "",
+		                    "dsp": "",
+                            "verifier": "",
+		                    "creativeTitle": "",
+                            "creativeDesc": "",
+		                    "materialFormat": "",
+                            "materialWidth": "",
+		                    "materialHeight": "",
+                            "materialKBites": "",
+		                    "landingPage": "",
+                            "impTrackUrl": "",
+		                    "clkTrackUrl": "",
+                            "dealId": "",
+		                    "logoUrl": "",
+                            "brand": "",
+		                    "industry": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/material/get/{creativeId}": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "verificationStatus": "",
+                            "id": "",
+		                    "creativeId": "",
+		                    "name": "",
+                            "materialUrl": "",
+		                    "uploadTime": "",
+                            "advertiser": "",
+		                    "dsp": "",
+                            "verifier": "",
+		                    "creativeTitle": "",
+                            "creativeDesc": "",
+		                    "materialFormat": "",
+                            "materialWidth": "",
+		                    "materialHeight": "",
+                            "materialKBites": "",
+		                    "landingPage": "",
+                            "impTrackUrl": "",
+		                    "clkTrackUrl": "",
+                            "dealId": "",
+		                    "logoUrl": "",
+                            "brand": "",
+		                    "industry": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/material/verify": {
+        "post": {
+            "_summary": "物料审核",
+            "parameters": {
+                "body": {
+                    "creativeDtos": [
+                        {
+                            "verificationStatus": "1",
+                            "id": "1"
+                        },
+                        {
+                            "verificationStatus": "2",
+                            "id": "2"
+                        }
+                    ]
+                 }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/advertiserVerification": {
+        "post": {
+            "_summary": "广告主审核列表",
+            "parameters": {
+                "body": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "verificationStatus": "",
+                            "id": "",
+                            "name": "",
+                            "dsp": "",
+		                    "uploadTime": "",
+                            "verifier": "",
+		                    "certificates": "",
+                            "contact": "",
+		                    "phone": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/advertiser/get/{advertiserId}": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "verificationStatus": "",
+                            "id": "",
+                            "name": "",
+                            "dsp": "",
+		                    "uploadTime": "",
+                            "verifier": "",
+		                    "certificates": "",
+                            "contact": "",
+		                    "phone": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/advertiser/verify": {
+        "post": {
+            "_summary": "广告主审核",
+            "parameters": {
+                "body": {
+                    "advertiserDtos": [
+                        {
+                            "verificationStatus": "1",
+                            "id": "1"
+                        },
+                        {
+                            "verificationStatus": "2",
+                            "id": "2"
+                        }
+                    ]
+                 }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/strategy": {
+        "post": {
+            "_summary": "策略列表，通过strategyType来区分是哪种投放策略",
+            "parameters": {
+                "body": {
+                	"strategyType": ""
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"strategyType": "",
+                            "delFlg": "",
+                            "id": "",
+                            "dealId": "",
+		                	"name": "",
+		                	"priority": 1,
+		                    "startTime": "",
+		                    "endTime": "",
+		                    "timePeriod": {
+		                    	"Mon": [12,13,14],
+		                    	"Tue": [],
+		                    	"Wed": [],
+		                    	"Thu": [],
+		                    	"Fri": [],
+		                    	"Sat": [],
+		                    	"Sun": []
+		                    },
+		                    "hasLocation": "1",
+		                    "location": ["10001000","10002000"],
+		                    "os": ["1","2","3"],
+		                    "network": ["1","2","3","4"],
+		                    "frequency": "",
+		                    "quantity": "",
+		                    "adspaceDtos": [
+		                    	{
+		                    		"delFlg": "",
+		                            "id": "",
+		                            "creativeSize": "",
+		                            "name": "",
+				                    "mediaId": "",
+				                    "type": "",
+				                    "form": "",
+				                    "limitation": "",
+				                    "creativeType": "",
+				                    "width": "",
+				                    "height": "",
+				                    "creativeKBites": "",
+				                    "basePrice": "",
+				                    "priceType": "",
+				                    "adspacePosition": "",
+				                    "picWidth": "",
+				                    "picHeight": "",
+				                    "titleMaxLength": "",
+				                    "descMaxLength": "",
+				                    "videoDuration": "",
+				                    "remark": ""
+		                    	}
+		                    ],
+		                    "dspDtos": [
+		                    	{
+		                    		"id": "",
+		                    		"name": ""
+		                    	}
+		                    ],
+		                    "remark": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/strategy/add": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"strategyType": "",
+                	"delFlg": "",
+                	"name": "",
+                	"priority": 1,
+                    "startTime": "",
+                    "endTime": "",
+                    "timePeriod": {
+                    	"Mon": [12,13,14],
+                    	"Tue": [],
+                    	"Wed": [],
+                    	"Thu": [],
+                    	"Fri": [],
+                    	"Sat": [],
+                    	"Sun": []
+                    },
+                    "hasLocation": "1",
+                    "location": ["10001000","10002000"],
+                    "os": ["1","2","3"],
+                    "network": ["1","2","3","4"],
+                    "frequency": "",
+                    "quantity": "",
+                    "adspaceDtos": [
+                    	{
+                    		"delFlg": "",
+                            "id": "",
+                            "creativeSize": "",
+                            "name": "",
+		                    "mediaId": "",
+		                    "type": "",
+		                    "form": "",
+		                    "limitation": "",
+		                    "creativeType": "",
+		                    "width": "",
+		                    "height": "",
+		                    "creativeKBites": "",
+		                    "basePrice": "",
+		                    "priceType": "",
+		                    "adspacePosition": "",
+		                    "picWidth": "",
+		                    "picHeight": "",
+		                    "titleMaxLength": "",
+		                    "descMaxLength": "",
+		                    "videoDuration": "",
+		                    "remark": ""
+                    	}
+                    ],
+                    "dspDtos": [
+                    	{
+                    		"id": "",
+                    		"name": ""
+                    	}
+                    ],
+                    "remark": ""
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/strategy/get": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"strategyType": "",
+                	"id": ""
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "strategyType": "",
+                    		"delFlg": "",
+                            "id": "",
+                            "dealId": "",
+		                	"name": "",
+		                	"priority": 1,
+		                    "startTime": "",
+		                    "endTime": "",
+		                    "timePeriod": {
+		                    	"Mon": [12,13,14],
+		                    	"Tue": [],
+		                    	"Wed": [],
+		                    	"Thu": [],
+		                    	"Fri": [],
+		                    	"Sat": [],
+		                    	"Sun": []
+		                    },
+		                    "hasLocation": "1",
+		                    "location": ["10001000","10002000"],
+		                    "os": ["1","2","3"],
+		                    "network": ["1","2","3","4"],
+		                    "frequency": "",
+		                    "quantity": "",
+		                    "adspaceDtos": [
+		                    	{
+		                    		"delFlg": "",
+		                            "id": "",
+		                            "creativeSize": "",
+		                            "name": "",
+				                    "mediaId": "",
+				                    "type": "",
+				                    "form": "",
+				                    "limitation": "",
+				                    "creativeType": "",
+				                    "width": "",
+				                    "height": "",
+				                    "creativeKBites": "",
+				                    "basePrice": "",
+				                    "priceType": "",
+				                    "adspacePosition": "",
+				                    "picWidth": "",
+				                    "picHeight": "",
+				                    "titleMaxLength": "",
+				                    "descMaxLength": "",
+				                    "videoDuration": "",
+				                    "remark": ""
+		                    	}
+		                    ],
+		                    "dspDtos": [
+		                    	{
+		                    		"id": "",
+		                    		"name": ""
+		                    	}
+		                    ],
+		                    "remark": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/strategy/update": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"strategyType": "",
+                    "delFlg": "",
+                    "id": "",
+                    "dealId": "",
+                	"name": "",
+                	"priority": 1,
+                    "startTime": "",
+                    "endTime": "",
+                    "timePeriod": {
+                    	"Mon": [12,13,14],
+                    	"Tue": [],
+                    	"Wed": [],
+                    	"Thu": [],
+                    	"Fri": [],
+                    	"Sat": [],
+                    	"Sun": []
+                    },
+                    "hasLocation": "1",
+                    "location": ["10001000","10002000"],
+                    "os": ["1","2","3"],
+                    "network": ["1","2","3","4"],
+                    "frequency": "",
+                    "quantity": "",
+                    "adspaceDtos": [
+                    	{
+                    		"delFlg": "",
+                            "id": "",
+                            "creativeSize": "",
+                            "name": "",
+		                    "mediaId": "",
+		                    "type": "",
+		                    "form": "",
+		                    "limitation": "",
+		                    "creativeType": "",
+		                    "width": "",
+		                    "height": "",
+		                    "creativeKBites": "",
+		                    "basePrice": "",
+		                    "priceType": "",
+		                    "adspacePosition": "",
+		                    "picWidth": "",
+		                    "picHeight": "",
+		                    "titleMaxLength": "",
+		                    "descMaxLength": "",
+		                    "videoDuration": "",
+		                    "remark": ""
+                    	}
+                    ],
+                    "dspDtos": [
+                    	{
+                    		"id": "",
+                    		"name": ""
+                    	}
+                    ],
+                    "remark": ""
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp": {
+        "post": {
+            "_summary": "需求方平台列表,可以有查询条件",
+            "parameters": {
+            	"type": "",
+                "cooperationMode": ""
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"delFlg": "",
+                    		"id": "",
+                            "name": "",
+		                	"type": "",
+		                    "url": "",
+		                    "cooperationModes": "",
+		                    "cooperationModeNames": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/add": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "name": "",
+                	"type": "",
+                    "url": "",
+                    "cooperationMode": ""
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/get/{dspId}": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {	
+                        	"delFlg": "",
+                    		"id": "",
+                            "name": "",
+		                	"type": "",
+		                	"typeName": "",
+		                    "url": "",
+		                    "cooperationModes": "",
+		                    "cooperationModeNames": "",
+		                    "qps": "",
+		                    "timeout": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/update/{dspId}": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"delFlg": "",
+                    "id": "",
+                    "name": "",
+                	"type": "",
+                	"typeName": "",
+                    "url": "",
+                    "cooperationModes": "",
+                    "cooperationModeNames": "",
+                    "qps": "",
+                    "timeout": ""
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/lov": {
+        "get": {
+            "_summary": "获取常量表数据，type是这些常量的类型（如industry，指行业列表）",
+            "parameters": {
+                "query": {
+                	"type": "industry"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "code": "",
+                            "name": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/location": {
+        "post": {
+            "_summary": "地域列表",
+            "parameters": {
+                "body": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "id": "",
+                            "code": "",
+                            "parentId": "",
+                            "name": "",
+		                    "type": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/location": {
+        "post": {
+            "_summary": "地域列表",
+            "parameters": {
+                "body": {
+                	"startTime": "",
+                	"endTime": "",
+                	
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "day": "",
+                            "hour": "",
+                            "mediaId": "",
+                            "mediaName": "",
+		                    "mediaIncome": "",
+		                    "request": "",
+		                    "fill": "",
+		                    "fillRate": "",
+		                    "imp": "",
+		                    "distinctImp": "",
+		                    "impRate": "",
+		                    "clk": "",
+		                    "distinctClk": "",
+		                    "clkRate": "",
+		                    "returnCode": "",
+		                    "errorCount": "",
+		                    "timeoutCount": "",
+		                    "mediaName": "",
+		                    "mediaName": "",
+		                    "mediaName": "",
+		                    "mediaIncome": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+}
