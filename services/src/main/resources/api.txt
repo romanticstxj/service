@@ -1,5 +1,5 @@
 {
-    "/media/list?ids={idlist}": {
+    "/media/list": {
         "get": {
             "_summary": "媒体列表",
             "parameters": {
@@ -24,7 +24,7 @@
             }
         }
     },
-    "/media/detail?id={id}": {
+    "/media/detail": {
         "get": {
             "_summary": "",
             "parameters": {
