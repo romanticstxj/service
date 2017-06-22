@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<property name="LOG_ROOT_HOME" value="/services/logs" />
+	<property name="APP_NAME" value="smartexchange" />
+	<property name="LOG_HOME" value="${LOG_ROOT_HOME}/${APP_NAME}" />
+
+	<appender name="smartexchangeAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/smartexchange-services.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/smartexchange-services-%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>2</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n </pattern>
+		</encoder>
+	</appender>
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n </pattern>
+		</encoder>
+	</appender>
+
+	<logger name="smartexchange" level="DEBUG" additivity="false">
+		<appender-ref ref="smartexchangeAppender" />
+	</logger>
+
+	<root level="DEBUG">
+		<appender-ref ref="stdout" />
+	</root>
+
+</configuration>  
