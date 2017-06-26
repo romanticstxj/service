@@ -1,13 +1,14 @@
-package com.madhouse.platform.smartexchange.util;
+package com.madhouse.platform.premiummad.util;
 
-import com.madhouse.platform.smartexchange.constant.StatusCode;
-import com.madhouse.platform.smartexchange.constant.SystemConstant;
-import com.madhouse.platform.smartexchange.dto.ResponseDto;
-import com.madhouse.platform.smartexchange.dto.ResponseHeaderDto;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
+import com.madhouse.platform.premiummad.dto.ResponseDto;
+import com.madhouse.platform.premiummad.dto.ResponseHeaderDto;
 
 /**
  * 设置ResponseDto 2015年2月4日上午10:20:31
@@ -15,7 +16,7 @@ import java.util.List;
  * @author xiejun
  */
 public class ResponseUtils {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_SMARTEXCHANGE);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
 
 	public static <T> ResponseDto<T> response(StatusCode sc, List<T> lists) {
 		return response(sc, lists, null);

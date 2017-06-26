@@ -1,6 +1,6 @@
-package com.madhouse.platform.smartexchange.exception;
+package com.madhouse.platform.premiummad.exception;
 
-import com.madhouse.platform.smartexchange.constant.StatusCode;
+import com.madhouse.platform.premiummad.constant.StatusCode;
 
 public class InvalidArgumentException extends RuntimeException{
 

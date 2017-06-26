@@ -1,4 +1,4 @@
-package com.madhouse.platform.smartexchange.constant;
+package com.madhouse.platform.premiummad.constant;
 
 public enum StatusCode {
 	SC20000(20000, "操作成功"), //
@@ -14,6 +14,7 @@ public enum StatusCode {
 	SC21029(21029, "创建广点通广告位失败"), //
 	SC21030(21030, "dsp 和 pdb字段值不可以相同"), //
     SC21031(21031, "不允许批量操作多个dsp的物料"), //
+    SC21032(21032, "请提供正确的更新类型"), //
 
 	SC22001(22001, "需求方平台名称不能重复"), //
 	SC22002(22002, "需求方平台广告位名称不能重复"), // 

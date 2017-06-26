@@ -1,4 +1,4 @@
-package com.madhouse.platform.smartexchange.controller;
+package com.madhouse.platform.premiummad.controller;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;

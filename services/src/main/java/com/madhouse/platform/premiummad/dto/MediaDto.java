@@ -1,33 +1,42 @@
-package com.madhouse.platform.premiummad.entity;
+package com.madhouse.platform.premiummad.dto;
 
-public class Media extends BaseEntity{
+import java.io.Serializable;
+import java.util.Date;
+
+import com.madhouse.platform.premiummad.annotation.NotNull;
+
+public class MediaDto implements Serializable{
 	
+	private static final long serialVersionUID = 1634655943775249685L;
+
 	private Integer id;
 	
 	private Integer status;
 	
 	private Integer adCount;
-	
+	@NotNull
 	private String name;
-	
+	@NotNull
 	private Integer category;
-	
+	@NotNull
 	private Integer type;
-	
+	@NotNull
 	private Integer accessMode;
-	
+	@NotNull
 	private Integer advertiserAuditMode;
-	
+	@NotNull
 	private Integer materialAuditMode;
-	
+	@NotNull
 	private Integer timeout;
+	
+	private Date createTime;
 	
 	private String description;
 	
 	private Integer updateType;
-	
-	private Integer apiType;
 
+	private Integer apiType;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -108,6 +117,14 @@ public class Media extends BaseEntity{
 		this.timeout = timeout;
 	}
 
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -131,6 +148,5 @@ public class Media extends BaseEntity{
 	public void setApiType(Integer apiType) {
 		this.apiType = apiType;
 	}
-	
 	
 }

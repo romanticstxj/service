@@ -1,13 +1,5 @@
-package com.madhouse.platform.smartexchange.util;
+package com.madhouse.platform.premiummad.util;
 
-import com.madhouse.platform.smartexchange.annotation.NotNull;
-import com.madhouse.platform.smartexchange.constant.SystemConstant;
-import org.springframework.beans.FatalBeanException;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -17,6 +9,16 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.FatalBeanException;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.madhouse.platform.premiummad.annotation.NotNull;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 
 public class BeanUtils {
 
@@ -206,10 +208,10 @@ public class BeanUtils {
 		if (obj != null) {
 			Class<?> clazz = obj.getClass();
 			try {
-				Method createUserWriteMethod = new PropertyDescriptor("createUser", clazz).getWriteMethod();
-				Method createTimeWriteMethod = new PropertyDescriptor("createTime", clazz).getWriteMethod();
-				Method updateUserWriteMethod = new PropertyDescriptor("updateUser", clazz).getWriteMethod();
-				Method updateTimeWriteMethod = new PropertyDescriptor("updateTime", clazz).getWriteMethod();
+				Method createUserWriteMethod = new PropertyDescriptor("createdUser", clazz).getWriteMethod();
+				Method createTimeWriteMethod = new PropertyDescriptor("createdTime", clazz).getWriteMethod();
+				Method updateUserWriteMethod = new PropertyDescriptor("modifiedUser", clazz).getWriteMethod();
+				Method updateTimeWriteMethod = new PropertyDescriptor("modifiedTime", clazz).getWriteMethod();
 
 				Integer userId = null;
 				Date currentTime = new Date();

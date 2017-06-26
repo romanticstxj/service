@@ -1,4 +1,4 @@
-package com.madhouse.platform.smartexchange.util;
+package com.madhouse.platform.premiummad.util;
 
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import org.springframework.util.Assert;

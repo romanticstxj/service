@@ -5,6 +5,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
+import com.madhouse.platform.premiummad.holder.ContextHolder;
+
 /**
  * service处理完了要清空当前线程中的CustomerType
  */
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class ClearContextHolder {
 
-	@Pointcut("execution(* com.madhouse.platform.smartexchange.service.impl.*.*(..))")
+	@Pointcut("execution(* com.madhouse.platform.premiummad.service.impl.*.*(..))")
 	public void pointCut() {
 
 	}

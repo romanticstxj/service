@@ -2,13 +2,13 @@
 <configuration>
 
 	<property name="LOG_ROOT_HOME" value="/services/logs" />
-	<property name="APP_NAME" value="smartexchange" />
+	<property name="APP_NAME" value="premiummad" />
 	<property name="LOG_HOME" value="${LOG_ROOT_HOME}/${APP_NAME}" />
 
-	<appender name="smartexchangeAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOG_HOME}/smartexchange-services.log</file>
+	<appender name="premiummadAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/premiummad-services.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${LOG_HOME}/smartexchange-services-%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>${LOG_HOME}/premiummad-services-%d{yyyy-MM-dd}.log</fileNamePattern>
 			<maxHistory>2</maxHistory>
 		</rollingPolicy>
 		<encoder>
@@ -22,8 +22,8 @@
 		</encoder>
 	</appender>
 
-	<logger name="smartexchange" level="DEBUG" additivity="false">
-		<appender-ref ref="smartexchangeAppender" />
+	<logger name="premiummad" level="DEBUG" additivity="false">
+		<appender-ref ref="premiummadAppender" />
 	</logger>
 
 	<root level="DEBUG">

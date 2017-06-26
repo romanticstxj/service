@@ -1,4 +1,4 @@
-package com.madhouse.platform.smartexchange.constant;
+package com.madhouse.platform.premiummad.constant;
 
 import java.util.ResourceBundle;
 
@@ -13,11 +13,11 @@ public interface SystemConstant {
     int RESPONSECODE_ERROR = 1;// 程序处理错误，参数不对，如userId为空，广告主名称重复，上传文件格式不对等等
     int RESPONSECODE_FATAL = 2;// 系统错误，json转换异常，反射错误，数据库连接错误
 
-    String SMARTEXCHANGE = "smartexchange";
-    String DATASOURCE_SMARTEXCHANGE = SMARTEXCHANGE;
+    String PREMIUMMAD = "premiummad";
+    String DATASOURCE_PREMIUMMAD = PREMIUMMAD;
     String DATASOURCE_SANDBOX = "sesandbox";
-    String LOGGER_SMARTEXCHANGE = SMARTEXCHANGE;//日志中使用的
-    String LOGGER_SMARTEXCHANGE_TASK = "smartexchangeTask";
+    String LOGGER_PREMIUMMAD = PREMIUMMAD;//日志中使用的
+    String LOGGER_PREMIUMMAD_TASK = "premiummadTask";
 
     String TABLENAME_ADSPACE = "se_supplier_adspace";
 

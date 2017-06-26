@@ -1,4 +1,4 @@
-package com.madhouse.platform.smartexchange.model;
+package com.madhouse.platform.premiummad.model;
 
 import java.util.List;
 

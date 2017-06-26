@@ -1,4 +1,4 @@
-package com.madhouse.platform.smartexchange.util;
+package com.madhouse.platform.premiummad.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

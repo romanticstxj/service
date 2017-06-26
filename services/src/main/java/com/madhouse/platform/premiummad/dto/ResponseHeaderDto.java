@@ -1,4 +1,4 @@
-package com.madhouse.platform.smartexchange.dto;
+package com.madhouse.platform.premiummad.dto;
 
 import java.io.Serializable;
 

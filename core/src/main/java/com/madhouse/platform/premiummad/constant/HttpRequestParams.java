@@ -1,4 +1,4 @@
-package com.madhouse.platform.smartexchange.constant;
+package com.madhouse.platform.premiummad.constant;
 
 import java.util.HashMap;
 import java.util.Map;

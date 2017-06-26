@@ -1,21 +1,28 @@
-package com.madhouse.platform.smartexchange.filter;
+package com.madhouse.platform.premiummad.filter;
 
-import com.alibaba.fastjson.JSON;
-import com.madhouse.platform.smartexchange.constant.StatusCode;
-import com.madhouse.platform.smartexchange.constant.SystemConstant;
-import com.madhouse.platform.smartexchange.dto.ResponseDto;
-import com.madhouse.platform.smartexchange.dto.ResponseHeaderDto;
-import com.madhouse.platform.smartexchange.exception.BusinessException;
-import com.madhouse.platform.smartexchange.exception.InvalidArgumentException;
-import com.madhouse.platform.smartexchange.util.StringUtils;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.alibaba.fastjson.JSON;
+import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
+import com.madhouse.platform.premiummad.dto.ResponseDto;
+import com.madhouse.platform.premiummad.dto.ResponseHeaderDto;
+import com.madhouse.platform.premiummad.exception.BusinessException;
+import com.madhouse.platform.premiummad.exception.InvalidArgumentException;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 /**
  * 判断header值是否为空，并且处理非空

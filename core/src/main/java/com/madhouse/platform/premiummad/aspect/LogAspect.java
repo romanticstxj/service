@@ -24,9 +24,9 @@ import com.madhouse.platform.premiummad.constant.SystemConstant;
 @Aspect
 public class LogAspect {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_SMARTEXCHANGE);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
 
-	@Pointcut("execution(* com.madhouse.platform.smartexchange.controller.*.*(..))")
+	@Pointcut("execution(* com.madhouse.platform.premiummad.controller.*.*(..))")
 	public void logPointCut() {
 
 	}

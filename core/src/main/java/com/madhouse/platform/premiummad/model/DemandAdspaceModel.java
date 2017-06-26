@@ -1,8 +1,9 @@
-package com.madhouse.platform.smartexchange.model;
+package com.madhouse.platform.premiummad.model;
 
-import com.madhouse.platform.smartexchange.entity.Targeting;
 
 import java.util.List;
+
+import com.madhouse.platform.premiummad.entity.Targeting;
 
 /**
  * Created by zhujiajun

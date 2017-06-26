@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.madhouse.platform.premiummad.dao.MediaDao">
+	<resultMap id="baseResult" type="com.madhouse.platform.premiummad.entity.Media">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="name" column="name" jdbcType="VARCHAR" />
+        <result property="category" column="category" jdbcType="INTEGER" />
+        <result property="type" column="type" jdbcType="INTEGER" />
+        <result property="accessMode" column="access_mode" jdbcType="INTEGER" />
+        <result property="advertiserAuditMode" column="advertiser_audit_mode" jdbcType="INTEGER" />
+        <result property="materialAuditMode" column="material_audit_mode" jdbcType="INTEGER" />
+        <result property="timeout" column="timeout" jdbcType="INTEGER" />
+        <result property="description" column="description" jdbcType="VARCHAR" />
+        <result property="createdUser" column="created_user" jdbcType="TIMESTAMP" />
+        <result property="modifiedUser" column="modified_user" jdbcType="TIMESTAMP" />
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP" />
+        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP" />
+        <result property="status" column="status" jdbcType="INTEGER" />
+        <result property="apiType" column="api_type" jdbcType="INTEGER" />
+        <result property="adCount" column="adCount" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.madhouse.platform.premiummad.entity.Media">
+            INSERT INTO mad_sys_media
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+              <if test="name != null">name,</if>
+              <if test="category != null">category,</if>
+              <if test="type != null">type,</if>
+              <if test="accessMode != null">access_mode,</if>
+              <if test="advertiserAuditMode != null">advertiser_audit_mode,</if>
+              <if test="materialAuditMode != null">material_audit_mode,</if>
+              <if test="timeout != null">timeout,</if>
+              <if test="description != null">description,</if>
+              <if test="createdUser != null">created_user,</if>
+              <if test="modifiedUser != null">modified_user,</if>
+              <if test="createdTime != null">created_time,</if>
+              <if test="modifiedTime != null">modified_time,</if>
+              status, api_type
+            </trim>
+            VALUES
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+              <if test="name != null">#{name},</if>
+              <if test="category != null">#{category},</if>
+              <if test="type != null">#{type},</if>
+              <if test="accessMode != null">#{accessMode},</if>
+              <if test="advertiserAuditMode != null">#{advertiserAuditMode},</if>
+              <if test="materialAuditMode != null">#{materialAuditMode},</if>
+              <if test="timeout != null">#{timeout},</if>
+              <if test="description != null">#{description},</if>
+              <if test="createdUser != null">#{createdUser},</if>
+              <if test="modifiedUser != null">#{modifiedUser},</if>
+              <if test="createdTime != null">#{createdTime},</if>
+              <if test="modifiedTime != null">#{modifiedTime},</if>
+              1, 1
+            </trim>
+    </insert>
+    
+    <update id="update" parameterType="com.madhouse.platform.premiummad.entity.Media">
+        UPDATE mad_sys_media
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="category != null">category = #{category},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="accessMode != null">access_mode = #{accessMode},</if>
+            <if test="advertiserAuditMode != null">advertiser_audit_mode = #{advertiserAuditMode},</if>
+            <if test="materialAuditMode != null">material_audit_mode = #{materialAuditMode},</if>
+            <if test="timeout != null">timeout = #{timeout},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="modifiedUser != null">modified_user = #{modifiedUser},</if>
+            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    
+    <update id="updateStatus" parameterType="com.madhouse.platform.premiummad.entity.Media">
+        UPDATE mad_sys_media
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="modifiedUser != null">modified_user = #{modifiedUser},</if>
+            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+	<select id="checkName" parameterType="string" resultType="integer">
+		select count(0) from mad_sys_media where name = #{name}
+	</select>
+	
+	<sql id="baseColumns">
+		${alias}.id, ${alias}.name, ${alias}.category, ${alias}.type, ${alias}.access_mode,
+		${alias}.advertiser_audit_mode, ${alias}.material_audit_mode, ${alias}.timeout, 
+		${alias}.api_type, ${alias}.status, ${alias}.description, ${alias}.created_user, 
+		${alias}.modified_user, ${alias}.created_time, ${alias}.modified_time
+	</sql>
+	
+	<sql id="baseList">
+		${alias}.id, ${alias}.name, ${alias}.category, ${alias}.type, ${alias}.created_time,
+		${alias}.status
+	</sql>
+	
+    <select id="queryMediaById" parameterType="integer" resultMap="baseResult">
+		select 
+		<include refid="baseColumns">
+            <property name="alias" value="m" />
+        </include> 
+        from mad_sys_media m where m.id = #{id}
+	</select>
+	
+	<select id="queryAll" resultMap="baseResult">
+		SELECT 
+		<include refid="baseList">
+            <property name="alias" value="m" />
+        </include>, COUNT(a.id) adCount
+        FROM mad_sys_media m 
+        LEFT JOIN mad_sys_adspace a
+        ON m.id = a.media_id
+        <if test="idStrs != null and idStrs.length > 0">
+        	WHERE m.id IN 
+        	<foreach collection="idStrs" item="mediaId" index="index" open="(" close=")" separator=",">
+            	#{mediaId,jdbcType=INTEGER}
+            </foreach>
+        </if>
+        GROUP BY m.id
+        ORDER BY m.id
+	</select>
+	
+</mapper>

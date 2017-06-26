@@ -29,7 +29,7 @@
             "_summary": "",
             "parameters": {
             	"query": {
-            		"id" : "<*||integer>"
+            		"id" : "<*||integer||comment:媒体ID>"
             	}
             },
             "responses": {
@@ -109,12 +109,12 @@
             }
         }
     },
-    "/lov": {
+    "/dictionary/list": {
         "get": {
-            "_summary": "获取常量表数据，type是这些常量的类型（如industry，指行业列表）",
+            "_summary": "获取常量表数据，type是这些字典表的类型",
             "parameters": {
                 "query": {
-                	"type": "<*||string||comment:查询的常量类型，之后会列出所有可能的类型>"
+                	"type": "<*||integer||comment:查询的字典表类型(1:媒体分类, 2:广告形式, 。。。)>"
                 }
             },
             "responses": {
@@ -171,18 +171,18 @@
             "_summary": "",
             "parameters": {
                 "body": {
-                	"name": "",
-                    "mediaId": "",
-                    "type": "",
-                    "form": "",
-                    "limitation": "",
-                    "creativeType": "",
-                    "width": "",
-                    "height": "",
+                	"name": "<*||string||comment:广告位名称>",
+                    "mediaId": "<*||integer||comment:所属的媒体id>",
+                    "adblockId": "<*||integer||comment:广告限制id>",
+                    "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
+                    "terminalOs": "<*||integer||comment:平台类型(1: Android, 2: iOS)>",
+                    "supportHttps": "<*||integer||comment:是否支持https(0:否,1:是)>",
+                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
+                    "adMode": "<*||integer||comment:广告形式(列表)>",
+                    "materialType": "<*||integer||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1:png, 2:jpg, 3:gif, 4:mp4, 5:flv, 6:swf)>",
                     "creativeKBites": "",
                     "basePrice": "",
                     "priceType": "",
-                    "adspacePosition": "",
                     "picWidth": "",
                     "picHeight": "",
                     "titleMaxLength": "",
@@ -971,8 +971,7 @@
             "parameters": {
                 "body": {
                 	"startTime": "",
-                	"endTime": "",
-                	
+                	"endTime": ""
                 }
             },
             "responses": {

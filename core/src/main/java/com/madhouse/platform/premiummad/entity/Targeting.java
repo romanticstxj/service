@@ -1,14 +1,12 @@
-package com.madhouse.platform.smartexchange.dto;
-
-import java.io.Serializable;
+package com.madhouse.platform.premiummad.entity;
 
 /**
  * Created by zhujiajun
- * 15/10/8 16:08
+ * 15/10/8 15:44
  */
-public class TargetingDto implements Serializable {
+public class Targeting extends BaseEntity {
 
-    private static final long serialVersionUID = -2247314488107743797L;
+    private static final long serialVersionUID = -5917393633647397277L;
 
     private Integer id;
     private Integer supplierAdspaceId;

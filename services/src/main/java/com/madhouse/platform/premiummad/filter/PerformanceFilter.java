@@ -1,19 +1,26 @@
-package com.madhouse.platform.smartexchange.filter;
+package com.madhouse.platform.premiummad.filter;
 
-import com.madhouse.platform.smartexchange.constant.SystemConstant;
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 
 /**
  * 记录请求参数,记录请求耗时
  */
 public class PerformanceFilter implements Filter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_SMARTEXCHANGE);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {

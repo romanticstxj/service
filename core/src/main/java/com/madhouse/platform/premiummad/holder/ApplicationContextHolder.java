@@ -1,4 +1,4 @@
-package com.madhouse.platform.smartexchange.holder;
+package com.madhouse.platform.premiummad.holder;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
