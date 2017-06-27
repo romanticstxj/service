@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +13,7 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dto.MediaDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Media;
+import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
@@ -41,27 +41,20 @@ public class MediaController {
 	@RequestMapping("/exceptionTest")
 	public ResponseDto<MediaDto> exceptionTest(@RequestParam(value="exType", required=false) String exType) throws Exception {
 		if(exType.equals("1")){
-			throw new Exception("hhh");
+			throw new BusinessException(StatusCode.SC31001);
 		} else if (exType.equals("2")){
 			throw new ArithmeticException();
 		} else{
-			return ResponseUtils.response(StatusCode.SC20000,null);
+			throw new Exception();
 		}
     }
-	
-	@ExceptionHandler(Exception.class)
-	public ResponseDto<MediaDto> handleAllException(Exception ex) {
-
-		return ResponseUtils.response(StatusCode.SC31001,null, "this is Exception.class");
-
-	}
 	
 	/**
 	 * 添加媒体
 	 * @param mediaDto
 	 * @return
 	 */
-	@RequestMapping("/add")
+	@RequestMapping("/create")
     public ResponseDto<MediaDto> addMedia(@RequestBody MediaDto mediaDto) {
 		String fieldName = BeanUtils.hasEmptyField(mediaDto);
         if (fieldName != null)

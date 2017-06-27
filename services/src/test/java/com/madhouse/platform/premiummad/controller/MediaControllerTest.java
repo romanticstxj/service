@@ -18,7 +18,7 @@ public class MediaControllerTest {
 		mediaDto.setAdvertiserAuditMode(1);
 		mediaDto.setMaterialAuditMode(1);
 		mediaDto.setTimeout(30);
-		String link = "http://localhost:8080/services/media/add";
+		String link = "http://localhost:8080/services/media/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(mediaDto));
 	}
 	
@@ -64,7 +64,7 @@ public class MediaControllerTest {
 	
 	@Test
 	public void testException(){
-		String link = "http://localhost:8080/services/media/exceptionTest?exType=1";
+		String link = "http://localhost:8080/services/media/exceptionTest?exType=2";
 		HttpUtilTest.httpGet(link);
 	}
 	

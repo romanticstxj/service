@@ -210,8 +210,8 @@ public class BeanUtils {
 			try {
 				Method createUserWriteMethod = new PropertyDescriptor("createdUser", clazz).getWriteMethod();
 				Method createTimeWriteMethod = new PropertyDescriptor("createdTime", clazz).getWriteMethod();
-				Method updateUserWriteMethod = new PropertyDescriptor("modifiedUser", clazz).getWriteMethod();
-				Method updateTimeWriteMethod = new PropertyDescriptor("modifiedTime", clazz).getWriteMethod();
+				Method updateUserWriteMethod = new PropertyDescriptor("updatedUser", clazz).getWriteMethod();
+				Method updateTimeWriteMethod = new PropertyDescriptor("updatedTime", clazz).getWriteMethod();
 
 				Integer userId = null;
 				Date currentTime = new Date();

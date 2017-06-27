@@ -17,7 +17,7 @@ public interface SystemConstant {
     String DATASOURCE_PREMIUMMAD = PREMIUMMAD;
     String DATASOURCE_SANDBOX = "sesandbox";
     String LOGGER_PREMIUMMAD = PREMIUMMAD;//日志中使用的
-    String LOGGER_PREMIUMMAD_TASK = "premiummadTask";
+    String LOGGER_PREMIUMMAD_ERROR = "premiummadError";
 
     String TABLENAME_ADSPACE = "se_supplier_adspace";
 

@@ -30,7 +30,7 @@ public class PerformanceFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		long beginTime = System.currentTimeMillis();
-		LOGGER.debug("url:" + req.getHeader(SystemConstant.URL));
+//		LOGGER.debug("url:" + req.getHeader(SystemConstant.URL));
 		LOGGER.debug("userId:"+req.getHeader(SystemConstant.USERID));
 
 		chain.doFilter(request, response);
@@ -43,7 +43,7 @@ public class PerformanceFilter implements Filter {
 
 	@Override
 	public void destroy() {
-
+		System.out.println("performance filter destroyed");
 	}
 
 }

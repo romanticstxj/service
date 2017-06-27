@@ -24,9 +24,7 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <task:annotation-driven/>
-
-    <!--proxy-target-class="true"强制使用cglib代理 如果为false则spring会自动选择 -->
+    <!--proxy-target-class="true"强制使用cglib代理, 如果为false则spring会自动选择 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
     <context:property-placeholder location="classpath:jdbc.properties,classpath:exchange.properties"

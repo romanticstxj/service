@@ -8,9 +8,9 @@ public class BaseEntity {
 	
 	private Date createdTime;
 	
-	private Integer modifiedUser;
+	private Integer updatedUser;
 	
-	private Date modifiedTime;
+	private Date updatedTime;
 
 	public Integer getCreatedUser() {
 		return createdUser;
@@ -28,21 +28,20 @@ public class BaseEntity {
 		this.createdTime = createdTime;
 	}
 
-	public Integer getModifiedUser() {
-		return modifiedUser;
+	public Integer getUpdatedUser() {
+		return updatedUser;
 	}
 
-	public void setModifiedUser(Integer modifiedUser) {
-		this.modifiedUser = modifiedUser;
+	public void setUpdatedUser(Integer updatedUser) {
+		this.updatedUser = updatedUser;
 	}
 
-	public Date getModifiedTime() {
-		return modifiedTime;
+	public Date getUpdatedTime() {
+		return updatedTime;
 	}
 
-	public void setModifiedTime(Date modifiedTime) {
-		this.modifiedTime = modifiedTime;
+	public void setUpdatedTime(Date updatedTime) {
+		this.updatedTime = updatedTime;
 	}
-	
-	
+
 }

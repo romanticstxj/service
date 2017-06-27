@@ -20,8 +20,6 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.dto.ResponseHeaderDto;
-import com.madhouse.platform.premiummad.exception.BusinessException;
-import com.madhouse.platform.premiummad.exception.InvalidArgumentException;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 /**
@@ -58,48 +56,33 @@ public class PlatformFilter implements Filter {
 		HttpServletRequest req = null;
 		HttpServletResponse res = null;
 
-		try {
-			req = (HttpServletRequest) request;
-			res = (HttpServletResponse) response;
-			String requestURI = req.getRequestURI();
+		req = (HttpServletRequest) request;
+		res = (HttpServletResponse) response;
+		String requestURI = req.getRequestURI();
 
-			if (isExclusionsPath(requestURI)) {
-				chain.doFilter(request, response);
+		if (isExclusionsPath(requestURI)) {
+			chain.doFilter(request, response);
+		} else {
+			// 判断url是否为null
+			String url = req.getHeader(SystemConstant.URL);
+			if (StringUtils.isEmpty(url)) {
+				handleException(req, res, StatusCode.SC21013);
+				return;
+			}
+			// 判断userId是否为null
+			String userId_temp = req.getHeader((SystemConstant.USERID));
+			if (StringUtils.isEmpty(userId_temp)) {
+				handleException(req, res, StatusCode.SC21003);
+				return;
 			} else {
-				// 判断url是否为null
-				String url = req.getHeader(SystemConstant.URL);
-				if (StringUtils.isEmpty(url)) {
-					handleException(req, res, StatusCode.SC21013);
+				try {
+					Integer userId = Integer.parseInt(userId_temp); // 是否是数字
+				} catch (Exception e) {
+					handleException(req, res, StatusCode.SC21004);
 					return;
 				}
-				// 判断userId是否为null
-				String userId_temp = req.getHeader((SystemConstant.USERID));
-				if (StringUtils.isEmpty(userId_temp)) {
-					handleException(req, res, StatusCode.SC21003);
-					return;
-				} else {
-					try {
-						Integer userId = Integer.parseInt(userId_temp); // 是否是数字
-					} catch (Exception e) {
-						handleException(req, res, StatusCode.SC21004);
-						return;
-					}
-				}
-				chain.doFilter(request, response);
 			}
-		} catch (Exception e) {
-			Throwable t = e.getCause();
-			if (t.getClass().equals(InvalidArgumentException.class)) {
-				InvalidArgumentException invalid = (InvalidArgumentException) t;
-				handleException(req, res, invalid.getStatusCode());
-			} else if (t.getClass().equals(BusinessException.class)) {
-				BusinessException business = (BusinessException) t;
-				handleException(req, res, business.getStatusCode());
-			} else {
-				e.printStackTrace();
-				logger.error(e.getMessage());
-				handleException(req, res, StatusCode.SC31001);
-			}
+			chain.doFilter(request, response);
 		}
 	}
 

@@ -13,9 +13,9 @@
         <result property="timeout" column="timeout" jdbcType="INTEGER" />
         <result property="description" column="description" jdbcType="VARCHAR" />
         <result property="createdUser" column="created_user" jdbcType="TIMESTAMP" />
-        <result property="modifiedUser" column="modified_user" jdbcType="TIMESTAMP" />
+        <result property="updatedUser" column="updated_user" jdbcType="INTEGER" />
         <result property="createdTime" column="created_time" jdbcType="TIMESTAMP" />
-        <result property="modifiedTime" column="modified_time" jdbcType="TIMESTAMP" />
+        <result property="updatedTime" column="updated_time" jdbcType="INTEGER" />
         <result property="status" column="status" jdbcType="INTEGER" />
         <result property="apiType" column="api_type" jdbcType="INTEGER" />
         <result property="adCount" column="adCount" jdbcType="INTEGER" />
@@ -33,9 +33,9 @@
               <if test="timeout != null">timeout,</if>
               <if test="description != null">description,</if>
               <if test="createdUser != null">created_user,</if>
-              <if test="modifiedUser != null">modified_user,</if>
+              <if test="updatedUser != null">updated_user,</if>
               <if test="createdTime != null">created_time,</if>
-              <if test="modifiedTime != null">modified_time,</if>
+              <if test="updatedTime != null">updated_time,</if>
               status, api_type
             </trim>
             VALUES
@@ -49,9 +49,9 @@
               <if test="timeout != null">#{timeout},</if>
               <if test="description != null">#{description},</if>
               <if test="createdUser != null">#{createdUser},</if>
-              <if test="modifiedUser != null">#{modifiedUser},</if>
+              <if test="updatedUser != null">#{updatedUser},</if>
               <if test="createdTime != null">#{createdTime},</if>
-              <if test="modifiedTime != null">#{modifiedTime},</if>
+              <if test="updatedTime != null">#{updatedTime},</if>
               1, 1
             </trim>
     </insert>
@@ -67,8 +67,8 @@
             <if test="materialAuditMode != null">material_audit_mode = #{materialAuditMode},</if>
             <if test="timeout != null">timeout = #{timeout},</if>
             <if test="description != null">description = #{description},</if>
-            <if test="modifiedUser != null">modified_user = #{modifiedUser},</if>
-            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+            <if test="updatedUser != null">updated_user = #{updatedUser},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
         </set>
         WHERE id = #{id}
     </update>
@@ -77,8 +77,8 @@
         UPDATE mad_sys_media
         <set>
             <if test="status != null">status = #{status},</if>
-            <if test="modifiedUser != null">modified_user = #{modifiedUser},</if>
-            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+            <if test="updatedUser != null">updated_user = #{updatedUser},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
         </set>
         WHERE id = #{id}
     </update>
@@ -91,7 +91,7 @@
 		${alias}.id, ${alias}.name, ${alias}.category, ${alias}.type, ${alias}.access_mode,
 		${alias}.advertiser_audit_mode, ${alias}.material_audit_mode, ${alias}.timeout, 
 		${alias}.api_type, ${alias}.status, ${alias}.description, ${alias}.created_user, 
-		${alias}.modified_user, ${alias}.created_time, ${alias}.modified_time
+		${alias}.updated_user, ${alias}.created_time, ${alias}.updated_time
 	</sql>
 	
 	<sql id="baseList">

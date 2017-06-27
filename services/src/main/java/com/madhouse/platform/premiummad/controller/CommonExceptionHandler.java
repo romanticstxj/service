@@ -1,19 +1,26 @@
 package com.madhouse.platform.premiummad.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
+import com.madhouse.platform.premiummad.util.LogUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 
 @ControllerAdvice
 public class CommonExceptionHandler {
 	
-	@ExceptionHandler(value = {Exception.class})  
-    public ResponseDto<String> handleOtherExceptions(final Exception ex, final WebRequest req) {  
-		System.out.println("go in to common ex handler");
-        return ResponseUtils.response(StatusCode.SC31001, null, ex.getMessage());
-    }  
+	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD_ERROR);
+	
+	@ExceptionHandler(Exception.class)
+	@ResponseBody
+	public ResponseDto<Object> handleAllException(Exception ex) {
+		logger.error(LogUtils.getDetailException(ex));
+		return ResponseUtils.response(StatusCode.SC31001, null, ex.getMessage());
+	}
 }
