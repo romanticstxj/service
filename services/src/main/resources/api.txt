@@ -54,7 +54,7 @@
             }
         }
     },
-    "/media/add": {
+    "/media/create": {
         "post": {
             "_summary": "",
             "parameters": {
@@ -129,66 +129,63 @@
             }
         }
     },
-    "/adspace/list/{supplierMediaId}": {
-        "post": {
+    "/adspace/list": {
+        "get": {
             "_summary": "广告位列表，若未提供媒体id则全局查询，否则根据媒体id查询",
             "parameters": {
-                "body": null
+                "query": {
+                	"ids" : "<||string||comment:1）查询所有广告位，则没有ids参数；2）查询部分媒体的广告位，则提供ids参数，idlist是用逗号分隔的媒体id组>"
+                }
             },
             "responses": {
                 "200": {
                     "body": [
                         {
-                            "delFlg": "",
-                            "id": "",
-                            "creativeSize": "",
-                            "name": "",
-		                    "mediaId": "",
-		                    "type": "",
-		                    "form": "",
-		                    "limitation": "",
-		                    "creativeType": "",
-		                    "width": "",
-		                    "height": "",
-		                    "creativeKBites": "",
-		                    "basePrice": "",
-		                    "priceType": "",
-		                    "adspacePosition": "",
-		                    "picWidth": "",
-		                    "picHeight": "",
-		                    "titleMaxLength": "",
-		                    "descMaxLength": "",
-		                    "videoDuration": "",
-		                    "remark": ""
+                        	"id": "<||integer||comment:广告位id>",
+                            "name": "<*||string||comment:广告位名称>",
+                            "mediaId": "<*||integer||comment:所属的媒体id>",
+                            "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
+                            "layout": "<*||integer||comment:广告形式(列表)>",
+                            "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
+                            "bidFloor": "<*||double||comment:底价>",
+                            "createdTime": "<||date||comment:创建时间>",
+                            "status": "<integer||comment:状态(0:停用,1:启用)>"
                         }
                     ]
                 }
             }
         }
     },
-    "/adspace/add": {
+    "/adspace/create": {
         "post": {
             "_summary": "",
             "parameters": {
                 "body": {
                 	"name": "<*||string||comment:广告位名称>",
+                	"adspaceKey": "<*||string||comment:广告位Key>",
                     "mediaId": "<*||integer||comment:所属的媒体id>",
                     "adblockId": "<*||integer||comment:广告限制id>",
                     "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
                     "terminalOs": "<*||integer||comment:平台类型(1: Android, 2: iOS)>",
                     "supportHttps": "<*||integer||comment:是否支持https(0:否,1:是)>",
+                    "bidType": "<*||integer||comment:结算方式(1:CPM,2:CPC)>",
+                    "bidFloor": "<*||double||comment:底价>",
                     "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
-                    "adMode": "<*||integer||comment:广告形式(列表)>",
-                    "materialType": "<*||integer||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1:png, 2:jpg, 3:gif, 4:mp4, 5:flv, 6:swf)>",
-                    "creativeKBites": "",
-                    "basePrice": "",
-                    "priceType": "",
-                    "picWidth": "",
-                    "picHeight": "",
-                    "titleMaxLength": "",
-                    "descMaxLength": "",
-                    "videoDuration": "",
-                    "remark": ""
+                    "layout": "<*||integer||comment:广告形式(列表)>",
+                    "materialType": "<*||integer||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1: gif, 2: png, 4: jpg)>",
+                    "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
+                    "materialMaxKbyte": "<*||integer||comment:普通硬广: 物料最大K数, 原生图文信息流:主图片最大K数, 原生视频信息流: 封面最大K数, 视频暂停: 物料最大K数>",
+                    "logoType": "<integer||comment:logo格式(1: gif, 2: png, 4: jpg)>",
+                    "logoSize": "<string||comment:logo尺寸(格式：width*height)>",
+                    "logoMaxKbyte": "<integer||comment:logo最大K数>",
+                    "titleMaxLength": "<integer||comment:标题最大长度>",
+                    "descMaxLength": "<integer||comment:描述最大长度>",
+                    "mainPicNumber": "<*||integer||comment:原生图文信息流: 主图片张数>",
+                    "videoType": "<integer||comment:原生视频信息流: 视频格式, 视频: 视频格式(8: mp4, 16: flv, 32: swf)>",
+                    "videoSize": "<string||comment:原生视频信息流: 视频尺寸, 视频: 视频尺寸(格式：width*height)>",
+                    "videoMaxKbyte": "<integer||comment:原生视频信息流: 视频最大K数, 视频: 视频最大K数>",
+                    "videoDuration": "<string||comment:视频时长(半角逗号分隔)>",
+                    "description": "<string||comment:描述>"
                 }
             },
             "responses": {
@@ -202,68 +199,127 @@
             }
         }
     },
-    "/adspace/get/{supplierAdspaceId}": {
-        "post": {
+    "/adspace/detail": {
+        "get": {
             "_summary": "",
-            "parameters": {
-                "body": null
+            "query": {
+                "id" : "<*||integer||comment:广告位ID>"
             },
             "responses": {
                 "200": {
                     "body": [
                         {
-                            "delFlg": "",
-                            "id": "",
-                            "creativeSize": "",
-                            "name": "",
-		                    "mediaId": "",
-		                    "type": "",
-		                    "form": "",
-		                    "limitation": "",
-		                    "creativeType": "",
-		                    "width": "",
-		                    "height": "",
-		                    "creativeKBites": "",
-		                    "basePrice": "",
-		                    "priceType": "",
-		                    "adspacePosition": "",
-		                    "picWidth": "",
-		                    "picHeight": "",
-		                    "titleMaxLength": "",
-		                    "descMaxLength": "",
-		                    "videoDuration": "",
-		                    "remark": ""
+                        	"id": "<*||integer||comment:广告位id>",
+                    		"status": "<*||integer||comment:状态(0:停用,1:启用）>",
+                            "name": "<*||string||comment:广告位名称>",
+		                    "mediaId": "<*||integer||comment:所属的媒体id>",
+		                    "adblockId": "<*||integer||comment:广告限制id>",
+		                    "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
+		                    "terminalOs": "<*||integer||comment:平台类型(1: Android, 2: iOS)>",
+		                    "supportHttps": "<*||integer||comment:是否支持https(0:否,1:是)>",
+		                    "bidType": "<*||integer||comment:结算方式(1:CPM,2:CPC)>",
+		                    "bidFloor": "<*||double||comment:底价>",
+		                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
+		                    "layout": "<*||integer||comment:广告形式(列表)>",
+		                    "materialType": "<*||integer||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1: gif, 2: png, 4: jpg)>",
+		                    "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
+		                    "materialMaxKbyte": "<*||integer||comment:普通硬广: 物料最大K数, 原生图文信息流:主图片最大K数, 原生视频信息流: 封面最大K数, 视频暂停: 物料最大K数>",
+		                    "logoType": "<integer||comment:logo格式(1: gif, 2: png, 4: jpg)>",
+		                    "logoSize": "<string||comment:logo尺寸(格式：width*height)>",
+		                    "logoMaxKbyte": "<integer||comment:logo最大K数>",
+		                    "titleMaxLength": "<integer||comment:标题最大长度>",
+		                    "descMaxLength": "<integer||comment:描述最大长度>",
+		                    "mainPicNumber": "<*||integer||comment:原生图文信息流: 主图片张数>",
+		                    "videoType": "<integer||comment:原生视频信息流: 视频格式, 视频: 视频格式(8: mp4, 16: flv, 32: swf)>",
+		                    "videoSize": "<string||comment:原生视频信息流: 视频尺寸, 视频: 视频尺寸(格式：width*height)>",
+		                    "videoMaxKbyte": "<integer||comment:原生视频信息流: 视频最大K数, 视频: 视频最大K数>",
+		                    "videoDuration": "<string||comment:视频时长(半角逗号分隔)>",
+		                    "description": "<string||comment:描述>"
                         }
                     ]
                 }
             }
         }
     },
-    "/adspace/update/{supplierMediaId}": {
+    "/adspace/update": {
+        "post": {
+            "_summary": "更新广告位或广告位状态，根据updateType来区分",
+            "parameters": {
+                "body": {
+                	"id": "<*||integer||comment:广告位id>",
+                    "status": "<*||integer||comment:状态(0:停用,1:启用）>",
+                    "name": "<*||string||comment:广告位名称>",
+                	"adspaceKey": "<*||string||comment:广告位Key>",
+                    "mediaId": "<*||integer||comment:所属的媒体id>",
+                    "adblockId": "<*||integer||comment:广告限制id>",
+                    "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
+                    "terminalOs": "<*||integer||comment:平台类型(1: Android, 2: iOS)>",
+                    "supportHttps": "<*||integer||comment:是否支持https(0:否,1:是)>",
+                    "bidType": "<*||integer||comment:结算方式(1:CPM,2:CPC)>",
+                    "bidFloor": "<*||double||comment:底价>",
+                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
+                    "layout": "<*||integer||comment:广告形式(列表)>",
+                    "materialType": "<*||integer||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1: gif, 2: png, 4: jpg)>",
+                    "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
+                    "materialMaxKbyte": "<*||integer||comment:普通硬广: 物料最大K数, 原生图文信息流:主图片最大K数, 原生视频信息流: 封面最大K数, 视频暂停: 物料最大K数>",
+                    "logoType": "<integer||comment:logo格式(1: gif, 2: png, 4: jpg)>",
+                    "logoSize": "<string||comment:logo尺寸(格式：width*height)>",
+                    "logoMaxKbyte": "<integer||comment:logo最大K数>",
+                    "titleMaxLength": "<integer||comment:标题最大长度>",
+                    "descMaxLength": "<integer||comment:描述最大长度>",
+                    "mainPicNumber": "<*||integer||comment:原生图文信息流: 主图片张数>",
+                    "videoType": "<integer||comment:原生视频信息流: 视频格式, 视频: 视频格式(8: mp4, 16: flv, 32: swf)>",
+                    "videoSize": "<string||comment:原生视频信息流: 视频尺寸, 视频: 视频尺寸(格式：width*height)>",
+                    "videoMaxKbyte": "<integer||comment:原生视频信息流: 视频最大K数, 视频: 视频最大K数>",
+                    "videoDuration": "<string||comment:视频时长(半角逗号分隔)>",
+                    "description": "<string||comment:描述>",
+                    "updateType": "<*||integer||comment:更新类型(1:更新广告位，2:仅仅更新广告位状态)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/list": {
+        "get": {
+            "_summary": "需求方平台列表",
+            "parameters": {
+            	"query": {
+                	"ids" : "<||string||comment:1）查询所有dsp，则没有ids参数；2）查询部分dsp，则提供ids参数，idlist是用逗号分隔的dsp id组>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"id": "<*||integer||comment:dspid>",
+                        	"name": "<*||string||comment:需求方平台名称>",
+		                	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+		                    "status": "<integer||comment:状态(0: 停用, 1: 启用)>",
+		                    "createdTime": "<||date||comment:创建时间>",
+		                    "bidPercent": "<integer||comment:加价百分比>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/create": {
         "post": {
             "_summary": "",
             "parameters": {
                 "body": {
-                    "delFlg": "",
-                    "creativeSize": "",
-                    "name": "",
-                    "mediaId": "",
-                    "type": "",
-                    "form": "",
-                    "limitation": "",
-                    "creativeType": "",
-                    "width": "",
-                    "height": "",
-                    "creativeKBites": "",
-                    "basePrice": "",
-                    "priceType": "",
-                    "adspacePosition": "",
-                    "picWidth": "",
-                    "picHeight": "",
-                    "titleMaxLength": "",
-                    "descMaxLength": "",
-                    "videoDuration": "",
-                    "remark": ""
+                    "name": "<*||string||comment:需求方平台名称>",
+                	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+                    "bidUrl": "<string||comment:DSP URL>",
+                    "bidPercent": "<integer||comment:加价百分比>"
                 }
             },
             "responses": {
@@ -277,39 +333,85 @@
             }
         }
     },
-    "/adspaceLimitation": {
+    "/dsp/detail": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+	                "id" : "<*||integer||comment:dspID>"
+	            }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {	
+                        	"id": "<*||integer||comment:dspid>",
+                        	"name": "<*||string||comment:需求方平台名称>",
+		                	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+		                	"bidUrl": "<string||comment:DSP URL>",
+		                    "status": "<integer||comment:状态(0: 停用, 1: 启用)>",
+		                    "bidPercent": "<integer||comment:加价百分比>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/update": {
         "post": {
+            "_summary": "dsp更新，dsp状态更新，或加价百分比的更新",
+            "parameters": {
+                "body": {
+                	"id": "<*||integer||comment:dspid>",
+                	"name": "<*||string||comment:需求方平台名称>",
+                	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+                	"bidUrl": "<string||comment:DSP URL>",
+                    "status": "<integer||comment:状态(0: 停用, 1: 启用)>",
+                    "bidPercent": "<integer||comment:加价百分比>",
+                    "updateType": "<*||integer||comment:更新类型(1:更新dsp，2:更新dsp状态，3:更新dsp加价百分比)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adBlock/list": {
+        "get": {
             "_summary": "广告限制列表",
             "parameters": {
-                "body": null
+                "query": null
             },
             "responses": {
                 "200": {
                     "body": [
                         {
-                            "delFlg": "",
-                            "id": "",
-                            "name": "",
-		                    "hasIndustry": "1",
-		                    "industries": "1,2,3",
-		                    "hasAdvertiser": "1",
-		                    "advertisers": "http://www.baidu.com,http://www.163.com"
+                        	"id": "<*||integer||comment:广告限制ID>",
+                            "name": "<*||string||comment:广告限制名称>",
+		                	"hasIndustries": "<integer||comment:是否行业屏蔽(0:否,1:是)>",
+		                    "hasAdvertisers": "<string||comment:是否广告主屏蔽(0:否,1:是>",
+		                    "createdTime": "<||date||comment:创建时间>",
+		                    "status": "<integer||comment:状态(0:停用,1:启用)>"
                         }
                     ]
                 }
             }
         }
     },
-    "/adspaceLimitation/add": {
+    "/adBlock/create": {
         "post": {
             "_summary": "",
             "parameters": {
                 "body": {
-                	"name": "",
-                	"hasIndustry": "1",
-                    "industries": "1,2,3",
-                    "hasAdvertiser": "1",
-                    "advertisers": "http://www.baidu.com,http://www.163.com"
+                	"name": "<*||string||comment:广告限制名称>",
+                	"industries": "<string||comment:行业屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>",
+                    "advertisers": "<string||comment:广告主屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>"
                 }
             },
             "responses": {
@@ -323,41 +425,41 @@
             }
         }
     },
-    "/adspaceLimitation/get/{adspaceLimitationId}": {
-        "post": {
+    "/adBlock/detail": {
+        "get": {
             "_summary": "",
             "parameters": {
-                "body": null
+                "query": {
+                	"id" : "<*||integer||comment:广告限制ID>"
+                }
             },
             "responses": {
                 "200": {
                     "body": [
                         {
-                            "delFlg": "",
-                            "id": "",
-                            "name": "",
-		                    "hasIndustry": "1",
-		                    "industries": "1,2,3",
-		                    "hasAdvertiser": "1",
-		                    "advertisers": "http://www.baidu.com,http://www.163.com"
+                            "id": "<*||integer||comment:广告限制ID>",
+                            "name": "<*||string||comment:广告限制名称>",
+		                	"industries": "<string||comment:行业屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>",
+                    		"advertisers": "<string||comment:广告主屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>",
+		                    "createdTime": "<||date||comment:创建时间>",
+		                    "status": "<integer||comment:状态(0:停用,1:启用)>"
                         }
                     ]
                 }
             }
         }
     },
-    "/adspaceLimitation/update/{adspaceLimitationId}": {
+    "/adBlock/update": {
         "post": {
             "_summary": "",
             "parameters": {
                 "body": {
-                    "delFlg": "",
-                    "id": "",
-                    "name": "",
-                    "hasIndustry": "0",
-                    "industries": "",
-                    "hasAdvertiser": "1",
-                    "advertisers": "http://www.163.com"
+                    "id": "<*||integer||comment:广告限制ID>",
+                    "name": "<*||string||comment:广告限制名称>",
+                	"industries": "<string||comment:行业屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>",
+            		"advertisers": "<string||comment:广告主屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>",
+                    "status": "<integer||comment:状态(0:停用,1:启用)>",
+                    "updateType": "<*||integer||comment:更新类型(1:更新广告限制，2:更新广告限制状态)>"
                 }
             },
             "responses": {
@@ -831,106 +933,6 @@
                     	}
                     ],
                     "remark": ""
-                }
-            },
-            "responses": {
-                "200": {
-                    "body": [
-                        {
-                            "result": true
-                        }
-                    ]
-                }
-            }
-        }
-    },
-    "/dsp": {
-        "post": {
-            "_summary": "需求方平台列表,可以有查询条件",
-            "parameters": {
-            	"type": "",
-                "cooperationMode": ""
-            },
-            "responses": {
-                "200": {
-                    "body": [
-                        {
-                        	"delFlg": "",
-                    		"id": "",
-                            "name": "",
-		                	"type": "",
-		                    "url": "",
-		                    "cooperationModes": "",
-		                    "cooperationModeNames": ""
-                        }
-                    ]
-                }
-            }
-        }
-    },
-    "/dsp/add": {
-        "post": {
-            "_summary": "",
-            "parameters": {
-                "body": {
-                    "name": "",
-                	"type": "",
-                    "url": "",
-                    "cooperationMode": ""
-                }
-            },
-            "responses": {
-                "200": {
-                    "body": [
-                        {
-                            "result": true
-                        }
-                    ]
-                }
-            }
-        }
-    },
-    "/dsp/get/{dspId}": {
-        "post": {
-            "_summary": "",
-            "parameters": {
-                "body": null
-            },
-            "responses": {
-                "200": {
-                    "body": [
-                        {	
-                        	"delFlg": "",
-                    		"id": "",
-                            "name": "",
-		                	"type": "",
-		                	"typeName": "",
-		                    "url": "",
-		                    "cooperationModes": "",
-		                    "cooperationModeNames": "",
-		                    "qps": "",
-		                    "timeout": ""
-                        }
-                    ]
-                }
-            }
-        }
-    },
-    "/dsp/update/{dspId}": {
-        "post": {
-            "_summary": "",
-            "parameters": {
-                "body": {
-                	"delFlg": "",
-                    "id": "",
-                    "name": "",
-                	"type": "",
-                	"typeName": "",
-                    "url": "",
-                    "cooperationModes": "",
-                    "cooperationModeNames": "",
-                    "qps": "",
-                    "timeout": ""
                 }
             },
             "responses": {
