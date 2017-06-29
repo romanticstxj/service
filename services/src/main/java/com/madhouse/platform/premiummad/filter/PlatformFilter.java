@@ -53,37 +53,39 @@ public class PlatformFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest req = null;
-		HttpServletResponse res = null;
-
-		req = (HttpServletRequest) request;
-		res = (HttpServletResponse) response;
-		String requestURI = req.getRequestURI();
-
-		if (isExclusionsPath(requestURI)) {
-			chain.doFilter(request, response);
-		} else {
-			// 判断url是否为null
-			String url = req.getHeader(SystemConstant.URL);
-			if (StringUtils.isEmpty(url)) {
-				handleException(req, res, StatusCode.SC21013);
-				return;
-			}
-			// 判断userId是否为null
-			String userId_temp = req.getHeader((SystemConstant.USERID));
-			if (StringUtils.isEmpty(userId_temp)) {
-				handleException(req, res, StatusCode.SC21003);
-				return;
-			} else {
-				try {
-					Integer userId = Integer.parseInt(userId_temp); // 是否是数字
-				} catch (Exception e) {
-					handleException(req, res, StatusCode.SC21004);
-					return;
-				}
-			}
-			chain.doFilter(request, response);
-		}
+//		HttpServletRequest req = null;
+//		HttpServletResponse res = null;
+//
+//		req = (HttpServletRequest) request;
+//		res = (HttpServletResponse) response;
+//		String requestURI = req.getRequestURI();
+//
+//		if (isExclusionsPath(requestURI)) {
+//			chain.doFilter(request, response);
+//		} else {
+//			// 判断url是否为null
+//			String url = req.getHeader(SystemConstant.URL);
+//			if (StringUtils.isEmpty(url)) {
+//				handleException(req, res, StatusCode.SC21013);
+//				return;
+//			}
+//			// 判断userId是否为null
+//			String userId_temp = req.getHeader((SystemConstant.USERID));
+//			if (StringUtils.isEmpty(userId_temp)) {
+//				handleException(req, res, StatusCode.SC21003);
+//				return;
+//			} else {
+//				try {
+//					Integer userId = Integer.parseInt(userId_temp); // 是否是数字
+//				} catch (Exception e) {
+//					handleException(req, res, StatusCode.SC21004);
+//					return;
+//				}
+//			}
+//			chain.doFilter(request, response);
+//		}
+		
+		chain.doFilter(request, response);
 	}
 
 	@Override

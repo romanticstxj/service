@@ -900,25 +900,25 @@
             "responses": {
                 "200": {
                     "body": {
-                    	"type": [
+                    	"type": {
                     		"default": "1:默认(可选的二级维度有:日期、时间、媒体、广告位)",
                     		"carrier": "2:运营商(一定包含运营商这个维度，可选的二级维度有:日期、时间、媒体、广告位)",
                     		"device": "4:设备类型(一定包含设备类型这个维度,可选的二级维度有:日期、时间、媒体、广告位)",
                     		"conn": "8:联网方式(一定包含联网方式这个维度,可选的二级维度有:日期、时间、媒体、广告位)",
                     		"location": "16:地域(一定包含地域这个维度,可选的二级维度有:日期、时间、媒体、广告位)"
-                    	],
-                    	"dims": [
+                    	},
+                    	"dims": {
                     		"date": "1:日期",
                     		"hour": "2:时间",
                     		"media": "4:媒体",
                     		"adspace": "8:广告位",
                     		"policy": "16:策略",
                     		"dsp": "32:需求方"
-                    	],
-                    	"realTime": [
+                    	},
+                    	"realTime": {
                     		"实时": "1",
                     		"离线": "0"
-                    	]
+                    	}
                     }
                 }
             }
@@ -941,4 +941,38 @@
             }
         }
     },
+    "/report/dsp": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                    "type": "<*||integer||comment:报表类型>",
+                	"dims": "<*||string||comment:可选的二级维度(1,2,32)>",
+                	"realTime": "<*||integer||comment:实时或离线>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": null
+                }
+            }
+        }
+    },
+    "/report/policy": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                    "type": "<*||integer||comment:报表类型(1)>",
+                	"dims": "<*||string||comment:可选的二级维度(1,2,4,8,16,32)>",
+                	"realTime": "<*||integer||comment:实时或离线>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": null
+                }
+            }
+        }
+    }
 }

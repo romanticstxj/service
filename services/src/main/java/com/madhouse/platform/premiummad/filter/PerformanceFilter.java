@@ -43,7 +43,7 @@ public class PerformanceFilter implements Filter {
 
 	@Override
 	public void destroy() {
-		System.out.println("performance filter destroyed");
+		
 	}
 
 }
