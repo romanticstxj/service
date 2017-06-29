@@ -18,10 +18,11 @@ public class MediaDto implements Serializable{
 	private String name;
 	@NotNull
 	private Integer category;
+	private String categoryName;
 	@NotNull
 	private Integer type;
 	@NotNull
-	private Integer accessMode;
+	private Integer accessType;
 	@NotNull
 	private Integer advertiserAuditMode;
 	@NotNull
@@ -29,7 +30,7 @@ public class MediaDto implements Serializable{
 	@NotNull
 	private Integer timeout;
 	
-	private Date createTime;
+	private Date createdTime;
 	
 	private String description;
 	
@@ -77,6 +78,14 @@ public class MediaDto implements Serializable{
 		this.category = category;
 	}
 
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
 	public Integer getType() {
 		return type;
 	}
@@ -85,12 +94,12 @@ public class MediaDto implements Serializable{
 		this.type = type;
 	}
 
-	public Integer getAccessMode() {
-		return accessMode;
+	public Integer getAccessType() {
+		return accessType;
 	}
 
-	public void setAccessMode(Integer accessMode) {
-		this.accessMode = accessMode;
+	public void setAccessType(Integer accessType) {
+		this.accessType = accessType;
 	}
 
 	public Integer getAdvertiserAuditMode() {
@@ -117,12 +126,12 @@ public class MediaDto implements Serializable{
 		this.timeout = timeout;
 	}
 
-	public Date getCreateTime() {
-		return createTime;
+	public Date getCreatedTime() {
+		return createdTime;
 	}
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
+	public void setCreatedTime(Date createdTime) {
+		this.createdTime = createdTime;
 	}
 
 	public String getDescription() {

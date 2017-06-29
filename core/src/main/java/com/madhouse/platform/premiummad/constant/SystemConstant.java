@@ -37,5 +37,6 @@ public interface SystemConstant {
     String KEY = bundle.getString("key");
     long WEEK = 1000L * 60L * 60L * 24L * 7L;
     
+    int DICT_MEDIA_CATEGORY = 1;
 
 }

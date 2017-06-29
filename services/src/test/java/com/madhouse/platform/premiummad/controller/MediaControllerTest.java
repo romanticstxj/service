@@ -14,7 +14,7 @@ public class MediaControllerTest {
 //		mediaDto.setCategory(1);
 		mediaDto.setType(1);
 		mediaDto.setDescription("hello media");
-		mediaDto.setAccessMode(1);
+		mediaDto.setAccessType(1);
 		mediaDto.setAdvertiserAuditMode(1);
 		mediaDto.setMaterialAuditMode(1);
 		mediaDto.setTimeout(30);
@@ -24,14 +24,14 @@ public class MediaControllerTest {
 	
 	@Test
 	public void detail(){
-		String link = "http://localhost:8080/services/media/detail?id=8000005";
+		String link = "http://localhost:8080/services/media/detail?id=100001";
 		HttpUtilTest.httpGet(link);
 	}
 	
 	@Test
 	public void list(){
-		String link = "http://localhost:8080/services/media/list?ids=8000005,8000004";
-//		String link = "http://localhost:8080/services/media/list";
+//		String link = "http://localhost:8080/services/media/list?ids=8000005,8000004";
+		String link = "http://localhost:8080/services/media/list";
 		HttpUtilTest.httpGet(link);
 	}
 	
@@ -43,7 +43,7 @@ public class MediaControllerTest {
 		mediaDto.setCategory(1);
 		mediaDto.setType(1);
 		mediaDto.setDescription("hello media");
-		mediaDto.setAccessMode(1);
+		mediaDto.setAccessType(1);
 		mediaDto.setAdvertiserAuditMode(1);
 		mediaDto.setMaterialAuditMode(1);
 		mediaDto.setTimeout(30);

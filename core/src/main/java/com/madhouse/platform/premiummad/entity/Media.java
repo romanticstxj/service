@@ -12,9 +12,11 @@ public class Media extends BaseEntity{
 	
 	private Integer category;
 	
+	private String categoryName;
+	
 	private Integer type;
 	
-	private Integer accessMode;
+	private Integer accessType;
 	
 	private Integer advertiserAuditMode;
 	
@@ -68,6 +70,14 @@ public class Media extends BaseEntity{
 		this.category = category;
 	}
 
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
 	public Integer getType() {
 		return type;
 	}
@@ -76,12 +86,12 @@ public class Media extends BaseEntity{
 		this.type = type;
 	}
 
-	public Integer getAccessMode() {
-		return accessMode;
+	public Integer getAccessType() {
+		return accessType;
 	}
 
-	public void setAccessMode(Integer accessMode) {
-		this.accessMode = accessMode;
+	public void setAccessType(Integer accessType) {
+		this.accessType = accessType;
 	}
 
 	public Integer getAdvertiserAuditMode() {

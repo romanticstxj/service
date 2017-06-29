@@ -11,12 +11,12 @@ import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.dto.ResponseHeaderDto;
 
 /**
- * 设置ResponseDto 2015年2月4日上午10:20:31
+ * 设置ResponseDto 
  * 
- * @author xiejun
+ * @author Xingjie.Teng
  */
 public class ResponseUtils {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
+	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
 
 	public static <T> ResponseDto<T> response(StatusCode sc, List<T> lists) {
 		return response(sc, lists, null);
@@ -27,12 +27,12 @@ public class ResponseUtils {
 		ResponseHeaderDto responseHeaderDto = new ResponseHeaderDto();
 		responseDto.setResponseHeaderDto(responseHeaderDto);
 
-		LOGGER.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}");
+		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}");
 
-		if (sc.getValue() == 20000) { // 设置成功状态
+		if (sc.getValue() == StatusCode.SC20000.getValue()) { // 设置成功状态
 			responseHeaderDto.setResponseCode(SystemConstant.RESPONSECODE_SUCCESS); // 查询成功
 			responseDto.setResults(lists);
-		} else if (sc.getValue() == 31001) { // 系统错误
+		} else if (sc.getValue() == StatusCode.SC31001.getValue()) { // 系统错误
 			responseHeaderDto.setResponseCode(SystemConstant.RESPONSECODE_FATAL);
 			responseDto.setResults(null);
 		} else { // 其他错误

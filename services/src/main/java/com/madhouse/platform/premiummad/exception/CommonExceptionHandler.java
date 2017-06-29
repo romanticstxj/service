@@ -1,4 +1,4 @@
-package com.madhouse.platform.premiummad.controller;
+package com.madhouse.platform.premiummad.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +12,10 @@ import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.util.LogUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 
+/**
+ * 全局日常处理器
+ * @author Xingjie.Teng
+ */
 @ControllerAdvice
 public class CommonExceptionHandler {
 	
