@@ -22,4 +22,9 @@ public class DictServiceImpl implements IDictService {
 		return dictDao.queryAllMediaCategories();
 	}
 
+	@Override
+	public List<Dict> queryAllAdspaceLayout(Dict dict) {
+		return dictDao.queryAllAdspaceLayout(dict);
+	}
+
 }

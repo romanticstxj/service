@@ -8,4 +8,6 @@ public interface DictDao {
 
 	public List<Dict> queryAllMediaCategories();
 
+	public List<Dict> queryAllAdspaceLayout(Dict dict);
+
 }

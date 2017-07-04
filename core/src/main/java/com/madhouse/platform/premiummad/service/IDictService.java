@@ -7,4 +7,6 @@ import com.madhouse.platform.premiummad.entity.Dict;
 public interface IDictService {
 
 	List<Dict> queryAllMediaCategories();
+
+	List<Dict> queryAllAdspaceLayout(Dict dict);
 }

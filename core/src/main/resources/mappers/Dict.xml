@@ -6,9 +6,20 @@
         <result property="code" column="code" jdbcType="INTEGER" />
         <result property="name" column="name" jdbcType="VARCHAR" />
     </resultMap>
+    
+    <resultMap id="resultAdspaceLayout" type="com.madhouse.platform.premiummad.entity.Dict">
+        <result property="code" column="code" jdbcType="INTEGER" />
+        <result property="name" column="name" jdbcType="VARCHAR" />
+        <result property="terminalType" column="terminal_type" jdbcType="INTEGER" />
+        <result property="adType" column="ad_type" jdbcType="INTEGER" />
+    </resultMap>
 	
 	<sql id="baseList">
 		${alias}.code, ${alias}.name
+	</sql>
+	
+	<sql id="listAdspaceLayout">
+		${alias}.code, ${alias}.name, ${alias}.terminal_type, ${alias}.ad_type
 	</sql>
 	
 	<select id="queryAllMediaCategories" resultMap="baseResult">
@@ -18,6 +29,18 @@
         </include>
         FROM mad_dict_media_category mc 
         ORDER BY mc.code
+	</select>
+	
+	<select id="queryAllAdspaceLayout" parameterType="com.madhouse.platform.premiummad.entity.Dict" resultMap="resultAdspaceLayout">
+		SELECT 
+		<include refid="listAdspaceLayout">
+            <property name="alias" value="l" />
+        </include>
+        FROM mad_dict_layout l 
+        WHERE 1 = 1
+        <if test="terminalType != null">AND l.terminal_type = #{terminalType}</if>
+        <if test="adType != null">AND l.ad_type = #{adType}</if>
+        ORDER BY l.code
 	</select>
 	
 </mapper>

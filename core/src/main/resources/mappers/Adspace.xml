@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.madhouse.platform.premiummad.dao.AdspaceDao">
+	<resultMap id="baseResult" type="com.madhouse.platform.premiummad.entity.Adspace">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="name" column="name" jdbcType="VARCHAR" />
+        <result property="category" column="category" jdbcType="INTEGER" />
+        <result property="categoryName" column="categoryName" jdbcType="VARCHAR" />
+        <result property="type" column="type" jdbcType="INTEGER" />
+        <result property="accessType" column="access_type" jdbcType="INTEGER" />
+        <result property="advertiserAuditMode" column="advertiser_audit_mode" jdbcType="INTEGER" />
+        <result property="materialAuditMode" column="material_audit_mode" jdbcType="INTEGER" />
+        <result property="timeout" column="timeout" jdbcType="INTEGER" />
+        <result property="description" column="description" jdbcType="VARCHAR" />
+        <result property="createdUser" column="created_user" jdbcType="TIMESTAMP" />
+        <result property="updatedUser" column="updated_user" jdbcType="INTEGER" />
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP" />
+        <result property="updatedTime" column="updated_time" jdbcType="INTEGER" />
+        <result property="status" column="status" jdbcType="INTEGER" />
+        <result property="apiType" column="api_type" jdbcType="INTEGER" />
+        <result property="adCount" column="adCount" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <sql id="baseColumns">
+		${alias}.id, ${alias}.name, ${alias}.category, ${alias}.type, ${alias}.access_type,
+		${alias}.advertiser_audit_mode, ${alias}.material_audit_mode, ${alias}.timeout, 
+		${alias}.api_type, ${alias}.status, ${alias}.description, ${alias}.created_user, 
+		${alias}.updated_user, ${alias}.created_time, ${alias}.updated_time
+	</sql>
+	
+	<sql id="baseList">
+		${alias}.id, ${alias}.name, ${alias}.category, ${alias}.type, ${alias}.created_time,
+		${alias}.status
+	</sql>
+	
+	<select id="checkName" parameterType="string" resultType="integer">
+		select count(0) from mad_sys_adspace where name = #{name}
+	</select>
+	
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.madhouse.platform.premiummad.entity.Adspace">
+            INSERT INTO mad_sys_adspace
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+              <if test="name != null">name,</if>
+              <if test="adspaceKey != null">adspace_key,</if>
+              <if test="mediaId != null">media_id,</if>
+              <if test="terminalType != null">terminal_type,</if>
+              <if test="terminalOs != null">terminal_os,</if>
+              <if test="supportHttps != null">support_https,</if>
+              <if test="bidType != null">bid_type,</if>
+              <if test="bidFloor != null">bid_floor,</if>
+              <if test="adType != null">adtype,</if>
+              <if test="layout != null">layout,</if>
+              <if test="materialType != null">material_type,</if>
+              <if test="materialSize != null">material_size,</if>
+              <if test="materialMaxKbyte != null">material_max_kbyte,</if>
+              <if test="logoType != null">logo_type,</if>
+              <if test="logoSize != null">logo_size,</if>
+              <if test="logoMaxKbyte != null">logo_max_kbyte,</if>
+              <if test="titleMaxLength != null">title_max_length,</if>
+              <if test="descMaxLength != null">desc_max_length,</if>
+              <if test="mainPicNumber != null">main_pic_number,</if>
+              <if test="videoType != null">video_type,</if>
+              <if test="videoSize != null">video_size,</if>
+              <if test="videoMaxKbyte != null">video_max_kbyte,</if>
+              <if test="videoDuration != null">video_duration,</if>
+              <if test="description != null">description,</if>
+              <if test="createdUser != null">created_user,</if>
+              <if test="updatedUser != null">updated_user,</if>
+              <if test="createdTime != null">created_time,</if>
+              <if test="updatedTime != null">updated_time,</if>
+              status
+            </trim>
+            VALUES
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+              <if test="name != null">#{name},</if>
+              <if test="adspaceKey != null">#{adspaceKey},</if>
+              <if test="mediaId != null">#{mediaId},</if>
+              <if test="terminalType != null">#{terminalType},</if>
+              <if test="terminalOs != null">#{terminalOs},</if>
+              <if test="supportHttps != null">#{supportHttps},</if>
+              <if test="bidType != null">#{bidType},</if>
+              <if test="bidFloor != null">#{bidFloor},</if>
+              <if test="adType != null">#{adType},</if>
+              <if test="layout != null">#{layout},</if>
+              <if test="materialType != null">#{materialType},</if>
+              <if test="materialSize != null">#{materialSize},</if>
+              <if test="materialMaxKbyte != null">#{materialMaxKbyte},</if>
+              <if test="logoType != null">#{logoType},</if>
+              <if test="logoSize != null">#{logoSize},</if>
+              <if test="logoMaxKbyte != null">#{logoMaxKbyte},</if>
+              <if test="titleMaxLength != null">#{titleMaxLength},</if>
+              <if test="descMaxLength != null">#{descMaxLength},</if>
+              <if test="mainPicNumber != null">#{mainPicNumber},</if>
+              <if test="videoType != null">#{videoType},</if>
+              <if test="videoSize != null">#{videoSize},</if>
+              <if test="videoMaxKbyte != null">#{videoMaxKbyte},</if>
+              <if test="videoDuration != null">#{videoDuration},</if>
+              <if test="description != null">#{description},</if>
+              <if test="createdUser != null">#{createdUser},</if>
+              <if test="updatedUser != null">#{updatedUser},</if>
+              <if test="createdTime != null">#{createdTime},</if>
+              <if test="updatedTime != null">#{updatedTime},</if>
+              1
+            </trim>
+    </insert>
+    
+    <update id="update" parameterType="com.madhouse.platform.premiummad.entity.Adspace">
+        UPDATE mad_sys_adspace
+        <set>
+              <if test="name != null">name = #{name},</if>
+              <if test="adspaceKey != null">adspace_key = #{adspaceKey},</if>
+              <if test="mediaId != null">media_id = #{mediaId},</if>
+              <if test="terminalType != null">terminal_type = #{terminalType},</if>
+              <if test="terminalOs != null">terminal_os = #{terminalOs},</if>
+              <if test="supportHttps != null">support_https = #{supportHttps},</if>
+              <if test="bidType != null">bid_type = #{bidType},</if>
+              <if test="bidFloor != null">bid_floor = #{bidFloor},</if>
+              <if test="adType != null">adtype = #{adType},</if>
+              <if test="layout != null">layout = #{layout},</if>
+              <if test="materialType != null">material_type = #{materialType},</if>
+              <if test="materialSize != null">material_size = #{materialSize},</if>
+              <if test="materialMaxKbyte != null">material_max_kbyte = #{materialMaxKbyte},</if>
+              <if test="logoType != null">logo_type = #{logoType},</if>
+              <if test="logoSize != null">logo_size = #{logoSize},</if>
+              <if test="logoMaxKbyte != null">logo_max_kbyte = #{logoMaxKbyte},</if>
+              <if test="titleMaxLength != null">title_max_length = #{titleMaxLength},</if>
+              <if test="descMaxLength != null">desc_max_length = #{descMaxLength},</if>
+              <if test="mainPicNumber != null">main_pic_number = #{mainPicNumber},</if>
+              <if test="videoType != null">video_type = #{videoType},</if>
+              <if test="videoSize != null">video_size = #{videoSize},</if>
+              <if test="videoMaxKbyte != null">video_max_kbyte = #{videoMaxKbyte},</if>
+              <if test="videoDuration != null">video_duration = #{videoDuration},</if>
+              <if test="description != null">description = #{description},</if>
+              <if test="createdUser != null">createdUser = #{createdUser},</if>
+              <if test="updatedUser != null">updatedUser = #{updatedUser},</if>
+              <if test="createdTime != null">createdTime = #{createdTime},</if>
+              <if test="updatedTime != null">updatedTime = #{updatedTime},</if>
+        </set>
+        AND id = #{id}
+    </update>
+
+</mapper>

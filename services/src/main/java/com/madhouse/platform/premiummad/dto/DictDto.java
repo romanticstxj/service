@@ -8,6 +8,10 @@ public class DictDto {
 	
 	private String name;	//常量名
 	
+	private Integer terminalType;
+	
+	private Integer adType;
+	
 	private String desc;	//描述
 
 	public Integer getId() {
@@ -40,6 +44,22 @@ public class DictDto {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+
+	public Integer getTerminalType() {
+		return terminalType;
+	}
+
+	public void setTerminalType(Integer terminalType) {
+		this.terminalType = terminalType;
+	}
+
+	public Integer getAdType() {
+		return adType;
+	}
+
+	public void setAdType(Integer adType) {
+		this.adType = adType;
 	}
 	
 	

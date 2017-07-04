@@ -162,7 +162,7 @@
             "parameters": {
                 "body": {
                 	"name": "<*||string||comment:广告位名称>",
-                	"adspaceKey": "<*||string||comment:广告位Key>",
+                	"adspaceKey": "<string||comment:广告位Key>",
                     "mediaId": "<*||integer||comment:所属的媒体id>",
                     "adblockId": "<*||integer||comment:广告限制id>",
                     "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
