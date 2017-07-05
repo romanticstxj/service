@@ -1,0 +1,978 @@
+{
+    "/media/list": {
+        "get": {
+            "_summary": "媒体列表",
+            "parameters": {
+                "query": {
+            		"ids" : "<||string||comment:1）查询所有媒体，则没有ids参数；2）查询部分媒体，则提供ids参数，idlist是用逗号分隔的id组>"
+            	}
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "id": "<||integer||comment:自增id>",
+		                    "name": "<*||string||comment:媒体名字>",
+                            "category": "<*||integer||comment:媒体分类(列表)>",
+		                    "type": "<*||integer||comment:媒体类型(1: APP, 2: WAP)>",
+                            "adspaceCount": "<||integer||comment:媒体的广告位数量>",
+		                    "createdTime": "<||date||comment:媒体创建时间>",
+                            "status": "<||integer||comment:状态(0:停用,1:启用）>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/media/detail": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+            	"query": {
+            		"id" : "<*||integer||comment:媒体ID>"
+            	}
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "id": "<||integer||comment:自增id>",
+                            "status": "<||integer||comment:状态(0:停用,1:启用）>",
+                            "adspaceCount": "<||integer||comment:媒体的广告位数量>",
+		                    "name": "<*||string||comment:媒体名字>",
+		                    "category": "<*||integer||comment:媒体分类(列表)>",
+		                    "type": "<*||integer||comment:媒体类型(1: APP, 2: WAP)>",
+		                    "accessMode": "<*||integer||comment:对接方式(1: API, 2: SDK)>",
+		                    "advertiserAuditMode": "<*||integer||comment:广告主审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
+		                    "materialAuditMode": "<*||integer||comment:物料审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
+		                    "timeout": "<*||integer||comment:允许超时时间>",
+		                    "createdTime": "<||date||comment:媒体创建时间>",
+		                    "description": "<||string||comment:描述>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/media/create": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "name": "<*||string||comment:媒体名字>",
+                    "category": "<*||integer||comment:媒体分类(列表)>",
+                    "type": "<*||integer||comment:媒体类型(1: APP, 2: WAP)>",
+                    "accessMode": "<*||integer||comment:对接方式(1: API, 2: SDK)>",
+                    "advertiserAuditMode": "<*||integer||comment:广告主审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
+                    "materialAuditMode": "<*||integer||comment:物料审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
+                    "timeout": "<*||integer||comment:允许超时时间>",
+                    "description": "<||string||comment:描述>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/media/update": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "id": "<||integer||comment:自增id>",
+                    "status": "<||integer||comment:状态(0:停用,1:启用）>",
+                    "name": "<*||string||comment:媒体名字>",
+                    "category": "<*||integer||comment:媒体分类(列表)>",
+                    "type": "<*||integer||comment:媒体类型(1: APP, 2: WAP)>",
+                    "accessMode": "<*||integer||comment:对接方式(1: API, 2: SDK)>",
+                    "advertiserAuditMode": "<*||integer||comment:广告主审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
+                    "materialAuditMode": "<*||integer||comment:物料审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
+                    "timeout": "<*||integer||comment:允许超时时间>",
+                    "description": "<||string||comment:描述>",
+                    "updateType": "<*||integer||comment:更新类型(1:更新媒体，2:仅仅更新媒体状态)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dict/list": {
+        "get": {
+            "_summary": "获取常量表数据，type是这些字典表的类型",
+            "parameters": {
+                "query": {
+                	"type": "<*||integer||comment:查询的字典表类型(1:媒体分类, 2:广告形式, 。。。)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "code": "",
+                            "name": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/list": {
+        "get": {
+            "_summary": "广告位列表，若未提供媒体id则全局查询，否则根据媒体id查询",
+            "parameters": {
+                "query": {
+                	"ids" : "<||string||comment:1）查询所有广告位，则没有ids参数；2）查询部分媒体的广告位，则提供ids参数，idlist是用逗号分隔的媒体id组>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"id": "<||integer||comment:广告位id>",
+                            "name": "<*||string||comment:广告位名称>",
+                            "mediaId": "<*||integer||comment:所属的媒体id>",
+                            "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
+                            "layout": "<*||integer||comment:广告形式(列表)>",
+                            "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
+                            "bidFloor": "<*||double||comment:底价>",
+                            "createdTime": "<||date||comment:创建时间>",
+                            "status": "<integer||comment:状态(0:停用,1:启用)>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/create": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"name": "<*||string||comment:广告位名称>",
+                	"adspaceKey": "<string||comment:广告位Key>",
+                    "mediaId": "<*||integer||comment:所属的媒体id>",
+                    "adblockId": "<*||integer||comment:广告限制id>",
+                    "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
+                    "terminalOs": "<*||integer||comment:平台类型(1: Android, 2: iOS)>",
+                    "supportHttps": "<*||integer||comment:是否支持https(0:否,1:是)>",
+                    "bidType": "<*||integer||comment:结算方式(1:CPM,2:CPC)>",
+                    "bidFloor": "<*||double||comment:底价>",
+                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
+                    "layout": "<*||integer||comment:广告形式(列表)>",
+                    "materialType": "<*||integer||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1: gif, 2: png, 4: jpg)>",
+                    "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
+                    "materialMaxKbyte": "<*||integer||comment:普通硬广: 物料最大K数, 原生图文信息流:主图片最大K数, 原生视频信息流: 封面最大K数, 视频暂停: 物料最大K数>",
+                    "logoType": "<integer||comment:logo格式(1: gif, 2: png, 4: jpg)>",
+                    "logoSize": "<string||comment:logo尺寸(格式：width*height)>",
+                    "logoMaxKbyte": "<integer||comment:logo最大K数>",
+                    "titleMaxLength": "<integer||comment:标题最大长度>",
+                    "descMaxLength": "<integer||comment:描述最大长度>",
+                    "mainPicNumber": "<*||integer||comment:原生图文信息流: 主图片张数>",
+                    "videoType": "<integer||comment:原生视频信息流: 视频格式, 视频: 视频格式(8: mp4, 16: flv, 32: swf)>",
+                    "videoSize": "<string||comment:原生视频信息流: 视频尺寸, 视频: 视频尺寸(格式：width*height)>",
+                    "videoMaxKbyte": "<integer||comment:原生视频信息流: 视频最大K数, 视频: 视频最大K数>",
+                    "videoDuration": "<string||comment:视频时长(半角逗号分隔)>",
+                    "description": "<string||comment:描述>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/detail": {
+        "get": {
+            "_summary": "",
+            "query": {
+                "id" : "<*||integer||comment:广告位ID>"
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"id": "<*||integer||comment:广告位id>",
+                    		"status": "<*||integer||comment:状态(0:停用,1:启用）>",
+                            "name": "<*||string||comment:广告位名称>",
+		                    "mediaId": "<*||integer||comment:所属的媒体id>",
+		                    "adblockId": "<*||integer||comment:广告限制id>",
+		                    "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
+		                    "terminalOs": "<*||integer||comment:平台类型(1: Android, 2: iOS)>",
+		                    "supportHttps": "<*||integer||comment:是否支持https(0:否,1:是)>",
+		                    "bidType": "<*||integer||comment:结算方式(1:CPM,2:CPC)>",
+		                    "bidFloor": "<*||double||comment:底价>",
+		                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
+		                    "layout": "<*||integer||comment:广告形式(列表)>",
+		                    "materialType": "<*||integer||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1: gif, 2: png, 4: jpg)>",
+		                    "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
+		                    "materialMaxKbyte": "<*||integer||comment:普通硬广: 物料最大K数, 原生图文信息流:主图片最大K数, 原生视频信息流: 封面最大K数, 视频暂停: 物料最大K数>",
+		                    "logoType": "<integer||comment:logo格式(1: gif, 2: png, 4: jpg)>",
+		                    "logoSize": "<string||comment:logo尺寸(格式：width*height)>",
+		                    "logoMaxKbyte": "<integer||comment:logo最大K数>",
+		                    "titleMaxLength": "<integer||comment:标题最大长度>",
+		                    "descMaxLength": "<integer||comment:描述最大长度>",
+		                    "mainPicNumber": "<*||integer||comment:原生图文信息流: 主图片张数>",
+		                    "videoType": "<integer||comment:原生视频信息流: 视频格式, 视频: 视频格式(8: mp4, 16: flv, 32: swf)>",
+		                    "videoSize": "<string||comment:原生视频信息流: 视频尺寸, 视频: 视频尺寸(格式：width*height)>",
+		                    "videoMaxKbyte": "<integer||comment:原生视频信息流: 视频最大K数, 视频: 视频最大K数>",
+		                    "videoDuration": "<string||comment:视频时长(半角逗号分隔)>",
+		                    "description": "<string||comment:描述>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/update": {
+        "post": {
+            "_summary": "更新广告位或广告位状态，根据updateType来区分",
+            "parameters": {
+                "body": {
+                	"id": "<*||integer||comment:广告位id>",
+                    "status": "<*||integer||comment:状态(0:停用,1:启用）>",
+                    "name": "<*||string||comment:广告位名称>",
+                	"adspaceKey": "<*||string||comment:广告位Key>",
+                    "mediaId": "<*||integer||comment:所属的媒体id>",
+                    "adblockId": "<*||integer||comment:广告限制id>",
+                    "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
+                    "terminalOs": "<*||integer||comment:平台类型(1: Android, 2: iOS)>",
+                    "supportHttps": "<*||integer||comment:是否支持https(0:否,1:是)>",
+                    "bidType": "<*||integer||comment:结算方式(1:CPM,2:CPC)>",
+                    "bidFloor": "<*||double||comment:底价>",
+                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
+                    "layout": "<*||integer||comment:广告形式(列表)>",
+                    "materialType": "<*||integer||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1: gif, 2: png, 4: jpg)>",
+                    "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
+                    "materialMaxKbyte": "<*||integer||comment:普通硬广: 物料最大K数, 原生图文信息流:主图片最大K数, 原生视频信息流: 封面最大K数, 视频暂停: 物料最大K数>",
+                    "logoType": "<integer||comment:logo格式(1: gif, 2: png, 4: jpg)>",
+                    "logoSize": "<string||comment:logo尺寸(格式：width*height)>",
+                    "logoMaxKbyte": "<integer||comment:logo最大K数>",
+                    "titleMaxLength": "<integer||comment:标题最大长度>",
+                    "descMaxLength": "<integer||comment:描述最大长度>",
+                    "mainPicNumber": "<*||integer||comment:原生图文信息流: 主图片张数>",
+                    "videoType": "<integer||comment:原生视频信息流: 视频格式, 视频: 视频格式(8: mp4, 16: flv, 32: swf)>",
+                    "videoSize": "<string||comment:原生视频信息流: 视频尺寸, 视频: 视频尺寸(格式：width*height)>",
+                    "videoMaxKbyte": "<integer||comment:原生视频信息流: 视频最大K数, 视频: 视频最大K数>",
+                    "videoDuration": "<string||comment:视频时长(半角逗号分隔)>",
+                    "description": "<string||comment:描述>",
+                    "updateType": "<*||integer||comment:更新类型(1:更新广告位，2:仅仅更新广告位状态)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/mapping/detail": {
+        "get": {
+            "_summary": "查询广告位映射",
+            "query": {
+                "id" : "<*||integer||comment:我方广告位ID>"
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"adspaceId": "<*||integer||comment:我方广告位ID>",
+		                    "mediaAdspaceKey": "<*||string||comment:媒体方广告位Key>",
+		                    "dspMappingInfo": [
+		                    	{
+				                    "dspId": "<*||integer||comment:DSP在我们系统的ID>",
+				                	"dspMediaKey": "<*||string||comment:DSP方的媒体Key>",
+				                    "dspAdspaceKey": "<*||integer||comment:DSP方的广告位Key>"
+		                    	}
+		                    ],
+		                    "status": "<*||integer||comment:状态(0: 删除，1: 正常)>",
+		                    "createdTime": "<*||string||comment:创建更新时间>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/mapping/create": {
+        "post": {
+            "_summary": "创建我方广告位到媒体方广告位和dsp方广告位的映射",
+            "parameters": {
+                "body": {
+                	"adspaceId": "<*||integer||comment:我方广告位ID>",
+                    "mediaAdspaceKey": "<*||string||comment:媒体方广告位Key>",
+                    "dspMappingInfo": [
+                    	{
+		                    "dspId": "<*||integer||comment:DSP在我们系统的ID>",
+		                	"dspMediaKey": "<*||string||comment:DSP方的媒体Key>",
+		                    "dspAdspaceKey": "<*||integer||comment:DSP方的广告位Key>"
+                    	}
+                    ]
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/mapping/update": {
+        "post": {
+            "_summary": "更新广告位映射(后台会先删除这条广告位的映射信息，然后再创建新的)",
+            "parameters": {
+                "body": {
+                	"adspaceId": "<*||integer||comment:我方广告位ID>",
+                    "mediaAdspaceKey": "<*||string||comment:媒体方广告位Key>",
+                    "dspMappingInfo": [
+                    	{
+		                    "dspId": "<*||integer||comment:DSP在我们系统的ID>",
+		                	"dspMediaKey": "<*||string||comment:DSP方的媒体Key>",
+		                    "dspAdspaceKey": "<*||integer||comment:DSP方的广告位Key>"
+                    	}
+                    ]
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/list": {
+        "get": {
+            "_summary": "需求方平台列表",
+            "parameters": {
+            	"query": {
+                	"ids" : "<||string||comment:1）查询所有dsp，则没有ids参数；2）查询部分dsp，则提供ids参数，idlist是用逗号分隔的dsp id组>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"id": "<*||integer||comment:dspid>",
+                        	"name": "<*||string||comment:需求方平台名称>",
+		                	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+		                    "status": "<integer||comment:状态(0: 停用, 1: 启用)>",
+		                    "createdTime": "<||date||comment:创建时间>",
+		                    "bidPercent": "<integer||comment:加价百分比>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/create": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "name": "<*||string||comment:需求方平台名称>",
+                	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+                    "bidUrl": "<string||comment:DSP URL>",
+                    "bidPercent": "<integer||comment:加价百分比>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/detail": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+	                "id" : "<*||integer||comment:dspID>"
+	            }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {	
+                        	"id": "<*||integer||comment:dspid>",
+                        	"name": "<*||string||comment:需求方平台名称>",
+		                	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+		                	"bidUrl": "<string||comment:DSP URL>",
+		                    "status": "<integer||comment:状态(0: 停用, 1: 启用)>",
+		                    "bidPercent": "<integer||comment:加价百分比>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/update": {
+        "post": {
+            "_summary": "dsp更新，dsp状态更新，或加价百分比的更新",
+            "parameters": {
+                "body": {
+                	"id": "<*||integer||comment:dspid>",
+                	"name": "<*||string||comment:需求方平台名称>",
+                	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+                	"bidUrl": "<string||comment:DSP URL>",
+                    "status": "<integer||comment:状态(0: 停用, 1: 启用)>",
+                    "bidPercent": "<integer||comment:加价百分比>",
+                    "updateType": "<*||integer||comment:更新类型(1:更新dsp，2:更新dsp状态，3:更新dsp加价百分比)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adBlock/list": {
+        "get": {
+            "_summary": "广告限制列表",
+            "parameters": {
+                "query": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"id": "<*||integer||comment:广告限制ID>",
+                            "name": "<*||string||comment:广告限制名称>",
+		                	"hasIndustries": "<integer||comment:是否行业屏蔽(0:否,1:是)>",
+		                    "hasAdvertisers": "<string||comment:是否广告主屏蔽(0:否,1:是>",
+		                    "createdTime": "<||date||comment:创建时间>",
+		                    "status": "<integer||comment:状态(0:停用,1:启用)>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adBlock/create": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"name": "<*||string||comment:广告限制名称>",
+                	"industries": "<string||comment:行业屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>",
+                    "advertisers": "<string||comment:广告主屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adBlock/detail": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                	"id" : "<*||integer||comment:广告限制ID>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "id": "<*||integer||comment:广告限制ID>",
+                            "name": "<*||string||comment:广告限制名称>",
+		                	"industries": "<string||comment:行业屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>",
+                    		"advertisers": "<string||comment:广告主屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>",
+		                    "createdTime": "<||date||comment:创建时间>",
+		                    "status": "<integer||comment:状态(0:停用,1:启用)>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adBlock/update": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "id": "<*||integer||comment:广告限制ID>",
+                    "name": "<*||string||comment:广告限制名称>",
+                	"industries": "<string||comment:行业屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>",
+            		"advertisers": "<string||comment:广告主屏蔽(不屏蔽：则不填，屏蔽：如果多个用半角逗号分隔)>",
+                    "status": "<integer||comment:状态(0:停用,1:启用)>",
+                    "updateType": "<*||integer||comment:更新类型(1:更新广告限制，2:更新广告限制状态)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/material/list": {
+        "get": {
+            "_summary": "物料审核列表",
+            "parameters": {
+                "query": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "id": "<*||integer||comment:物料ID>",
+		                	"materialId": "<string||comment:DSP定义的素材ID>",
+		                    "materialName": "<*||string||comment:DSP定义的素材名称>",
+		            		"adMaterials": "<string||comment:广告素材URL(多个用竖线分隔)>",
+		            		"createdTime": "<string||comment:上传时间>",
+		            		"advertiserId": "<string||comment:广告主ID>",
+		            		"dspId": "<string||comment:需求方平台>",
+		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/material/detail": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                	"id" : "<*||integer||comment:物料ID>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "id": "<*||integer||comment:物料ID>",
+		                	"materialId": "<string||comment:DSP定义的素材ID>",
+		                    "materialName": "<*||string||comment:DSP定义的素材名称>",
+		            		"adMaterials": "<string||comment:广告素材URL(多个用竖线分隔)>",
+		            		"createdTime": "<string||comment:上传时间>",
+		            		"advertiserId": "<string||comment:广告主ID>",
+		            		"dspId": "<string||comment:需求方平台>",
+		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>",
+		            		"title": "<string||comment:物料标题>",
+		            		"description": "<string||comment:物料描述>",
+		            		"materialType": "<string||comment:素材格式>",
+		            		"materialSize": "<string||comment:素材尺寸>",
+		            		"materialMaxKbyte": "<string||comment:素材K数>",
+		            		"landing_page_url": "<string||comment:落地页地址>",
+		            		"impression_urls": "<string||comment:曝光监测(多个用竖线分隔)>",
+		            		"click_urls": "<string||comment:点击监测(多个用竖线分隔)>",
+		            		"dealId": "<string||comment:deal id>",
+		            		"icon": "<string||comment:Logo url>",
+		            		"brand": "<string||comment:品牌>",
+		            		"industry": "<string||comment:行业?>",
+		            		"audited_user": "<string||comment:审核者>",
+		            		"audited_time": "<string||comment:审核时间>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/material/verify": {
+        "post": {
+            "_summary": "物料审核(批)操作",
+            "parameters": {
+                "body": {
+                	"ids": "<*||string||comment:dsp素材ID，多个用逗号分隔>",
+                	"status": "<integer||comment:审核操作(-1:审核不通过, 2:审核通过)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/advertiser/list": {
+        "get": {
+            "_summary": "广告主审核列表",
+            "parameters": {
+                "query": null
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "id": "<*||integer||comment:广告主ID>",
+		                	"advertiserId": "<*string||comment:DSP定义的广告主ID>",
+		                    "advertiserName": "<*||string||comment:DSP定义的广告主名称>",
+		            		"dspId": "<string||comment:所属DSP>",
+		            		"createdTime": "<string||comment:上传时间>",
+		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>",
+		            		"license": "<string||comment:资质文件>",
+		            		"contact": "<string||comment:联系人>",
+		            		"phone": "<string||comment:联系电话>",
+		            		"reason": "<string||comment:未通过原因>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/advertiser/detail": {
+        "get": {
+            "_summary": "查看广告主",
+            "parameters": {
+                "query": {
+                	"id" : "<*||integer||comment:广告主ID>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "id": "<*||integer||comment:广告主ID>",
+		                	"advertiserId": "<*string||comment:DSP定义的广告主ID>",
+		                    "advertiserName": "<*||string||comment:DSP定义的广告主名称>",
+		            		"dspId": "<string||comment:所属DSP>",
+		            		"createdTime": "<string||comment:上传时间>",
+		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>",
+		            		"license": "<string||comment:资质文件>",
+		            		"contact": "<string||comment:联系人>",
+		            		"phone": "<string||comment:联系电话>",
+		            		"reason": "<string||comment:未通过原因>",
+		            		"audited_user": "<string||comment:审核者>",
+		            		"audited_time": "<string||comment:审核时间>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/advertiser/verify": {
+        "post": {
+            "_summary": "广告主(批量)审核",
+            "parameters": {
+                "body": {
+                    "ids": "<*||string||comment:广告主ID，多个用逗号分隔>",
+                	"status": "<integer||comment:审核操作(-1:审核不通过, 2:审核通过)>"
+                 }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/strategy/list": {
+        "get": {
+            "_summary": "策略列表(根据策略类型来查询列表)",
+            "parameters": {
+                "query": {
+                	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"id": "<*||integer||comment:策略ID>",
+                        	"name": "<*||string||comment:策略名称>",
+		                	"dspNames": "<*||string||comment:需求方平台(用逗号分隔)>",
+		                	"priority": "<*||integer||comment:优先级>",
+		                    "startDate": "<*||date||comment:开始日期>",
+		                    "endDate": "<*||date||comment:结束日期(为零值不限结束日期)>",
+		                	"status": "<integer||comment:状态>",
+		                	"createdTime": "<date||comment:策略的创建时间>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/strategy/create": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"name": "<*||string||comment:策略名称>",
+                	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>",
+                	"priority": "<*||integer||comment:优先级>",
+                    "startDate": "<*||date||comment:开始日期>",
+                    "endDate": "<*||date||comment:结束日期(为零值不限结束日期)>",
+                	"timeTargeting": "<string||comment:时间定向(格式:0:0,1,2,3&1:19,20,21,22,23)，注：0代表周日；如果选择不限，则此字段不传值>",
+                	"locationTargeting": "<string||comment:地域定向(用半角逗号分隔所有的城市或省或国家，如果所有的城市被选上则传值省代码，若传空值则是不限的意思)>",
+                	"osTargeting": "<integer||comment:OS定向(多个用半角逗号分隔, 0:未知, 1:Android, 2:iOS)>",
+                	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
+                    "limitType": "<*||integer||comment:总量控制(0: 不限, 1: 每天, 2: 整单)>",
+                    "limitReqs": "<integer||comment:请求量控制>",
+                	"limitQPS": "<integer||comment:QPS控制>",
+                	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
+                	"bidFloor": "<double||comment:单价(页面以元为单位)>",
+                	"description": "<string||comment:描述>",
+                    "adspaceDtos": [
+                    	{
+                            "id": "<*||integer||comment:广告位id>"
+                    	}
+                    ],
+                    "dspDtos": [
+                    	{
+                    		"id": "<*||integer||comment:dsp id>",
+                    		"weight": "<integer||comment:权重>"
+                    	}
+                    ]
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/strategy/detail": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                	"id" : "<*||integer||comment:策略ID>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"id": "<*||integer||comment:策略ID(对于PDB和PD，此id就是策略的dealID)>",
+		                	"status": "<integer||comment:状态>",
+		                	"createdTime": "<date||comment:策略的创建时间>",
+                            "name": "<*||string||comment:策略名称>",
+		                	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>",
+		                	"priority": "<*||integer||comment:优先级>",
+		                    "startDate": "<*||date||comment:开始日期>",
+		                    "endDate": "<*||date||comment:结束日期(为零值不限结束日期)>",
+		                	"timeTargeting": "<string||comment:时间定向(格式:0:0,1,2,3&1:19,20,21,22,23)，注：0代表周日；如果不指定时间段，则此字段不传值>",
+		                	"locationTargeting": "<string||comment:地域定向(用半角逗号分隔所有的城市或省或国家，如果所有的城市被选上则传值省代码，若传空值则是不限的意思)>",
+		                	"osTargeting": "<integer||comment:OS定向(多个用半角逗号分隔, 0:未知, 1:Android, 2:iOS)>",
+		                	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
+		                    "limitType": "<*||integer||comment:总量控制(0: 不限, 1: 每天, 2: 整单)>",
+		                    "limitReqs": "<integer||comment:请求量控制>",
+		                	"limitQPS": "<integer||comment:QPS控制>",
+		                	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
+		                	"bidFloor": "<double||comment:单价(页面以元为单位)>",
+		                	"description": "<string||comment:描述>",
+		                    "adspaceDtos": [
+		                    	{
+		                            "id": "<||integer||comment:广告位id>",
+		                            "name": "<*||string||comment:广告位名称>",
+		                            "mediaId": "<*||integer||comment:所属的媒体id>",
+		                            "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
+		                            "layout": "<*||integer||comment:广告形式(列表)>",
+		                            "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
+		                            "bidFloor": "<*||double||comment:底价>",
+		                            "createdTime": "<||date||comment:创建时间>",
+		                            "status": "<integer||comment:状态(0:停用,1:启用)>"
+		                    	}
+		                    ],
+		                    "dspDtos": [
+		                    	{
+		                    		"id": "<*||integer||comment:dsp id>",
+		                    		"name": "<string||comment:dsp名>",
+		                    		"weight": "<integer||comment:权重>"
+		                    	}
+		                    ]
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/strategy/update": {
+        "post": {
+            "_summary": "更新策略或更新策略状态",
+            "parameters": {
+                "body": {
+                	"id": "<*||integer||comment:策略ID>",
+                	"name": "<*||string||comment:策略名称>",
+                	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>",
+                	"priority": "<*||integer||comment:优先级>",
+                    "startDate": "<*||date||comment:开始日期>",
+                    "endDate": "<*||date||comment:结束日期(为零值不限结束日期)>",
+                	"timeTargeting": "<string||comment:时间定向(格式:0:0,1,2,3&1:19,20,21,22,23)，注：0代表周日；如果选择不限，则此字段不传值>",
+                	"locationTargeting": "<string||comment:地域定向(用半角逗号分隔所有的城市或省或国家，如果所有的城市被选上则传值省代码，若传空值则是不限的意思)>",
+                	"osTargeting": "<integer||comment:OS定向(多个用半角逗号分隔, 0:未知, 1:Android, 2:iOS)>",
+                	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
+                    "limitType": "<*||integer||comment:总量控制(0: 不限, 1: 每天, 2: 整单)>",
+                    "limitReqs": "<integer||comment:请求量控制>",
+                	"limitQPS": "<integer||comment:QPS控制>",
+                	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
+                	"bidFloor": "<double||comment:单价(页面以元为单位)>",
+                	"description": "<string||comment:描述>",
+                    "adspaceDtos": [
+                    	{
+                            "id": "<*||integer||comment:广告位id>"
+                    	}
+                    ],
+                    "dspDtos": [
+                    	{
+                    		"id": "<*||integer||comment:dsp id>",
+                    		"weight": "<integer||comment:权重>"
+                    	}
+                    ],
+                    "status": "<integer||comment:状态(0:停用,1:启用)>",
+                    "updateType": "<*||integer||comment:更新类型(1:更新策略，2:更新策略状态)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/report/instruction": {
+        "get": {
+            "_summary": "report参数的说明",
+            "parameters": {
+                "query": null
+            },
+            "responses": {
+                "200": {
+                    "body": {
+                    	"type": {
+                    		"default": "1:默认(可选的二级维度有:日期、时间、媒体、广告位)",
+                    		"carrier": "2:运营商(一定包含运营商这个维度，可选的二级维度有:日期、时间、媒体、广告位)",
+                    		"device": "4:设备类型(一定包含设备类型这个维度,可选的二级维度有:日期、时间、媒体、广告位)",
+                    		"conn": "8:联网方式(一定包含联网方式这个维度,可选的二级维度有:日期、时间、媒体、广告位)",
+                    		"location": "16:地域(一定包含地域这个维度,可选的二级维度有:日期、时间、媒体、广告位)"
+                    	},
+                    	"dims": {
+                    		"date": "1:日期",
+                    		"hour": "2:时间",
+                    		"media": "4:媒体",
+                    		"adspace": "8:广告位",
+                    		"policy": "16:策略",
+                    		"dsp": "32:需求方"
+                    	},
+                    	"realTime": {
+                    		"实时": "1",
+                    		"离线": "0"
+                    	}
+                    }
+                }
+            }
+        }
+    },
+    "/report/media": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                    "type": "<*||integer||comment:报表类型>",
+                	"dims": "<*||string||comment:可选的二级维度(1,2,4,8)>",
+                	"realTime": "<*||integer||comment:实时或离线>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": null
+                }
+            }
+        }
+    },
+    "/report/dsp": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                    "type": "<*||integer||comment:报表类型>",
+                	"dims": "<*||string||comment:可选的二级维度(1,2,32)>",
+                	"realTime": "<*||integer||comment:实时或离线>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": null
+                }
+            }
+        }
+    },
+    "/report/policy": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                    "type": "<*||integer||comment:报表类型(1)>",
+                	"dims": "<*||string||comment:可选的二级维度(1,2,4,8,16,32)>",
+                	"realTime": "<*||integer||comment:实时或离线>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": null
+                }
+            }
+        }
+    }
+}

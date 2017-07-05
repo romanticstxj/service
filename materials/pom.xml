@@ -1,0 +1,147 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.madhouse.platform</groupId>
+  <artifactId>materials</artifactId>
+  <version>1.0.0</version>
+  <packaging>war</packaging>
+
+  <name>materials</name>
+  <url>http://www.madhouse.cn</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <release.version>1.0.0</release.version>
+  </properties>
+  
+  <dependencies>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.madhouse.platform</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        
+        <dependency>
+	      <groupId>junit</groupId>
+	      <artifactId>junit</artifactId>
+	      <version>4.10</version>
+	      <scope>test</scope>
+	    </dependency>
+    </dependencies>
+    
+    <build>
+        <finalName>materials</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>http://172.16.26.209:8088/manager/text</url>
+                    <server>tomcat</server>
+                    <username>tomcat</username>
+                    <password>tomcat</password>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.15</version>
+                <configuration>
+                    <skip>true</skip>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.3</version>
+				<configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.1</version>
+				<configuration>
+					<!-- 提供发布项目版本的基础目录 -->
+					<tagBase>http://172.16.27.97/repos/smart-exchange/Tag/BREL_GC</tagBase>
+				</configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <!-- 配置scm信息 -->
+	<scm>
+		<connection>scm:svn:http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-services</connection>
+		<developerConnection>scm:svn:http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-services</developerConnection>
+		<url>http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-services</url>
+	</scm>
+	
+	<!-- 配置将build生成的jar包上传到nexus仓库 -->
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Nexus Releases Repository</name>
+			<url>http://172.16.25.49:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			
+			<name>Nexus Snapshots Repository</name>
+			<url>http://172.16.25.49:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>
