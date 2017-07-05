@@ -2,14 +2,16 @@ package com.madhouse.platform.premiummad.TokenInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import com.madhouse.platform.premiummad.annotation.TokenFilter;
 import com.madhouse.platform.premiummad.model.OperationResultModel;
 import com.madhouse.platform.premiummad.service.impl.DspServiceImpl;
-import com.zhaogang.warehouse.processing.annotation.TokenFilter;
 
 public class TokenInterceptor extends HandlerInterceptorAdapter  {
     protected static final Logger log = LoggerFactory.getLogger("TokenInterceptor");

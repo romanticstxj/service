@@ -1,4 +1,4 @@
-package com.zhaogang.warehouse.processing.annotation;
+package com.madhouse.platform.premiummad.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

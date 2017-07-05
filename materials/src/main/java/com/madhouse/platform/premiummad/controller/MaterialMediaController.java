@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.madhouse.platform.premiummad.annotation.TokenFilter;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dto.MaterialMediaAuditResultDto;
 import com.madhouse.platform.premiummad.dto.MaterialMediaDto;
@@ -18,7 +19,6 @@ import com.madhouse.platform.premiummad.service.impl.DspServiceImpl;
 import com.madhouse.platform.premiummad.service.impl.MaterialMediaServiceImpl;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
-import com.zhaogang.warehouse.processing.annotation.TokenFilter;
 
 @RestController
 @RequestMapping("/material")
