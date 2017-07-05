@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop" xsi:schemaLocation="http://www.springframework.org/schema/mvc  
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd  
+        http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://www.springframework.org/schema/context  
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd ">
+
+	<context:component-scan base-package="com.madhouse.platform.premiummad.controller" />
+	<context:annotation-config />
+
+	<aop:aspectj-autoproxy proxy-target-class="true" /><!-- 要拦截controller需要再springmvc的配置文件中加这一行 -->
+
+	<!-- 启用默认配置 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters register-defaults="true">
+			<!-- 配置Fastjson支持 -->
+			<bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+				<property name="features">
+					<list>
+						<value>QuoteFieldNames</value>
+						<value>WriteMapNullValue</value><!--即使json中key的值为null也输出 -->
+						<value>WriteNullStringAsEmpty</value>
+						<value>WriteNullNumberAsZero</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+	<!-- dspId 和  token 拦截校验 -->
+	<mvc:interceptors>    
+    	<mvc:interceptor>    
+        	<mvc:mapping path="/**"/>
+        	<bean class="com.madhouse.platform.premiummad.TokenInterceptor.TokenInterceptor"></bean>    
+    	</mvc:interceptor>  
+	</mvc:interceptors>
+</beans>  
