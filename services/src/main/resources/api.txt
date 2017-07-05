@@ -62,7 +62,7 @@
                     "name": "<*||string||comment:媒体名字>",
                     "category": "<*||integer||comment:媒体分类(列表)>",
                     "type": "<*||integer||comment:媒体类型(1: APP, 2: WAP)>",
-                    "accessMode": "<*||integer||comment:对接方式(1: API, 2: SDK)>",
+                    "accessType": "<*||integer||comment:对接方式(1: API, 2: SDK)>",
                     "advertiserAuditMode": "<*||integer||comment:广告主审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
                     "materialAuditMode": "<*||integer||comment:物料审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
                     "timeout": "<*||integer||comment:允许超时时间>",

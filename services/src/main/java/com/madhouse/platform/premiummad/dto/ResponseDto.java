@@ -10,23 +10,35 @@ import java.util.List;
 public class ResponseDto<T> implements Serializable {
 	private static final long serialVersionUID = -5875343291840334945L;
 	
-	private ResponseHeaderDto responseHeaderDto;
-	private List<T> results;
+	private Integer code;
+	
+	private String message;
+	
+	private List<T> data;
 
-	public ResponseHeaderDto getResponseHeaderDto() {
-		return responseHeaderDto;
+	public Integer getCode() {
+		return code;
 	}
 
-	public void setResponseHeaderDto(ResponseHeaderDto responseHeaderDto) {
-		this.responseHeaderDto = responseHeaderDto;
+	public void setCode(Integer code) {
+		this.code = code;
 	}
 
-	public List<T> getResults() {
-		return results;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setResults(List<T> results) {
-		this.results = results;
+	public void setMessage(String message) {
+		this.message = message;
 	}
+
+	public List<T> getData() {
+		return data;
+	}
+
+	public void setData(List<T> data) {
+		this.data = data;
+	}
+
 
 }
