@@ -11,20 +11,20 @@ public class MediaControllerTest {
 	public void add(){
 		MediaDto mediaDto = new MediaDto();
 		mediaDto.setName("多对多");
-		mediaDto.setCategory(2);
+//		mediaDto.setCategory(2);
 		mediaDto.setType(1);
 		mediaDto.setDescription("hello media");
 		mediaDto.setAccessType(1);
 		mediaDto.setAdvertiserAuditMode(0);
 		mediaDto.setMaterialAuditMode(0);
 		mediaDto.setTimeout(200);
-		String link = "http://172.16.25.31:8080/services/media/create";
+		String link = "http://localhost:8080/services/media/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(mediaDto));
 	}
 	
 	@Test
 	public void detail(){
-		String link = "http://172.16.25.48:8080/services/media/detail?id=100001";
+		String link = "http://localhost:8080/services/media/detail?id=100001";
 		HttpUtilTest.httpGet(link);
 	}
 	

@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
-import com.madhouse.platform.premiummad.dto.ResponseHeaderDto;
 
 /**
  * 设置ResponseDto 
@@ -22,31 +21,15 @@ public class ResponseUtils {
 		return response(sc, lists, null);
 	}
 
-	public static <T> ResponseDto<T> response(StatusCode sc, List<T> lists, String message) {
+	public static <T> ResponseDto<T> response(StatusCode sc, List<T> data, String message) {
 		ResponseDto<T> responseDto = new ResponseDto<>();
-		ResponseHeaderDto responseHeaderDto = new ResponseHeaderDto();
-		responseDto.setResponseHeaderDto(responseHeaderDto);
 
-		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}");
+		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}" + ", with data:" + data);
 
-		if (sc.getValue() == StatusCode.SC20000.getValue()) { // 设置成功状态
-			responseHeaderDto.setResponseCode(SystemConstant.RESPONSECODE_SUCCESS); // 查询成功
-			responseDto.setResults(lists);
-		} else if (sc.getValue() == StatusCode.SC31001.getValue()) { // 系统错误
-			responseHeaderDto.setResponseCode(SystemConstant.RESPONSECODE_FATAL);
-			responseDto.setResults(null);
-		} else { // 其他错误
-			responseHeaderDto.setResponseCode(SystemConstant.RESPONSECODE_ERROR);
-			responseDto.setResults(null);
-		}
+		responseDto.setData(data);
+		responseDto.setCode(sc.getValue());
+		responseDto.setMessage(message != null ? message : sc.getDescrip());
 
-		responseHeaderDto.setErrorCode(sc.getValue());
-		responseHeaderDto.setResultsSize(BeanUtils.getListSize(lists));
-		if (message != null) {
-			responseHeaderDto.setErrorMsg(message);
-		} else {
-			responseHeaderDto.setErrorMsg(sc.getDescrip());
-		}
 		return responseDto;
 
 	}

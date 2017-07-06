@@ -24,18 +24,11 @@ public class ResponseUtils {
 	public static <T> ResponseDto<T> response(StatusCode sc, List<T> data, String message) {
 		ResponseDto<T> responseDto = new ResponseDto<>();
 
-		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}");
+		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}" + ", with data:" + data);
 
-		if (sc.getValue() == StatusCode.SC20000.getValue()) { // 设置成功状态
-			responseDto.setData(data);
-			responseDto.setCode(StatusCode.SC20000.getValue());
-		} else if (sc.getValue() == StatusCode.SC31001.getValue()) { // 系统错误
-			responseDto.setCode(StatusCode.SC31001.getValue());
-			responseDto.setData(null);
-		} else { // 其他错误
-			responseDto.setCode(sc.getValue());
-			responseDto.setData(null);
-		}
+		responseDto.setData(data);
+		responseDto.setCode(sc.getValue());
+		responseDto.setMessage(message != null ? message : sc.getDescrip());
 
 		return responseDto;
 
