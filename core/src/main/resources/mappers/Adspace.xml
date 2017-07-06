@@ -132,10 +132,10 @@
               <if test="videoMaxKbyte != null">video_max_kbyte = #{videoMaxKbyte},</if>
               <if test="videoDuration != null">video_duration = #{videoDuration},</if>
               <if test="description != null">description = #{description},</if>
-              <if test="createdUser != null">createdUser = #{createdUser},</if>
-              <if test="updatedUser != null">updatedUser = #{updatedUser},</if>
-              <if test="createdTime != null">createdTime = #{createdTime},</if>
-              <if test="updatedTime != null">updatedTime = #{updatedTime},</if>
+              <if test="createdUser != null">created_user = #{createdUser},</if>
+              <if test="updatedUser != null">updated_user = #{updatedUser},</if>
+              <if test="createdTime != null">created_time = #{createdTime},</if>
+              <if test="updatedTime != null">updated_time = #{updatedTime},</if>
         </set>
         AND id = #{id}
     </update>

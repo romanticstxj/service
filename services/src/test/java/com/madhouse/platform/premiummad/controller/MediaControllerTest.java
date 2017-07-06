@@ -10,31 +10,33 @@ public class MediaControllerTest {
 	@Test
 	public void add(){
 		MediaDto mediaDto = new MediaDto();
-		mediaDto.setName("新媒体，。");
-		mediaDto.setCategory(1);
+		mediaDto.setName("多对多");
+//		mediaDto.setCategory(2);
 		mediaDto.setType(1);
 		mediaDto.setDescription("hello media");
 		mediaDto.setAccessType(1);
-		mediaDto.setAdvertiserAuditMode(1);
-		mediaDto.setMaterialAuditMode(1);
-		mediaDto.setTimeout(30);
-		String link = "http://172.16.25.48:8080/services/media/create";
+		mediaDto.setAdvertiserAuditMode(0);
+		mediaDto.setMaterialAuditMode(0);
+		mediaDto.setTimeout(200);
+		String link = "http://localhost:8080/services/media/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(mediaDto));
 	}
 	
 	@Test
 	public void detail(){
-		String link = "http://172.16.25.48:8080/services/media/detail?id=100001";
+		String link = "http://localhost:8080/services/media/detail?id=100001";
 		HttpUtilTest.httpGet(link);
 	}
 	
 	@Test
 	public void list(){
 //		String link = "http://localhost:8080/services/media/list?ids=8000005,8000004";
-//		String link = "http://localhost:8080/services/media/list";
-		String link = "http://172.16.25.48:8080/services/dict/list?type=1";
+		String link = "http://172.16.25.31:8080/services/media/list";
+//		String link = "http://172.16.25.48:8080/services/dict/list?type=1";
 		HttpUtilTest.httpGet(link);
 	}
+	
+	
 	
 	@Test
 	public void update(){

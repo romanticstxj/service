@@ -10,6 +10,9 @@
 
 	<context:component-scan base-package="com.madhouse.platform.premiummad.controller" />
 	<context:annotation-config />
+	
+	<context:property-placeholder location="classpath:exchange.properties"
+                                  ignore-unresolvable="true" file-encoding="UTF-8"/>
 
 	<aop:aspectj-autoproxy proxy-target-class="true" /><!-- 要拦截controller需要再springmvc的配置文件中加这一行 -->
 
