@@ -14,7 +14,7 @@ public class AdvertiserMediaUnion {
 
 	private Boolean auditee;
 
-	private Byte status;
+	private Integer status;
 
 	private String reason;
 
@@ -64,11 +64,11 @@ public class AdvertiserMediaUnion {
 		this.auditee = auditee;
 	}
 
-	public Byte getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(Byte status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

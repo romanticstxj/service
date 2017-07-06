@@ -31,4 +31,62 @@
         </foreach>
 	)
   </select>
+  <select id="selectByAdvertiserKeyAndMediaIds" resultMap="UnionResultMap" parameterType="com.madhouse.platform.premiummad.model.AdvertiserMediaModel">
+    select 
+    <include refid="Union_Column_List" />
+    from mad_sys_advertiser_media adm
+    left join mad_sys_advertiser ad on ad.id = adm.advertiser_id
+	where ad.advertiser_key = #{id, jdbcType=VARCHAR} and adm.media_id in
+	   <foreach collection="mediaId" item="item" index="index"
+           open="(" close=")" separator=",">
+           #{item,jdbcType=INTEGER}}
+        </foreach>
+	)
+  </select>
+  <insert id="insertByBatch" parameterType="java.util.List">
+      insert into mad_sys_advertiser_media (id, advertiser_id, media_id,auditee, status, reason, 
+      	audited_user, created_time, audited_time)
+      values
+      <foreach collection="list" item="item" index="index" separator=",">
+        (#{id,jdbcType=INTEGER}, #{advertiserId,jdbcType=INTEGER}, #{mediaId,jdbcType=INTEGER}, 
+        #{auditee,jdbcType=BIT}, #{status,jdbcType=TINYINT}, #{reason,jdbcType=VARCHAR}, 
+        #{auditedUser,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, #{auditedTime,jdbcType=TIMESTAMP})
+      </foreach>
+  </insert>
+  <update id="updateByBath" parameterType="java.util.List">
+	<foreach collection="list" item="item" index="index" separator=";" open="" close="">
+		  update mad_sys_advertiser_media
+		    set advertiser_id = #{item.advertiserId,jdbcType=INTEGER},
+		      media_id = #{item.mediaId,jdbcType=INTEGER},
+		      auditee = #{item.auditee,jdbcType=BIT},
+		      status = #{item.status,jdbcType=TINYINT},
+		      reason = #{item.reason,jdbcType=VARCHAR},
+		      audited_user = #{item.auditedUser,jdbcType=INTEGER},
+		      created_time = #{item.createdTime,jdbcType=TIMESTAMP},
+		      audited_time = #{item.auditedTime,jdbcType=TIMESTAMP}
+		    where id = #{item.id,jdbcType=INTEGER}
+	</foreach>
+  </update>
+  <update id="updateForAudit" parameterType="com.madhouse.platform.premiummad.entity.AdvertiserMedia" >
+    update mad_sys_advertiser_media
+    <set >
+      <if test="auditee != null" >
+        auditee = #{auditee,jdbcType=BIT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="auditedUser != null" >
+        audited_user = #{auditedUser,jdbcType=INTEGER},
+      </if>
+      <if test="auditedTime != null" >
+        audited_time = #{auditedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where advertiser_id = #{advertiserId,jdbcType=INTEGER}
+      and media_id = #{mediaId,jdbcType=INTEGER}
+  </update>
 </mapper>

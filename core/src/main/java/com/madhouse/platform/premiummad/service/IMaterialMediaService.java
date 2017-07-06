@@ -1,7 +1,10 @@
 package com.madhouse.platform.premiummad.service;
 
 import java.util.List;
+
 import com.madhouse.platform.premiummad.model.MaterialMediaAuditResultModel;
+import com.madhouse.platform.premiummad.model.MaterialMediaModel;
+import com.madhouse.platform.premiummad.model.OperationResultModel;
 
 public interface IMaterialMediaService {
 
@@ -11,4 +14,11 @@ public interface IMaterialMediaService {
 	 * @return
 	 */
 	List<MaterialMediaAuditResultModel> getMaterialMediaAuditResult(String ids);
+
+	/**
+	 * DSP端上传素材
+	 * @param entity
+	 * @return operationResultModel
+	 */
+	OperationResultModel upload(MaterialMediaModel entity);
 }

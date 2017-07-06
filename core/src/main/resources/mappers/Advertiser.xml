@@ -7,4 +7,84 @@
     from mad_sys_advertiser
     where advertiser_key = #{advertiserKey,jdbcType=INTEGER}
   </select>
+  <insert id="insertAdvertiser" parameterType="com.madhouse.platform.premiummad.entity.Advertiser" 
+          useGeneratedKeys="true" keyProperty="id">
+    insert into mad_sys_advertiser
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="advertiserKey != null" >
+        advertiser_key,
+      </if>
+      <if test="advertiserName != null" >
+        advertiser_name,
+      </if>
+      <if test="dspId != null" >
+        dsp_id,
+      </if>
+      <if test="industry != null" >
+        industry,
+      </if>
+      <if test="website != null" >
+        website,
+      </if>
+      <if test="contact != null" >
+        contact,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="license != null" >
+        license,
+      </if>
+      <if test="auditee != null" >
+        auditee,
+      </if>
+      <if test="createdTime != null" >
+        created_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="advertiserKey != null" >
+        #{advertiserKey,jdbcType=VARCHAR},
+      </if>
+      <if test="advertiserName != null" >
+        #{advertiserName,jdbcType=VARCHAR},
+      </if>
+      <if test="dspId != null" >
+        #{dspId,jdbcType=INTEGER},
+      </if>
+      <if test="industry != null" >
+        #{industry,jdbcType=SMALLINT},
+      </if>
+      <if test="website != null" >
+        #{website,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="license != null" >
+        #{license,jdbcType=VARCHAR},
+      </if>
+      <if test="auditee != null" >
+        #{auditee,jdbcType=BIT},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
 </mapper>

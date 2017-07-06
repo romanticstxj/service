@@ -1,8 +1,10 @@
 package com.madhouse.platform.premiummad.dao;
 
 import java.util.List;
+
 import com.madhouse.platform.premiummad.entity.MaterialMedia;
 import com.madhouse.platform.premiummad.entity.MaterialMediaUnion;
+import com.madhouse.platform.premiummad.model.MaterialMediaModel;
 
 public interface MaterialMediaMapper {
 
@@ -48,4 +50,32 @@ public interface MaterialMediaMapper {
 	 * @return
 	 */
 	List<MaterialMediaUnion> selectAdvertiserMedias(String[] materialKeys);
+	
+	/**
+	 * 根据DSP定义的素材ID和媒体ID列表查询素材和媒体提交的记录
+	 * @param param
+	 * @return
+	 */
+	List<MaterialMediaUnion> selectByMaterialKeyAndMediaIds(MaterialMediaModel param);
+	
+	/**
+	 * 批量插入
+	 * @param list
+	 * @return
+	 */
+	int insertByBatch(List<MaterialMedia> list);
+	
+	/**
+	 * 批量更新
+	 * @param list
+	 * @return
+	 */
+	int updateByBath(List<MaterialMedia> list);
+	
+	/**
+	 * 审核时更新相关信息
+	 * @param record
+	 * @return
+	 */
+	int updateForAudit(MaterialMedia record);
 }

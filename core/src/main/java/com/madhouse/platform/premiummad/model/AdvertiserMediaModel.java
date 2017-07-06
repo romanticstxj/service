@@ -3,40 +3,43 @@ package com.madhouse.platform.premiummad.model;
 import java.io.Serializable;
 import java.util.List;
 
-import com.madhouse.platform.premiummad.annotation.NotNull;
-
 public class AdvertiserMediaModel implements Serializable {
 
 	private static final long serialVersionUID = -5204392238626643882L;
+	
+	/**
+	 * 我方系统存在的广告主ID
+	 */
+	private Integer advertiserId;
+	
+	/**
+	 * DSP 传过来的ID
+	 */
+	private String dspId;
 
 	/**
 	 * DSP定义 的广告主 
 	 */
-	@NotNull
 	private String id;
 	
 	/**
 	 * DSP定义的广告主名称
 	 */
-	@NotNull
 	private String name;
 	
 	/**
 	 * 广告主所属行业
 	 */
-	@NotNull
 	private Integer industry;
 	
 	/**
 	 *广告主 web 主页 
 	 */
-	@NotNull
 	private String webSite;
 	
 	/**
 	 * PremiumMAD 平台定义的媒体 ID，可同 时指定 多个 媒体 ；
 	 */
-	@NotNull
 	private List<Integer> mediaId;
 	
 	/**
@@ -58,6 +61,22 @@ public class AdvertiserMediaModel implements Serializable {
 	 * 资质文件 （营业执照等）链接
 	 */
 	private String lience;
+
+	public Integer getAdvertiserId() {
+		return advertiserId;
+	}
+
+	public void setAdvertiserId(Integer advertiserId) {
+		this.advertiserId = advertiserId;
+	}
+
+	public String getDspId() {
+		return dspId;
+	}
+
+	public void setDspId(String dspId) {
+		this.dspId = dspId;
+	}
 
 	public String getId() {
 		return id;

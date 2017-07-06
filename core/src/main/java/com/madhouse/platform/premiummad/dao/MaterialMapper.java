@@ -39,4 +39,18 @@ public interface MaterialMapper {
 	 * @mbggenerated  Wed Jul 05 10:15:51 CST 2017
 	 */
 	int updateByPrimaryKey(Material record);
+	
+	/**
+	 * 根据DSP提供的素材ID查询
+	 * @param materialKey
+	 * @return
+	 */
+	Material selectByMaterialKey(String materialKey);
+	
+	/**
+	 * 插入素材信息，返回主键
+	 * @param record
+	 * @return
+	 */
+	int insertMaterial(Material record);
 }

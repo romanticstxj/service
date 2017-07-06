@@ -3,41 +3,39 @@ package com.madhouse.platform.premiummad.model;
 import java.io.Serializable;
 import java.util.List;
 
-import com.madhouse.platform.premiummad.annotation.NotNull;
-
 public class MaterialMediaModel implements Serializable {
 
 	private static final long serialVersionUID = -4527909581700251071L;
 	
 	/**
+	 * 我方系统存在的素材ID
+	 */
+	private Integer materialId;
+	
+	/**
 	 * DSP 定义的素材ID
 	 */
-	@NotNull
 	private String id;
 	
 	/**
 	 * 素材名称
 	 */
-	@NotNull
 	private String name;
 	
 	/**
 	 * 广告类型
 	 */
-	@NotNull
 	private Integer adType;
 	
 	/**
 	 * DSP 平台定义的广告主ID
 	 */
-	@NotNull
 	private String advertiserId;
 	
 	/**
 	 * 投放类型
 	 * 1: PDB、2:PD、4:PMP、8:RTB
 	 */
-	@NotNull
 	private Integer deliveryType;
 	
 	/**
@@ -63,25 +61,21 @@ public class MaterialMediaModel implements Serializable {
 	/**
 	 * 失效日期(yyyy-MM-dd)
 	 */
-	@NotNull
 	private String endDate;
 	
 	/**
 	 * PremiumMAD 平台定义的媒体ID，可同时制定多个媒体
 	 */
-	@NotNull
 	private List<Integer> mediaId;
 	
 	/**
 	 * 广告素材宽度（单位:pixel)
 	 */
-	@NotNull
 	private Integer weight;
 	
 	/**
 	 * 广告素材高度（单位:pixel)
 	 */
-	@NotNull
 	private Integer height;
 	
 	/**
@@ -107,7 +101,6 @@ public class MaterialMediaModel implements Serializable {
 	/**
 	 * 广告素材URL
 	 */
-	@NotNull
 	private List<String> adm;
 	
 	/**
@@ -129,6 +122,14 @@ public class MaterialMediaModel implements Serializable {
 	 * 广告监测信息
 	 */
 	private MonitorModel monitor;
+	
+	public Integer getMaterialId() {
+		return materialId;
+	}
+
+	public void setMaterialId(Integer materialId) {
+		this.materialId = materialId;
+	}
 
 	public String getId() {
 		return id;
@@ -304,10 +305,6 @@ public class MaterialMediaModel implements Serializable {
 
 	public void setMonitor(MonitorModel monitor) {
 		this.monitor = monitor;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 }
 

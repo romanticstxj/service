@@ -128,7 +128,7 @@ public class MaterialMediaDto implements Serializable {
 	/**
 	 * 广告监测信息
 	 */
-	private MonitorDTO monitor;
+	private MonitorDto monitor;
 
 	public String getId() {
 		return id;
@@ -298,11 +298,11 @@ public class MaterialMediaDto implements Serializable {
 		this.actType = actType;
 	}
 
-	public MonitorDTO getMonitor() {
+	public MonitorDto getMonitor() {
 		return monitor;
 	}
 
-	public void setMonitor(MonitorDTO monitor) {
+	public void setMonitor(MonitorDto monitor) {
 		this.monitor = monitor;
 	}
 

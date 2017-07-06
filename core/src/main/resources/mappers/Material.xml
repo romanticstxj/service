@@ -1,4 +1,163 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.madhouse.platform.premiummad.dao.MaterialMapper" >
+  <select id="selectByMaterialKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from mad_sys_material
+    where material_key = #{materialKey,jdbcType=VARCHAR}
+  </select>
+  
+  <insert id="insertMaterial" parameterType="com.madhouse.platform.premiummad.entity.Material"
+          useGeneratedKeys="true" keyProperty="id">
+    insert into mad_sys_material
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="materialKey != null" >
+        material_key,
+      </if>
+      <if test="materialName != null" >
+        material_name,
+      </if>
+      <if test="advertiserId != null" >
+        advertiser_id,
+      </if>
+      <if test="adType != null" >
+        ad_type,
+      </if>
+      <if test="deliveryType != null" >
+        delivery_type,
+      </if>
+      <if test="brand != null" >
+        brand,
+      </if>
+      <if test="agency != null" >
+        agency,
+      </if>
+      <if test="dealId != null" >
+        deal_id,
+      </if>
+      <if test="startDate != null" >
+        start_date,
+      </if>
+      <if test="endDate != null" >
+        end_date,
+      </if>
+      <if test="size != null" >
+        size,
+      </if>
+      <if test="icon != null" >
+        icon,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="cover != null" >
+        cover,
+      </if>
+      <if test="adMaterials != null" >
+        ad_materials,
+      </if>
+      <if test="duration != null" >
+        duration,
+      </if>
+      <if test="lpgUrl != null" >
+        lpg_url,
+      </if>
+      <if test="activeType != null" >
+        active_type,
+      </if>
+      <if test="impUrls != null" >
+        imp_urls,
+      </if>
+      <if test="clkUrls != null" >
+        clk_urls,
+      </if>
+      <if test="secUrls != null" >
+        sec_urls,
+      </if>
+      <if test="createdTime != null" >
+        created_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="materialKey != null" >
+        #{materialKey,jdbcType=VARCHAR},
+      </if>
+      <if test="materialName != null" >
+        #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="advertiserId != null" >
+        #{advertiserId,jdbcType=INTEGER},
+      </if>
+      <if test="adType != null" >
+        #{adType,jdbcType=SMALLINT},
+      </if>
+      <if test="deliveryType != null" >
+        #{deliveryType,jdbcType=TINYINT},
+      </if>
+      <if test="brand != null" >
+        #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="agency != null" >
+        #{agency,jdbcType=VARCHAR},
+      </if>
+      <if test="dealId != null" >
+        #{dealId,jdbcType=INTEGER},
+      </if>
+      <if test="startDate != null" >
+        #{startDate,jdbcType=CHAR},
+      </if>
+      <if test="endDate != null" >
+        #{endDate,jdbcType=CHAR},
+      </if>
+      <if test="size != null" >
+        #{size,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="cover != null" >
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="adMaterials != null" >
+        #{adMaterials,jdbcType=VARCHAR},
+      </if>
+      <if test="duration != null" >
+        #{duration,jdbcType=INTEGER},
+      </if>
+      <if test="lpgUrl != null" >
+        #{lpgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="activeType != null" >
+        #{activeType,jdbcType=TINYINT},
+      </if>
+      <if test="impUrls != null" >
+        #{impUrls,jdbcType=VARCHAR},
+      </if>
+      <if test="clkUrls != null" >
+        #{clkUrls,jdbcType=VARCHAR},
+      </if>
+      <if test="secUrls != null" >
+        #{secUrls,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
 </mapper>

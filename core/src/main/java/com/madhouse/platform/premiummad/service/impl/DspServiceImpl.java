@@ -28,6 +28,7 @@ public class DspServiceImpl implements IDspService {
 		
 		// 传入参数校验
 		if (StringUtils.isBlank(dspId) || !dspId.matches("[0-9]+") || StringUtils.isBlank(token)) {
+			result.setSuccessful(Boolean.FALSE);
 			result.setErrorMessage("dspId 或 token 无效");
 			return result;
 		}
@@ -39,16 +40,17 @@ public class DspServiceImpl implements IDspService {
 		Dsp dsp = dspDao.selectByIdAndToken(param);
 		
 		if (dsp == null) {
+			result.setSuccessful(Boolean.FALSE);
 			result.setErrorMessage("该 DSP 无权限[dspId=" + dspId + ",token=" + token + "]");
 			return result;
 		}
 		
 		if (dsp.getStatus() < 1) {
+			result.setSuccessful(Boolean.FALSE);
 			result.setErrorMessage("该 DSP权限未启用");
 			return result;
 		}
-		
-		result.setSuccessful(Boolean.TRUE);
+
 		return result;
 	}
 }

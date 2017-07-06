@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.madhouse.platform.premiummad.entity.AdvertiserMedia;
 import com.madhouse.platform.premiummad.entity.AdvertiserMediaUnion;
+import com.madhouse.platform.premiummad.model.AdvertiserMediaModel;
 
 public interface AdvertiserMediaMapper {
 
@@ -49,4 +50,32 @@ public interface AdvertiserMediaMapper {
 	 * @return
 	 */
 	List<AdvertiserMediaUnion> selectAdvertiserMedias(String[] advertiserKeys);
+	
+	/**
+	 * 根据DSP定义的广告主ID和媒体ID列表查询广告主和媒体提交的记录
+	 * @param param
+	 * @return
+	 */
+	List<AdvertiserMediaUnion> selectByAdvertiserKeyAndMediaIds(AdvertiserMediaModel param);
+	
+	/**
+	 * 批量插入
+	 * @param list
+	 * @return
+	 */
+	int insertByBatch(List<AdvertiserMedia> list);
+	
+	/**
+	 * 批量更新
+	 * @param list
+	 * @return
+	 */
+	int updateByBath(List<AdvertiserMedia> list);
+	
+	/**
+	 * 审核时更新相关信息
+	 * @param record
+	 * @return
+	 */
+	int updateForAudit(AdvertiserMedia record);
 }

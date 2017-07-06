@@ -4,12 +4,17 @@ public class OperationResultModel {
 	/**
 	 * 操作是否成功
 	 */
-	private boolean successful = Boolean.FALSE;
+	private boolean successful = Boolean.TRUE;
 	
 	/**
 	 * 错误信息
 	 */
 	private String errorMessage;
+	
+	/**
+	 * 错误信息Code
+	 */
+	private String errorCode;
 
 	public boolean isSuccessful() {
 		return successful;
@@ -25,5 +30,13 @@ public class OperationResultModel {
 
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+	}
+
+	public String getErrorCode() {
+		return errorCode;
+	}
+
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
 	}
 }

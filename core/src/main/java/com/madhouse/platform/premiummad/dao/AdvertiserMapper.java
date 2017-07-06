@@ -39,4 +39,18 @@ public interface AdvertiserMapper {
 	 * @mbggenerated  Wed Jul 05 10:15:51 CST 2017
 	 */
 	int updateByPrimaryKey(Advertiser record);
+	
+	/**
+	 * 根据DSP提供的广告主ID查询
+	 * @param advertiserKey
+	 * @return
+	 */
+	Advertiser selectByAdvertiserKey(String advertiserKey);
+	
+	/**
+	 * 插入广告主信息，返回主键
+	 * @param record
+	 * @return
+	 */
+	int insertAdvertiser(Advertiser record);
 }

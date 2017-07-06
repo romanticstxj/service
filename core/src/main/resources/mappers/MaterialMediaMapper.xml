@@ -10,7 +10,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="material_id" property="materialId" jdbcType="INTEGER" />
     <result column="media_id" property="mediaId" jdbcType="INTEGER" />
-    <result column="auditee" property="auditee" jdbcType="BIT" />
+    <result column="auditee" property="auditee" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="TINYINT" />
     <result column="reason" property="reason" jdbcType="VARCHAR" />
     <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
@@ -56,7 +56,7 @@
       created_time, audited_user, audited_time
       )
     values (#{id,jdbcType=INTEGER}, #{materialId,jdbcType=INTEGER}, #{mediaId,jdbcType=INTEGER}, 
-      #{auditee,jdbcType=BIT}, #{status,jdbcType=TINYINT}, #{reason,jdbcType=VARCHAR}, 
+      #{auditee,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}, #{reason,jdbcType=VARCHAR}, 
       #{createdTime,jdbcType=TIMESTAMP}, #{auditedUser,jdbcType=INTEGER}, #{auditedTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -107,7 +107,7 @@
         #{mediaId,jdbcType=INTEGER},
       </if>
       <if test="auditee != null" >
-        #{auditee,jdbcType=BIT},
+        #{auditee,jdbcType=INTEGER},
       </if>
       <if test="status != null" >
         #{status,jdbcType=TINYINT},
@@ -141,7 +141,7 @@
         media_id = #{mediaId,jdbcType=INTEGER},
       </if>
       <if test="auditee != null" >
-        auditee = #{auditee,jdbcType=BIT},
+        auditee = #{auditee,jdbcType=INTEGER},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=TINYINT},
@@ -170,7 +170,7 @@
     update mad_sys_material_media
     set material_id = #{materialId,jdbcType=INTEGER},
       media_id = #{mediaId,jdbcType=INTEGER},
-      auditee = #{auditee,jdbcType=BIT},
+      auditee = #{auditee,jdbcType=INTEGER},
       status = #{status,jdbcType=TINYINT},
       reason = #{reason,jdbcType=VARCHAR},
       created_time = #{createdTime,jdbcType=TIMESTAMP},

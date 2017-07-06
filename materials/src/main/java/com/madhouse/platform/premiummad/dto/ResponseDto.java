@@ -2,18 +2,17 @@ package com.madhouse.platform.premiummad.dto;
 
 import com.alibaba.fastjson.annotation.JSONType;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-
 import java.io.Serializable;
 import java.util.List;
 
-@JSONType(serialzeFeatures={SerializerFeature.WriteNullListAsEmpty})
+@JSONType(serialzeFeatures = { SerializerFeature.WriteNullListAsEmpty })
 public class ResponseDto<T> implements Serializable {
 	private static final long serialVersionUID = -5875343291840334945L;
-	
+
 	private Integer code;
-	
+
 	private String message;
-	
+
 	private List<T> data;
 
 	public Integer getCode() {
@@ -39,6 +38,5 @@ public class ResponseDto<T> implements Serializable {
 	public void setData(List<T> data) {
 		this.data = data;
 	}
-
 
 }

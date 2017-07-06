@@ -33,4 +33,32 @@ public class ResponseUtils {
 		return responseDto;
 
 	}
+	
+	/**
+	 * T 为  Void 处理, 无错误信息
+	 * @param sc
+	 * @param message
+	 * @return
+	 */
+	public static <T> ResponseDto<T> response(StatusCode sc) {
+		String message = null;
+		return response(sc, message);
+	}
+	
+	/**
+	 * T 为  Void 处理，有错误信息
+	 * @param sc
+	 * @param message
+	 * @return
+	 */
+	public static <T> ResponseDto<T> response(StatusCode sc, String message) {
+		ResponseDto<T> responseDto = new ResponseDto<>();
+
+		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}");
+
+		responseDto.setCode(sc.getValue());
+		responseDto.setMessage(message != null ? message : sc.getDescrip());
+
+		return responseDto;
+	}
 }
