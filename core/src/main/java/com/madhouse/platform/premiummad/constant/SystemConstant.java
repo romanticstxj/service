@@ -26,8 +26,9 @@ public interface SystemConstant {
     String DEMAND_TYPE_PG = "3";
 
     // ------每次请求必带的参数
-    String URL = "url";
-    String USERID = "userId";
+    String XFROM = "X-From";
+    String USERID = "X-User-Id";
+    String ZERO = "0";
 
     String BATCH_DATA_KEY = "dataList";//批量操作时,Map传参中的key值
 

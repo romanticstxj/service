@@ -22,10 +22,8 @@ public class HttpUtilTest {
 
 			HttpGet get = new HttpGet(link);
 
-			get.setHeader("url", "exchange.dev.onemad.com");
-			get.setHeader("businessId", "MAHAD");
-			get.setHeader("userId", "19");
-			get.setHeader("systemId", "ATD");
+			get.setHeader("X-From", "exchange.dev.onemad.com");
+			get.setHeader("X-User-Id", "19");
 			get.setHeader("Content-Type", "application/json;charset=UTF-8");
 
 			CloseableHttpResponse response = httpclient.execute(get);
@@ -46,10 +44,8 @@ public class HttpUtilTest {
 			StringEntity stringEntity = new StringEntity(entity, "UTF-8");
 			System.out.println(entity);
 			HttpPost post = new HttpPost(link);
-			post.setHeader("url", "exchange.dev.onemad.com");
-			post.setHeader("businessId", "SMART");
-			post.setHeader("userId", "666");
-			post.setHeader("systemId", "PDB");
+			post.setHeader("X-From", "exchange.dev.onemad.com");
+			post.setHeader("X-User-Id", "666");
 			post.setHeader("Content-Type", "application/json;charset=UTF-8");
 
 			post.setEntity(stringEntity);

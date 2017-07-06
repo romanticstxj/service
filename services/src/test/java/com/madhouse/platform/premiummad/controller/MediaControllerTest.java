@@ -11,7 +11,7 @@ public class MediaControllerTest {
 	public void add(){
 		MediaDto mediaDto = new MediaDto();
 		mediaDto.setName("多对多");
-//		mediaDto.setCategory(2);
+		mediaDto.setCategory(2);
 		mediaDto.setType(1);
 		mediaDto.setDescription("hello media");
 		mediaDto.setAccessType(1);
@@ -34,7 +34,7 @@ public class MediaControllerTest {
 		String link = "http://172.16.25.31:8080/services/media/list";
 //		String link = "http://172.16.25.48:8080/services/dict/list?type=1";
 		HttpUtilTest.httpGet(link);
-	}
+	} 
 	
 	
 	

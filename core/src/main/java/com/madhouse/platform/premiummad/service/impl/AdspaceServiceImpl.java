@@ -18,9 +18,6 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	@Autowired
 	private AdspaceDao adspaceDao;
 	
-	@Value("${jdbc.premiummad.schema}")
-	private String jdbcSchema;
-	
 	@Override
 	public List<Adspace> queryAll(String ids) {
 		// TODO Auto-generated method stub
@@ -34,8 +31,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 
 	@Override
 	public Adspace queryAdspaceById(Integer adspaceId) {
-		// TODO Auto-generated method stub
-		return null;
+		return adspaceDao.queryAdspaceById(adspaceId);
 	}
 
 	@Override
@@ -50,8 +46,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 
 	@Override
 	public Integer updateStatus(Adspace adspace) {
-		// TODO Auto-generated method stub
-		return null;
+		return adspaceDao.updateStatus(adspace);
 	}
 
 
