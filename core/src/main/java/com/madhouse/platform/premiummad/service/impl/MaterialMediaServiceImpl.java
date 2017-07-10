@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.madhouse.platform.premiummad.constant.AuditeeCode;
+
 import com.madhouse.platform.premiummad.constant.MaterialAuditMode;
 import com.madhouse.platform.premiummad.constant.MaterialMediaStatusCode;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMediaMapper;
-import com.madhouse.platform.premiummad.dao.MediaDao;
+import com.madhouse.platform.premiummad.dao.SysMediaMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.entity.MaterialMedia;
 import com.madhouse.platform.premiummad.entity.MaterialMediaUnion;
-import com.madhouse.platform.premiummad.entity.Media;
+import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.model.MaterialMediaAuditResultModel;
 import com.madhouse.platform.premiummad.model.MaterialMediaModel;
 import com.madhouse.platform.premiummad.model.OperationResultModel;
@@ -32,7 +33,7 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 	private MaterialMediaMapper materialMediaDao;
 	
 	@Autowired
-	private MediaDao mediaDao;
+	private SysMediaMapper mediaDao;
 	
 	@Autowired
 	private MaterialMapper materialDao;
@@ -45,12 +46,12 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 	@Override
 	public List<MaterialMediaAuditResultModel> getMaterialMediaAuditResult(String ids) {
 		// 解析传入的素材ID
-		String[] idStrs = MaterialMediaRule.parseStringToArray(ids);
+		String[] idStrs = MaterialMediaRule.parseStringToDistinctArray(ids);
 
 		// 查询广告主的审核结果
 		List<MaterialMediaAuditResultModel> results = new ArrayList<MaterialMediaAuditResultModel>();
 		if (idStrs != null && idStrs.length > 1) {
-			List<MaterialMediaUnion> selectAdvertiserMedias = materialMediaDao.selectAdvertiserMedias(idStrs);
+			List<MaterialMediaUnion> selectAdvertiserMedias = materialMediaDao.selectMaterialMedias(idStrs);
 			MaterialMediaRule.convert(selectAdvertiserMedias, results);
 		}
 
@@ -67,17 +68,16 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 		OperationResultModel operationResult = new OperationResultModel();
 		
 		// 查询关联的媒体是否存在且有效
-		List<Media> uploadedMedias = mediaDao.queryAll((String[]) entity.getMediaId().toArray());
-		MediaRule.checkMedias(entity.getMediaId(), uploadedMedias, operationResult);
+		String[] distinctMediaIds = MaterialMediaRule.parseListToDistinctArray(entity.getMediaId());
+		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
+		MediaRule.checkMedias(distinctMediaIds, uploadedMedias, operationResult);
 		if (!operationResult.isSuccessful()) {
 			return operationResult;
 		}
 		
-		// 查询素材是否存在,不存在构建
+		// 查询素材是否存在,不存在构建，否则更新
 		Material material = materialDao.selectByMaterialKey(entity.getId());
-		if (material == null) {
-			material = MaterialMediaRule.buildMaterial(entity);
-		}
+		material = MaterialMediaRule.buildMaterial(material, entity);
 		entity.setMaterialId(material.getId());
 		
 		// 判断素材与媒体是否已存在
@@ -106,6 +106,13 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 
 			// 广告主ID回写
 			MaterialMediaRule.relatedMaterialId(classfiedMaps, material.getId());
+		} else {
+			int effortRows = materialDao.updateByPrimaryKeySelective(material);
+			if (effortRows != 1) {
+				operationResult.setSuccessful(Boolean.FALSE);
+				operationResult.setErrorMessage("系统异常");
+				return operationResult;
+			}
 		}
 		
 		// 保存未提交的素材和媒体关系
@@ -136,8 +143,13 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 		return operationResult;
 	}
 	
-	private void audit(List<Media> uploadedMedias, Map<Integer, MaterialMediaUnion> unUploadedMaterialMedias, Map<Integer, MaterialMediaUnion> rejectedMaterialMedias) {
-		for (Media media : uploadedMedias) {
+	private void audit(List<SysMedia> uploadedMedias, Map<Integer, MaterialMediaUnion> unUploadedMaterialMedias, Map<Integer, MaterialMediaUnion> rejectedMaterialMedias) {
+		for (SysMedia media : uploadedMedias) {
+			// 平台审核不处理
+			if (MaterialAuditMode.MAM10002.getValue() == media.getMaterialAuditMode().intValue()) {
+				continue;
+			}
+			
 			MaterialMediaUnion item = unUploadedMaterialMedias.get(media.getId());
 			if (item == null) {
 				item = unUploadedMaterialMedias.get(media.getId());
@@ -147,17 +159,8 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 				// 如果模式是不审核，审核状态修改为审核通过
 				if (MaterialAuditMode.MAM10001.getValue() == media.getMaterialAuditMode().intValue()) {
 					updateItem.setAuditedTime(new Date());
-					updateItem.setAuditedUser(0); // TODO
-					updateItem.setAuditee(AuditeeCode.AC10001.getValue()); // TODO
 					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialMediaStatusCode.MMSC10004.getValue())));
 
-					updateItem.setMaterialId(item.getMaterialId());
-					updateItem.setMediaId(item.getMediaId());
-				}
-
-				// 平台审核， 审核方修改为我方
-				if (MaterialAuditMode.MAM10002.getValue() == media.getMaterialAuditMode().intValue()) {
-					updateItem.setAuditee(AuditeeCode.AC10001.getValue());
 					updateItem.setMaterialId(item.getMaterialId());
 					updateItem.setMediaId(item.getMediaId());
 				}
@@ -167,9 +170,9 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 					// 推送给媒体 TODO
 
 					// 状态修改为审核中
-					updateItem.setAuditee(AuditeeCode.AC10002.getValue());
 					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialMediaStatusCode.MMSC10003.getValue())));
-
+					updateItem.setAuditedTime(new Date());
+					
 					updateItem.setMaterialId(item.getMaterialId());
 					updateItem.setMediaId(item.getMediaId());
 				}

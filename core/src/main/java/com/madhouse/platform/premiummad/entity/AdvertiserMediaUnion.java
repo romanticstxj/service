@@ -12,8 +12,6 @@ public class AdvertiserMediaUnion {
 
 	private Integer mediaId;
 
-	private Boolean auditee;
-
 	private Integer status;
 
 	private String reason;
@@ -54,14 +52,6 @@ public class AdvertiserMediaUnion {
 
 	public void setMediaId(Integer mediaId) {
 		this.mediaId = mediaId;
-	}
-
-	public Boolean getAuditee() {
-		return auditee;
-	}
-
-	public void setAuditee(Boolean auditee) {
-		this.auditee = auditee;
 	}
 
 	public Integer getStatus() {

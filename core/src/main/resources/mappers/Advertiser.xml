@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.madhouse.platform.premiummad.dao.AdvertiserMapper" >
-  <select id="selectByAdvertiserKey" resultMap="BaseResultMap">
+  <select id="selectByAdvertiserKeyAndDspId" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from mad_sys_advertiser
-    where advertiser_key = #{advertiserKey,jdbcType=INTEGER}
+    where advertiser_key = #{advertiserKey,jdbcType=VARCHAR}
+      and dsp_id = #{dspId,jdbcType=INTEGER}
   </select>
   <insert id="insertAdvertiser" parameterType="com.madhouse.platform.premiummad.entity.Advertiser" 
           useGeneratedKeys="true" keyProperty="id">
@@ -41,11 +42,11 @@
       <if test="license != null" >
         license,
       </if>
-      <if test="auditee != null" >
-        auditee,
-      </if>
       <if test="createdTime != null" >
         created_time,
+      </if>
+      <if test="updatedTime != null" >
+        updated_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -79,11 +80,11 @@
       <if test="license != null" >
         #{license,jdbcType=VARCHAR},
       </if>
-      <if test="auditee != null" >
-        #{auditee,jdbcType=BIT},
-      </if>
       <if test="createdTime != null" >
         #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null" >
+        #{updatedTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>

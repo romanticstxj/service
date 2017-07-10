@@ -7,7 +7,6 @@
     <result column="advertiser_id" property="advertiserId" jdbcType="INTEGER" />
     <result column="advertiser_key" property="advertiserKey" jdbcType="VARCHAR" />
     <result column="media_id" property="mediaId" jdbcType="INTEGER" />
-    <result column="auditee" property="auditee" jdbcType="BIT" />
     <result column="status" property="status" jdbcType="TINYINT" />
     <result column="reason" property="reason" jdbcType="VARCHAR" />
     <result column="audited_user" property="auditedUser" jdbcType="INTEGER" />
@@ -16,7 +15,7 @@
   </resultMap>
   <sql id="Union_Column_List" >
     <!-- 包含DSP定义的广告主ID集合 -->
-    adm.id, adm.advertiser_id, adm.media_id, adm.auditee, adm.status, adm.reason, 
+    adm.id, adm.advertiser_id, adm.media_id, adm.status, adm.reason, 
     adm.audited_user, adm.created_time, adm.audited_time, ad.advertiser_key
   </sql>
   <select id="selectAdvertiserMedias" resultMap="UnionResultMap">
@@ -27,9 +26,9 @@
 	where ad.advertiser_key in
 	   <foreach collection="advertiserKeys" item="advertiserKey" index="index"
            open="(" close=")" separator=",">
-           #{advertiserKey,jdbcType=VARCHAR}}
+           #{advertiserKey,jdbcType=VARCHAR}
         </foreach>
-	)
+        and ad.dsp_id = #{dspId,jdbcType=INTEGER}
   </select>
   <select id="selectByAdvertiserKeyAndMediaIds" resultMap="UnionResultMap" parameterType="com.madhouse.platform.premiummad.model.AdvertiserMediaModel">
     select 
@@ -39,18 +38,17 @@
 	where ad.advertiser_key = #{id, jdbcType=VARCHAR} and adm.media_id in
 	   <foreach collection="mediaId" item="item" index="index"
            open="(" close=")" separator=",">
-           #{item,jdbcType=INTEGER}}
+           #{item,jdbcType=INTEGER}
         </foreach>
-	)
   </select>
   <insert id="insertByBatch" parameterType="java.util.List">
-      insert into mad_sys_advertiser_media (id, advertiser_id, media_id,auditee, status, reason, 
+      insert into mad_sys_advertiser_media (advertiser_id, media_id, status, reason, 
       	audited_user, created_time, audited_time)
       values
       <foreach collection="list" item="item" index="index" separator=",">
-        (#{id,jdbcType=INTEGER}, #{advertiserId,jdbcType=INTEGER}, #{mediaId,jdbcType=INTEGER}, 
-        #{auditee,jdbcType=BIT}, #{status,jdbcType=TINYINT}, #{reason,jdbcType=VARCHAR}, 
-        #{auditedUser,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, #{auditedTime,jdbcType=TIMESTAMP})
+        (#{item.advertiserId,jdbcType=INTEGER}, #{item.mediaId,jdbcType=INTEGER}, 
+        #{item.status,jdbcType=TINYINT}, #{item.reason,jdbcType=VARCHAR}, 
+        #{item.auditedUser,jdbcType=INTEGER}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.auditedTime,jdbcType=TIMESTAMP})
       </foreach>
   </insert>
   <update id="updateByBath" parameterType="java.util.List">
@@ -58,7 +56,6 @@
 		  update mad_sys_advertiser_media
 		    set advertiser_id = #{item.advertiserId,jdbcType=INTEGER},
 		      media_id = #{item.mediaId,jdbcType=INTEGER},
-		      auditee = #{item.auditee,jdbcType=BIT},
 		      status = #{item.status,jdbcType=TINYINT},
 		      reason = #{item.reason,jdbcType=VARCHAR},
 		      audited_user = #{item.auditedUser,jdbcType=INTEGER},
@@ -70,9 +67,6 @@
   <update id="updateForAudit" parameterType="com.madhouse.platform.premiummad.entity.AdvertiserMedia" >
     update mad_sys_advertiser_media
     <set >
-      <if test="auditee != null" >
-        auditee = #{auditee,jdbcType=BIT},
-      </if>
       <if test="status != null" >
         status = #{status,jdbcType=TINYINT},
       </if>

@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.madhouse.platform.premiummad.constant.AdvertiserAuditMode;
-import com.madhouse.platform.premiummad.constant.AuditeeCode;
 import com.madhouse.platform.premiummad.constant.MaterialMediaStatusCode;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.AdvertiserMediaMapper;
-import com.madhouse.platform.premiummad.dao.MediaDao;
+import com.madhouse.platform.premiummad.dao.SysMediaMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.AdvertiserMedia;
 import com.madhouse.platform.premiummad.entity.AdvertiserMediaUnion;
-import com.madhouse.platform.premiummad.entity.Media;
+import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.model.AdvertiserMediaAuditResultModel;
 import com.madhouse.platform.premiummad.model.AdvertiserMediaModel;
 import com.madhouse.platform.premiummad.model.OperationResultModel;
@@ -32,7 +33,7 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 	private AdvertiserMediaMapper advertiserMediaDao;
 	
 	@Autowired
-	private MediaDao mediaDao;
+	private SysMediaMapper mediaDao;
 	
 	@Autowired
 	private AdvertiserMapper advertiserDao;
@@ -40,17 +41,18 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 	/**
 	 * 根据 DSP 广告主Key 查询广告主是否被媒体审核通过 
 	 * @param ids
+	 * @param dspId
 	 * @return
 	 */
 	@Override
-	public List<AdvertiserMediaAuditResultModel> getAdvertiserMediaAuditResult(String ids) {
+	public List<AdvertiserMediaAuditResultModel> getAdvertiserMediaAuditResult(String ids, String dspId) {
 		// 解析传入的广告主Key
-		String[] idStrs = AdvertiserMediaRule.parseStringToArray(ids);
+		String[] idStrs = AdvertiserMediaRule.parseStringToDistinctArray(ids);
 
 		// 查询广告主的审核结果
 		List<AdvertiserMediaAuditResultModel> results = new ArrayList<AdvertiserMediaAuditResultModel>();
 		if (idStrs != null && idStrs.length > 1) {
-			List<AdvertiserMediaUnion> selectAdvertiserMedias = advertiserMediaDao.selectAdvertiserMedias(idStrs);
+			List<AdvertiserMediaUnion> selectAdvertiserMedias = advertiserMediaDao.selectAdvertiserMedias(idStrs, dspId);
 			AdvertiserMediaRule.convert(selectAdvertiserMedias, results);
 		}
 
@@ -62,22 +64,22 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 	 * @param entity
 	 * @return operationResultModel
 	 */
+	@Transactional
 	@Override
 	public OperationResultModel upload(AdvertiserMediaModel entity) {
 		OperationResultModel operationResult = new OperationResultModel();
 
 		// 查询关联的媒体是否存在且有效
-		List<Media> uploadedMedias = mediaDao.queryAll((String[])entity.getMediaId().toArray());
-		MediaRule.checkMedias(entity.getMediaId(), uploadedMedias, operationResult);
+		String[] distinctMediaIds = AdvertiserMediaRule.parseListToDistinctArray(entity.getMediaId());
+		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
+		MediaRule.checkMedias(distinctMediaIds, uploadedMedias, operationResult);
 		if (!operationResult.isSuccessful()) {
 			return operationResult;
 		}
 
-		// 查询广告主是否存在,不存在构建
-		Advertiser advertiser = advertiserDao.selectByAdvertiserKey(entity.getId());
-		if (advertiser == null) {
-			advertiser = AdvertiserMediaRule.buildAdvertiser(entity);
-		}
+		// 查询广告主是否存在,不存在构建，否则更新
+		Advertiser advertiser = advertiserDao.selectByAdvertiserKeyAndDspId(entity.getId(), entity.getDspId());
+		advertiser = AdvertiserMediaRule.buildAdvertiser(advertiser, entity);
 		entity.setAdvertiserId(advertiser.getId());
 		
 		// 判断广告主与媒体是否已存在
@@ -106,6 +108,13 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 			
 			// 广告主ID回写
 			AdvertiserMediaRule.relatedAdvertiserId(classfiedMaps, advertiser.getId());
+		} else { // 对于驳回再次提交的，广告主进行更新
+			int effortRows = advertiserDao.updateByPrimaryKeySelective(advertiser);
+			if (effortRows != 1) {
+				operationResult.setSuccessful(Boolean.FALSE);
+				operationResult.setErrorMessage("系统异常");
+				return operationResult;
+			}
 		}
 		
 		// 保存未提交的广告主和媒体关系
@@ -136,8 +145,13 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 		return operationResult;
 	}
 	
-	private void audit(List<Media> uploadedMedias, Map<Integer, AdvertiserMediaUnion> unUploadedAdvertiserMedias, Map<Integer, AdvertiserMediaUnion> rejectedAdvertiserMedias) {
-		for (Media media : uploadedMedias) {
+	private void audit(List<SysMedia> uploadedMedias, Map<Integer, AdvertiserMediaUnion> unUploadedAdvertiserMedias, Map<Integer, AdvertiserMediaUnion> rejectedAdvertiserMedias) {
+		for (SysMedia media : uploadedMedias) {
+			// 平台审核不处理
+			if (AdvertiserAuditMode.AAM10002.getValue() == media.getAdvertiserAuditMode().intValue()) {
+				continue;
+			}
+			
 			AdvertiserMediaUnion item = unUploadedAdvertiserMedias.get(media.getId());
 			if (item == null) {
 				item = rejectedAdvertiserMedias.get(media.getId());
@@ -145,31 +159,22 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 			if (item != null) {
 				AdvertiserMedia updateItem = new AdvertiserMedia();
 				// 如果模式是不审核，审核状态修改为审核通过
-				if (AdvertiserAuditMode.AAM10001.getValue() == media.getMaterialAuditMode().intValue()) {
+				if (AdvertiserAuditMode.AAM10001.getValue() == media.getAdvertiserAuditMode().intValue()) {
 					updateItem.setAuditedTime(new Date());
-					updateItem.setAuditedUser(0); // TODO
-					updateItem.setAuditee(AuditeeCode.AC10001.getValue()); // TODO
 					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialMediaStatusCode.MMSC10004.getValue())));
 
 					updateItem.setAdvertiserId(item.getAdvertiserId());
 					updateItem.setMediaId(item.getMediaId());
 				}
 
-				// 平台审核， 审核方修改为我方
-				if (AdvertiserAuditMode.AAM10002.getValue() == media.getMaterialAuditMode().intValue()) {
-					updateItem.setAuditee(AuditeeCode.AC10001.getValue());
-					updateItem.setAdvertiserId(item.getAdvertiserId());
-					updateItem.setMediaId(item.getMediaId());
-				}
-
 				// 如果模式是媒体审核，推送给媒体，状态修改为审核中
-				if (AdvertiserAuditMode.AAM10003.getValue() == media.getMaterialAuditMode().intValue()) {
+				if (AdvertiserAuditMode.AAM10003.getValue() == media.getAdvertiserAuditMode().intValue()) {
 					// 推送给媒体 TODO
 
 					// 状态修改为审核中
-					updateItem.setAuditee(AuditeeCode.AC10002.getValue());
 					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialMediaStatusCode.MMSC10003.getValue())));
-
+					updateItem.setAuditedTime(new Date());
+					
 					updateItem.setAdvertiserId(item.getAdvertiserId());
 					updateItem.setMediaId(item.getMediaId());
 				}

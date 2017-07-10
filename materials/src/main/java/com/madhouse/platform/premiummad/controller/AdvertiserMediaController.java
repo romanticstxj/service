@@ -54,7 +54,7 @@ public class AdvertiserMediaController {
 	@TokenFilter
 	@RequestMapping("/status")
 	public ResponseDto<AdvertiserMediaAuditResultDto> list(@RequestParam(value = "ids", required = false) String ids, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
-		List<AdvertiserMediaAuditResultModel> modelResults = advertiserMediaService.getAdvertiserMediaAuditResult(ids);
+		List<AdvertiserMediaAuditResultModel> modelResults = advertiserMediaService.getAdvertiserMediaAuditResult(ids, dspId);
 		List<AdvertiserMediaAuditResultDto> dtoResults = new ArrayList<AdvertiserMediaAuditResultDto>();
 		BeanUtils.copyList(modelResults, dtoResults, AdvertiserMediaAuditResultDto.class);
 		return ResponseUtils.response(StatusCode.SC20000, dtoResults);

@@ -1,13 +1,18 @@
 package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
 import org.springframework.beans.BeanUtils;
+
 import com.madhouse.platform.premiummad.constant.AdvertiserMediaStatusCode;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.AdvertiserMedia;
@@ -27,8 +32,10 @@ public class AdvertiserMediaRule extends BaseRule {
 
 		Iterator<Entry<Integer, AdvertiserMediaUnion>> iterator = map.entrySet().iterator();
 		while (iterator.hasNext()) {
+			AdvertiserMediaUnion value = iterator.next().getValue();
 			AdvertiserMedia item = new AdvertiserMedia();
-			BeanUtils.copyProperties(iterator.next().getValue(), item);
+			BeanUtils.copyProperties(value, item);
+			item.setStatus(Byte.valueOf(value.getStatus().toString()));
 			list.add(item);
 		}
 
@@ -69,13 +76,13 @@ public class AdvertiserMediaRule extends BaseRule {
 	public static String validateAdvertiserAndMedias(List<Map<Integer, AdvertiserMediaUnion>> classfiedMaps, String advertiserKey) {
 		StringBuilder errorMsg = new StringBuilder();
 		if (classfiedMaps.get(0) != null && classfiedMaps.get(0).size() > 0) {
-			errorMsg.append("媒体[" + classfiedMaps.get(0).keySet().toArray() + "]重复提交，状态为待审核;");
+			errorMsg.append("媒体" + Arrays.toString(classfiedMaps.get(0).keySet().toArray()) + "重复提交，状态为待审核;");
 		}
 		if (classfiedMaps.get(1) != null && classfiedMaps.get(1).size() > 0) {
-			errorMsg.append("媒体[" + classfiedMaps.get(1).keySet().toArray() + "]重复提交，状态为审核中;");
+			errorMsg.append("媒体" + Arrays.toString(classfiedMaps.get(1).keySet().toArray()) + "重复提交，状态为审核中;");
 		}
 		if (classfiedMaps.get(2) != null && classfiedMaps.get(2).size() > 0) {
-			errorMsg.append("媒体[" + classfiedMaps.get(2).keySet().toArray() + "]重复提交，状态为审核通过;");
+			errorMsg.append("媒体" + Arrays.toString(classfiedMaps.get(2).keySet().toArray()) + "重复提交，状态为审核通过;");
 		}
 		if (errorMsg.length() > 0) {
 			return "广告主[" + advertiserKey + "]关联的" + errorMsg.toString();
@@ -96,9 +103,16 @@ public class AdvertiserMediaRule extends BaseRule {
 		Map<Integer, AdvertiserMediaUnion> auditedAdMedias = new HashMap<Integer, AdvertiserMediaUnion>();
 		Map<Integer, AdvertiserMediaUnion> rejectedAdMedias = new HashMap<Integer, AdvertiserMediaUnion>();
 
+		Set<Integer> usedMediaIdSet = new HashSet<Integer>();
 		for (Integer mediaId : entity.getMediaId()) {
+			// 重复媒体过滤
+			if (usedMediaIdSet.contains(Integer.valueOf(mediaId))) {
+				continue;
+			}
+			usedMediaIdSet.add(Integer.valueOf(mediaId));
+			
 			for (AdvertiserMediaUnion advertiserMedia : advertiserMedias) {
-				if (advertiserMedia.getMediaId().intValue() == mediaId.intValue()) {
+				if (entity.getAdvertiserId() != null && advertiserMedia.getAdvertiserId().intValue() == entity.getAdvertiserId().intValue() && advertiserMedia.getMediaId().intValue() == mediaId.intValue()) {
 					// 已驳回
 					if (AdvertiserMediaStatusCode.AMSC10001.getValue() == advertiserMedia.getStatus().intValue()) {
 						advertiserMedia.setStatus(AdvertiserMediaStatusCode.AMSC10002.getValue());// 状态置为待审核
@@ -129,6 +143,12 @@ public class AdvertiserMediaRule extends BaseRule {
 			newEntity.setMediaId(mediaId);
 			newEntity.setStatus(AdvertiserMediaStatusCode.AMSC10002.getValue()); // 状态置为待审核
 			newEntity.setCreatedTime(new Date());
+			
+			// set default value
+			newEntity.setAuditedUser(Integer.valueOf(0));
+			newEntity.setAuditedTime(newEntity.getCreatedTime());
+			newEntity.setReason("");
+			
 			unUploadedAdMedias.put(mediaId, newEntity);
 		}
 		classfiedMaps.add(0, unAuditedAdMedias); // 待审核
@@ -143,15 +163,21 @@ public class AdvertiserMediaRule extends BaseRule {
 	 * @param source
 	 * @return
 	 */
-	public static Advertiser buildAdvertiser(AdvertiserMediaModel entity) {
-		Advertiser advertiser = new Advertiser();
-		
+	public static Advertiser buildAdvertiser(Advertiser advertiser, AdvertiserMediaModel entity) {
+		// 第一次新增
+		if (advertiser == null) {
+			advertiser = new Advertiser();
+			advertiser.setAdvertiserKey(entity.getId());
+			advertiser.setDspId(Integer.valueOf(entity.getDspId()));
+			advertiser.setCreatedTime(new Date());
+			advertiser.setUpdatedTime(advertiser.getCreatedTime());
+		} else { // 更新
+			advertiser.setUpdatedTime(new Date());
+		}
+
 		advertiser.setAddress(entity.getAddress());
-		advertiser.setAdvertiserKey(entity.getId());
 		advertiser.setAdvertiserName(entity.getName());
 		advertiser.setContact(entity.getContact());
-		advertiser.setCreatedTime(new Date());
-		advertiser.setDspId(Integer.valueOf(entity.getDspId()));
 		advertiser.setIndustry(Short.valueOf(entity.getIndustry().toString()));
 		advertiser.setLicense(entity.getLience());
 		advertiser.setPhone(entity.getPhone());
@@ -170,14 +196,13 @@ public class AdvertiserMediaRule extends BaseRule {
 			return;
 		}
 		
-		destination = new ArrayList<AdvertiserMediaAuditResultModel>();
 		if (source.isEmpty()) {
 			return;
 		}
 		
 		for (AdvertiserMediaUnion sourceItem : source) {
 			AdvertiserMediaAuditResultModel destinationItem = new AdvertiserMediaAuditResultModel();
-			destinationItem.setId(sourceItem.getAdvertiserKey()); //DSP 传过来的广告主ID TODO
+			destinationItem.setId(sourceItem.getAdvertiserKey()); //DSP 传过来的广告主ID
 			destinationItem.setMediaId(String.valueOf(sourceItem.getMediaId()));
 			destinationItem.setStatus(Integer.valueOf(sourceItem.getStatus()));
 			destinationItem.setErrorMessage(sourceItem.getReason());
