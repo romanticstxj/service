@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class StringUtils {
 
@@ -67,5 +68,17 @@ public class StringUtils {
 	 */
 	public static boolean isEmpty(Object str) {
 		return (str == null || "".equals(str) || "".equals(str.toString().trim()));
+	}
+	
+	public static String getIdsStr(List<Integer> idList){
+		if(idList == null || idList.size() == 0){
+			return "";
+		}
+		Integer[] ids = idList.toArray(new Integer[idList.size()]);
+		StringBuilder sb = new StringBuilder(ids[0].toString());
+		for(int i=1; i<ids.length; i++){
+			sb.append(",").append(ids[i].toString());
+		}
+		return sb.toString();
 	}
 }

@@ -31,7 +31,15 @@ public class MediaControllerTest {
 	@Test
 	public void list(){
 //		String link = "http://localhost:8080/services/media/list?ids=8000005,8000004";
-		String link = "http://172.16.25.31:8080/services/media/list";
+		String link = "http://localhost:8080/services/media/list";
+//		String link = "http://172.16.25.48:8080/services/dict/list?type=1";
+		HttpUtilTest.httpGet(link);
+	} 
+	
+	@Test
+	public void list1(){
+//		String link = "http://localhost:8080/services/media/list?ids=8000005,8000004";
+		String link = "http://localhost:8080/services/media/listByMediaIds?ids=100000,100001";
 //		String link = "http://172.16.25.48:8080/services/dict/list?type=1";
 		HttpUtilTest.httpGet(link);
 	} 
@@ -41,7 +49,7 @@ public class MediaControllerTest {
 	@Test
 	public void update(){
 		MediaDto mediaDto = new MediaDto();
-		mediaDto.setId(8000004);
+		mediaDto.setId(100001);
 		mediaDto.setName("12");
 		mediaDto.setCategory(1);
 		mediaDto.setType(1);
@@ -51,7 +59,7 @@ public class MediaControllerTest {
 		mediaDto.setMaterialAuditMode(1);
 		mediaDto.setTimeout(30);
 		mediaDto.setUpdateType(1);
-		String link = "http://172.16.25.48:8080/services/media/update";
+		String link = "http://localhost:8080/services/media/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(mediaDto));
 	}
 	

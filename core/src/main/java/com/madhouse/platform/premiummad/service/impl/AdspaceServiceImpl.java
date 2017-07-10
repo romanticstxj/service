@@ -20,8 +20,11 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	
 	@Override
 	public List<Adspace> queryAll(String ids) {
-		// TODO Auto-generated method stub
-		return null;
+		String[] idStrs = null;
+		if(ids != null){
+			idStrs = ids.split(",");
+		}
+		return adspaceDao.queryAll(idStrs);
 	}
 
 	@Override

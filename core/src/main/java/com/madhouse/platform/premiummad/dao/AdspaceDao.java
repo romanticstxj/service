@@ -1,5 +1,9 @@
 package com.madhouse.platform.premiummad.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.madhouse.platform.premiummad.entity.Adspace;
 
 public interface AdspaceDao {
@@ -14,5 +18,6 @@ public interface AdspaceDao {
 
 	Integer updateStatus(Adspace adspace);
 
+	List<Adspace> queryAll(@Param("idStrs") String[] idStrs);
 	
 }

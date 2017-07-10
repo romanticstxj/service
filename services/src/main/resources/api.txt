@@ -73,7 +73,7 @@
                 "200": {
                     "body": [
                         {
-                            "result": true
+                            "id": "<||integer||comment:自增id>"
                         }
                     ]
                 }
@@ -324,7 +324,7 @@
                     "dspMappingInfo": [
                     	{
 		                    "dspId": "<*||integer||comment:DSP在我们系统的ID>",
-		                	"dspMediaKey": "<*||string||comment:DSP方的媒体Key>",
+		                	"dspMediaId": "<*||integer||comment:DSP方的媒体ID>",
 		                    "dspAdspaceKey": "<*||integer||comment:DSP方的广告位Key>"
                     	}
                     ]

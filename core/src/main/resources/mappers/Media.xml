@@ -34,7 +34,7 @@
 		${alias}.status
 	</sql>
 	
-    <select id="queryAll" resultMap="baseResult">
+    <select id="queryAll" parameterType="string" resultMap="baseResult">
 		SELECT 
 		<include refid="baseList">
             <property name="alias" value="m" />

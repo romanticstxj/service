@@ -35,6 +35,8 @@
         <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP" />
     </resultMap>
     
+  
+    
     <sql id="baseColumns">
 		${alias}.`id`,${alias}.`name`,${alias}.`adspace_key`,${alias}.`media_id`,${alias}.`terminal_type`,${alias}.`terminal_os`,${alias}.`support_https`,
 		${alias}.`bid_type`,${alias}.`bid_floor`,${alias}.`adtype`,${alias}.`layout`,${alias}.`material_type`,${alias}.`material_size`,${alias}.`material_max_kbyte`,
@@ -44,9 +46,26 @@
 	</sql>
 	
 	<sql id="baseList">
-		${alias}.id, ${alias}.name, ${alias}.category, ${alias}.type, ${alias}.created_time,
-		${alias}.status
+		${alias}.id, ${alias}.name, ${alias}.adspace_key, ${alias}.media_id, ${alias}.terminal_type, ${alias}.layout, 
+		${alias}.material_size, ${alias}.bid_floor, ${alias}.created_time, ${alias}.status
 	</sql>
+	
+	<select id="queryAll" parameterType="string" resultMap="baseResult">
+		SELECT 
+		<include refid="baseList">
+            <property name="alias" value="a" />
+        </include>, m.name mediaName, l.name layoutName
+        FROM mad_sys_adspace a 
+        LEFT JOIN mad_sys_media m ON m.id = a.media_id
+        LEFT JOIN mad_dict_layout l ON a.layout = l.code
+        <if test="idStrs != null and idStrs.length > 0">
+        	WHERE m.id IN 
+        	<foreach collection="idStrs" item="mediaId" index="index" open="(" close=")" separator=",">
+            	#{mediaId,jdbcType=INTEGER}
+            </foreach>
+        </if>
+        ORDER BY a.id
+	</select>
 	
 	<select id="checkName" parameterType="string" resultType="integer">
 		select count(0) from mad_sys_adspace where name = #{name}
@@ -174,5 +193,6 @@
         </set>
         WHERE id = #{id}
     </update>
+
 
 </mapper>
