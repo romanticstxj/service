@@ -63,6 +63,7 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 	 * @param entity
 	 * @return operationResultModel
 	 */
+	@Transactional
 	@Override
 	public OperationResultModel upload(MaterialMediaModel entity) {
 		OperationResultModel operationResult = new OperationResultModel();
@@ -97,7 +98,7 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 		// 广告主不存在插入一条新纪录
 		if (material.getId() == null) {
 			// 数据插入
-			int effortRows = materialDao.insert(material);
+			int effortRows = materialDao.insertMaterial(material);
 			if (effortRows != 1) {
 				operationResult.setSuccessful(Boolean.FALSE);
 				operationResult.setErrorMessage("系统异常");

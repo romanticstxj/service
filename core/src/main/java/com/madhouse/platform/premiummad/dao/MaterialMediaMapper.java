@@ -2,6 +2,8 @@ package com.madhouse.platform.premiummad.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.madhouse.platform.premiummad.entity.MaterialMedia;
 import com.madhouse.platform.premiummad.entity.MaterialMediaUnion;
 import com.madhouse.platform.premiummad.model.MaterialMediaModel;
@@ -49,7 +51,7 @@ public interface MaterialMediaMapper {
 	 * @param materialKeys
 	 * @return
 	 */
-	List<MaterialMediaUnion> selectMaterialMedias(String[] materialKeys);
+	List<MaterialMediaUnion> selectMaterialMedias(@Param("materialKeys")String[] materialKeys);
 	
 	/**
 	 * 根据DSP定义的素材ID和媒体ID列表查询素材和媒体提交的记录
@@ -73,7 +75,7 @@ public interface MaterialMediaMapper {
 	int updateByBath(List<MaterialMedia> list);
 	
 	/**
-	 * 审核时更新相关信�?
+	 * 审核时更新相关信息
 	 * @param record
 	 * @return
 	 */

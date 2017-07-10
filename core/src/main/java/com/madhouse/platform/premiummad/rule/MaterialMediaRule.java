@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
 
@@ -19,8 +19,12 @@ import com.madhouse.platform.premiummad.entity.MaterialMedia;
 import com.madhouse.platform.premiummad.entity.MaterialMediaUnion;
 import com.madhouse.platform.premiummad.model.MaterialMediaAuditResultModel;
 import com.madhouse.platform.premiummad.model.MaterialMediaModel;
+import com.madhouse.platform.premiummad.model.MonitorModel;
 
 public class MaterialMediaRule extends BaseRule {
+	
+	public static byte ClKURL = 1;
+	public static byte SECURL = 2;
 	
 	/**
 	 * Map 转换成 List
@@ -172,30 +176,62 @@ public class MaterialMediaRule extends BaseRule {
 			material.setUpdatedTime(new Date());
 		}
 
-		material.setActiveType(Byte.valueOf(entity.getActType().toString()));
-		material.setAdMaterials(entity.getAdm().toString()); // 广告素材URL(多个用半角逗号分隔)
+		material.setActiveType(entity.getActType() != null ? Byte.valueOf(entity.getActType().toString()) : 0);
+		material.setAdMaterials(parseToString(entity.getAdm())); // 广告素材URL(多个用半角逗号分隔)
 		material.setAdType(Short.valueOf(entity.getAdType().toString()));
 		material.setAdvertiserId(Integer.valueOf(entity.getAdvertiserId()));
 		material.setAgency(entity.getAgency());
 		material.setBrand(entity.getBrand());
-		material.setClkUrls(entity.getMonitor().getClkUrls().toArray().toString()); // 点击监测URL(多个用半角逗号分隔)
+		material.setClkUrls(parseTOString(entity.getMonitor(), ClKURL)); // 点击监测URL(多个用半角逗号分隔)
 		material.setCover(entity.getCover());
 		
-		material.setDealId(Integer.valueOf(entity.getDealId()));
+		material.setDealId(entity.getDealId() != null ? Integer.valueOf(entity.getDealId()) : 0);
 		material.setDeliveryType(Byte.valueOf(entity.getDeliveryType().toString()));
 		material.setDescription(entity.getDesc());
-		material.setDuration(entity.getDuration());
+		material.setDuration(entity.getDuration() != null ? entity.getDuration() : 0);
 		material.setEndDate(entity.getEndDate());
 		material.setIcon(entity.getIcon());
 		material.setImpUrls(""); // 展示监测URL(多个用半角逗号分隔) TODO
 		material.setLpgUrl(entity.getLpgUrl());
 		material.setMaterialName(entity.getName());
-		material.setSecUrls(entity.getMonitor().getSecUrls().toArray().toString()); // 品牌安全监测URL(多个用半角逗号分隔)
+		material.setSecUrls(parseTOString(entity.getMonitor(), SECURL)); // 品牌安全监测URL(多个用半角逗号分隔)
 		material.setSize("0"); // 广告素材尺寸 TODO
 		material.setStartDate(entity.getStartDate());
 		material.setTitle(entity.getTitle());
 		
 		return material;
+	}
+	
+	public static String parseTOString(MonitorModel monitor, byte type) {
+		if (monitor == null) {
+			return "";
+		}
+		if (type == ClKURL) {
+			if (monitor.getClkUrls() == null) {
+				return "";
+			}
+			return parseToString(monitor.getClkUrls());
+		}
+		if (type == SECURL) {
+			if (monitor.getSecUrls() == null) {
+				return "";
+			}
+			return parseToString(monitor.getSecUrls());
+		}
+		return "";
+	}
+	
+	public static String parseToString(List<String> list) {
+		if (list == null || list.isEmpty()) {
+			return "";
+		}
+		
+		StringBuffer result = new StringBuffer();
+		for (String item :list) {
+			result.append(",");
+			result.append(item);
+		}
+		return result.toString().substring(1);
 	}
 	
 	/**
