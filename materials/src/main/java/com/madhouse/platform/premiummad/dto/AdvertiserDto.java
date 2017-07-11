@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import com.madhouse.platform.premiummad.annotation.NotNull;
 
-public class AdvertiserMediaDto implements Serializable {
+public class AdvertiserDto implements Serializable {
 	
 	private static final long serialVersionUID = 6193135169642528287L;
 	
@@ -130,8 +130,5 @@ public class AdvertiserMediaDto implements Serializable {
 		this.lience = lience;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 }
  

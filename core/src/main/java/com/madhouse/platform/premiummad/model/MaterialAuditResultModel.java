@@ -1,6 +1,6 @@
 package com.madhouse.platform.premiummad.model;
 
-public class MaterialMediaAuditResultModel {
+public class MaterialAuditResultModel {
 	/**
 	 * 素材ID
 	 */

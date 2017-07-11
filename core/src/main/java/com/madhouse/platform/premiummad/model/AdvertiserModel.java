@@ -3,14 +3,9 @@ package com.madhouse.platform.premiummad.model;
 import java.io.Serializable;
 import java.util.List;
 
-public class AdvertiserMediaModel implements Serializable {
+public class AdvertiserModel implements Serializable {
 
 	private static final long serialVersionUID = -5204392238626643882L;
-	
-	/**
-	 * 我方系统存在的广告主ID
-	 */
-	private Integer advertiserId;
 	
 	/**
 	 * DSP 传过来的ID
@@ -61,14 +56,6 @@ public class AdvertiserMediaModel implements Serializable {
 	 * 资质文件 （营业执照等）链接
 	 */
 	private String lience;
-
-	public Integer getAdvertiserId() {
-		return advertiserId;
-	}
-
-	public void setAdvertiserId(Integer advertiserId) {
-		this.advertiserId = advertiserId;
-	}
 
 	public String getDspId() {
 		return dspId;

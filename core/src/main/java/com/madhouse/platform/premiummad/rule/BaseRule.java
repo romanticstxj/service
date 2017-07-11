@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class BaseRule {
-	
+public class BaseRule {	
 	/**
 	 * 解析以 , 分割的字符串
 	 * 

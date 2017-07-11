@@ -1,8 +1,8 @@
-package com.madhouse.platform.premiummad.dto;
+package com.madhouse.platform.premiummad.model;
 
-public class MaterialMediaAuditResultDto {
+public class AdvertiserAuditResultModel {
 	/**
-	 * 素材ID
+	 * 广告主 ID
 	 */
 	private String id;
 	
