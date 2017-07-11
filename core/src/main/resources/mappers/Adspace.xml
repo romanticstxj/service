@@ -35,7 +35,13 @@
         <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP" />
     </resultMap>
     
-  
+    <resultMap id="baseMappingResult" type="com.madhouse.platform.premiummad.entity.AdspaceMapping">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="adspaceId" column="adspace_id" jdbcType="INTEGER" />
+        <result property="mediaAdspaceKey" column="media_adspace_key" jdbcType="VARCHAR" />
+        <result property="status" column="status" jdbcType="INTEGER" />
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP" />
+    </resultMap>
     
     <sql id="baseColumns">
 		${alias}.`id`,${alias}.`name`,${alias}.`adspace_key`,${alias}.`media_id`,${alias}.`terminal_type`,${alias}.`terminal_os`,${alias}.`support_https`,
@@ -43,6 +49,10 @@
 		${alias}.`logo_type`,${alias}.`logo_size`,${alias}.`logo_max_kbyte`,${alias}.`title_max_length`,${alias}.`desc_max_length`,${alias}.`main_pic_number`,
 		${alias}.`video_type`,${alias}.`video_size`,${alias}.`video_max_kbyte`,${alias}.`video_duration`,${alias}.`status`,${alias}.`description`,${alias}.`created_user`,
 		${alias}.`created_time`,${alias}.`updated_user`,${alias}.`updated_time`
+	</sql>
+	
+	<sql id="baseMappingColumns">
+		${alias}.`id`,${alias}.`adspace_id`,${alias}.`media_adspace_key`,${alias}.`status`,${alias}.`created_time`
 	</sql>
 	
 	<sql id="baseList">
@@ -193,6 +203,48 @@
         </set>
         WHERE id = #{id}
     </update>
-
+    
+    <insert id="insertAdspaceMediaMapping" useGeneratedKeys="true" keyProperty="id" parameterType="com.madhouse.platform.premiummad.entity.AdspaceMapping">
+            INSERT INTO mad_sys_adspace_mapping_media
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+              <if test="adspaceId != null">adspace_id,</if>
+              <if test="mediaAdspaceKey != null">media_adspace_key,</if>
+              <if test="createdTime != null">created_time,</if>
+              status
+            </trim>
+            VALUES
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+              <if test="adspaceId != null">#{adspaceId},</if>
+              <if test="mediaAdspaceKey != null">#{mediaAdspaceKey},</if>
+              <if test="createdTime != null">#{createdTime},</if>
+              1
+            </trim>
+    </insert>
+    
+    <insert id="insertAdspaceDspMapping" parameterType="java.util.List">
+    		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
+		        SELECT LAST_INSERT_ID()  
+		    </selectKey>  
+           	INSERT INTO mad_sys_adspace_mapping_dsp (adspace_id, dsp_id, dsp_media_id, 
+          		dsp_adspace_key,created_time, status) VALUES
+          		<foreach collection="dspMappings" index="index" item="dspMapping" separator=",">
+          			(
+          				#{dspMapping.adspaceId},
+          				#{dspMapping.dspId},
+          				#{dspMapping.dspMediaId},
+          				#{dspMapping.dspAdspaceKey},
+          				#{dspMapping.createdTime},
+          				1
+          			)
+        		</foreach>
+    </insert>
+    
+    <select id="queryAdspaceMediaMapping" parameterType="com.madhouse.platform.premiummad.entity.AdspaceMapping" 
+    	resultType="integer">
+		SELECT count(0)
+        FROM mad_sys_adspace_mapping_media amm
+		WHERE 1 = 1 AND (amm.adspace_id = #{queryParam.adspaceId}
+		<if test="queryParam.mediaAdspaceKey != null">OR amm.media_adspace_key = #{queryParam.mediaAdspaceKey}</if>)
+	</select>
 
 </mapper>

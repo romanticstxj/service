@@ -3,12 +3,14 @@ package com.madhouse.platform.premiummad.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
 import com.madhouse.platform.premiummad.entity.Adspace;
+import com.madhouse.platform.premiummad.entity.AdspaceMapping;
+import com.madhouse.platform.premiummad.entity.DspMapping;
 import com.madhouse.platform.premiummad.service.IAdspaceService;
 
 @Service
@@ -52,5 +54,30 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		return adspaceDao.updateStatus(adspace);
 	}
 
+	@Override
+	public StatusCode addAdspaceMediaMapping(AdspaceMapping adspaceMapping) {
+		int queryResult = queryAdspaceMediaMapping(adspaceMapping);
+		if(queryResult > 0){ //我方广告位ID不可重复
+			return StatusCode.SC22011;
+		}
+		
+		adspaceDao.insertAdspaceMediaMapping(adspaceMapping);
+		return StatusCode.SC20000;
+	}
+
+	private int queryAdspaceMediaMapping(AdspaceMapping queryParam) {
+		return adspaceDao.queryAdspaceMediaMapping(queryParam);
+	}
+
+	@Override
+	public StatusCode addAdspaceDspMapping(List<DspMapping> dspMappings) {
+//		int queryResult = queryAdspaceMediaMapping(adspaceMapping);
+//		if(queryResult > 0){ //我方广告位ID不可重复
+//			return StatusCode.SC22012;
+//		}
+		
+		adspaceDao.insertAdspaceDspMapping(dspMappings);
+		return StatusCode.SC20000;
+	}
 
 }

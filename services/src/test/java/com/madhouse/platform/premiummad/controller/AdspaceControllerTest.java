@@ -1,9 +1,14 @@
 package com.madhouse.platform.premiummad.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.dto.AdspaceDto;
+import com.madhouse.platform.premiummad.dto.AdspaceMappingDto;
+import com.madhouse.platform.premiummad.dto.DspMappingDto;
 
 public class AdspaceControllerTest {
 	
@@ -25,6 +30,32 @@ public class AdspaceControllerTest {
 		adspaceDto.setDescription("desc");
 		String link = "http://localhost:8080/services/adspace/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(adspaceDto));
+	}
+	
+	@Test
+	public void addMapping(){
+		AdspaceMappingDto amd = new AdspaceMappingDto();
+		amd.setAdspaceId(200003);
+		amd.setMediaAdspaceKey("MediaKey1");
+		List<DspMappingDto> dsps = new ArrayList<DspMappingDto>();
+		DspMappingDto dsp = new DspMappingDto();
+		dsp.setDspAdspaceKey("dspAdspaceKey1");
+		dsp.setDspMediaId(300001);
+		dsp.setDspId(500001);
+		dsps.add(dsp);
+		dsp = new DspMappingDto();
+//		dsp.setDspAdspaceKey("dspAdspaceKey2");
+		dsp.setDspMediaId(300002);
+		dsp.setDspId(500002);
+		dsps.add(dsp);
+		dsp = new DspMappingDto();
+		dsp.setDspAdspaceKey("dspAdspaceKey3");
+		dsp.setDspMediaId(300003);
+		dsp.setDspId(500003);
+		dsps.add(dsp);
+		amd.setDspMappingDtos(dsps);
+		String link = "http://localhost:8080/services/adspace/mapping/create";
+		HttpUtilTest.httpPost(link, JSON.toJSONString(amd));
 	}
 	
 	@Test

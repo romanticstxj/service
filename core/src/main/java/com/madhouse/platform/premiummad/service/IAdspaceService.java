@@ -2,7 +2,10 @@ package com.madhouse.platform.premiummad.service;
 
 import java.util.List;
 
+import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.entity.Adspace;
+import com.madhouse.platform.premiummad.entity.AdspaceMapping;
+import com.madhouse.platform.premiummad.entity.DspMapping;
 
 public interface IAdspaceService {
 	/**
@@ -43,4 +46,17 @@ public interface IAdspaceService {
      * @return
      */
 	Integer updateStatus(Adspace adspace);
+
+	/**
+	 * 添加我方广告位和媒体方广告位的映射关系
+	 * @param adspaceMapping
+	 */
+	StatusCode addAdspaceMediaMapping(AdspaceMapping adspaceMapping);
+
+	/**
+	 * 添加我方广告位和（可能多方）dsp方信息的映射关系
+	 * @param dspMappings
+	 * @return
+	 */
+	StatusCode addAdspaceDspMapping(List<DspMapping> dspMappings);
 }

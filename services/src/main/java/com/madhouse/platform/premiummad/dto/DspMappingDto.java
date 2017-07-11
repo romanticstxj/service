@@ -1,12 +1,24 @@
 package com.madhouse.platform.premiummad.dto;
 
+import com.madhouse.platform.premiummad.annotation.NotNull;
+
 public class DspMappingDto {
 	
+	private Integer adspaceId; //我方广告位id，设置为了表操作
+	@NotNull
 	private Integer dspId; //DSP在我们系统的ID
-	
+	@NotNull
 	private Integer dspMediaId; //DSP方的媒体id
-	
+	@NotNull
 	private String dspAdspaceKey; //DSP方的广告位Key
+
+	public Integer getAdspaceId() {
+		return adspaceId;
+	}
+
+	public void setAdspaceId(Integer adspaceId) {
+		this.adspaceId = adspaceId;
+	}
 
 	public Integer getDspId() {
 		return dspId;

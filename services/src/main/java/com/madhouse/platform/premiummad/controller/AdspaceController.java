@@ -16,9 +16,11 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.AdspaceDto;
 import com.madhouse.platform.premiummad.dto.AdspaceMappingDto;
-import com.madhouse.platform.premiummad.dto.MediaDto;
+import com.madhouse.platform.premiummad.dto.DspMappingDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Adspace;
+import com.madhouse.platform.premiummad.entity.AdspaceMapping;
+import com.madhouse.platform.premiummad.entity.DspMapping;
 import com.madhouse.platform.premiummad.service.IAdspaceService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
@@ -101,7 +103,7 @@ public class AdspaceController {
 	 */
 	@ResponseBody
 	@RequestMapping("/create")
-    public ResponseDto<MediaDto> addAdspace(@RequestBody AdspaceDto adspaceDto, 
+    public ResponseDto<AdspaceDto> addAdspace(@RequestBody AdspaceDto adspaceDto, 
     		@RequestHeader(value=SystemConstant.XFROM, required=true) String xFrom) {
 		String fieldName = BeanUtils.hasEmptyField(adspaceDto);
         if (fieldName != null)
@@ -204,11 +206,35 @@ public class AdspaceController {
 		}
     }
 	
+	/**
+	 * 添加我方广告位和媒体、dsp方广告位的映射
+	 * @param adspaceMappingDto
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("/mapping/create")
-	public ResponseDto<MediaDto> addAdspaceMapping(@RequestBody AdspaceMappingDto adspaceMappingDto) {
-		
-		return null;
+	public ResponseDto<AdspaceDto> addAdspaceMapping(@RequestBody AdspaceMappingDto adspaceMappingDto) {
+		String fieldName = BeanUtils.hasEmptyField(adspaceMappingDto);
+        if (fieldName != null)
+            return ResponseUtils.response(StatusCode.SC21004, null, fieldName + " cannot be null");
+        AdspaceMapping adspaceMapping = new AdspaceMapping();
+        BeanUtils.copyProperties(adspaceMappingDto, adspaceMapping);
+        BeanUtils.setCreateParam(adspaceMapping);
+		StatusCode statusCode = adspaceService.addAdspaceMediaMapping(adspaceMapping);
+		if(statusCode.getValue() != StatusCode.SC20000.getValue()){ //插入数据时check有误
+			return ResponseUtils.response(statusCode, null);
+		}
+		//分解出广告位和dsp的关联信息，插入数据库
+		Integer adspaceId = adspaceMappingDto.getAdspaceId(); //我方广告位id
+		List<DspMappingDto> dspMappingDtos = adspaceMappingDto.getDspMappingDtos();
+		List<DspMapping> dspMappings = new ArrayList<DspMapping>();
+		BeanUtils.copyList(dspMappingDtos, dspMappings, DspMapping.class);
+		for(int i=0; i<dspMappings.size(); i++){ 
+			dspMappings.get(i).setAdspaceId(adspaceId);
+			BeanUtils.setCreateParam(dspMappings.get(i));
+		}
+		adspaceService.addAdspaceDspMapping(dspMappings);
+		return ResponseUtils.response(StatusCode.SC20000,null);
 	}
 	
 }
