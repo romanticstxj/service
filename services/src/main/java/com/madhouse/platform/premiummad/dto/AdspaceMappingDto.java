@@ -11,7 +11,7 @@ public class AdspaceMappingDto {
 	
 	private String mediaAdspaceKey; //媒体方广告位key
 	
-	private List<DspMappingDto> dspMappingDtos; //dsp方的映射信息，可能多个
+	private List<DspMappingDto> dspMappings; //dsp方的映射信息，可能多个
 
 	public Integer getAdspaceId() {
 		return adspaceId;
@@ -29,12 +29,12 @@ public class AdspaceMappingDto {
 		this.mediaAdspaceKey = mediaAdspaceKey;
 	}
 
-	public List<DspMappingDto> getDspMappingDtos() {
-		return dspMappingDtos;
+	public List<DspMappingDto> getDspMappings() {
+		return dspMappings;
 	}
 
-	public void setDspMappingDtos(List<DspMappingDto> dspMappingDtos) {
-		this.dspMappingDtos = dspMappingDtos;
+	public void setDspMappings(List<DspMappingDto> dspMappings) {
+		this.dspMappings = dspMappings;
 	}
 
 }

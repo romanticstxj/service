@@ -53,10 +53,20 @@ public interface IAdspaceService {
 	 */
 	StatusCode addAdspaceMediaMapping(AdspaceMapping adspaceMapping);
 
+
+	AdspaceMapping queryAdspaceMappingById(Integer id);
+
 	/**
-	 * 添加我方广告位和（可能多方）dsp方信息的映射关系
-	 * @param dspMappings
+	 * 添加广告位映射信息
+	 * @param adspaceMapping
 	 * @return
 	 */
-	StatusCode addAdspaceDspMapping(List<DspMapping> dspMappings);
+	StatusCode addAdspaceMapping(AdspaceMapping adspaceMapping);
+
+	/**
+	 * 更新广告位映射信息
+	 * @param adspaceMapping
+	 * @return
+	 */
+	StatusCode updateAdspaceMapping(AdspaceMapping adspaceMapping);
 }

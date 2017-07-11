@@ -8,7 +8,7 @@ public class AdspaceMapping extends BaseEntity{
 	
 	private String mediaAdspaceKey; //媒体方广告位key
 	
-	private List<DspMapping> dspMappingDtos; //dsp方的映射信息，可能多个
+	private List<DspMapping> dspMappings; //dsp方的映射信息，可能多个
 
 	public Integer getAdspaceId() {
 		return adspaceId;
@@ -26,12 +26,12 @@ public class AdspaceMapping extends BaseEntity{
 		this.mediaAdspaceKey = mediaAdspaceKey;
 	}
 
-	public List<DspMapping> getDspMappingDtos() {
-		return dspMappingDtos;
+	public List<DspMapping> getDspMappings() {
+		return dspMappings;
 	}
 
-	public void setDspMappingDtos(List<DspMapping> dspMappingDtos) {
-		this.dspMappingDtos = dspMappingDtos;
+	public void setDspMappings(List<DspMapping> dspMappings) {
+		this.dspMappings = dspMappings;
 	}
 
 }

@@ -27,5 +27,14 @@ public interface AdspaceDao {
 	Integer insertAdspaceDspMapping(@Param("dspMappings") List<DspMapping> dspMappings);
 
 	int queryAdspaceMediaMapping(@Param("queryParam") AdspaceMapping queryParam);
+
+	int queryAdspaceDspMapping(Integer adspaceId);
+
+	AdspaceMapping queryAdspaceMappingById(Integer id);
+
+	Integer removeAdspaceMediaMapping(@Param("adspaceId") Integer adspaceId);
+	
+	Integer removeAdspaceDspMapping(@Param("adspaceId") Integer adspaceId);
+
 	
 }

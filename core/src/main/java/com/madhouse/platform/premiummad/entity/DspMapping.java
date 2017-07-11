@@ -9,7 +9,7 @@ public class DspMapping extends BaseEntity{
 	private Integer dspMediaId; //DSP方的媒体id
 	
 	private String dspAdspaceKey; //DSP方的广告位Key
-
+	
 	public Integer getAdspaceId() {
 		return adspaceId;
 	}
@@ -41,4 +41,5 @@ public class DspMapping extends BaseEntity{
 	public void setDspAdspaceKey(String dspAdspaceKey) {
 		this.dspAdspaceKey = dspAdspaceKey;
 	}
+
 }

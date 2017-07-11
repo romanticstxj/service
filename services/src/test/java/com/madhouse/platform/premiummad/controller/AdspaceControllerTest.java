@@ -35,8 +35,8 @@ public class AdspaceControllerTest {
 	@Test
 	public void addMapping(){
 		AdspaceMappingDto amd = new AdspaceMappingDto();
-		amd.setAdspaceId(200003);
-		amd.setMediaAdspaceKey("MediaKey1");
+		amd.setAdspaceId(5);
+		amd.setMediaAdspaceKey("555");
 		List<DspMappingDto> dsps = new ArrayList<DspMappingDto>();
 		DspMappingDto dsp = new DspMappingDto();
 		dsp.setDspAdspaceKey("dspAdspaceKey1");
@@ -53,8 +53,40 @@ public class AdspaceControllerTest {
 		dsp.setDspMediaId(300003);
 		dsp.setDspId(500003);
 		dsps.add(dsp);
-		amd.setDspMappingDtos(dsps);
+		amd.setDspMappings(dsps);
 		String link = "http://localhost:8080/services/adspace/mapping/create";
+		HttpUtilTest.httpPost(link, JSON.toJSONString(amd));
+	}
+	
+	@Test
+	public void mappingDetail(){
+		String link = "http://localhost:8080/services/adspace/mapping/detail?id=3";
+		HttpUtilTest.httpGet(link);
+	}
+	
+	@Test
+	public void updateMapping(){
+		AdspaceMappingDto amd = new AdspaceMappingDto();
+		amd.setAdspaceId(3);
+		amd.setMediaAdspaceKey("555");
+		List<DspMappingDto> dsps = new ArrayList<DspMappingDto>();
+		DspMappingDto dsp = new DspMappingDto();
+		dsp.setDspAdspaceKey("dspAdspaceKey1");
+		dsp.setDspMediaId(300001);
+		dsp.setDspId(500001);
+		dsps.add(dsp);
+		dsp = new DspMappingDto();
+//		dsp.setDspAdspaceKey("dspAdspaceKey2");
+		dsp.setDspMediaId(300002);
+		dsp.setDspId(500002);
+		dsps.add(dsp);
+		dsp = new DspMappingDto();
+		dsp.setDspAdspaceKey("dspAdspaceKey3");
+		dsp.setDspMediaId(300003);
+		dsp.setDspId(500003);
+		dsps.add(dsp);
+		amd.setDspMappings(dsps);
+		String link = "http://localhost:8080/services/adspace/mapping/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(amd));
 	}
 	

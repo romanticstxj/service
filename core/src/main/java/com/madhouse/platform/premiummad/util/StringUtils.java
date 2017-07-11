@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.List;
 
 public class StringUtils {
@@ -81,4 +82,5 @@ public class StringUtils {
 		}
 		return sb.toString();
 	}
+	
 }
