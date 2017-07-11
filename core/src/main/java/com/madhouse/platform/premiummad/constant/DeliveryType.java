@@ -3,15 +3,16 @@ package com.madhouse.platform.premiummad.constant;
 /**
  * 广告类型
  */
-public enum AdvertiserType {
-	AT10001(1, "横幅广告"), 
-	AT10002(2, "视频广告"), 
-	AT10003(3, "信息流广告");
+public enum DeliveryType {
+	DT10001(1, "PDB"), 
+	DT10002(2, "PD"), 
+	DT10003(4, "PMP"),
+	DT10004(8, "RTB");
 	
 	int value;
 	String descrip;
 
-	AdvertiserType(int value, String descrip) {
+	DeliveryType(int value, String descrip) {
 		this.value = value;
 		this.descrip = descrip;
 	}
@@ -25,12 +26,11 @@ public enum AdvertiserType {
 	}
 	
 	public static String getDescrip(int value) {
-		for (AdvertiserType item : AdvertiserType.values()) {
+		for (DeliveryType item : DeliveryType.values()) {
 			if (item.getValue() == value) {
 				return item.getDescrip();
 			}
 		}
 		return null;
 	}
-
 }

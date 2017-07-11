@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.madhouse.platform.premiummad.constant.AdvertiserType;
+import com.madhouse.platform.premiummad.constant.DeliveryType;
 import com.madhouse.platform.premiummad.constant.MaterialAuditMode;
 import com.madhouse.platform.premiummad.constant.MaterialMediaStatusCode;
+import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMediaMapper;
 import com.madhouse.platform.premiummad.dao.SysMediaMapper;
@@ -18,9 +19,9 @@ import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.entity.MaterialMedia;
 import com.madhouse.platform.premiummad.entity.MaterialMediaUnion;
 import com.madhouse.platform.premiummad.entity.SysMedia;
+import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.MaterialMediaAuditResultModel;
 import com.madhouse.platform.premiummad.model.MaterialMediaModel;
-import com.madhouse.platform.premiummad.model.OperationResultModel;
 import com.madhouse.platform.premiummad.rule.MaterialMediaRule;
 import com.madhouse.platform.premiummad.rule.MediaRule;
 import com.madhouse.platform.premiummad.service.IMaterialMediaService;
@@ -65,16 +66,25 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 	 */
 	@Transactional
 	@Override
-	public OperationResultModel upload(MaterialMediaModel entity) {
-		OperationResultModel operationResult = new OperationResultModel();
+	public void upload(MaterialMediaModel entity) {
+		// 校验参数合法性
+		if (AdvertiserType.getDescrip(entity.getActType().intValue()) == null) {
+			throw new BusinessException(StatusCode.SC400, "广告类型编码不存在");
+		}
+		if (DeliveryType.getDescrip(entity.getDeliveryType().intValue()) == null) {
+			throw new BusinessException(StatusCode.SC400, "投放方式编码不存在");
+		}
+		if (entity.getMediaId() == null || entity.getMediaId().isEmpty()) {
+			throw new BusinessException(StatusCode.SC400, "素材关联的媒体ID必须");
+		}
+		if (entity.getAdm() == null || entity.getAdm().isEmpty()) {
+			throw new BusinessException(StatusCode.SC400, "广告素材url必须");
+		}
 		
 		// 查询关联的媒体是否存在且有效
 		String[] distinctMediaIds = MaterialMediaRule.parseListToDistinctArray(entity.getMediaId());
 		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
-		MediaRule.checkMedias(distinctMediaIds, uploadedMedias, operationResult);
-		if (!operationResult.isSuccessful()) {
-			return operationResult;
-		}
+		MediaRule.checkMedias(distinctMediaIds, uploadedMedias);
 		
 		// 查询素材是否存在,不存在构建，否则更新
 		Material material = materialDao.selectByMaterialKey(entity.getId());
@@ -89,9 +99,7 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 		// 存在待审核、审核中，审核通过的不允许推送，提示信息
 		String errorMsg = MaterialMediaRule.validateMaterialAndMedias(classfiedMaps, entity.getId());
 		if (errorMsg != null) {
-			operationResult.setSuccessful(Boolean.FALSE);
-			operationResult.setErrorMessage(errorMsg);
-			return operationResult;
+			throw new BusinessException(StatusCode.SC411, errorMsg);
 		}
 		
 		// 数据存储
@@ -100,9 +108,7 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 			// 数据插入
 			int effortRows = materialDao.insertMaterial(material);
 			if (effortRows != 1) {
-				operationResult.setSuccessful(Boolean.FALSE);
-				operationResult.setErrorMessage("系统异常");
-				return operationResult;
+				throw new BusinessException(StatusCode.SC500);
 			}
 
 			// 广告主ID回写
@@ -110,9 +116,7 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 		} else {
 			int effortRows = materialDao.updateByPrimaryKeySelective(material);
 			if (effortRows != 1) {
-				operationResult.setSuccessful(Boolean.FALSE);
-				operationResult.setErrorMessage("系统异常");
-				return operationResult;
+				throw new BusinessException(StatusCode.SC500);
 			}
 		}
 		
@@ -121,9 +125,7 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 			List<MaterialMedia> insertedRecords = MaterialMediaRule.convert(classfiedMaps.get(4));
 			int effortRows = materialMediaDao.insertByBatch(insertedRecords);
 			if (effortRows != insertedRecords.size()) {
-				operationResult.setSuccessful(Boolean.FALSE);
-				operationResult.setErrorMessage("系统异常");
-				return operationResult;
+				throw new BusinessException(StatusCode.SC500);
 			}
 		}
 
@@ -132,16 +134,12 @@ public class MaterialMediaServiceImpl implements IMaterialMediaService {
 			List<MaterialMedia> insertedRecords = MaterialMediaRule.convert(classfiedMaps.get(3));
 			int effortRows = materialMediaDao.updateByBath(insertedRecords);
 			if (effortRows != insertedRecords.size()) {
-				operationResult.setSuccessful(Boolean.FALSE);
-				operationResult.setErrorMessage("系统异常");
-				return operationResult;
+				throw new BusinessException(StatusCode.SC500);
 			}
 		}
 		
 		// 根据媒体审核模式处理
 		audit(uploadedMedias, classfiedMaps.get(4), classfiedMaps.get(3));
-		
-		return operationResult;
 	}
 	
 	private void audit(List<SysMedia> uploadedMedias, Map<Integer, MaterialMediaUnion> unUploadedMaterialMedias, Map<Integer, MaterialMediaUnion> rejectedMaterialMedias) {

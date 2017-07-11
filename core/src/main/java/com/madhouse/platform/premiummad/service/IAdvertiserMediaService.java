@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.madhouse.platform.premiummad.model.AdvertiserMediaAuditResultModel;
 import com.madhouse.platform.premiummad.model.AdvertiserMediaModel;
-import com.madhouse.platform.premiummad.model.OperationResultModel;
 
 public interface IAdvertiserMediaService {
 
@@ -19,7 +18,6 @@ public interface IAdvertiserMediaService {
 	/**
 	 * DSP端上传广告主
 	 * @param entity
-	 * @return operationResultModel
 	 */
-	OperationResultModel upload(AdvertiserMediaModel entity);
+	void upload(AdvertiserMediaModel entity);
 }

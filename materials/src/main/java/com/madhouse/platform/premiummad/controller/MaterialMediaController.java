@@ -19,7 +19,6 @@ import com.madhouse.platform.premiummad.dto.TrackDto;
 import com.madhouse.platform.premiummad.model.MaterialMediaAuditResultModel;
 import com.madhouse.platform.premiummad.model.MaterialMediaModel;
 import com.madhouse.platform.premiummad.model.MonitorModel;
-import com.madhouse.platform.premiummad.model.OperationResultModel;
 import com.madhouse.platform.premiummad.model.TrackModel;
 import com.madhouse.platform.premiummad.service.impl.MaterialMediaServiceImpl;
 import com.madhouse.platform.premiummad.util.BeanUtils;
@@ -41,12 +40,8 @@ public class MaterialMediaController {
 	@RequestMapping("/upload")
 	public ResponseDto<Void> list(@RequestBody MaterialMediaDto materialDto, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
 		MaterialMediaModel entity = convert(materialDto);
-		OperationResultModel result = materialMediaService.upload(entity);
-		if (result.isSuccessful()) {
-			return ResponseUtils.response(StatusCode.SC20000);
-		} else {
-			return ResponseUtils.response(StatusCode.SC410002, result.getErrorMessage());
-		}
+		materialMediaService.upload(entity);
+		return ResponseUtils.response(StatusCode.SC20000);
 	}
 	
 	/**

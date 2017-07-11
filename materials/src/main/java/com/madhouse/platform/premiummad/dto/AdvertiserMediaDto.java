@@ -2,7 +2,6 @@ package com.madhouse.platform.premiummad.dto;
 
 import java.io.Serializable;
 import java.util.List;
-
 import com.madhouse.platform.premiummad.annotation.NotNull;
 
 public class AdvertiserMediaDto implements Serializable {

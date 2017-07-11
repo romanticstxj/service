@@ -2,9 +2,11 @@ package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class BaseRule {
+	
 	/**
 	 * 解析以 , 分割的字符串
 	 * 

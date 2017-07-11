@@ -117,5 +117,14 @@ public enum AdevertiserIndustry {
 	public String getDescrip() {
 		return descrip;
 	}
+	
+	public static String getDescrip(int value) {
+		for (AdevertiserIndustry item : AdevertiserIndustry.values()) {
+			if (item.getValue() == value) {
+				return item.getDescrip();
+			}
+		}
+		return null;
+	}
 
 }

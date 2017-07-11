@@ -14,7 +14,6 @@ import com.madhouse.platform.premiummad.dto.AdvertiserMediaDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.model.AdvertiserMediaAuditResultModel;
 import com.madhouse.platform.premiummad.model.AdvertiserMediaModel;
-import com.madhouse.platform.premiummad.model.OperationResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserMediaService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
@@ -37,12 +36,8 @@ public class AdvertiserMediaController {
 		AdvertiserMediaModel entity = new AdvertiserMediaModel();
 		BeanUtils.copyProperties(advertiserDto, entity);
 		entity.setDspId(dspId); // 广告主所属DSP
-		OperationResultModel result = advertiserMediaService.upload(entity);
-		if (result.isSuccessful()) {
-			return ResponseUtils.response(StatusCode.SC20000);
-		} else {
-			return ResponseUtils.response(StatusCode.SC410001, result.getErrorMessage());
-		}
+		advertiserMediaService.upload(entity);
+		return ResponseUtils.response(StatusCode.SC20000);
 	}
 	
 	/**

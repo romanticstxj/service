@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.madhouse.platform.premiummad.constant.AdevertiserIndustry;
 import com.madhouse.platform.premiummad.constant.AdvertiserAuditMode;
 import com.madhouse.platform.premiummad.constant.MaterialMediaStatusCode;
+import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.AdvertiserMediaMapper;
 import com.madhouse.platform.premiummad.dao.SysMediaMapper;
@@ -18,9 +20,9 @@ import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.AdvertiserMedia;
 import com.madhouse.platform.premiummad.entity.AdvertiserMediaUnion;
 import com.madhouse.platform.premiummad.entity.SysMedia;
+import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.AdvertiserMediaAuditResultModel;
 import com.madhouse.platform.premiummad.model.AdvertiserMediaModel;
-import com.madhouse.platform.premiummad.model.OperationResultModel;
 import com.madhouse.platform.premiummad.rule.AdvertiserMediaRule;
 import com.madhouse.platform.premiummad.rule.MediaRule;
 import com.madhouse.platform.premiummad.service.IAdvertiserMediaService;
@@ -62,20 +64,22 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 	/**
 	 * DSP端上传广告主
 	 * @param entity
-	 * @return operationResultModel
 	 */
 	@Transactional
 	@Override
-	public OperationResultModel upload(AdvertiserMediaModel entity) {
-		OperationResultModel operationResult = new OperationResultModel();
+	public void upload(AdvertiserMediaModel entity) {
+		// 校验参数合法性
+		if (AdevertiserIndustry.getDescrip(entity.getIndustry().intValue()) == null) {
+			throw new BusinessException(StatusCode.SC400, "广告主所属工业编码不存在");
+		}
+		if (entity.getMediaId() == null || entity.getMediaId().isEmpty()) {
+			throw new BusinessException(StatusCode.SC400, "广告主关联的媒体ID必须");
+		}
 
 		// 查询关联的媒体是否存在且有效
 		String[] distinctMediaIds = AdvertiserMediaRule.parseListToDistinctArray(entity.getMediaId());
 		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
-		MediaRule.checkMedias(distinctMediaIds, uploadedMedias, operationResult);
-		if (!operationResult.isSuccessful()) {
-			return operationResult;
-		}
+		MediaRule.checkMedias(distinctMediaIds, uploadedMedias);
 
 		// 查询广告主是否存在,不存在构建，否则更新
 		Advertiser advertiser = advertiserDao.selectByAdvertiserKeyAndDspId(entity.getId(), entity.getDspId());
@@ -90,9 +94,7 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 		// 存在待审核、审核中，审核通过的不允许推送，提示信息
 		String errorMsg = AdvertiserMediaRule.validateAdvertiserAndMedias(classfiedMaps, entity.getId());
 		if (errorMsg != null) {
-			operationResult.setSuccessful(Boolean.FALSE);
-			operationResult.setErrorMessage(errorMsg);
-			return operationResult;
+			throw new BusinessException(StatusCode.SC411, errorMsg);
 		}
 		
 		// 数据存储
@@ -101,9 +103,7 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 			// 数据插入 
 			int effortRows = advertiserDao.insertAdvertiser(advertiser);
 			if (effortRows != 1) {
-				operationResult.setSuccessful(Boolean.FALSE);
-				operationResult.setErrorMessage("系统异常");
-				return operationResult;
+				throw new BusinessException(StatusCode.SC500);
 			}
 			
 			// 广告主ID回写
@@ -111,9 +111,7 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 		} else { // 对于驳回再次提交的，广告主进行更新
 			int effortRows = advertiserDao.updateByPrimaryKeySelective(advertiser);
 			if (effortRows != 1) {
-				operationResult.setSuccessful(Boolean.FALSE);
-				operationResult.setErrorMessage("系统异常");
-				return operationResult;
+				throw new BusinessException(StatusCode.SC500);
 			}
 		}
 		
@@ -122,9 +120,7 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 			List<AdvertiserMedia> insertedRecords = AdvertiserMediaRule.convert(classfiedMaps.get(4));
 			int effortRows = advertiserMediaDao.insertByBatch(insertedRecords);
 			if (effortRows != insertedRecords.size()) {
-				operationResult.setSuccessful(Boolean.FALSE);
-				operationResult.setErrorMessage("系统异常");
-				return operationResult;
+				throw new BusinessException(StatusCode.SC500);
 			}
 		}
 
@@ -133,16 +129,12 @@ public class AdvertiserMediaServiceImpl implements IAdvertiserMediaService {
 			List<AdvertiserMedia> insertedRecords = AdvertiserMediaRule.convert(classfiedMaps.get(3));
 			int effortRows = advertiserMediaDao.updateByBath(insertedRecords);
 			if (effortRows != insertedRecords.size()) {
-				operationResult.setSuccessful(Boolean.FALSE);
-				operationResult.setErrorMessage("系统异常");
-				return operationResult;
+				throw new BusinessException(StatusCode.SC500);
 			}
 		}
 		
 		// 根据媒体审核模式处理
 		audit(uploadedMedias, classfiedMaps.get(4), classfiedMaps.get(3));
-
-		return operationResult;
 	}
 	
 	private void audit(List<SysMedia> uploadedMedias, Map<Integer, AdvertiserMediaUnion> unUploadedAdvertiserMedias, Map<Integer, AdvertiserMediaUnion> rejectedAdvertiserMedias) {
