@@ -1,4 +1,4 @@
-package com.madhouse.platform.premiummad.TokenInterceptor;
+package com.madhouse.platform.premiummad.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,12 +10,12 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.madhouse.platform.premiummad.annotation.TokenFilter;
 import com.madhouse.platform.premiummad.service.impl.DspServiceImpl;
 
-public class TokenInterceptor extends HandlerInterceptorAdapter  {
-    protected static final Logger log = LoggerFactory.getLogger("TokenInterceptor");
-    
-    @Autowired
+public class TokenInterceptor extends HandlerInterceptorAdapter {
+	protected static final Logger log = LoggerFactory.getLogger("TokenInterceptor");
+
+	@Autowired
 	private DspServiceImpl dspService;
- 
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		if (handler instanceof HandlerMethod) {
@@ -24,7 +24,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter  {
 				return true;
 			}
 		}
-		
+
 		String token = request.getParameter("token");
 		String dspId = request.getParameter("dspId");
 		dspService.checkDspPermission(dspId, token);

@@ -2,8 +2,6 @@ package com.madhouse.platform.premiummad.dto;
 
 import java.io.Serializable;
 import java.util.List;
-
-import com.madhouse.platform.premiummad.annotation.DateFormatValid;
 import com.madhouse.platform.premiummad.annotation.NotNull;
 
 public class MaterialDto implements Serializable {
@@ -60,14 +58,12 @@ public class MaterialDto implements Serializable {
 	 * 有效日期(yyyy-MM-dd)
 	 */
 	@NotNull
-	@DateFormatValid(format="yyyy-MM-dd", message="有效日期格式无效")
 	private String startDate;
 	
 	/**
 	 * 失效日期(yyyy-MM-dd)
 	 */
 	@NotNull
-	@DateFormatValid(format="yyyy-MM-dd", message="失效日期格式无效")
 	private String endDate;
 	
 	/**
