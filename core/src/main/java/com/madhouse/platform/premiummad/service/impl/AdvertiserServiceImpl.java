@@ -82,7 +82,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		// 数据存储
 		// 保存未提交的广告主和媒体关系
 		if (classfiedMaps.get(4) != null && classfiedMaps.get(4).size() > 0) {
-			List<Advertiser> insertedRecords = (List<Advertiser>) classfiedMaps.get(4).values();
+			List<Advertiser> insertedRecords = AdvertiserRule.convert(classfiedMaps.get(4));
 			for (Advertiser item : insertedRecords) {
 				int effortRows = advertiserDao.insertAdvertiser(item);
 				if (effortRows != 1) {
@@ -93,9 +93,9 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 
 		// 更新驳回的广告主和媒体关系
 		if (classfiedMaps.get(3) != null && classfiedMaps.get(3).size() > 0) {
-			List<Advertiser> insertedRecords = (List<Advertiser>) classfiedMaps.get(4).values();
-			int effortRows = advertiserDao.updateByBath(insertedRecords);
-			if (effortRows != insertedRecords.size()) {
+			List<Advertiser> updateRecords = AdvertiserRule.convert(classfiedMaps.get(3));
+			int effortRows = advertiserDao.updateByBath(updateRecords);
+			if (effortRows != updateRecords.size()) {
 				throw new BusinessException(StatusCode.SC500);
 			}
 		}
@@ -185,11 +185,11 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 					}
 				}
 			}
-			if (audited) {
+			if (!audited) {
 				errorMsg.append(";");
 				errorMsg.append("广告主[" + advertiserKey + "],媒体[" + media.getId().intValue() + "]" + auditedStatus);
 			}
 		}
-		return errorMsg.substring(1);
+		return errorMsg.length() > 0 ? errorMsg.substring(1) : "";
 	}
 }

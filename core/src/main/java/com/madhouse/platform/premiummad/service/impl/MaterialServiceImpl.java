@@ -74,7 +74,7 @@ public class MaterialServiceImpl implements IMaterialService {
 
 		// 判断所有需要广告主需要审核的媒体是否都已审核通过
 		String errorMsg = advertiserService.validateAdKeyAndMedias(uploadedMedias, entity.getDspId(), entity.getAdvertiserId());
-		if (StringUtils.isBlank(errorMsg)) {
+		if (!StringUtils.isBlank(errorMsg)) {
 			throw new BusinessException(StatusCode.SC414, errorMsg);
 		}
 		
@@ -92,7 +92,7 @@ public class MaterialServiceImpl implements IMaterialService {
 		// 数据存储
 		// 保存未提交的素材和媒体关系
 		if (classfiedMaps.get(4) != null && classfiedMaps.get(4).size() > 0) {
-			List<Material> insertedRecords = (List<Material>) classfiedMaps.get(4).values();
+			List<Material> insertedRecords = MaterialRule.convert(classfiedMaps.get(4));
 			for (Material item : insertedRecords) {
 				int effortRows = materialDao.insertMaterial(item);
 				if (effortRows != 1) {
@@ -103,9 +103,9 @@ public class MaterialServiceImpl implements IMaterialService {
 
 		// 更新驳回的素材和媒体关系
 		if (classfiedMaps.get(3) != null && classfiedMaps.get(3).size() > 0) {
-			List<Material> insertedRecords = (List<Material>) classfiedMaps.get(3).values();
-			int effortRows = materialDao.updateByBath(insertedRecords);
-			if (effortRows != insertedRecords.size()) {
+			List<Material> updateRecords = MaterialRule.convert(classfiedMaps.get(3));
+			int effortRows = materialDao.updateByBath(updateRecords);
+			if (effortRows != updateRecords.size()) {
 				throw new BusinessException(StatusCode.SC500);
 			}
 		}

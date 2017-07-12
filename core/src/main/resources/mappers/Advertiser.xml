@@ -137,49 +137,49 @@
   	<foreach collection="list" item="item" index="index" separator=";" open="" close="">
 	    update mad_sys_advertiser
 	    <set >
-	      <if test="dspId != null" >
+	      <if test="item.dspId != null" >
 	        dsp_id = #{item.dspId,jdbcType=INTEGER},
 	      </if>
-	      <if test="advertiserKey != null" >
+	      <if test="item.advertiserKey != null" >
 	        advertiser_key = #{item.advertiserKey,jdbcType=VARCHAR},
 	      </if>
-	      <if test="advertiserName != null" >
+	      <if test="item.advertiserName != null" >
 	        advertiser_name = #{item.advertiserName,jdbcType=VARCHAR},
 	      </if>
-	      <if test="mediaId != null" >
+	      <if test="item.mediaId != null" >
 	        media_id = #{item.mediaId,jdbcType=INTEGER},
 	      </if>
-	      <if test="industry != null" >
+	      <if test="item.industry != null" >
 	        industry = #{item.industry,jdbcType=SMALLINT},
 	      </if>
-	      <if test="website != null" >
+	      <if test="item.website != null" >
 	        website = #{item.website,jdbcType=VARCHAR},
 	      </if>
-	      <if test="contact != null" >
+	      <if test="item.contact != null" >
 	        contact = #{item.contact,jdbcType=VARCHAR},
 	      </if>
-	      <if test="address != null" >
+	      <if test="item.address != null" >
 	        address = #{item.address,jdbcType=VARCHAR},
 	      </if>
-	      <if test="phone != null" >
+	      <if test="item.phone != null" >
 	        phone = #{item.phone,jdbcType=VARCHAR},
 	      </if>
-	      <if test="license != null" >
-	        license = #{license,jdbcType=VARCHAR},
+	      <if test="item.license != null" >
+	        license = #{item.license,jdbcType=VARCHAR},
 	      </if>
-	      <if test="auditedUser != null" >
+	      <if test="item.auditedUser != null" >
 	        audited_user = #{item.auditedUser,jdbcType=INTEGER},
 	      </if>
-	      <if test="status != null" >
+	      <if test="item.status != null" >
 	        status = #{item.status,jdbcType=TINYINT},
 	      </if>
-	      <if test="reason != null" >
+	      <if test="item.reason != null" >
 	        reason = #{item.reason,jdbcType=VARCHAR},
 	      </if>
-	      <if test="createdTime != null" >
+	      <if test="item.createdTime != null" >
 	        created_time = #{item.createdTime,jdbcType=TIMESTAMP},
 	      </if>
-	      <if test="updatedTime != null" >
+	      <if test="item.updatedTime != null" >
 	        updated_time = #{item.updatedTime,jdbcType=TIMESTAMP},
 	      </if>
 	    </set>

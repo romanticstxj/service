@@ -1,12 +1,16 @@
 package com.madhouse.platform.premiummad.rule;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+
 import com.madhouse.platform.premiummad.constant.AdvertiserType;
 import com.madhouse.platform.premiummad.constant.DeliveryType;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
@@ -23,6 +27,20 @@ public class MaterialRule extends BaseRule {
 	public static byte ClKURL = 1;
 	public static byte SECURL = 2;
 	public static byte IMPURL = 3;
+	
+	/**
+	 * 提取 map 的 values
+	 * @param map
+	 * @return
+	 */
+	public static List<Material> convert(Map<Integer, Material> map) {
+		List<Material> list = new ArrayList<Material>();
+		Iterator<Entry<Integer, Material>> iterator = map.entrySet().iterator();
+		while(iterator.hasNext()) {
+			list.add(iterator.next().getValue());
+		}
+		return list;
+	}
 	
 	/**
 	 * 校验参数合法性
@@ -87,34 +105,42 @@ public class MaterialRule extends BaseRule {
 			}
 			usedMediaIdSet.add(Integer.valueOf(mediaId));
 	
+			boolean record = false;
 			for (Material material : materials) {
 				if (material.getMaterialKey().equals(entity.getId()) && material.getMediaId().intValue() == mediaId.intValue()) {
 					// 已驳回
 					if (MaterialStatusCode.MSC10001.getValue() == material.getStatus().intValue()) {
+						material = buildMaterial(material, entity, mediaId);
 						material.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10002.getValue())));// 状态置为待审核
 						rejectedMaterials.put(mediaId, material);
-						continue;
+						record = true;
+						break;
 					}
 					// 待审核
 					if (MaterialStatusCode.MSC10002.getValue() == material.getStatus().intValue()) {
 						unAuditedMaterials.put(mediaId, material);
-						continue;
+						record = true;
+						break;
 					}
 					// 审核中
 					if (MaterialStatusCode.MSC10003.getValue() == material.getStatus().intValue()) {
 						audittingMaterials.put(mediaId, material);
-						continue;
+						record = true;
+						break;
 					}
 					// 审核通过
 					if (MaterialStatusCode.MSC10004.getValue() == material.getStatus().intValue()) {
 						auditedMaterials.put(mediaId, material);
-						continue;
+						record = true;
+						break;
 					}
 				}
 			}
 			// 未上传过
-			Material newEntity = buildMaterial(null, entity, mediaId);;			
-			unUploadedMaterials.put(mediaId, newEntity);
+			if (!record) {
+				Material newEntity = buildMaterial(null, entity, mediaId);;			
+				unUploadedMaterials.put(mediaId, newEntity);
+			}
 		}
 		classfiedMaps.add(0, unAuditedMaterials); // 待审核
 		classfiedMaps.add(1, audittingMaterials); // 审核中
@@ -138,14 +164,11 @@ public class MaterialRule extends BaseRule {
 			material.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10002.getValue()))); // 状态置为待审核
 			material.setCreatedTime(new Date());
 			material.setUpdatedTime(material.getCreatedTime());
-			
-			// set default value
-			material.setAuditedUser(Integer.valueOf(0));
-			material.setReason("");
 		} else { // 更新
 			material.setUpdatedTime(new Date());
 		}
 
+		material.setAdvertiserKey(entity.getAdvertiserId());
 		material.setActiveType(entity.getActType() != null ? Byte.valueOf(entity.getActType().toString()) : 0);
 		material.setAdMaterials(parseToString(entity.getAdm())); // 广告素材URL(多个用半角逗号分隔)
 		material.setAdType(Short.valueOf(entity.getAdType().toString()));
@@ -168,6 +191,10 @@ public class MaterialRule extends BaseRule {
 		material.setStartDate(entity.getStartDate());
 		material.setTitle(entity.getTitle());
 		
+		// set default value
+		material.setAuditedUser(Integer.valueOf(0));
+		material.setReason("");
+
 		return material;
 	}
 	
@@ -192,6 +219,7 @@ public class MaterialRule extends BaseRule {
 				result.append("|");
 				result.append(track.getUrl());
 			}
+			return result.substring(1);
 		}
 		return "";
 	}

@@ -10,6 +10,7 @@
 	   <foreach collection="mediaId" item="item" index="index"
            open="(" close=")" separator=",">
            #{item,jdbcType=INTEGER}
+           
         </foreach>
   </select>
   <insert id="insertByBatch" parameterType="com.madhouse.platform.premiummad.entity.Material" >
@@ -229,91 +230,91 @@
   	<foreach collection="list" item="item" index="index" separator=";" open="" close="">
 	    update mad_sys_material
 	    <set >
-	      <if test="dspId != null" >
+	      <if test="item.dspId != null" >
 	        dsp_id = #{item.dspId,jdbcType=INTEGER},
 	      </if>
-	      <if test="materialKey != null" >
+	      <if test="item.materialKey != null" >
 	        material_key = #{item.materialKey,jdbcType=VARCHAR},
 	      </if>
-	      <if test="materialName != null" >
+	      <if test="item.materialName != null" >
 	        material_name = #{item.materialName,jdbcType=VARCHAR},
 	      </if>
-	      <if test="advertiserKey != null" >
+	      <if test="item.advertiserKey != null" >
 	        advertiser_key = #{item.advertiserKey,jdbcType=VARCHAR},
 	      </if>
-	      <if test="mediaId != null" >
+	      <if test="item.mediaId != null" >
 	        media_id = #{item.mediaId,jdbcType=INTEGER},
 	      </if>
-	      <if test="adType != null" >
+	      <if test="item.adType != null" >
 	        ad_type = #{item.adType,jdbcType=SMALLINT},
 	      </if>
-	      <if test="deliveryType != null" >
+	      <if test="item.deliveryType != null" >
 	        delivery_type = #{item.deliveryType,jdbcType=TINYINT},
 	      </if>
-	      <if test="brand != null" >
+	      <if test="item.brand != null" >
 	        brand = #{item.brand,jdbcType=VARCHAR},
 	      </if>
-	      <if test="agency != null" >
+	      <if test="item.agency != null" >
 	        agency = #{item.agency,jdbcType=VARCHAR},
 	      </if>
-	      <if test="dealId != null" >
+	      <if test="item.dealId != null" >
 	        deal_id = #{item.dealId,jdbcType=INTEGER},
 	      </if>
-	      <if test="startDate != null" >
+	      <if test="item.startDate != null" >
 	        start_date = #{item.startDate,jdbcType=DATE},
 	      </if>
-	      <if test="endDate != null" >
-	        end_date = #{endDate,jdbcType=DATE},
+	      <if test="item.endDate != null" >
+	        end_date = #{item.endDate,jdbcType=DATE},
 	      </if>
-	      <if test="size != null" >
+	      <if test="item.size != null" >
 	        size = #{item.size,jdbcType=VARCHAR},
 	      </if>
-	      <if test="icon != null" >
+	      <if test="item.icon != null" >
 	        icon = #{item.icon,jdbcType=VARCHAR},
 	      </if>
-	      <if test="title != null" >
+	      <if test="item.title != null" >
 	        title = #{item.title,jdbcType=VARCHAR},
 	      </if>
-	      <if test="description != null" >
+	      <if test="item.description != null" >
 	        description = #{item.description,jdbcType=VARCHAR},
 	      </if>
-	      <if test="cover != null" >
+	      <if test="item.cover != null" >
 	        cover = #{item.cover,jdbcType=VARCHAR},
 	      </if>
-	      <if test="adMaterials != null" >
+	      <if test="item.adMaterials != null" >
 	        ad_materials = #{item.adMaterials,jdbcType=VARCHAR},
 	      </if>
-	      <if test="duration != null" >
+	      <if test="item.duration != null" >
 	        duration = #{item.duration,jdbcType=INTEGER},
 	      </if>
-	      <if test="lpgUrl != null" >
+	      <if test="item.lpgUrl != null" >
 	        lpg_url = #{item.lpgUrl,jdbcType=VARCHAR},
 	      </if>
-	      <if test="activeType != null" >
-	        active_type = #{activeType,jdbcType=TINYINT},
+	      <if test="item.activeType != null" >
+	        active_type = #{item.activeType,jdbcType=TINYINT},
 	      </if>
-	      <if test="impUrls != null" >
+	      <if test="item.impUrls != null" >
 	        imp_urls = #{item.impUrls,jdbcType=VARCHAR},
 	      </if>
-	      <if test="clkUrls != null" >
+	      <if test="item.clkUrls != null" >
 	        clk_urls = #{item.clkUrls,jdbcType=VARCHAR},
 	      </if>
-	      <if test="secUrls != null" >
+	      <if test="item.secUrls != null" >
 	        sec_urls = #{item.secUrls,jdbcType=VARCHAR},
 	      </if>
-	      <if test="auditedUser != null" >
+	      <if test="item.auditedUser != null" >
 	        audited_user = #{item.auditedUser,jdbcType=INTEGER},
 	      </if>
-	      <if test="status != null" >
+	      <if test="item.status != null" >
 	        status = #{item.status,jdbcType=TINYINT},
 	      </if>
-	      <if test="reason != null" >
+	      <if test="item.reason != null" >
 	        reason = #{item.reason,jdbcType=VARCHAR},
 	      </if>
-	      <if test="createdTime != null" >
+	      <if test="item.createdTime != null" >
 	        created_time = #{item.createdTime,jdbcType=TIMESTAMP},
 	      </if>
-	      <if test="updatedTime != null" >
+	      <if test="item.updatedTime != null" >
 	        updated_time = #{item.updatedTime,jdbcType=TIMESTAMP},
 	      </if>
 	    </set>
