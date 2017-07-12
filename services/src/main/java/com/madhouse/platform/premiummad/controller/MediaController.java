@@ -69,7 +69,7 @@ public class MediaController {
     public ResponseDto<MediaDto> listByMediaIds(@RequestParam(value="ids", required=false) String ids) throws Exception {
 		//无权限查看任何媒体
 		if(ids == null || ids.equals("")){
-	        return ResponseUtils.response(StatusCode.SC21028, null);
+	        return ResponseUtils.response(StatusCode.SC20003, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			if(ids.equals(SystemConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
 				ids = null;
@@ -92,10 +92,10 @@ public class MediaController {
     public ResponseDto<MediaDto> addMedia(@RequestBody MediaDto mediaDto) {
 		String fieldName = BeanUtils.hasEmptyField(mediaDto);
         if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC21004, null, fieldName + " cannot be null");
+            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
         Integer count = mediaService.checkName(mediaDto.getName().trim());
         if (count > 0) //检查名称
-            return ResponseUtils.response(StatusCode.SC22004,null);
+            return ResponseUtils.response(StatusCode.SC20101,null);
         Media media = new Media();
         BeanUtils.copyProperties(mediaDto, media);
         BeanUtils.setCreateParam(media);
@@ -133,21 +133,21 @@ public class MediaController {
 		Integer updateType = mediaDto.getUpdateType();
 		//更新类型未设置，或设置得不正确
 		if(updateType == null || (!updateType.equals(1) && !updateType.equals(2))){
-			return ResponseUtils.response(StatusCode.SC21032, null);
+			return ResponseUtils.response(StatusCode.SC20004, null);
 		}
 		
 		//更新媒体
 		if(updateType.equals(1)){
 			String fieldName = BeanUtils.hasEmptyField(mediaDto);
 	        if (fieldName != null)
-	            return ResponseUtils.response(StatusCode.SC21004, null, fieldName + " cannot be null");
+	            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
 	        Media media = mediaService.queryMediaById(mediaDto.getId());
 	        if (media == null)
-	            return ResponseUtils.response(StatusCode.SC21024, null);
+	            return ResponseUtils.response(StatusCode.SC20002, null);
 	        if (!mediaDto.getName().equals(media.getName())) { //名称不相等,检查名称
 	            Integer count = mediaService.checkName(mediaDto.getName().trim());
 	            if (count > 0)
-	                return ResponseUtils.response(StatusCode.SC22004,null);
+	                return ResponseUtils.response(StatusCode.SC20101,null);
 	        }
 	        BeanUtils.copyProperties(mediaDto, media);
 	        BeanUtils.setUpdateParam(media);
@@ -157,7 +157,7 @@ public class MediaController {
 			//更新媒体的状态
 			Media media = mediaService.queryMediaById(mediaDto.getId());
 	        if (media == null)
-	            return ResponseUtils.response(StatusCode.SC21024, null);
+	            return ResponseUtils.response(StatusCode.SC20002, null);
 	        BeanUtils.copyProperties(mediaDto, media);
 	        BeanUtils.setUpdateParam(media);
 	        mediaService.updateStatus(media);

@@ -1,5 +1,6 @@
 package com.madhouse.platform.premiummad.service.impl;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -7,14 +8,16 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.DspMapping;
+import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.service.IAdspaceService;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
@@ -33,8 +36,29 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	}
 
 	@Override
-	public Integer insert(Adspace adspace) {
-		return adspaceDao.insert(adspace);
+	public Integer insert(Adspace adspace, Double bidFloor, String xFrom) {
+		preprocessAdspaceParams(adspace, bidFloor);
+		adspaceDao.insert(adspace);
+        
+        postprocessAdspaceParams(adspace, xFrom);
+        return updateAdspaceKey(adspace);
+        
+	}
+	
+	private void postprocessAdspaceParams(Adspace adspace, String xFrom) {
+		//生成adspaceKey，更新入到数据库e
+		Integer id = adspace.getId();
+		String name = adspace.getName();
+		String combinedStr = new StringBuffer(id.toString()).append(name).append(xFrom).toString();
+		String adspaceKey = StringUtils.getMD5(combinedStr);
+		adspace.setAdspaceKey(adspaceKey);
+	}
+
+	private void preprocessAdspaceParams(Adspace adspace, Double bidFloor) {
+		//把页面上的底价（元）转换成数据库需要的底价（分）
+		Integer bidFloorUnitFen = Integer.parseInt(new DecimalFormat(SystemConstant.ZERO).format(bidFloor * SystemConstant.RATIO_FEN_TO_YUAN));
+		adspace.setBidFloor(bidFloorUnitFen);
+		
 	}
 
 	@Override
@@ -43,7 +67,17 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	}
 
 	@Override
-	public Integer update(Adspace adspace) {
+	public Integer update(Adspace adspace, Double bidFloor) {
+		preprocessAdspaceParams(adspace, bidFloor);
+		return adspaceDao.update(adspace);
+	}
+	
+	@Override
+	public Integer updateAdspaceKey(Adspace adspace) {
+		int queryResult = adspaceDao.queryByAdspaceKey(adspace.getAdspaceKey());
+		if(queryResult > 0){
+			throw new BusinessException(StatusCode.SC20206);
+		}
 		return adspaceDao.update(adspace);
 	}
 
@@ -63,7 +97,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		if(!StringUtils.isEmpty(mediaAdspaceKey)){ //媒体映射信息存在
 			int queryResult = queryAdspaceMediaMapping(adspaceMapping);
 			if(queryResult > 0){ //我方广告位ID和媒体方广告位Key皆不可重复
-				return StatusCode.SC22011;
+				return StatusCode.SC20201;
 			}
 			
 			adspaceDao.insertAdspaceMediaMapping(adspaceMapping);
@@ -108,7 +142,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 			queryParam.setAdspaceId(adspaceId);
 			int queryResult = queryAdspaceMediaMapping(queryParam);
 			if(queryResult > 0){ //我方广告位ID不可重复
-				return StatusCode.SC22013;
+				return StatusCode.SC20203;
 			}
 		}
 		if(!StringUtils.isEmpty(mediaAdspaceKey)){ //媒体映射信息存在
@@ -116,7 +150,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 			queryParam.setMediaAdspaceKey(mediaAdspaceKey);
 			int queryResult = queryAdspaceMediaMapping(queryParam);
 			if(queryResult > 0){ //媒体方广告位Key不可重复
-				return StatusCode.SC22011;
+				return StatusCode.SC20201;
 			}
 		}
 		
@@ -124,12 +158,12 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		if(dspMappings != null && dspMappings.size() > 0){
 			int queryResult = queryAdspaceDspMapping(adspaceId);
 			if(queryResult > 0){ //我方广告位ID不可重复
-				return StatusCode.SC22013;
+				return StatusCode.SC20203;
 			}
 			
 			boolean result = isDspMappingDuplicated(dspMappings);
 			if(!result){ //DSP ID不可重复
-				return StatusCode.SC22012;
+				return StatusCode.SC20202;
 			}
 		}
 		
@@ -143,7 +177,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	public StatusCode updateAdspaceMapping(AdspaceMapping adspaceMapping) {
 		AdspaceMapping queryObject = queryAdspaceMappingById(adspaceMapping.getAdspaceId());
 		if(queryObject == null){ //需要更新的广告位id不存在映射信息表中
-			return StatusCode.SC22015;
+			return StatusCode.SC20205;
 		}
 		
 		String mediaAdspaceKey = adspaceMapping.getMediaAdspaceKey();
@@ -152,7 +186,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 			queryParam.setMediaAdspaceKey(mediaAdspaceKey);
 			int queryResult = queryAdspaceMediaMapping(queryParam);
 			if(queryResult > 0){ //媒体方广告位Key不可重复
-				return StatusCode.SC22011;
+				return StatusCode.SC20201;
 			}
 		}
 		
@@ -160,7 +194,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		if(dspMappings != null && dspMappings.size() > 0){
 			boolean result = isDspMappingDuplicated(dspMappings);
 			if(!result){ //DSP ID不可重复
-				return StatusCode.SC22012;
+				return StatusCode.SC20202;
 			}
 		}
 		
@@ -171,4 +205,6 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		
 		return StatusCode.SC20000;
 	}
+
+	
 }

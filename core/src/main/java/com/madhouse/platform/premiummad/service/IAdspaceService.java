@@ -5,7 +5,6 @@ import java.util.List;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
-import com.madhouse.platform.premiummad.entity.DspMapping;
 
 public interface IAdspaceService {
 	/**
@@ -18,7 +17,7 @@ public interface IAdspaceService {
      * 新建广告位
      * @param Adspace 广告位对象
      */
-    Integer insert(Adspace adspace);
+    Integer insert(Adspace adspace, Double bidFloor, String xFrom);
 
     /**
      * 根据广告位Id查询
@@ -31,7 +30,14 @@ public interface IAdspaceService {
      * 更新广告位
      * @param adspace 广告位对象
      */
-    Integer update(Adspace adspace);
+    Integer update(Adspace adspace, Double bidFloor);
+    
+    /**
+	 * 更新广告位Key
+	 * @param adspace
+	 * @return
+	 */
+	Integer updateAdspaceKey(Adspace adspace);
 
     /**
      * 检查广告位名称
@@ -69,4 +75,5 @@ public interface IAdspaceService {
 	 * @return
 	 */
 	StatusCode updateAdspaceMapping(AdspaceMapping adspaceMapping);
+
 }

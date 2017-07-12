@@ -36,5 +36,7 @@ public interface AdspaceDao {
 	
 	Integer removeAdspaceDspMapping(@Param("adspaceId") Integer adspaceId);
 
+	int queryByAdspaceKey(String adspaceKey);
+
 	
 }
