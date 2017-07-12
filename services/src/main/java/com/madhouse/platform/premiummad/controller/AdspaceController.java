@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
+import com.madhouse.platform.premiummad.validator.Update;
 
 @Controller
 @RequestMapping("/adspace")
@@ -89,7 +91,7 @@ public class AdspaceController {
 	}
 	
 	private void processAdspaceDto(List<Adspace> adspaces, List<AdspaceDto> adspaceDtos) {
-		//convert bid floor unit from Fen to Yuan
+		//convert bid floor unit from Fen to Yuan for displaying
 		for(int i=0; i<adspaceDtos.size(); i++){
 			Integer bidFloorUnitFen = adspaces.get(i).getBidFloor();
 			adspaceDtos.get(i).setBidFloor((double)bidFloorUnitFen / 100);
@@ -149,7 +151,7 @@ public class AdspaceController {
 	 */
 	@ResponseBody
 	@RequestMapping("/update")
-    public ResponseDto<AdspaceDto> updateAdspace(@RequestBody AdspaceDto adspaceDto) {
+    public ResponseDto<AdspaceDto> updateAdspace(@RequestBody @Validated(Update.class) AdspaceDto adspaceDto) {
 		Integer updateType = adspaceDto.getUpdateType();
 		//更新类型未设置，或设置得不正确
 		if(updateType == null || (!updateType.equals(1) && !updateType.equals(2))){

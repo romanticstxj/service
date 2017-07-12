@@ -2,11 +2,11 @@ package com.madhouse.platform.premiummad.dto;
 
 import java.util.List;
 
-import com.madhouse.platform.premiummad.annotation.NotNull;
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
 public class AdspaceMappingDto {
 	
-	@NotNull
+	@NotNullAndBlank
 	private Integer adspaceId; //我方广告位id
 	
 	private String mediaAdspaceKey; //媒体方广告位key

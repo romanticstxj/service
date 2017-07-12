@@ -17,7 +17,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.madhouse.platform.premiummad.annotation.NotNull;
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 
 public class BeanUtils {
@@ -150,7 +150,7 @@ public class BeanUtils {
 			int length = fields.length;
 			for (int i = 0; i < length; i++) {
 				Field field = fields[i];
-				NotNull notNull = field.getAnnotation(NotNull.class);
+				NotNullAndBlank notNull = field.getAnnotation(NotNullAndBlank.class);
 				String fieldName = field.getName();
 				if (notNull != null) {
 					// 如果有NotNull注解，就判断是否为null，如果为null就返回true

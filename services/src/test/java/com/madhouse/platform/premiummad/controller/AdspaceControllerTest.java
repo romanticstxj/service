@@ -93,8 +93,8 @@ public class AdspaceControllerTest {
 	@Test
 	public void update(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-		adspaceDto.setId(200000);
-		adspaceDto.setName("adspace4");
+//		adspaceDto.setId(200000);
+		adspaceDto.setName("adspace5");
 		adspaceDto.setMediaId(100001);
 		adspaceDto.setTerminalType(2);
 		adspaceDto.setTerminalOs(1);

@@ -10,6 +10,7 @@ public class MediaControllerTest {
 	@Test
 	public void add(){
 		MediaDto mediaDto = new MediaDto();
+//		mediaDto.setId(1);
 		mediaDto.setName("多对多");
 		mediaDto.setCategory(2);
 		mediaDto.setType(1);
@@ -49,7 +50,7 @@ public class MediaControllerTest {
 	@Test
 	public void update(){
 		MediaDto mediaDto = new MediaDto();
-		mediaDto.setId(100001);
+//		mediaDto.setId(100001);
 		mediaDto.setName("12");
 		mediaDto.setCategory(1);
 		mediaDto.setType(1);
@@ -58,7 +59,7 @@ public class MediaControllerTest {
 		mediaDto.setAdvertiserAuditMode(1);
 		mediaDto.setMaterialAuditMode(1);
 		mediaDto.setTimeout(30);
-		mediaDto.setUpdateType(1);
+//		mediaDto.setUpdateType(1);
 		String link = "http://localhost:8080/services/media/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(mediaDto));
 	}

@@ -7,7 +7,8 @@ public enum StatusCode {
 	SC20002(20002, "id不正确"), // 
 	SC20003(20003, "此用户没有任何数据，请添加"), //
     SC20004(20004, "请提供正确的更新类型"), //
-
+    SC20005(20005, "更新时id不能为空"), // 
+    
     /* 媒体模块状态码 */ 
 	SC20101(20101, "媒体名称不能重复"), //
 	
@@ -23,7 +24,7 @@ public enum StatusCode {
 	
 
 	int value;
-	String descrip;
+	final String descrip;
 
 	StatusCode(int value, String descrip) {
 		this.value = value;

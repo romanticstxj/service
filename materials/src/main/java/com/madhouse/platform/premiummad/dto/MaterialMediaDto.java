@@ -3,7 +3,7 @@ package com.madhouse.platform.premiummad.dto;
 import java.io.Serializable;
 import java.util.List;
 
-import com.madhouse.platform.premiummad.annotation.NotNull;
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
 public class MaterialMediaDto implements Serializable {
 
@@ -12,32 +12,32 @@ public class MaterialMediaDto implements Serializable {
 	/**
 	 * DSP 定义的素材ID
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private String id;
 	
 	/**
 	 * 素材名称
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private String name;
 	
 	/**
 	 * 广告类型
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private Integer adType;
 	
 	/**
 	 * DSP 平台定义的广告主ID
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private String advertiserId;
 	
 	/**
 	 * 投放类型
 	 * 1: PDB、2:PD、4:PMP、8:RTB
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private Integer deliveryType;
 	
 	/**
@@ -63,25 +63,25 @@ public class MaterialMediaDto implements Serializable {
 	/**
 	 * 失效日期(yyyy-MM-dd)
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private String endDate;
 	
 	/**
 	 * PremiumMAD 平台定义的媒体ID，可同时制定多个媒体
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private List<Integer> mediaId;
 	
 	/**
 	 * 广告素材宽度（单位:pixel)
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private Integer weight;
 	
 	/**
 	 * 广告素材高度（单位:pixel)
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private Integer height;
 	
 	/**
@@ -107,7 +107,7 @@ public class MaterialMediaDto implements Serializable {
 	/**
 	 * 广告素材URL
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private List<String> adm;
 	
 	/**

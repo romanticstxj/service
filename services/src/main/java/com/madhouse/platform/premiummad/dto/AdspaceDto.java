@@ -3,41 +3,48 @@ package com.madhouse.platform.premiummad.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.madhouse.platform.premiummad.annotation.NotNull;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
+import com.madhouse.platform.premiummad.constant.SystemCommonMsg;
+import com.madhouse.platform.premiummad.validator.Update;
 
 public class AdspaceDto implements Serializable{
 
 	private static final long serialVersionUID = -1387509375255091486L;
 
+	@NotNull(message=SystemCommonMsg.NO_UPDATE_ID, groups=Update.class)
 	private Integer id;
 	
-	@NotNull
+	@NotNullAndBlank
 	private String name;
 	
 	private String adspaceKey;
-	@NotNull
+	@NotNullAndBlank
 	private Integer mediaId;
 	private String mediaName;
-	@NotNull
+	@NotNullAndBlank
 	private Integer terminalType; 
-	@NotNull
+	@NotNullAndBlank
 	private Integer terminalOs;
-	@NotNull
+	@NotNullAndBlank
 	private Integer supportHttps;
-	@NotNull
+	@NotNullAndBlank
 	private Integer bidType;
-	@NotNull
+	@NotNullAndBlank
 	private Double bidFloor;
-	@NotNull
+	@NotNullAndBlank
 	private Integer adType;	//广告类型
-	@NotNull
+	@NotNullAndBlank
 	private Integer layout;	//广告形式
 	private String layoutName;
-	@NotNull
+	@NotNullAndBlank
 	private Integer materialType;
-	@NotNull
+	@NotNullAndBlank
 	private String materialSize;
-	@NotNull
+	@NotNullAndBlank
 	private Integer materialMaxKbyte;
 	
 	private Integer logoType;
@@ -63,7 +70,9 @@ public class AdspaceDto implements Serializable{
 	private String description;
 	
 	private Date createdTime;
-	
+	@NotNull(message=SystemCommonMsg.NO_UPDATE_TYPE, groups=Update.class)
+	@Min(value=1, message=SystemCommonMsg.ERROR_UPDATE_TYPE, groups=Update.class)
+	@Max(value=2, message=SystemCommonMsg.ERROR_UPDATE_TYPE, groups=Update.class)
 	private Integer updateType;
 	
 	private Integer status;

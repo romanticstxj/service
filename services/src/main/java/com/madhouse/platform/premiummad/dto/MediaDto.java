@@ -3,37 +3,41 @@ package com.madhouse.platform.premiummad.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.madhouse.platform.premiummad.annotation.NotNull;
+import javax.validation.constraints.NotNull;
+
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
+import com.madhouse.platform.premiummad.constant.SystemCommonMsg;
+import com.madhouse.platform.premiummad.validator.Update;
 
 public class MediaDto implements Serializable{
 	
 	private static final long serialVersionUID = 1634655943775249685L;
-
+	@NotNull(message=SystemCommonMsg.NO_UPDATE_ID, groups=Update.class)
 	private Integer id;
 	
 	private Integer status;
 	
 	private Integer adCount;
-	@NotNull
+	@NotNullAndBlank
 	private String name;
-	@NotNull
+	@NotNullAndBlank
 	private Integer category;
 	private String categoryName;
-	@NotNull
+	@NotNullAndBlank
 	private Integer type;
-	@NotNull
+	@NotNullAndBlank
 	private Integer accessType;
-	@NotNull
+	@NotNullAndBlank
 	private Integer advertiserAuditMode;
-	@NotNull
+	@NotNullAndBlank
 	private Integer materialAuditMode;
-	@NotNull
+	@NotNullAndBlank
 	private Integer timeout;
 	
 	private Date createdTime;
 	
 	private String description;
-	
+	@NotNull(message=SystemCommonMsg.NO_UPDATE_TYPE, groups=Update.class)
 	private Integer updateType;
 
 	private Integer apiType;

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
+import com.madhouse.platform.premiummad.validator.Update;
 
 @Controller
 @RequestMapping("/media")
@@ -129,7 +131,7 @@ public class MediaController {
 	 */
 	@ResponseBody
 	@RequestMapping("/update")
-    public ResponseDto<Void> updateMedia(@RequestBody MediaDto mediaDto) {
+    public ResponseDto<Boolean> updateMedia(@RequestBody @Validated(Update.class) MediaDto mediaDto) {
 		Integer updateType = mediaDto.getUpdateType();
 		//更新类型未设置，或设置得不正确
 		if(updateType == null || (!updateType.equals(1) && !updateType.equals(2))){
@@ -163,7 +165,6 @@ public class MediaController {
 	        mediaService.updateStatus(media);
 	        return ResponseUtils.response(StatusCode.SC20000,null);
 		}
-		
     }
 	
 }

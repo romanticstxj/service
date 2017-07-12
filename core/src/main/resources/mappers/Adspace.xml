@@ -219,6 +219,12 @@
         WHERE a.id = #{id}
 	</select>
 	
+	<select id="queryByAdspaceKey" parameterType="string" resultType="integer">
+		SELECT count(0)
+        FROM mad_sys_adspace a
+        WHERE a.adspace_key = #{adspaceKey}
+	</select>
+	
 	<update id="updateStatus" parameterType="com.madhouse.platform.premiummad.entity.Adspace">
         UPDATE mad_sys_adspace
         <set>
