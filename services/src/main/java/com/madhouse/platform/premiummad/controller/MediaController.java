@@ -102,10 +102,8 @@ public class MediaController {
         BeanUtils.copyProperties(mediaDto, media);
         BeanUtils.setCreateParam(media);
         mediaService.insert(media);
-        List<MediaDto> list = new ArrayList<MediaDto>();
-        mediaDto.setId(media.getId());
-        list.add(mediaDto);
-        return ResponseUtils.response(StatusCode.SC20000,list);
+        List<MediaDto> result = convertResult(media, new MediaDto());
+        return ResponseUtils.response(StatusCode.SC20000, result);
 	}
 	
 	/**
@@ -117,11 +115,8 @@ public class MediaController {
 	@RequestMapping("/detail")
     public ResponseDto<MediaDto> getMedia(@RequestParam(value="id", required=true) Integer id) {
         Media media = mediaService.queryMediaById(id);
-        MediaDto mediaDto = new MediaDto();
-        BeanUtils.copyProperties(media,mediaDto);
-        List<MediaDto> mediaDtos = new ArrayList<>();
-        mediaDtos.add(mediaDto);
-        return ResponseUtils.response(StatusCode.SC20000,mediaDtos);
+        List<MediaDto> result = convertResult(media, new MediaDto());
+        return ResponseUtils.response(StatusCode.SC20000, result);
     }
 	
 	/**
@@ -131,13 +126,8 @@ public class MediaController {
 	 */
 	@ResponseBody
 	@RequestMapping("/update")
-    public ResponseDto<Boolean> updateMedia(@RequestBody @Validated(Update.class) MediaDto mediaDto) {
+    public ResponseDto<MediaDto> updateMedia(@RequestBody @Validated(Update.class) MediaDto mediaDto) {
 		Integer updateType = mediaDto.getUpdateType();
-		//更新类型未设置，或设置得不正确
-		if(updateType == null || (!updateType.equals(1) && !updateType.equals(2))){
-			return ResponseUtils.response(StatusCode.SC20004, null);
-		}
-		
 		//更新媒体
 		if(updateType.equals(1)){
 			String fieldName = BeanUtils.hasEmptyField(mediaDto);
@@ -154,7 +144,8 @@ public class MediaController {
 	        BeanUtils.copyProperties(mediaDto, media);
 	        BeanUtils.setUpdateParam(media);
 	        mediaService.update(media);
-	        return ResponseUtils.response(StatusCode.SC20000,null);
+	        List<MediaDto> result = convertResult(media, new MediaDto());
+	        return ResponseUtils.response(StatusCode.SC20000, result);
 		} else{
 			//更新媒体的状态
 			Media media = mediaService.queryMediaById(mediaDto.getId());
@@ -163,8 +154,16 @@ public class MediaController {
 	        BeanUtils.copyProperties(mediaDto, media);
 	        BeanUtils.setUpdateParam(media);
 	        mediaService.updateStatus(media);
-	        return ResponseUtils.response(StatusCode.SC20000,null);
+	        List<MediaDto> result = convertResult(media, new MediaDto());
+	        return ResponseUtils.response(StatusCode.SC20000, result);
 		}
     }
+	
+	private List<MediaDto> convertResult(Media media, MediaDto mediaDto) {
+        BeanUtils.copyProperties(media,mediaDto);
+        List<MediaDto> mediaDtos = new ArrayList<>();
+        mediaDtos.add(mediaDto);
+        return mediaDtos;
+	}
 	
 }
