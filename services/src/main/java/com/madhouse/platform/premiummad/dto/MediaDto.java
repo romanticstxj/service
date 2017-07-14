@@ -152,5 +152,14 @@ public class MediaDto implements Serializable{
 	public void setApiType(Integer apiType) {
 		this.apiType = apiType;
 	}
+
+	@Override
+	public String toString() {
+		return "MediaDto [id=" + id + ", status=" + status + ", adCount=" + adCount + ", name=" + name + ", category="
+				+ category + ", categoryName=" + categoryName + ", type=" + type + ", accessType=" + accessType
+				+ ", advertiserAuditMode=" + advertiserAuditMode + ", materialAuditMode=" + materialAuditMode
+				+ ", timeout=" + timeout + ", createdTime=" + createdTime + ", description=" + description
+				+ ", apiType=" + apiType + "]";
+	}
 	
 }

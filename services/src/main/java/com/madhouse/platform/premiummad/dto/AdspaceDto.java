@@ -3,21 +3,21 @@ package com.madhouse.platform.premiummad.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 import com.madhouse.platform.premiummad.constant.SystemCommonMsg;
 import com.madhouse.platform.premiummad.validator.Update;
+import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
 public class AdspaceDto implements Serializable{
 
 	private static final long serialVersionUID = -1387509375255091486L;
 
-	@NotNull(message=SystemCommonMsg.NO_UPDATE_ID, groups=Update.class)
+	@NotNull(message=SystemCommonMsg.NO_UPDATE_ID, groups={Update.class, UpdateStatus.class})
 	private Integer id;
-	
+	@NotNull(message=SystemCommonMsg.NO_UPDATE_STATUS, groups=UpdateStatus.class)
+	private Integer status;
 	@NotNullAndBlank
 	private String name;
 	
@@ -70,13 +70,7 @@ public class AdspaceDto implements Serializable{
 	private String description;
 	
 	private Date createdTime;
-	@NotNull(message=SystemCommonMsg.NO_UPDATE_TYPE, groups=Update.class)
-	@Min(value=1, message=SystemCommonMsg.ERROR_UPDATE_TYPE, groups=Update.class)
-	@Max(value=2, message=SystemCommonMsg.ERROR_UPDATE_TYPE, groups=Update.class)
-	private Integer updateType;
 	
-	private Integer status;
-
 	public Integer getId() {
 		return id;
 	}
@@ -301,20 +295,26 @@ public class AdspaceDto implements Serializable{
 		this.createdTime = createdTime;
 	}
 
-	public Integer getUpdateType() {
-		return updateType;
-	}
-
-	public void setUpdateType(Integer updateType) {
-		this.updateType = updateType;
-	}
-
 	public Integer getStatus() {
 		return status;
 	}
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	@Override
+	public String toString() {
+		return "AdspaceDto [id=" + id + ", status=" + status + ", name=" + name + ", adspaceKey=" + adspaceKey
+				+ ", mediaId=" + mediaId + ", mediaName=" + mediaName + ", terminalType=" + terminalType
+				+ ", terminalOs=" + terminalOs + ", supportHttps=" + supportHttps + ", bidType=" + bidType
+				+ ", bidFloor=" + bidFloor + ", adType=" + adType + ", layout=" + layout + ", layoutName=" + layoutName
+				+ ", materialType=" + materialType + ", materialSize=" + materialSize + ", materialMaxKbyte="
+				+ materialMaxKbyte + ", logoType=" + logoType + ", logoSize=" + logoSize + ", logoMaxKbyte="
+				+ logoMaxKbyte + ", titleMaxLength=" + titleMaxLength + ", descMaxLength=" + descMaxLength
+				+ ", mainPicNumber=" + mainPicNumber + ", videoType=" + videoType + ", videoSize=" + videoSize
+				+ ", videoMaxKbyte=" + videoMaxKbyte + ", videoDuration=" + videoDuration + ", description="
+				+ description + ", createdTime=" + createdTime + "]";
 	}
 
 }

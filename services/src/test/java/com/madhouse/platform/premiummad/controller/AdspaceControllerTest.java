@@ -93,7 +93,7 @@ public class AdspaceControllerTest {
 	@Test
 	public void update(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-//		adspaceDto.setId(200000);
+		adspaceDto.setId(200000);
 		adspaceDto.setName("adspace5");
 		adspaceDto.setMediaId(100001);
 		adspaceDto.setTerminalType(2);
@@ -107,8 +107,6 @@ public class AdspaceControllerTest {
 		adspaceDto.setMaterialSize("1024*768");
 		adspaceDto.setMaterialMaxKbyte(300);
 		adspaceDto.setDescription("desc");
-		adspaceDto.setUpdateType(2);
-		adspaceDto.setStatus(1);
 		String link = "http://localhost:8080/services/adspace/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(adspaceDto));
 	}

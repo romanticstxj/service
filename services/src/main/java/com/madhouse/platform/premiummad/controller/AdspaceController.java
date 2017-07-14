@@ -29,6 +29,7 @@ import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Update;
+import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
 @RestController
 @RequestMapping("/adspace")
@@ -142,45 +143,44 @@ public class AdspaceController {
 	}
 
 	/**
-	 * 更新广告位，或广告位状态
+	 * 更新广告位
 	 * @param adspaceDto
 	 * @return
 	 */
 	@RequestMapping("/update")
     public ResponseDto<AdspaceDto> updateAdspace(@RequestBody @Validated(Update.class) AdspaceDto adspaceDto) {
-		Integer updateType = adspaceDto.getUpdateType();
-		//更新类型未设置，或设置得不正确
-		if(updateType == null || (!updateType.equals(1) && !updateType.equals(2))){
-			return ResponseUtils.response(StatusCode.SC20004, null);
-		}
-		
-		//更新广告位
-		if(updateType.equals(1)){
-			String fieldName = BeanUtils.hasEmptyField(adspaceDto);
-	        if (fieldName != null)
-	            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
-	        Adspace adspace = adspaceService.queryAdspaceById(adspaceDto.getId());
-	        if (adspace == null)
-	            return ResponseUtils.response(StatusCode.SC20002, null);
-	        if (!adspaceDto.getName().equals(adspaceDto.getName())) { //名称不相等,检查名称
-	            Integer count = adspaceService.checkName(adspaceDto.getName().trim());
-	            if (count > 0)
-	                return ResponseUtils.response(StatusCode.SC20101,null);
-	        }
-	        BeanUtils.copyProperties(adspaceDto, adspace);
-	        BeanUtils.setUpdateParam(adspace);
-	        adspaceService.update(adspace, adspaceDto.getBidFloor());
-	        return ResponseUtils.response(StatusCode.SC20000,null);
-		} else{
-			//更新媒体的状态
-			Adspace adspace = adspaceService.queryAdspaceById(adspaceDto.getId());
-	        if (adspace == null)
-	            return ResponseUtils.response(StatusCode.SC20002, null);
-	        BeanUtils.copyProperties(adspaceDto, adspace);
-	        BeanUtils.setUpdateParam(adspace);
-	        adspaceService.updateStatus(adspace);
-	        return ResponseUtils.response(StatusCode.SC20000,null);
-		}
+		String fieldName = BeanUtils.hasEmptyField(adspaceDto);
+        if (fieldName != null)
+            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
+        Adspace adspace = adspaceService.queryAdspaceById(adspaceDto.getId());
+        if (adspace == null)
+            return ResponseUtils.response(StatusCode.SC20002, null);
+        if (!adspaceDto.getName().equals(adspaceDto.getName())) { //名称不相等,检查名称
+            Integer count = adspaceService.checkName(adspaceDto.getName().trim());
+            if (count > 0)
+                return ResponseUtils.response(StatusCode.SC20101,null);
+        }
+        BeanUtils.copyProperties(adspaceDto, adspace);
+        BeanUtils.setUpdateParam(adspace);
+        adspaceService.update(adspace, adspaceDto.getBidFloor());
+        return ResponseUtils.response(StatusCode.SC20000,null);
+    }
+	
+	/**
+	 * 更新广告位状态
+	 * @param adspaceDto
+	 * @return
+	 */
+	@RequestMapping("/updateStatus")
+    public ResponseDto<AdspaceDto> updateAdspaceStatus(
+    		@RequestBody @Validated(UpdateStatus.class) AdspaceDto adspaceDto) {
+		Adspace adspace = adspaceService.queryAdspaceById(adspaceDto.getId());
+        if (adspace == null)
+            return ResponseUtils.response(StatusCode.SC20002, null);
+        BeanUtils.copyProperties(adspaceDto, adspace);
+        BeanUtils.setUpdateParam(adspace);
+        adspaceService.updateStatus(adspace);
+        return ResponseUtils.response(StatusCode.SC20000,null);
     }
 	
 	/**
