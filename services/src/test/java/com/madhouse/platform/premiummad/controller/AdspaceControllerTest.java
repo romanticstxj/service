@@ -15,8 +15,8 @@ public class AdspaceControllerTest {
 	@Test
 	public void add(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-		adspaceDto.setName("adspace6");
-		adspaceDto.setMediaId(100001);
+		adspaceDto.setName("adspace99");
+		adspaceDto.setMediaId(100004);
 		adspaceDto.setTerminalType(1);
 		adspaceDto.setTerminalOs(1);
 		adspaceDto.setSupportHttps(1);
@@ -115,13 +115,13 @@ public class AdspaceControllerTest {
 	
 	@Test
 	public void detail(){
-		String link = "http://localhost:8080/services/adspace/detail?id=200000";
+		String link = "http://localhost:8080/services/adspace/detail?id=200010";
 		HttpUtilTest.httpGet(link);
 	}
 	
 	@Test
 	public void list(){
-		String link = "http://localhost:8080/services/adspace/list";
+		String link = "http://localhost:8080/services/adspace/list?userId=19&ids=100001,100002,100000";
 		HttpUtilTest.httpGet(link);
 	}
 	

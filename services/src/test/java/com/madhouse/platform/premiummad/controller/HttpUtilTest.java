@@ -23,7 +23,7 @@ public class HttpUtilTest {
 			HttpGet get = new HttpGet(link);
 
 			get.setHeader("X-From", "exchange.dev.onemad.com");
-			get.setHeader("X-User-Id", "999");
+			get.setHeader("X-User-Id", "1303");
 
 			CloseableHttpResponse response = httpclient.execute(get);
 			// 打印ResponseBody
@@ -44,7 +44,7 @@ public class HttpUtilTest {
 			System.out.println(entity);
 			HttpPost post = new HttpPost(link);
 			post.setHeader("X-From", "exchange.dev.onemad.com");
-			post.setHeader("X-User-Id", "19");
+			post.setHeader("X-User-Id", "1303");
 			post.setHeader("Content-Type", "application/json;charset=UTF-8");
 
 			post.setEntity(stringEntity);

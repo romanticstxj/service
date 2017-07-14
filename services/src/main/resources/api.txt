@@ -4,7 +4,7 @@
             "_summary": "媒体列表",
             "parameters": {
                 "query": {
-            		"ids" : "<||string||comment:1）查询所有媒体，则没有ids参数；2）查询部分媒体，则提供ids参数，idlist是用逗号分隔的id组>"
+            		"ids" : "<||string||comment:1）若无ids参数，则查询当前用户下所有权限的媒体 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分媒体数据，但查询出的也都是当前用户的权限下的媒体>"
             	}
             },
             "responses": {
@@ -62,8 +62,7 @@
                     "name": "<*||string||comment:媒体名字>",
                     "category": "<*||integer||comment:媒体分类(列表)>",
                     "type": "<*||integer||comment:媒体类型(1: APP, 2: WAP)>",
-                    "
-": "<*||integer||comment:对接方式(1: API, 2: SDK)>",
+                    "accessType": "<*||integer||comment:对接方式(1: API, 2: SDK)>",
                     "advertiserAuditMode": "<*||integer||comment:广告主审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
                     "materialAuditMode": "<*||integer||comment:物料审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
                     "timeout": "<*||integer||comment:允许超时时间>",
@@ -86,8 +85,7 @@
             "_summary": "",
             "parameters": {
                 "body": {
-                    "id": "<||integer||comment:自增id>",
-                    "status": "<||integer||comment:状态(0:停用,1:启用）>",
+                    "id": "<*||integer||comment:自增id>",
                     "name": "<*||string||comment:媒体名字>",
                     "category": "<*||integer||comment:媒体分类(列表)>",
                     "type": "<*||integer||comment:媒体类型(1: APP, 2: WAP)>",
@@ -95,15 +93,34 @@
                     "advertiserAuditMode": "<*||integer||comment:广告主审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
                     "materialAuditMode": "<*||integer||comment:物料审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)>",
                     "timeout": "<*||integer||comment:允许超时时间>",
-                    "description": "<||string||comment:描述>",
-                    "updateType": "<*||integer||comment:更新类型(1:更新媒体，2:仅仅更新媒体状态)>"
+                    "description": "<||string||comment:描述>"
                 }
             },
             "responses": {
                 "200": {
                     "body": [
                         {
-                            "result": true
+                            "id": "<*||integer||comment:自增id>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/media/updateStatus": {
+        "post": {
+            "_summary": "更新媒体状态",
+            "parameters": {
+                "body": {
+                    "id": "<*||integer||comment:自增id>",
+                    "status": "<*||integer||comment:状态(0:停用,1:启用）>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "id": "<*||integer||comment:自增id>"
                         }
                     ]
                 }
@@ -135,7 +152,7 @@
             "_summary": "广告位列表，若未提供媒体id则全局查询，否则根据媒体id查询",
             "parameters": {
                 "query": {
-                	"ids" : "<||string||comment:1）查询所有广告位，则没有ids参数；2）查询部分媒体的广告位，则提供ids参数，idlist是用逗号分隔的媒体id组>"
+                	"ids" : "<||string||comment:1）若无ids参数，则查询当前用户下所有权限的广告位 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分广告位数据，但查询出的也都是当前用户的权限下的广告位>"
                 }
             },
             "responses": {

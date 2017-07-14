@@ -3,14 +3,15 @@ package com.madhouse.platform.premiummad.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -29,7 +30,7 @@ import com.madhouse.platform.premiummad.util.ResponseUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Update;
 
-@Controller
+@RestController
 @RequestMapping("/adspace")
 public class AdspaceController {
 	
@@ -40,31 +41,24 @@ public class AdspaceController {
     private IUserAuthService userAuthService;
 	
 	/**
-	 * 查询广告位list，如果无参则根据userId查询此用户的媒体Idlist，若含参ids，则直接调用含参的内部接口
+	 * 查询广告位list，1）若无ids参数，则查询当前用户下所有权限的广告位 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分广告位数据，但查询出的也都是当前用户的权限下的广告位
 	 * @param ids
 	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping("/list")
-    public Object list(@RequestParam(value="ids", required=false) String ids,
-    		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
-		//有ids参数，跳过权限check
-		if(ids != null && ids.length()>0){
-			return "redirect:/adspace/listByMediaIds?ids=" + ids;
+    public ResponseDto<AdspaceDto> list(@RequestParam(value="ids", required=false) String mediaIds,
+    		@RequestParam(value="userId", required=false) Integer userIdByGet,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId,
+    		HttpServletRequest request) throws Exception {
+		//获得userId，可以从url中获得（方便通过get请求获取数据），更为一般的是从requestHeader里获取
+		if(userIdByGet != null){ //优先获取get请求的userId参数
+			userId = userIdByGet;
 		}
-		
-		// id未传值，获取当前用户所有权限的媒体列表
-		List<Integer> mediaIdList = userAuthService.queryMediaIdListByUserId(userId);
-		//此用户有权限访问媒体
-		if(mediaIdList != null && mediaIdList.size()> 0){
-			//系统管理员，有访问所有媒体的权限
-			String mediaIds = StringUtils.getIdsStr(mediaIdList);
-			return "redirect:/adspace/listByMediaIds?ids=" + mediaIds;
-			
-		} else{ //用户没有权限访问媒体
-			return "redirect:/adspace/listByMediaIds";
-		}
+		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
+		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
+		return listByMediaIds(returnedMediaIds);
     }
 	
 	/**
@@ -72,17 +66,15 @@ public class AdspaceController {
 	 * @param ids
 	 * @return
 	 */
-	@ResponseBody
-	@RequestMapping("/listByMediaIds")
-	public ResponseDto<AdspaceDto> listByMediaIds(@RequestParam(value="ids", required=false) String ids){
+	private ResponseDto<AdspaceDto> listByMediaIds(String mediaIds){
 		//无权限查看任何媒体
-		if(ids == null || ids.equals("")){
+		if(mediaIds == null || mediaIds.equals("")){
 	        return ResponseUtils.response(StatusCode.SC20003, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
-			if(ids.equals(SystemConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
-				ids = null;
+			if(mediaIds.equals(SystemConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
+				mediaIds = null;
 			}
-			List<Adspace> adspaces = adspaceService.queryAll(ids);
+			List<Adspace> adspaces = adspaceService.queryAll(mediaIds);
 			List<AdspaceDto> adspaceDtos = new ArrayList<>();
 	        BeanUtils.copyList(adspaces,adspaceDtos,AdspaceDto.class,"bidFloor");
 	        processAdspaceDto(adspaces, adspaceDtos);
@@ -103,7 +95,6 @@ public class AdspaceController {
 	 * @param adspaceDto
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping("/create")
     public ResponseDto<AdspaceDto> addAdspace(@RequestBody AdspaceDto adspaceDto, 
     		@RequestHeader(value=SystemConstant.XFROM, required=true) String xFrom) {
@@ -125,9 +116,15 @@ public class AdspaceController {
 	 * @param id
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping("/detail")
-    public ResponseDto<AdspaceDto> getAdspace(@RequestParam(value="id", required=true) Integer id) {
+    public ResponseDto<AdspaceDto> getAdspace(@RequestParam(value="id", required=true) Integer id,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
+		//权限check
+		List<Integer> adspaceIdList = userAuthService.queryAdspaceIdList(userId, String.valueOf(id));
+		if(ObjectUtils.isEmpty(adspaceIdList) || adspaceIdList.get(0).intValue() != id.intValue()){
+			return ResponseUtils.response(StatusCode.SC20006, null);
+		}
+		
 		Adspace adspace = adspaceService.queryAdspaceById(id);
 		AdspaceDto adspaceDto = new AdspaceDto();
         BeanUtils.copyProperties(adspace,adspaceDto,"bidFloor");
@@ -149,7 +146,6 @@ public class AdspaceController {
 	 * @param adspaceDto
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping("/update")
     public ResponseDto<AdspaceDto> updateAdspace(@RequestBody @Validated(Update.class) AdspaceDto adspaceDto) {
 		Integer updateType = adspaceDto.getUpdateType();
@@ -192,7 +188,6 @@ public class AdspaceController {
 	 * @param adspaceMappingDto
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping("/mapping/create")
 	public ResponseDto<AdspaceDto> addAdspaceMapping(@RequestBody AdspaceMappingDto adspaceMappingDto) {
 		//对dto表单做check
@@ -229,7 +224,6 @@ public class AdspaceController {
 	 * @param id
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping("/mapping/detail")
 	public ResponseDto<AdspaceMappingDto> adspaceMappingDetail(@RequestParam(value="id", required=true) Integer id) {
 		AdspaceMapping adspaceMapping = adspaceService.queryAdspaceMappingById(id);
@@ -245,7 +239,6 @@ public class AdspaceController {
 	 * @param adspaceMappingDto
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping("/mapping/update")
 	public ResponseDto<AdspaceDto> updateAdspaceMapping(@RequestBody AdspaceMappingDto adspaceMappingDto) {
 		//对dto表单做check
@@ -274,7 +267,6 @@ public class AdspaceController {
         
   		//更新映射关系
   		StatusCode statusCode = adspaceService.updateAdspaceMapping(adspaceMapping);
-		
 		return ResponseUtils.response(statusCode,null);
 	}
 	

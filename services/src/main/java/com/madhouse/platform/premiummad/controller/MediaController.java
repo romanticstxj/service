@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -20,11 +19,13 @@ import com.madhouse.platform.premiummad.entity.Media;
 import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
+import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Update;
+import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
-@Controller
+@RestController
 @RequestMapping("/media")
 public class MediaController {
 	
@@ -35,30 +36,22 @@ public class MediaController {
     private IUserAuthService userAuthService;
 	
 	/**
-	 * 媒体列表接口，若无参ids则通过Header中的userId来查询此用户所拥有的所有媒体id，若含参ids则直接调用内部媒体列表接口
+	 * 媒体列表接口，1）若无ids参数，则查询当前用户下所有权限的媒体 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分媒体数据，但查询出的也都是当前用户的权限下的媒体
 	 * @param userId
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping("/list")
-    public Object list(@RequestParam(value="ids", required=false) String ids,
+    public ResponseDto<MediaDto> list(@RequestParam(value="ids", required=false) String mediaIds,
+    		@RequestParam(value="userId", required=false) Integer userIdByGet,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
-		//有ids参数，跳过权限check
-		if(ids != null && ids.length()>0){
-			return "redirect:/media/listByMediaIds?ids=" + ids;
+		//获得userId，可以从url中获得（方便通过get请求获取数据），更为一般的是从requestHeader里获取
+		if(userIdByGet != null){ //优先获取get请求的userId参数
+			userId = userIdByGet;
 		}
-				
-		// id未传值，获取当前用户所有权限的媒体列表
-		List<Integer> mediaIdList = userAuthService.queryMediaIdListByUserId(userId);
-		//此用户有权限访问媒体
-		if(mediaIdList != null && mediaIdList.size()> 0){
-			//系统管理员，有访问所有媒体的权限
-			String mediaIds = StringUtils.getIdsStr(mediaIdList);
-			return "redirect:/media/listByMediaIds?ids=" + mediaIds;
-			
-		} else{ //用户没有权限访问媒体
-			return "redirect:/media/listByMediaIds";
-		}
+		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
+		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
+		return listByMediaIds(returnedMediaIds);
     }
 	
 	/**
@@ -66,9 +59,7 @@ public class MediaController {
      * @return ResponseDto
 	 * @throws Exception 
      */
-	@ResponseBody
-	@RequestMapping("/listByMediaIds")
-    public ResponseDto<MediaDto> listByMediaIds(@RequestParam(value="ids", required=false) String ids) throws Exception {
+    private ResponseDto<MediaDto> listByMediaIds(String ids) throws Exception {
 		//无权限查看任何媒体
 		if(ids == null || ids.equals("")){
 	        return ResponseUtils.response(StatusCode.SC20003, null);
@@ -89,7 +80,6 @@ public class MediaController {
 	 * @param mediaDto
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping("/create")
     public ResponseDto<MediaDto> addMedia(@RequestBody MediaDto mediaDto) {
 		String fieldName = BeanUtils.hasEmptyField(mediaDto);
@@ -111,9 +101,15 @@ public class MediaController {
 	 * @param id 媒体ID
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping("/detail")
-    public ResponseDto<MediaDto> getMedia(@RequestParam(value="id", required=true) Integer id) {
+    public ResponseDto<MediaDto> getMedia(@RequestParam(value="id", required=true) Integer id,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
+    	//权限check
+		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
+		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
+			return ResponseUtils.response(StatusCode.SC20006, null);
+		}
+		
         Media media = mediaService.queryMediaById(id);
         List<MediaDto> result = convertResult(media, new MediaDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
@@ -124,39 +120,60 @@ public class MediaController {
 	 * @param mediaDto， 其中的updateType必填，表示更新的类型
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping("/update")
-    public ResponseDto<MediaDto> updateMedia(@RequestBody @Validated(Update.class) MediaDto mediaDto) {
-		Integer updateType = mediaDto.getUpdateType();
-		//更新媒体
-		if(updateType.equals(1)){
-			String fieldName = BeanUtils.hasEmptyField(mediaDto);
-	        if (fieldName != null)
-	            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
-	        Media media = mediaService.queryMediaById(mediaDto.getId());
-	        if (media == null)
-	            return ResponseUtils.response(StatusCode.SC20002, null);
-	        if (!mediaDto.getName().equals(media.getName())) { //名称不相等,检查名称
-	            Integer count = mediaService.checkName(mediaDto.getName().trim());
-	            if (count > 0)
-	                return ResponseUtils.response(StatusCode.SC20101,null);
-	        }
-	        BeanUtils.copyProperties(mediaDto, media);
-	        BeanUtils.setUpdateParam(media);
-	        mediaService.update(media);
-	        List<MediaDto> result = convertResult(media, new MediaDto());
-	        return ResponseUtils.response(StatusCode.SC20000, result);
-		} else{
-			//更新媒体的状态
-			Media media = mediaService.queryMediaById(mediaDto.getId());
-	        if (media == null)
-	            return ResponseUtils.response(StatusCode.SC20002, null);
-	        BeanUtils.copyProperties(mediaDto, media);
-	        BeanUtils.setUpdateParam(media);
-	        mediaService.updateStatus(media);
-	        List<MediaDto> result = convertResult(media, new MediaDto());
-	        return ResponseUtils.response(StatusCode.SC20000, result);
+    public ResponseDto<MediaDto> updateMedia(@RequestBody @Validated(Update.class) MediaDto mediaDto,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
+		//权限check
+		Integer id = mediaDto.getId();
+		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
+		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
+			return ResponseUtils.response(StatusCode.SC20006, null);
 		}
+				
+		String fieldName = BeanUtils.hasEmptyField(mediaDto);
+        if (fieldName != null)
+            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
+        Media media = mediaService.queryMediaById(mediaDto.getId());
+        if (media == null)
+            return ResponseUtils.response(StatusCode.SC20002, null);
+        if (!mediaDto.getName().equals(media.getName())) { //名称不相等,检查名称
+            Integer count = mediaService.checkName(mediaDto.getName().trim());
+            if (count > 0)
+                return ResponseUtils.response(StatusCode.SC20101,null);
+        }
+        BeanUtils.copyProperties(mediaDto, media);
+        BeanUtils.setUpdateParam(media);
+        mediaService.update(media);
+        List<MediaDto> result = convertResult(media, new MediaDto());
+        return ResponseUtils.response(StatusCode.SC20000, result);
+    }
+	
+	/**
+	 * 更新媒体状态
+	 * @param mediaDto
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping("/updateStatus")
+    public ResponseDto<MediaDto> updateMediaStatus(
+    		@RequestBody @Validated(value={UpdateStatus.class}) MediaDto mediaDto,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
+		//权限check
+		Integer id = mediaDto.getId();
+		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
+		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
+			return ResponseUtils.response(StatusCode.SC20006, null);
+		}
+				
+		//更新媒体的状态
+		Media media = mediaService.queryMediaById(mediaDto.getId());
+        if (media == null)
+            return ResponseUtils.response(StatusCode.SC20002, null);
+        BeanUtils.copyProperties(mediaDto, media);
+        BeanUtils.setUpdateParam(media);
+        mediaService.updateStatus(media);
+        List<MediaDto> result = convertResult(media, new MediaDto());
+        return ResponseUtils.response(StatusCode.SC20000, result);
     }
 	
 	private List<MediaDto> convertResult(Media media, MediaDto mediaDto) {

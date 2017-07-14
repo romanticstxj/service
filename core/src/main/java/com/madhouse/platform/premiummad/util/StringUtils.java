@@ -71,16 +71,24 @@ public class StringUtils {
 		return (str == null || "".equals(str) || "".equals(str.toString().trim()));
 	}
 	
+	/**
+	 * 把idList转为逗号分隔的idStr
+	 * @param idList
+	 * @return
+	 */
 	public static String getIdsStr(List<Integer> idList){
-		if(idList == null || idList.size() == 0){
-			return "";
-		}
-		Integer[] ids = idList.toArray(new Integer[idList.size()]);
-		StringBuilder sb = new StringBuilder(ids[0].toString());
-		for(int i=1; i<ids.length; i++){
-			sb.append(",").append(ids[i].toString());
-		}
-		return sb.toString();
+		return org.springframework.util.StringUtils.collectionToDelimitedString(idList, ",");
 	}
+	
+	/**
+	 * 把逗号分隔的idStr转换成id数组
+	 * @param ids
+	 * @return
+	 */
+	public static String[] splitIds(String ids){
+		return org.springframework.util.StringUtils.tokenizeToStringArray(ids, ",");
+	}
+	
+	
 	
 }
