@@ -195,7 +195,7 @@ public class MaterialServiceImpl implements IMaterialService {
 		if (classfiedMaps.get(3) != null && classfiedMaps.get(3).size() > 0) {
 			List<Material> updateRecords = MaterialRule.convert(classfiedMaps.get(3));
 			int effortRows = materialDao.updateByBath(updateRecords);
-			if (effortRows != updateRecords.size()) {
+			if (effortRows != 1) {
 				throw new BusinessException(StatusCode.SC500);
 			}
 		}
@@ -221,8 +221,12 @@ public class MaterialServiceImpl implements IMaterialService {
 				if (MaterialAuditMode.MAM10001.getValue() == media.getMaterialAuditMode().intValue()) {
 					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10004.getValue())));
 					updateItem.setUpdatedTime(new Date());
-
 					updateItem.setId(item.getId());
+					
+					int effortRows = materialDao.updateByPrimaryKeySelective(updateItem);
+					if (effortRows != 1) {
+						throw new BusinessException(StatusCode.SC500);
+					}
 				}
 
 				// 如果模式是媒体审核，推送给媒体，状态修改为审核中
@@ -236,11 +240,6 @@ public class MaterialServiceImpl implements IMaterialService {
 				 * 
 				 * updateItem.setId(item.getId()); }
 				 */
-
-				int effortRows = materialDao.updateByPrimaryKeySelective(updateItem);
-				if (effortRows != 1) {
-					throw new BusinessException(StatusCode.SC500);
-				}
 			}
 		}
 	}

@@ -184,7 +184,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		if (classfiedMaps.get(3) != null && classfiedMaps.get(3).size() > 0) {
 			List<Advertiser> updateRecords = AdvertiserRule.convert(classfiedMaps.get(3));
 			int effortRows = advertiserDao.updateByBath(updateRecords);
-			if (effortRows != updateRecords.size()) {
+			if (effortRows != 1) {
 				throw new BusinessException(StatusCode.SC500);
 			}
 		}
@@ -210,8 +210,12 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 				if (AdvertiserAuditMode.AAM10001.getValue() == media.getAdvertiserAuditMode().intValue()) {
 					updateItem.setStatus(Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10004.getValue())));
 					updateItem.setUpdatedTime(new Date());
-
 					updateItem.setId(item.getId());
+					
+					int effortRows = advertiserDao.updateByPrimaryKeySelective(updateItem);
+					if (effortRows != 1) {
+						throw new BusinessException(StatusCode.SC500);
+					}
 				}
 
 				// 如果模式是媒体审核，推送给媒体，状态修改为审核中
@@ -225,11 +229,6 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 				 * 
 				 * updateItem.setId(item.getId()); }
 				 */
-
-				int effortRows = advertiserDao.updateByPrimaryKeySelective(updateItem);
-				if (effortRows != 1) {
-					throw new BusinessException(StatusCode.SC500);
-				}
 			}
 		}
 	}
