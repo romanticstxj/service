@@ -51,10 +51,11 @@ public interface DspMapper {
      */
     int updateByPrimaryKey(Dsp record);
     
-    /**
-     * 根据 id 和 token 查询
-     * @param record
-     * @return
-     */
-    Dsp selectByIdAndToken(Dsp record);
+	/**
+	 * 根据 id 和 token 查询
+	 * 
+	 * @param record
+	 * @return
+	 */
+	Dsp selectByIdAndToken(Dsp record);
 }

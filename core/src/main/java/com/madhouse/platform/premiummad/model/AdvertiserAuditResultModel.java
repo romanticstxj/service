@@ -2,7 +2,7 @@ package com.madhouse.platform.premiummad.model;
 
 public class AdvertiserAuditResultModel {
 	/**
-	 * 广告主 ID
+	 * 广告主 ID(DSN 或  我方系统的id)
 	 */
 	private String id;
 	

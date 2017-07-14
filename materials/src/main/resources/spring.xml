@@ -3,7 +3,6 @@
        xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
-       xmlns:websocket="http://www.springframework.org/schema/websocket"
        xmlns:cache="http://www.springframework.org/schema/cache"
        xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
@@ -14,20 +13,24 @@
      	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-4.0.xsd
-		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util 
 	    http://www.springframework.org/schema/util/spring-util.xsd
         http://www.springframework.org/schema/task 
         http://www.springframework.org/schema/task/spring-task-4.0.xsd
-        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+        http://www.springframework.org/schema/cache
+        http://www.springframework.org/schema/cache/spring-cache.xsd">
 
     <context:component-scan base-package="com.madhouse.platform.premiummad">
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
+    
+	<!--<task:annotation-driven/>
+    <task:executor id="taskExecutor" pool-size="100-10000" queue-capacity="10" />-->
 
     <!--proxy-target-class="true"强制使用cglib代理, 如果为false则spring会自动选择 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
-    <context:property-placeholder location="classpath:exchange.properties,classpath:jdbc.properties"
+    <context:property-placeholder location="classpath:exchange.properties,classpath:jdbc.properties,classpath:middleware.properties"
                                   ignore-unresolvable="true" file-encoding="UTF-8"/>
 
     <bean id="druidStatInterceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor"/>
@@ -101,5 +104,10 @@
 
     <!-- 使用annotation注解方式配置事务 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
+    
+	<!-- 基于XML配置任务调度 -->
+    <!-- <task:scheduled-tasks>
+        <task:scheduled ref="sohuNewsUploadMaterialApiTask" method="uploadSohuMaterial" cron="0 2/5 * * * ?"/>
+	    <task:scheduled ref="sohuNewsCustomerListApiTask" method="list" cron="${cron.sohuNewsCustomerListApiTask}"/>
+	</task:scheduled-tasks> -->
 </beans>

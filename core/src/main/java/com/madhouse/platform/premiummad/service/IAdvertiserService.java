@@ -10,6 +10,7 @@ public interface IAdvertiserService {
 
 	/**
 	 * 根据 DSP 广告主Key 查询广告主是否被媒体审核通过
+	 * 
 	 * @param ids
 	 * @param dspId
 	 * @return
@@ -18,12 +19,14 @@ public interface IAdvertiserService {
 
 	/**
 	 * DSP端上传广告主
+	 * 
 	 * @param entity
 	 */
 	void upload(AdvertiserModel entity);
 
 	/**
 	 * 校验广告主和指定的媒体是否已审核通过
+	 * 
 	 * @param uploadedMedias
 	 * @param dspId
 	 * @param advertiserKey
@@ -31,4 +34,19 @@ public interface IAdvertiserService {
 	 * @return
 	 */
 	String validateAdKeyAndMedias(List<SysMedia> uploadedMedias, String dspId, String advertiserKey);
+
+	/**
+	 * 广告主提交媒体后更改状态为审核中
+	 * 
+	 * @param advertiserIds
+	 *            我方的广告主ID
+	 */
+	void updateStatusAfterUpload(List<String> advertiserIds);
+
+	/**
+	 * 根据媒体返回的结果更新状态
+	 * 
+	 * @param auditResults
+	 */
+	void updateStatusToMedia(List<AdvertiserAuditResultModel> auditResults);
 }

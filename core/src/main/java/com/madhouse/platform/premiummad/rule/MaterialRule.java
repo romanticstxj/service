@@ -23,27 +23,29 @@ import com.madhouse.platform.premiummad.model.MonitorModel;
 import com.madhouse.platform.premiummad.model.TrackModel;
 
 public class MaterialRule extends BaseRule {
-	
+
 	public static byte ClKURL = 1;
 	public static byte SECURL = 2;
 	public static byte IMPURL = 3;
-	
+
 	/**
 	 * 提取 map 的 values
+	 * 
 	 * @param map
 	 * @return
 	 */
 	public static List<Material> convert(Map<Integer, Material> map) {
 		List<Material> list = new ArrayList<Material>();
 		Iterator<Entry<Integer, Material>> iterator = map.entrySet().iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			list.add(iterator.next().getValue());
 		}
 		return list;
 	}
-	
+
 	/**
 	 * 校验参数合法性
+	 * 
 	 * @param entity
 	 */
 	public static void paramterValidate(MaterialModel entity) {
@@ -63,6 +65,7 @@ public class MaterialRule extends BaseRule {
 
 	/**
 	 * 存在待审核、审核中，审核通过的不允许推送，提示信息
+	 * 
 	 * @param classfiedMaps
 	 * @param materailKey
 	 * @return
@@ -83,9 +86,10 @@ public class MaterialRule extends BaseRule {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 将需要上传的广告主媒体关系分类（上传过和为上传过）
+	 * 
 	 * @param materialMedias
 	 * @param entity
 	 * @param classfiedMaps
@@ -104,7 +108,7 @@ public class MaterialRule extends BaseRule {
 				continue;
 			}
 			usedMediaIdSet.add(Integer.valueOf(mediaId));
-	
+
 			boolean record = false;
 			for (Material material : materials) {
 				if (material.getMaterialKey().equals(entity.getId()) && material.getMediaId().intValue() == mediaId.intValue()) {
@@ -138,7 +142,8 @@ public class MaterialRule extends BaseRule {
 			}
 			// 未上传过
 			if (!record) {
-				Material newEntity = buildMaterial(null, entity, mediaId);;			
+				Material newEntity = buildMaterial(null, entity, mediaId);
+				;
 				unUploadedMaterials.put(mediaId, newEntity);
 			}
 		}
@@ -148,9 +153,10 @@ public class MaterialRule extends BaseRule {
 		classfiedMaps.add(3, rejectedMaterials); // 已驳回
 		classfiedMaps.add(4, unUploadedMaterials); // 未上传过
 	}
-	
+
 	/**
 	 * 构建素材实体
+	 * 
 	 * @param entity
 	 * @return
 	 */
@@ -176,7 +182,7 @@ public class MaterialRule extends BaseRule {
 		material.setBrand(entity.getBrand());
 		material.setClkUrls(parseToString(entity.getMonitor(), ClKURL)); // 点击监测URL(多个用半角逗号分隔)
 		material.setCover(entity.getCover());
-		
+
 		material.setDealId(entity.getDealId() != null ? Integer.valueOf(entity.getDealId()) : 0);
 		material.setDeliveryType(Byte.valueOf(entity.getDeliveryType().toString()));
 		material.setDescription(entity.getDesc());
@@ -190,14 +196,14 @@ public class MaterialRule extends BaseRule {
 		material.setSize("0"); // 广告素材尺寸 TODO
 		material.setStartDate(entity.getStartDate());
 		material.setTitle(entity.getTitle());
-		
+
 		// set default value
 		material.setAuditedUser(Integer.valueOf(0));
 		material.setReason("");
 
 		return material;
 	}
-	
+
 	public static String parseToString(MonitorModel monitor, byte type) {
 		if (monitor == null) {
 			return "";
@@ -223,22 +229,23 @@ public class MaterialRule extends BaseRule {
 		}
 		return "";
 	}
-	
+
 	public static String parseToString(List<String> list) {
 		if (list == null || list.isEmpty()) {
 			return "";
 		}
-		
+
 		StringBuffer result = new StringBuffer();
-		for (String item :list) {
+		for (String item : list) {
 			result.append("|");
 			result.append(item);
 		}
 		return result.toString().substring(1);
 	}
-	
+
 	/**
 	 * 转换器
+	 * 
 	 * @param source
 	 * @param destination
 	 */
@@ -246,14 +253,14 @@ public class MaterialRule extends BaseRule {
 		if (source == null) {
 			return;
 		}
-		
+
 		if (source.isEmpty()) {
 			return;
 		}
-		
+
 		for (Material sourceItem : source) {
 			MaterialAuditResultModel destinationItem = new MaterialAuditResultModel();
-			destinationItem.setId(sourceItem.getMaterialKey()); //DSP 传过来的素材ID
+			destinationItem.setId(sourceItem.getMaterialKey()); // DSP 传过来的素材ID
 			destinationItem.setMediaId(String.valueOf(sourceItem.getMediaId()));
 			destinationItem.setStatus(Integer.valueOf(sourceItem.getStatus()));
 			destinationItem.setErrorMessage(sourceItem.getReason());

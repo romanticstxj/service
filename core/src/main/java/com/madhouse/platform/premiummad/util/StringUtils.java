@@ -1,7 +1,11 @@
 package com.madhouse.platform.premiummad.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import org.apache.commons.codec.CharEncoding;
 
 public class StringUtils {
 
@@ -71,6 +75,7 @@ public class StringUtils {
 
 	/**
 	 * 首字母大写
+	 * 
 	 * @param name
 	 * @return
 	 */
@@ -83,5 +88,22 @@ public class StringUtils {
 			return name.substring(0, 1).toUpperCase() + other;
 		}
 		return "";
+	}
+
+	/**
+	 * 以UTF-8 encode字符串
+	 * 
+	 * @param str
+	 *            字符串
+	 * @return encode str
+	 */
+	public static String encode(String str) {
+		String encodeStr = "";
+		try {
+			encodeStr = URLEncoder.encode(str, CharEncoding.UTF_8);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return encodeStr;
 	}
 }

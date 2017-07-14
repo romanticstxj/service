@@ -47,37 +47,50 @@ public interface AdvertiserMapper {
 
 	/**
 	 * 根据广告主ID和媒体ID查询
+	 * 
 	 * @param param
 	 * @return
 	 */
 	List<Advertiser> selectByAdvertiserKeyAndMediaIds(AdvertiserModel param);
-	
+
 	/**
 	 * 批量插入
+	 * 
 	 * @param list
 	 * @return
 	 */
 	int insertByBatch(List<Advertiser> list);
-	
+
 	/**
 	 * 批量更新
+	 * 
 	 * @param list
 	 * @return
 	 */
 	int updateByBath(List<Advertiser> list);
-	
+
 	/**
 	 * 新增 返回主键
+	 * 
 	 * @param record
 	 * @return
 	 */
 	int insertAdvertiser(Advertiser record);
-	
+
 	/**
 	 * 根据DSP提供的广告主IDs和dspID查询
+	 * 
 	 * @param advertiserKeys
 	 * @param dspId
 	 * @return
 	 */
-	List<Advertiser> selectByAdvertiserKeysAndDspId(@Param("advertiserKeys")String[] advertiserKeys, @Param("dspId")String dspId);
+	List<Advertiser> selectByAdvertiserKeysAndDspId(@Param("advertiserKeys") String[] advertiserKeys, @Param("dspId") String dspId);
+
+	/**
+	 * 根据主键ID获取广告主
+	 * 
+	 * @param list
+	 * @return
+	 */
+	List<Advertiser> selectByIds(List<String> list);
 }

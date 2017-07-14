@@ -46,4 +46,6 @@ public interface SystemConstant {
     int RATIO_FEN_TO_YUAN = 100;
     
     String JDBC_SCHEMA = "premiummad_dev";
+    
+    String LOG_TASK_OTV = "taskOtv";
 }

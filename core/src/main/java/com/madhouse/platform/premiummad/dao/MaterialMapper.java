@@ -47,37 +47,50 @@ public interface MaterialMapper {
 
 	/**
 	 * 根据素材key和媒体ID查询
+	 * 
 	 * @param param
 	 * @return
 	 */
 	List<Material> selectByMaterialKeyAndMediaIds(MaterialModel param);
-	
+
 	/**
 	 * 批量插入
+	 * 
 	 * @param list
 	 * @return
 	 */
 	int insertByBatch(List<Material> list);
-	
+
 	/**
 	 * 批量更新
+	 * 
 	 * @param list
 	 * @return
 	 */
 	int updateByBath(List<Material> list);
-	
+
 	/**
 	 * 插入素材信息，返回主键
+	 * 
 	 * @param record
 	 * @return
 	 */
 	int insertMaterial(Material record);
-	
+
 	/**
 	 * 根据DSP提供的素材IDs和dspID查询
+	 * 
 	 * @param materialKeys
 	 * @param dspId
 	 * @return
 	 */
-	List<Material> selectByMaterialKeysAndDspId(@Param("materialKeys")String[] advertiserKeys, @Param("dspId")String dspId);
+	List<Material> selectByMaterialKeysAndDspId(@Param("materialKeys") String[] advertiserKeys, @Param("dspId") String dspId);
+
+	/**
+	 * 根据主键ID获取素材
+	 * 
+	 * @param list
+	 * @return
+	 */
+	List<Material> selectByIds(List<String> list);
 }

@@ -2,7 +2,7 @@ package com.madhouse.platform.premiummad.model;
 
 public class MaterialAuditResultModel {
 	/**
-	 * 素材ID
+	 * 素材ID(DSN 或  我方系统的id)
 	 */
 	private String id;
 	

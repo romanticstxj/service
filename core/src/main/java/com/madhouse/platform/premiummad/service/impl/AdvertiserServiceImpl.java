@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.madhouse.platform.premiummad.constant.AdvertiserAuditMode;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
-import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.SysMediaMapper;
@@ -25,19 +24,108 @@ import com.madhouse.platform.premiummad.service.IAdvertiserService;
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
 public class AdvertiserServiceImpl implements IAdvertiserService {
-	
+
 	@Autowired
 	private SysMediaMapper mediaDao;
-	
+
 	@Autowired
 	private AdvertiserMapper advertiserDao;
-	
+
 	/**
-	 * 根据 DSP 广告主Key 查询广告主是否被媒体审核通过 
+	 * 根据媒体返回的结果更新状态
+	 * 
+	 * @param auditResults
+	 */
+	@Transactional
+	@Override
+	public void updateStatusToMedia(List<AdvertiserAuditResultModel> auditResults) {
+		// 参数校验
+		if (auditResults == null || auditResults.isEmpty()) {
+			return;
+		}
+
+		// 获取广告主ID列表
+		List<String> advertiserIds = new ArrayList<String>();
+		for (AdvertiserAuditResultModel item : auditResults) {
+			advertiserIds.add(item.getId());
+		}
+
+		// 校验我方系统是否存在
+		List<Advertiser> advertisers = advertiserDao.selectByIds(advertiserIds);
+		if (advertisers == null || advertisers.size() != advertiserIds.size()) {
+			throw new BusinessException(StatusCode.SC500, "存在无效的广告主ID");
+		}
+
+		// 已驳回或已通过的记录更新状态
+		List<Advertiser> updatedAdvertisers = new ArrayList<Advertiser>();
+		for (AdvertiserAuditResultModel item : auditResults) {
+			// 审核中的广告主不处理
+			if (item.getStatus() == null || AdvertiserStatusCode.ASC10003.getValue() == item.getStatus().intValue()) {
+				continue;
+			}
+
+			// 更新审核状态
+			Advertiser updateItem = new Advertiser();
+			updateItem.setStatus(Byte.valueOf(item.getStatus().toString()));
+			updateItem.setUpdatedTime(new Date());
+			updateItem.setId(Integer.valueOf(item.getId()));
+
+			updatedAdvertisers.add(updateItem);
+		}
+
+		int effortRows = advertiserDao.updateByBath(updatedAdvertisers);
+		if (effortRows != updatedAdvertisers.size()) {
+			throw new BusinessException(StatusCode.SC500);
+		}
+	}
+
+	/**
+	 * 广告主提交媒体后更改状态为审核中
+	 * 
+	 * @param advertiserIds
+	 *            我方的广告主ID
+	 */
+	@Transactional
+	@Override
+	public void updateStatusAfterUpload(List<String> advertiserIds) {
+		// 参数为空
+		if (advertiserIds == null || advertiserIds.isEmpty()) {
+			return;
+		}
+
+		// 获取我方的广告主，并校验我方系统是否存在
+		List<Advertiser> advertisers = advertiserDao.selectByIds(advertiserIds);
+		if (advertisers == null || advertisers.size() != advertiserIds.size()) {
+			throw new BusinessException(StatusCode.SC500, "存在无效的广告主ID");
+		}
+
+		// 设置状态为审核中
+		List<Advertiser> updatedAdvertisers = new ArrayList<Advertiser>();
+		for (Advertiser item : advertisers) {
+			Advertiser updateItem = new Advertiser();
+
+			// 状态修改为审核中
+			updateItem.setStatus(Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10003.getValue())));
+			updateItem.setUpdatedTime(new Date());
+			updateItem.setId(item.getId());
+
+			updatedAdvertisers.add(updateItem);
+		}
+
+		int effortRows = advertiserDao.updateByBath(updatedAdvertisers);
+		if (effortRows != updatedAdvertisers.size()) {
+			throw new BusinessException(StatusCode.SC500);
+		}
+	}
+
+	/**
+	 * 根据 DSP 广告主Key 查询广告主是否被媒体审核通过
+	 * 
 	 * @param ids
 	 * @param dspId
 	 * @return
 	 */
+	@Transactional
 	@Override
 	public List<AdvertiserAuditResultModel> getAdvertiserAuditResult(String ids, String dspId) {
 		// 解析传入的广告主Key
@@ -52,9 +140,10 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 
 		return results;
 	}
-	
+
 	/**
 	 * DSP端上传广告主
+	 * 
 	 * @param entity
 	 */
 	@Transactional
@@ -78,7 +167,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		if (errorMsg != null) {
 			throw new BusinessException(StatusCode.SC411, errorMsg);
 		}
-		
+
 		// 数据存储
 		// 保存未提交的广告主和媒体关系
 		if (classfiedMaps.get(4) != null && classfiedMaps.get(4).size() > 0) {
@@ -99,11 +188,11 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 				throw new BusinessException(StatusCode.SC500);
 			}
 		}
-		
+
 		// 根据媒体审核模式处理
 		audit(uploadedMedias, classfiedMaps.get(4), classfiedMaps.get(3));
 	}
-	
+
 	private void audit(List<SysMedia> uploadedMedias, Map<Integer, Advertiser> unUploadedAdvertisers, Map<Integer, Advertiser> rejectedAdvertisers) {
 		for (SysMedia media : uploadedMedias) {
 			// 平台审核不处理
@@ -119,22 +208,23 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 				Advertiser updateItem = new Advertiser();
 				// 如果模式是不审核，审核状态修改为审核通过
 				if (AdvertiserAuditMode.AAM10001.getValue() == media.getAdvertiserAuditMode().intValue()) {
-					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10004.getValue())));
+					updateItem.setStatus(Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10004.getValue())));
 					updateItem.setUpdatedTime(new Date());
 
 					updateItem.setId(item.getId());
 				}
 
 				// 如果模式是媒体审核，推送给媒体，状态修改为审核中
-				if (AdvertiserAuditMode.AAM10003.getValue() == media.getAdvertiserAuditMode().intValue()) {
-					// 推送给媒体 TODO
-
-					// 状态修改为审核中
-					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10003.getValue())));
-					updateItem.setUpdatedTime(new Date());
-
-					updateItem.setId(item.getId());
-				}
+				/*
+				 * if (AdvertiserAuditMode.AAM10003.getValue() ==
+				 * media.getAdvertiserAuditMode().intValue()) { // 推送给媒体 TODO
+				 * 
+				 * // 状态修改为审核中 updateItem.setStatus(Byte.valueOf(String.valueOf(
+				 * MaterialStatusCode.MSC10003.getValue())));
+				 * updateItem.setUpdatedTime(new Date());
+				 * 
+				 * updateItem.setId(item.getId()); }
+				 */
 
 				int effortRows = advertiserDao.updateByPrimaryKeySelective(updateItem);
 				if (effortRows != 1) {
@@ -143,9 +233,10 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 			}
 		}
 	}
-	
+
 	/**
 	 * 校验广告主和指定的媒体是否已审核通过
+	 * 
 	 * @param uploadedMedias
 	 * @param dspId
 	 * @param advertiserKey

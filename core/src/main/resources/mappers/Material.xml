@@ -332,4 +332,14 @@
        </foreach>
        group by media_id
   </select>
+  <select id="selectByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+    select 
+    <include refid="Base_Column_List" />
+    from mad_sys_material
+    where id in
+	   <foreach collection="list" item="item" index="index"
+           open="(" close=")" separator=",">
+           #{item,jdbcType=INTEGER}`
+        </foreach>
+  </select>
 </mapper>
