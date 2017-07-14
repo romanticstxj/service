@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
+
 public class MaterialModel implements Serializable {
 
 	private static final long serialVersionUID = -4527909581700251071L;
@@ -16,27 +18,32 @@ public class MaterialModel implements Serializable {
 	/**
 	 * DSP 定义的素材ID
 	 */
+	@NotNullAndBlank
 	private String id;
 	
 	/**
 	 * 素材名称
 	 */
+	@NotNullAndBlank
 	private String name;
 	
 	/**
 	 * 广告类型
 	 */
+	@NotNullAndBlank
 	private Integer adType;
 	
 	/**
 	 * DSP 平台定义的广告主ID
 	 */
+	@NotNullAndBlank
 	private String advertiserId;
 	
 	/**
 	 * 投放类型
 	 * 1: PDB、2:PD、4:PMP、8:RTB
 	 */
+	@NotNullAndBlank
 	private Integer deliveryType;
 	
 	/**
@@ -62,21 +69,25 @@ public class MaterialModel implements Serializable {
 	/**
 	 * 失效日期(yyyy-MM-dd)
 	 */
+	@NotNullAndBlank
 	private Date endDate;
 	
 	/**
 	 * PremiumMAD 平台定义的媒体ID，可同时制定多个媒体
 	 */
+	@NotNullAndBlank
 	private List<Integer> mediaId;
 	
 	/**
 	 * 广告素材宽度（单位:pixel)
 	 */
+	@NotNullAndBlank
 	private Integer weight;
 	
 	/**
 	 * 广告素材高度（单位:pixel)
 	 */
+	@NotNullAndBlank
 	private Integer height;
 	
 	/**
@@ -102,6 +113,7 @@ public class MaterialModel implements Serializable {
 	/**
 	 * 广告素材URL
 	 */
+	@NotNullAndBlank
 	private List<String> adm;
 	
 	/**

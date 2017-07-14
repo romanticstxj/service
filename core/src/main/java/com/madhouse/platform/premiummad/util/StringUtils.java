@@ -4,8 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
-import org.apache.commons.codec.CharEncoding;
+import org.apache.commons.lang3.CharEncoding;
 
 public class StringUtils {
 
@@ -71,6 +72,24 @@ public class StringUtils {
 	 */
 	public static boolean isEmpty(Object str) {
 		return (str == null || "".equals(str) || "".equals(str.toString().trim()));
+	}
+	
+	/**
+	 * 把idList转为逗号分隔的idStr
+	 * @param idList
+	 * @return
+	 */
+	public static String getIdsStr(List<Integer> idList){
+		return org.springframework.util.StringUtils.collectionToDelimitedString(idList, ",");
+	}
+	
+	/**
+	 * 把逗号分隔的idStr转换成id数组
+	 * @param ids
+	 * @return
+	 */
+	public static String[] splitIds(String ids){
+		return org.springframework.util.StringUtils.tokenizeToStringArray(ids, ",");
 	}
 
 	/**

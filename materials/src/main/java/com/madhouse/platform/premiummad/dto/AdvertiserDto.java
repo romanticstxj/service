@@ -2,7 +2,7 @@ package com.madhouse.platform.premiummad.dto;
 
 import java.io.Serializable;
 import java.util.List;
-import com.madhouse.platform.premiummad.annotation.NotNull;
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
 public class AdvertiserDto implements Serializable {
 	
@@ -11,31 +11,31 @@ public class AdvertiserDto implements Serializable {
 	/**
 	 * DSP定义 的广告主 
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private String id;
 	
 	/**
 	 * DSP定义的广告主名称
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private String name;
 	
 	/**
 	 * 广告主所属行业
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private Integer industry;
 	
 	/**
 	 *广告主 web 主页 
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private String webSite;
 	
 	/**
 	 * PremiumMAD 平台定义的媒体 ID，可同 时指定 多个 媒体 ；
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private List<Integer> mediaId;
 	
 	/**

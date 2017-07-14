@@ -3,38 +3,41 @@ package com.madhouse.platform.premiummad.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.madhouse.platform.premiummad.annotation.NotNull;
+import javax.validation.constraints.NotNull;
+
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
+import com.madhouse.platform.premiummad.constant.SystemCommonMsg;
+import com.madhouse.platform.premiummad.validator.Update;
+import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
 public class MediaDto implements Serializable{
 	
 	private static final long serialVersionUID = 1634655943775249685L;
-
+	@NotNull(message=SystemCommonMsg.NO_UPDATE_ID, groups={Update.class, UpdateStatus.class})
 	private Integer id;
-	
+	@NotNull(message=SystemCommonMsg.NO_UPDATE_STATUS, groups=UpdateStatus.class)
 	private Integer status;
 	
 	private Integer adCount;
-	@NotNull
+	@NotNullAndBlank
 	private String name;
-	@NotNull
+	@NotNullAndBlank
 	private Integer category;
 	private String categoryName;
-	@NotNull
+	@NotNullAndBlank
 	private Integer type;
-	@NotNull
+	@NotNullAndBlank
 	private Integer accessType;
-	@NotNull
+	@NotNullAndBlank
 	private Integer advertiserAuditMode;
-	@NotNull
+	@NotNullAndBlank
 	private Integer materialAuditMode;
-	@NotNull
+	@NotNullAndBlank
 	private Integer timeout;
 	
 	private Date createdTime;
 	
 	private String description;
-	
-	private Integer updateType;
 
 	private Integer apiType;
 	
@@ -142,20 +145,21 @@ public class MediaDto implements Serializable{
 		this.description = description;
 	}
 
-	public Integer getUpdateType() {
-		return updateType;
-	}
-
-	public void setUpdateType(Integer updateType) {
-		this.updateType = updateType;
-	}
-
 	public Integer getApiType() {
 		return apiType;
 	}
 
 	public void setApiType(Integer apiType) {
 		this.apiType = apiType;
+	}
+
+	@Override
+	public String toString() {
+		return "MediaDto [id=" + id + ", status=" + status + ", adCount=" + adCount + ", name=" + name + ", category="
+				+ category + ", categoryName=" + categoryName + ", type=" + type + ", accessType=" + accessType
+				+ ", advertiserAuditMode=" + advertiserAuditMode + ", materialAuditMode=" + materialAuditMode
+				+ ", timeout=" + timeout + ", createdTime=" + createdTime + ", description=" + description
+				+ ", apiType=" + apiType + "]";
 	}
 	
 }

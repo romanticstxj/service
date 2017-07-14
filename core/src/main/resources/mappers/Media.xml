@@ -34,7 +34,7 @@
 		${alias}.status
 	</sql>
 	
-    <select id="queryAll" resultMap="baseResult">
+    <select id="queryAll" parameterType="string" resultMap="baseResult">
 		SELECT 
 		<include refid="baseList">
             <property name="alias" value="m" />
@@ -97,7 +97,7 @@
               <if test="updatedUser != null">#{updatedUser},</if>
               <if test="createdTime != null">#{createdTime},</if>
               <if test="updatedTime != null">#{updatedTime},</if>
-              1, 1
+              0, 1
             </trim>
     </insert>
     

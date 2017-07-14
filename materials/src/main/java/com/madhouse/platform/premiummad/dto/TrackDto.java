@@ -1,6 +1,6 @@
 package com.madhouse.platform.premiummad.dto;
 
-import com.madhouse.platform.premiummad.annotation.NotNull;
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
 public class TrackDto {
 	/**
@@ -12,7 +12,7 @@ public class TrackDto {
 	/**
 	 * 监测URL
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private String url;
 
 	public Integer getStartDelay() {

@@ -68,16 +68,6 @@
         </property>
     </bean>
 
-    <bean id="dataSource" class="com.madhouse.platform.premiummad.holder.DynamicDataSource">
-        <property name="targetDataSources">
-            <map key-type="java.lang.String">
-                <entry key="premiummad" value-ref="dataSourcePremiummad"/>
-            </map>
-        </property>
-        <property name="defaultTargetDataSource" ref="dataSourcePremiummad"/>
-        <property name="lenientFallback" value="false"/><!-- 如获取数据源为空不使用默认数据源，抛异常IllegalStateException -->
-    </bean>
-
     <bean id="dataSourcePremiummad" parent="parentDataSource">
         <property name="url" value="${jdbc.premiummad.url}"/>
         <property name="username" value="${jdbc.premiummad.username}"/>
@@ -85,7 +75,7 @@
     </bean>
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="dataSourcePremiummad"/>
         <property name="configLocation" value="classpath:mybatis.xml"/>
         <property name="mapperLocations" value="classpath:mappers/*.xml"/>
     </bean>
@@ -96,7 +86,7 @@
 
     <!-- 事务配置 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="dataSourcePremiummad"/>
     </bean>
 
     <!-- 使用annotation注解方式配置事务 -->

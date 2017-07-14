@@ -1,6 +1,6 @@
 package com.madhouse.platform.premiummad.model;
 
-import com.madhouse.platform.premiummad.annotation.NotNull;
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
 public class TrackModel {
 	/**
@@ -12,7 +12,7 @@ public class TrackModel {
 	/**
 	 * 监测URL
 	 */
-	@NotNull
+	@NotNullAndBlank
 	private String url;
 
 	public Integer getStartDelay() {

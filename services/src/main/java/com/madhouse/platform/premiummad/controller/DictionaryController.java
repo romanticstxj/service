@@ -40,7 +40,7 @@ public class DictionaryController {
 				result = listAdspaceLayout(terminalType, adType);
 				break;
 			default: 
-				result = ResponseUtils.response(StatusCode.SC21004, null);
+				result = ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
 		return result;

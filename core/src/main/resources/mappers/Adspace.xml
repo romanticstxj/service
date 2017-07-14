@@ -5,34 +5,102 @@
 	<resultMap id="baseResult" type="com.madhouse.platform.premiummad.entity.Adspace">
         <id property="id" column="id" jdbcType="INTEGER" />
         <result property="name" column="name" jdbcType="VARCHAR" />
-        <result property="category" column="category" jdbcType="INTEGER" />
-        <result property="categoryName" column="categoryName" jdbcType="VARCHAR" />
-        <result property="type" column="type" jdbcType="INTEGER" />
-        <result property="accessType" column="access_type" jdbcType="INTEGER" />
-        <result property="advertiserAuditMode" column="advertiser_audit_mode" jdbcType="INTEGER" />
-        <result property="materialAuditMode" column="material_audit_mode" jdbcType="INTEGER" />
-        <result property="timeout" column="timeout" jdbcType="INTEGER" />
+        <result property="adspaceKey" column="adspace_key" jdbcType="VARCHAR" />
+        <result property="mediaId" column="media_id" jdbcType="INTEGER" />
+        <result property="terminalType" column="terminal_type" jdbcType="INTEGER" />
+        <result property="terminalOs" column="terminal_os" jdbcType="INTEGER" />
+        <result property="supportHttps" column="support_https" jdbcType="INTEGER" />
+        <result property="bidType" column="bid_type" jdbcType="INTEGER" />
+        <result property="bidFloor" column="bid_floor" jdbcType="INTEGER" />
+        <result property="adType" column="adtype" jdbcType="INTEGER" />
+        <result property="layout" column="layout" jdbcType="INTEGER" />
+        <result property="materialType" column="material_type" jdbcType="INTEGER" />
+        <result property="materialSize" column="material_size" jdbcType="VARCHAR" />
+        <result property="materialMaxKbyte" column="material_max_kbyte" jdbcType="INTEGER" />
+        <result property="logoType" column="logo_type" jdbcType="INTEGER" />
+        <result property="logoSize" column="logo_size" jdbcType="VARCHAR" />
+        <result property="logoMaxKbyte" column="logo_max_kbyte" jdbcType="INTEGER" />
+        <result property="titleMaxLength" column="title_max_length" jdbcType="INTEGER" />
+        <result property="descMaxLength" column="desc_max_length" jdbcType="INTEGER" />
+        <result property="mainPicNumber" column="main_pic_number" jdbcType="INTEGER" />
+        <result property="videoType" column="video_type" jdbcType="INTEGER" />
+        <result property="videoSize" column="video_size" jdbcType="VARCHAR" />
+        <result property="videoMaxKbyte" column="video_max_kbyte" jdbcType="INTEGER" />
+        <result property="videoDuration" column="video_duration" jdbcType="VARCHAR" />
+        <result property="status" column="status" jdbcType="INTEGER" />
         <result property="description" column="description" jdbcType="VARCHAR" />
-        <result property="createdUser" column="created_user" jdbcType="TIMESTAMP" />
+        <result property="createdUser" column="created_user" jdbcType="INTEGER" />
         <result property="updatedUser" column="updated_user" jdbcType="INTEGER" />
         <result property="createdTime" column="created_time" jdbcType="TIMESTAMP" />
-        <result property="updatedTime" column="updated_time" jdbcType="INTEGER" />
-        <result property="status" column="status" jdbcType="INTEGER" />
-        <result property="apiType" column="api_type" jdbcType="INTEGER" />
-        <result property="adCount" column="adCount" jdbcType="INTEGER" />
+        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP" />
     </resultMap>
     
+    <resultMap id="baseMappingResult" type="com.madhouse.platform.premiummad.entity.AdspaceMapping">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="adspaceId" column="adspace_id" jdbcType="INTEGER" />
+        <result property="mediaAdspaceKey" column="media_adspace_key" jdbcType="VARCHAR" />
+        <result property="status" column="status" jdbcType="INTEGER" />
+        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <resultMap id="baseCascadedMappingResult" type="com.madhouse.platform.premiummad.entity.AdspaceMapping">
+        <result property="adspaceId" column="adspaceId1" jdbcType="INTEGER" />
+        <result property="mediaAdspaceKey" column="media_adspace_key" jdbcType="VARCHAR" />
+        <collection property="dspMappings" ofType="com.madhouse.platform.premiummad.entity.DspMapping" column="adspaceId2">  
+            <result property="dspId" column="dsp_id" jdbcType="INTEGER" />
+            <result property="dspMediaId" column="dsp_media_id" jdbcType="INTEGER" />
+            <result property="dspAdspaceKey" column="dsp_adspace_key" jdbcType="VARCHAR" />
+        </collection>  
+    </resultMap>
+    
+    <select id="queryAdspaceMappingById" parameterType="integer" 
+    	resultMap="baseCascadedMappingResult">
+		SELECT amm.adspace_id adspaceId1, amm.media_adspace_key,
+			amd.adspace_id adspaceId2, amd.dsp_id, amd.dsp_media_id, amd.dsp_adspace_key 
+			FROM mad_sys_adspace_mapping_media amm
+		LEFT JOIN mad_sys_adspace_mapping_dsp amd ON amm.adspace_id = amd.adspace_id
+		WHERE amm.adspace_id=#{adspaceId} AND amm.status = 1
+		UNION
+		SELECT amm.adspace_id adspaceId1, amm.media_adspace_key,
+			amd.adspace_id adspaceId2, amd.dsp_id, amd.dsp_media_id, amd.dsp_adspace_key 
+			FROM mad_sys_adspace_mapping_media amm
+		RIGHT JOIN mad_sys_adspace_mapping_dsp amd ON amm.adspace_id = amd.adspace_id
+		WHERE amd.adspace_id=#{adspaceId} AND amd.status = 1
+	</select>
+    
     <sql id="baseColumns">
-		${alias}.id, ${alias}.name, ${alias}.category, ${alias}.type, ${alias}.access_type,
-		${alias}.advertiser_audit_mode, ${alias}.material_audit_mode, ${alias}.timeout, 
-		${alias}.api_type, ${alias}.status, ${alias}.description, ${alias}.created_user, 
-		${alias}.updated_user, ${alias}.created_time, ${alias}.updated_time
+		${alias}.`id`,${alias}.`name`,${alias}.`adspace_key`,${alias}.`media_id`,${alias}.`terminal_type`,${alias}.`terminal_os`,${alias}.`support_https`,
+		${alias}.`bid_type`,${alias}.`bid_floor`,${alias}.`adtype`,${alias}.`layout`,${alias}.`material_type`,${alias}.`material_size`,${alias}.`material_max_kbyte`,
+		${alias}.`logo_type`,${alias}.`logo_size`,${alias}.`logo_max_kbyte`,${alias}.`title_max_length`,${alias}.`desc_max_length`,${alias}.`main_pic_number`,
+		${alias}.`video_type`,${alias}.`video_size`,${alias}.`video_max_kbyte`,${alias}.`video_duration`,${alias}.`status`,${alias}.`description`,${alias}.`created_user`,
+		${alias}.`created_time`,${alias}.`updated_user`,${alias}.`updated_time`
+	</sql>
+	
+	<sql id="baseMappingColumns">
+		${alias}.`id`,${alias}.`adspace_id`,${alias}.`media_adspace_key`,${alias}.`status`,${alias}.`created_time`
 	</sql>
 	
 	<sql id="baseList">
-		${alias}.id, ${alias}.name, ${alias}.category, ${alias}.type, ${alias}.created_time,
-		${alias}.status
+		${alias}.id, ${alias}.name, ${alias}.adspace_key, ${alias}.media_id, ${alias}.terminal_type, ${alias}.layout, 
+		${alias}.material_size, ${alias}.bid_floor, ${alias}.created_time, ${alias}.status
 	</sql>
+	
+	<select id="queryAll" parameterType="string" resultMap="baseResult">
+		SELECT 
+		<include refid="baseList">
+            <property name="alias" value="a" />
+        </include>, m.name mediaName, l.name layoutName
+        FROM mad_sys_adspace a 
+        LEFT JOIN mad_sys_media m ON m.id = a.media_id
+        LEFT JOIN mad_dict_layout l ON a.layout = l.code
+        <if test="idStrs != null and idStrs.length > 0">
+        	WHERE m.id IN 
+        	<foreach collection="idStrs" item="mediaId" index="index" open="(" close=")" separator=",">
+            	#{mediaId,jdbcType=INTEGER}
+            </foreach>
+        </if>
+        ORDER BY a.id
+	</select>
 	
 	<select id="checkName" parameterType="string" resultType="integer">
 		select count(0) from mad_sys_adspace where name = #{name}
@@ -101,7 +169,7 @@
               <if test="updatedUser != null">#{updatedUser},</if>
               <if test="createdTime != null">#{createdTime},</if>
               <if test="updatedTime != null">#{updatedTime},</if>
-              1
+              0
             </trim>
     </insert>
     
@@ -137,7 +205,95 @@
               <if test="createdTime != null">created_time = #{createdTime},</if>
               <if test="updatedTime != null">updated_time = #{updatedTime},</if>
         </set>
-        AND id = #{id}
+        WHERE id = #{id}
     </update>
+    
+    <select id="queryAdspaceById" parameterType="integer" resultMap="baseResult">
+		SELECT 
+		<include refid="baseColumns">
+            <property name="alias" value="a" />
+        </include>, l.name layoutName, m.name mediaName
+        FROM mad_sys_adspace a
+        LEFT JOIN mad_dict_layout l ON a.layout = l.code
+        LEFT JOIN mad_sys_media m ON a.media_id = m.id
+        WHERE a.id = #{id}
+	</select>
+	
+	<select id="queryByAdspaceKey" parameterType="string" resultType="integer">
+		SELECT count(0)
+        FROM mad_sys_adspace a
+        WHERE a.adspace_key = #{adspaceKey}
+	</select>
+	
+	<update id="updateStatus" parameterType="com.madhouse.platform.premiummad.entity.Adspace">
+        UPDATE mad_sys_adspace
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="updatedUser != null">updated_user = #{updatedUser},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    
+    <insert id="insertAdspaceMediaMapping" useGeneratedKeys="true" keyProperty="id" parameterType="com.madhouse.platform.premiummad.entity.AdspaceMapping">
+            INSERT INTO mad_sys_adspace_mapping_media
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+              <if test="adspaceId != null">adspace_id,</if>
+              <if test="mediaAdspaceKey != null">media_adspace_key,</if>
+              <if test="createdTime != null">created_time,</if>
+              status
+            </trim>
+            VALUES
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+              <if test="adspaceId != null">#{adspaceId},</if>
+              <if test="mediaAdspaceKey != null">#{mediaAdspaceKey},</if>
+              <if test="createdTime != null">#{createdTime},</if>
+              1
+            </trim>
+    </insert>
+    
+    <insert id="insertAdspaceDspMapping" parameterType="java.util.List">
+    		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
+		        SELECT LAST_INSERT_ID()  
+		    </selectKey>  
+           	INSERT INTO mad_sys_adspace_mapping_dsp (adspace_id, dsp_id, dsp_media_id, 
+          		dsp_adspace_key,created_time, status) VALUES
+          		<foreach collection="dspMappings" index="index" item="dspMapping" separator=",">
+          			(
+          				#{dspMapping.adspaceId},
+          				#{dspMapping.dspId},
+          				#{dspMapping.dspMediaId},
+          				#{dspMapping.dspAdspaceKey},
+          				#{dspMapping.createdTime},
+          				1
+          			)
+        		</foreach>
+    </insert>
+    
+    <select id="queryAdspaceMediaMapping" parameterType="com.madhouse.platform.premiummad.entity.AdspaceMapping" 
+    	resultType="integer">
+		SELECT count(0)
+        FROM mad_sys_adspace_mapping_media amm WHERE
+		<if test="queryParam.adspaceId != null"> amm.adspace_id = #{queryParam.adspaceId}</if>
+		<if test="queryParam.mediaAdspaceKey != null"> amm.media_adspace_key = #{queryParam.mediaAdspaceKey}</if>
+	</select>
+	
+	<select id="queryAdspaceDspMapping" parameterType="integer" 
+    	resultType="integer">
+		SELECT count(0)
+        FROM mad_sys_adspace_mapping_dsp amd
+		WHERE amd.adspace_id = #{adspaceId}
+	</select>
 
+	<delete id="removeAdspaceMediaMapping">
+		DELETE FROM mad_sys_adspace_mapping_media
+		WHERE adspace_id = #{adspaceId}
+	</delete>
+	
+	<delete id="removeAdspaceDspMapping">
+		DELETE FROM mad_sys_adspace_mapping_dsp
+		WHERE adspace_id = #{adspaceId}
+	</delete>
+	
+	
 </mapper>
