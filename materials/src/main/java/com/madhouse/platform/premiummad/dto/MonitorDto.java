@@ -2,7 +2,7 @@ package com.madhouse.platform.premiummad.dto;
 
 import java.util.List;
 
-public class MonitorDTO {
+public class MonitorDto {
 	/**
 	 * 展示监测URL
 	 */

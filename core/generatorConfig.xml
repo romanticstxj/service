@@ -30,7 +30,12 @@
 		<property name="enableSubPackages" value="true" />
 	</javaClientGenerator>
 
-	<table tableName="mad_sys_dsp" domainObjectName="Dsp"
+	<table tableName="mad_sys_advertiser" domainObjectName="Advertiser"
+		enableCountByExample="false" enableUpdateByExample="false"
+		enableDeleteByExample="false" enableSelectByExample="false"
+		selectByExampleQueryId="false"></table>
+		
+	<table tableName="mad_sys_material" domainObjectName="Material"
 		enableCountByExample="false" enableUpdateByExample="false"
 		enableDeleteByExample="false" enableSelectByExample="false"
 		selectByExampleQueryId="false"></table>

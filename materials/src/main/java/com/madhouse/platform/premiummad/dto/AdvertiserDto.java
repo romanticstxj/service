@@ -1,14 +1,13 @@
-package com.madhouse.platform.premiummad.model;
+package com.madhouse.platform.premiummad.dto;
 
 import java.io.Serializable;
 import java.util.List;
-
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
-public class AdvertiserMediaModel implements Serializable {
-
-	private static final long serialVersionUID = -5204392238626643882L;
-
+public class AdvertiserDto implements Serializable {
+	
+	private static final long serialVersionUID = 6193135169642528287L;
+	
 	/**
 	 * DSP定义 的广告主 
 	 */
@@ -131,8 +130,5 @@ public class AdvertiserMediaModel implements Serializable {
 		this.lience = lience;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 }
  

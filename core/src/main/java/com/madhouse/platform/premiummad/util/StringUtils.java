@@ -2,7 +2,6 @@ package com.madhouse.platform.premiummad.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
 import java.util.List;
 
 public class StringUtils {
@@ -88,7 +87,20 @@ public class StringUtils {
 	public static String[] splitIds(String ids){
 		return org.springframework.util.StringUtils.tokenizeToStringArray(ids, ",");
 	}
-	
-	
-	
+
+	/**
+	 * 首字母大写
+	 * @param name
+	 * @return
+	 */
+	public static String toFirstUpperCase(String name) {
+		if (name != null && !name.isEmpty()) {
+			String other = "";
+			if (name.length() > 1) {
+				other = name.substring(1);
+			}
+			return name.substring(0, 1).toUpperCase() + other;
+		}
+		return "";
+	}
 }

@@ -1,13 +1,19 @@
-package com.madhouse.platform.premiummad.dto;
+package com.madhouse.platform.premiummad.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
-public class MaterialMediaDto implements Serializable {
+public class MaterialModel implements Serializable {
 
 	private static final long serialVersionUID = -4527909581700251071L;
+	
+	/**
+	 * DSP ID
+	 */
+	private String dspId;
 	
 	/**
 	 * DSP 定义的素材ID
@@ -58,13 +64,13 @@ public class MaterialMediaDto implements Serializable {
 	/**
 	 * 有效日期(yyyy-MM-dd)
 	 */
-	private String startDate;
+	private Date startDate;
 	
 	/**
 	 * 失效日期(yyyy-MM-dd)
 	 */
 	@NotNullAndBlank
-	private String endDate;
+	private Date endDate;
 	
 	/**
 	 * PremiumMAD 平台定义的媒体ID，可同时制定多个媒体
@@ -128,7 +134,7 @@ public class MaterialMediaDto implements Serializable {
 	/**
 	 * 广告监测信息
 	 */
-	private MonitorDTO monitor;
+	private MonitorModel monitor;
 
 	public String getId() {
 		return id;
@@ -194,19 +200,19 @@ public class MaterialMediaDto implements Serializable {
 		this.dealId = dealId;
 	}
 
-	public String getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(String startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	public String getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(String endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
@@ -298,16 +304,20 @@ public class MaterialMediaDto implements Serializable {
 		this.actType = actType;
 	}
 
-	public MonitorDTO getMonitor() {
+	public MonitorModel getMonitor() {
 		return monitor;
 	}
 
-	public void setMonitor(MonitorDTO monitor) {
+	public void setMonitor(MonitorModel monitor) {
 		this.monitor = monitor;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getDspId() {
+		return dspId;
+	}
+
+	public void setDspId(String dspId) {
+		this.dspId = dspId;
 	}
 }
 

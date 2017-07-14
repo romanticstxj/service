@@ -1,11 +1,10 @@
-package com.madhouse.platform.premiummad.model;
+package com.madhouse.platform.premiummad.dto;
 
 import java.io.Serializable;
 import java.util.List;
-
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
-public class MaterialMediaModel implements Serializable {
+public class MaterialDto implements Serializable {
 
 	private static final long serialVersionUID = -4527909581700251071L;
 	
@@ -58,6 +57,7 @@ public class MaterialMediaModel implements Serializable {
 	/**
 	 * 有效日期(yyyy-MM-dd)
 	 */
+	@NotNullAndBlank
 	private String startDate;
 	
 	/**
@@ -128,7 +128,7 @@ public class MaterialMediaModel implements Serializable {
 	/**
 	 * 广告监测信息
 	 */
-	private MonitorModel monitor;
+	private MonitorDto monitor;
 
 	public String getId() {
 		return id;
@@ -298,16 +298,12 @@ public class MaterialMediaModel implements Serializable {
 		this.actType = actType;
 	}
 
-	public MonitorModel getMonitor() {
+	public MonitorDto getMonitor() {
 		return monitor;
 	}
 
-	public void setMonitor(MonitorModel monitor) {
+	public void setMonitor(MonitorDto monitor) {
 		this.monitor = monitor;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 }
 

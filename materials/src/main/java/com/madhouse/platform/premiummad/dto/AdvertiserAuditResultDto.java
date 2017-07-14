@@ -1,6 +1,6 @@
 package com.madhouse.platform.premiummad.dto;
 
-public class AdvertiserMediaAuditResultDto {
+public class AdvertiserAuditResultDto {
 	/**
 	 * 广告主 ID
 	 */

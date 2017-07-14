@@ -1,14 +1,19 @@
-package com.madhouse.platform.premiummad.dto;
+package com.madhouse.platform.premiummad.model;
 
 import java.io.Serializable;
 import java.util.List;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
-public class AdvertiserMediaDto implements Serializable {
+public class AdvertiserModel implements Serializable {
+
+	private static final long serialVersionUID = -5204392238626643882L;
 	
-	private static final long serialVersionUID = 6193135169642528287L;
-	
+	/**
+	 * DSP 传过来的ID
+	 */
+	private String dspId;
+
 	/**
 	 * DSP定义 的广告主 
 	 */
@@ -58,6 +63,14 @@ public class AdvertiserMediaDto implements Serializable {
 	 * 资质文件 （营业执照等）链接
 	 */
 	private String lience;
+
+	public String getDspId() {
+		return dspId;
+	}
+
+	public void setDspId(String dspId) {
+		this.dspId = dspId;
+	}
 
 	public String getId() {
 		return id;
