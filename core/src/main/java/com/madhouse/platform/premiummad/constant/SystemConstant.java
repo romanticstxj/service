@@ -47,4 +47,6 @@ public interface SystemConstant {
     int RATIO_FEN_TO_YUAN = 100;
     
     String JDBC_SCHEMA = "premiummad_dev";
+
+	String SYSTEM_ADMIN_MEDIA_ID = "-1";
 }

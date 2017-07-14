@@ -14,7 +14,6 @@ import com.madhouse.platform.premiummad.util.ResponseUtils;
 
 /**
  * 全局日常处理器
- * @author Xingjie.Teng
  */
 @ControllerAdvice
 public class CommonExceptionHandler {
@@ -25,6 +24,10 @@ public class CommonExceptionHandler {
 	@ResponseBody
 	public ResponseDto<Object> handleAllException(Exception ex) {
 		logger.error(LogUtils.getDetailException(ex));
-		return ResponseUtils.response(StatusCode.SC31001, null, ex.getMessage());
+		if (ex instanceof BusinessException) {
+			return ResponseUtils.response(((BusinessException) ex).getStatusCode(), null, ex.getMessage());
+		} else {
+			return ResponseUtils.response(StatusCode.SC500, null, ex.getMessage());
+		}
 	}
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.madhouse.platform.premiummad.dao.UserAuthDao">
+    
+    <sql id="baseMediaColumns">
+		${alias}.id, ${alias}.user_id, ${alias}.media_id, ${alias}.status, ${alias}.created_user, 
+		${alias}.updated_user, ${alias}.created_time, ${alias}.updated_time
+	</sql>
+	
+	<select id="queryMediaIdList" parameterType="string" resultType="integer">
+		SELECT * FROM (
+			SELECT um.media_id mediaId
+	        FROM mad_sys_user_media um
+	        WHERE um.user_id = #{userId}
+	        UNION 
+	        SELECT m.id mediaId
+	        FROM mad_sys_media m
+	        WHERE m.created_user = #{userId}
+        ) t <if test="mediaIds != null and mediaIds.length > 0">
+        	WHERE t.mediaId IN 
+        	<foreach collection="mediaIds" item="mediaId" index="index" open="(" close=")" separator=",">
+            	#{mediaId,jdbcType=INTEGER}
+            </foreach>
+        </if>
+	</select>
+	
+	<select id="queryAdspaceIdList" parameterType="string" resultType="integer">
+		SELECT * FROM (
+			SELECT a.id adspaceId
+			FROM mad_sys_adspace a
+	        LEFT JOIN mad_sys_user_media um ON a.media_id = um.media_id
+	        LEFT JOIN mad_sys_media m ON a.media_id = m.id
+	        WHERE um.user_id = #{userId} OR (m.created_user = #{userId} OR a.created_user = #{userId})
+        ) t <if test="adspaceIds != null and adspaceIds.length > 0">
+        	WHERE t.adspaceId IN 
+        	<foreach collection="adspaceIds" item="adspaceId" index="index" open="(" close=")" separator=",">
+            	#{adspaceId,jdbcType=INTEGER}
+            </foreach>
+        </if>
+	</select>
+</mapper>

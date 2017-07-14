@@ -1,4 +1,335 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.madhouse.platform.premiummad.dao.MaterialMapper" >
+  <select id="selectByMaterialKeyAndMediaIds" resultMap="BaseResultMap" parameterType="com.madhouse.platform.premiummad.model.AdvertiserModel">
+    select 
+    <include refid="Base_Column_List" />
+    from mad_sys_material
+    where material_key = #{id,jdbcType=VARCHAR}
+      and dsp_id = #{dspId,jdbcType=INTEGER} and media_id in
+	   <foreach collection="mediaId" item="item" index="index"
+           open="(" close=")" separator=",">
+           #{item,jdbcType=INTEGER}
+           
+        </foreach>
+  </select>
+  <insert id="insertByBatch" parameterType="com.madhouse.platform.premiummad.entity.Material" >
+    insert into mad_sys_material (dsp_id, material_key, 
+      material_name, advertiser_key, media_id, 
+      ad_type, delivery_type, brand, 
+      agency, deal_id, start_date, 
+      end_date, size, icon, title, 
+      description, cover, ad_materials, 
+      duration, lpg_url, active_type, 
+      imp_urls, clk_urls, sec_urls, 
+      audited_user, status, reason, 
+      created_time, updated_time)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+	    (#{item.dspId,jdbcType=INTEGER}, #{item.materialKey,jdbcType=VARCHAR}, 
+	      #{item.materialName,jdbcType=VARCHAR}, #{item.advertiserKey,jdbcType=VARCHAR}, #{item.mediaId,jdbcType=INTEGER}, 
+	      #{item.adType,jdbcType=SMALLINT}, #{item.deliveryType,jdbcType=TINYINT}, #{item.brand,jdbcType=VARCHAR}, 
+	      #{item.agency,jdbcType=VARCHAR}, #{item.dealId,jdbcType=INTEGER}, #{item.startDate,jdbcType=DATE}, 
+	      #{item.endDate,jdbcType=DATE}, #{item.size,jdbcType=VARCHAR}, #{item.icon,jdbcType=VARCHAR}, #{item.title,jdbcType=VARCHAR}, 
+	      #{item.description,jdbcType=VARCHAR}, #{item.cover,jdbcType=VARCHAR}, #{item.adMaterials,jdbcType=VARCHAR}, 
+	      #{item.duration,jdbcType=INTEGER}, #{item.lpgUrl,jdbcType=VARCHAR}, #{item.activeType,jdbcType=TINYINT}, 
+	      #{item.impUrls,jdbcType=VARCHAR}, #{item.clkUrls,jdbcType=VARCHAR}, #{item.secUrls,jdbcType=VARCHAR}, 
+	      #{item.auditedUser,jdbcType=INTEGER}, #{item.status,jdbcType=TINYINT}, #{item.reason,jdbcType=VARCHAR}, 
+	      #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedTime,jdbcType=TIMESTAMP})
+	</foreach>
+  </insert>
+  <insert id="insertMaterial" parameterType="com.madhouse.platform.premiummad.entity.Material"
+          useGeneratedKeys="true" keyProperty="id">
+    insert into mad_sys_material
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="dspId != null" >
+        dsp_id,
+      </if>
+      <if test="materialKey != null" >
+        material_key,
+      </if>
+      <if test="materialName != null" >
+        material_name,
+      </if>
+      <if test="advertiserKey != null" >
+        advertiser_key,
+      </if>
+      <if test="mediaId != null" >
+        media_id,
+      </if>
+      <if test="adType != null" >
+        ad_type,
+      </if>
+      <if test="deliveryType != null" >
+        delivery_type,
+      </if>
+      <if test="brand != null" >
+        brand,
+      </if>
+      <if test="agency != null" >
+        agency,
+      </if>
+      <if test="dealId != null" >
+        deal_id,
+      </if>
+      <if test="startDate != null" >
+        start_date,
+      </if>
+      <if test="endDate != null" >
+        end_date,
+      </if>
+      <if test="size != null" >
+        size,
+      </if>
+      <if test="icon != null" >
+        icon,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="cover != null" >
+        cover,
+      </if>
+      <if test="adMaterials != null" >
+        ad_materials,
+      </if>
+      <if test="duration != null" >
+        duration,
+      </if>
+      <if test="lpgUrl != null" >
+        lpg_url,
+      </if>
+      <if test="activeType != null" >
+        active_type,
+      </if>
+      <if test="impUrls != null" >
+        imp_urls,
+      </if>
+      <if test="clkUrls != null" >
+        clk_urls,
+      </if>
+      <if test="secUrls != null" >
+        sec_urls,
+      </if>
+      <if test="auditedUser != null" >
+        audited_user,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="createdTime != null" >
+        created_time,
+      </if>
+      <if test="updatedTime != null" >
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dspId != null" >
+        #{dspId,jdbcType=INTEGER},
+      </if>
+      <if test="materialKey != null" >
+        #{materialKey,jdbcType=VARCHAR},
+      </if>
+      <if test="materialName != null" >
+        #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="advertiserKey != null" >
+        #{advertiserKey,jdbcType=VARCHAR},
+      </if>
+      <if test="mediaId != null" >
+        #{mediaId,jdbcType=INTEGER},
+      </if>
+      <if test="adType != null" >
+        #{adType,jdbcType=SMALLINT},
+      </if>
+      <if test="deliveryType != null" >
+        #{deliveryType,jdbcType=TINYINT},
+      </if>
+      <if test="brand != null" >
+        #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="agency != null" >
+        #{agency,jdbcType=VARCHAR},
+      </if>
+      <if test="dealId != null" >
+        #{dealId,jdbcType=INTEGER},
+      </if>
+      <if test="startDate != null" >
+        #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        #{endDate,jdbcType=DATE},
+      </if>
+      <if test="size != null" >
+        #{size,jdbcType=VARCHAR},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="cover != null" >
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="adMaterials != null" >
+        #{adMaterials,jdbcType=VARCHAR},
+      </if>
+      <if test="duration != null" >
+        #{duration,jdbcType=INTEGER},
+      </if>
+      <if test="lpgUrl != null" >
+        #{lpgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="activeType != null" >
+        #{activeType,jdbcType=TINYINT},
+      </if>
+      <if test="impUrls != null" >
+        #{impUrls,jdbcType=VARCHAR},
+      </if>
+      <if test="clkUrls != null" >
+        #{clkUrls,jdbcType=VARCHAR},
+      </if>
+      <if test="secUrls != null" >
+        #{secUrls,jdbcType=VARCHAR},
+      </if>
+      <if test="auditedUser != null" >
+        #{auditedUser,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null" >
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByBath" parameterType="com.madhouse.platform.premiummad.entity.Material" >
+  	<foreach collection="list" item="item" index="index" separator=";" open="" close="">
+	    update mad_sys_material
+	    <set >
+	      <if test="item.dspId != null" >
+	        dsp_id = #{item.dspId,jdbcType=INTEGER},
+	      </if>
+	      <if test="item.materialKey != null" >
+	        material_key = #{item.materialKey,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.materialName != null" >
+	        material_name = #{item.materialName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.advertiserKey != null" >
+	        advertiser_key = #{item.advertiserKey,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.mediaId != null" >
+	        media_id = #{item.mediaId,jdbcType=INTEGER},
+	      </if>
+	      <if test="item.adType != null" >
+	        ad_type = #{item.adType,jdbcType=SMALLINT},
+	      </if>
+	      <if test="item.deliveryType != null" >
+	        delivery_type = #{item.deliveryType,jdbcType=TINYINT},
+	      </if>
+	      <if test="item.brand != null" >
+	        brand = #{item.brand,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.agency != null" >
+	        agency = #{item.agency,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.dealId != null" >
+	        deal_id = #{item.dealId,jdbcType=INTEGER},
+	      </if>
+	      <if test="item.startDate != null" >
+	        start_date = #{item.startDate,jdbcType=DATE},
+	      </if>
+	      <if test="item.endDate != null" >
+	        end_date = #{item.endDate,jdbcType=DATE},
+	      </if>
+	      <if test="item.size != null" >
+	        size = #{item.size,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.icon != null" >
+	        icon = #{item.icon,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.title != null" >
+	        title = #{item.title,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.description != null" >
+	        description = #{item.description,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.cover != null" >
+	        cover = #{item.cover,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.adMaterials != null" >
+	        ad_materials = #{item.adMaterials,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.duration != null" >
+	        duration = #{item.duration,jdbcType=INTEGER},
+	      </if>
+	      <if test="item.lpgUrl != null" >
+	        lpg_url = #{item.lpgUrl,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.activeType != null" >
+	        active_type = #{item.activeType,jdbcType=TINYINT},
+	      </if>
+	      <if test="item.impUrls != null" >
+	        imp_urls = #{item.impUrls,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.clkUrls != null" >
+	        clk_urls = #{item.clkUrls,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.secUrls != null" >
+	        sec_urls = #{item.secUrls,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.auditedUser != null" >
+	        audited_user = #{item.auditedUser,jdbcType=INTEGER},
+	      </if>
+	      <if test="item.status != null" >
+	        status = #{item.status,jdbcType=TINYINT},
+	      </if>
+	      <if test="item.reason != null" >
+	        reason = #{item.reason,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.createdTime != null" >
+	        created_time = #{item.createdTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="item.updatedTime != null" >
+	        updated_time = #{item.updatedTime,jdbcType=TIMESTAMP},
+	      </if>
+	    </set>
+	    where id = #{item.id,jdbcType=INTEGER}
+	 </foreach>
+  </update>
+  <select id="selectByMaterialKeysAndDspId" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mad_sys_material
+    where dsp_id = #{dspId,jdbcType=INTEGER} and material_key in
+      <foreach collection="materialKeys" item="item" index="index"
+           open="(" close=")" separator=",">
+           #{item,jdbcType=INTEGER}
+       </foreach>
+       group by media_id
+  </select>
 </mapper>

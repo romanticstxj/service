@@ -25,6 +25,6 @@ public class CommonExceptionHandler {
 	@ResponseBody
 	public ResponseDto<Object> handleAllException(Exception ex) {
 		logger.error(LogUtils.getDetailException(ex));
-		return ResponseUtils.response(StatusCode.SC31001, null, ex.getMessage());
+		return ResponseUtils.response(StatusCode.SC30001, null, ex.getMessage());
 	}
 }
