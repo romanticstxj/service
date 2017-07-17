@@ -48,7 +48,8 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		String name = adspace.getName();
 		String combinedStr = new StringBuffer(id.toString()).append(name).append(xFrom).toString();
 		String adspaceKey = StringUtils.getMD5(combinedStr);
-		adspace.setAdspaceKey(adspaceKey);
+		String truncatedAdspaceKey = adspaceKey.substring(8, 24);
+		adspace.setAdspaceKey(truncatedAdspaceKey);
 	}
 
 	private void preprocessAdspaceParams(Adspace adspace, Double bidFloor) {
@@ -69,7 +70,6 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		return adspaceDao.update(adspace);
 	}
 	
-	@Override
 	public Integer updateAdspaceKey(Adspace adspace) {
 		int queryResult = adspaceDao.queryByAdspaceKey(adspace.getAdspaceKey());
 		if(queryResult > 0){

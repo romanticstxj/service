@@ -57,4 +57,18 @@ public interface DspMapper {
      * @return
      */
     Dsp selectByIdAndToken(Dsp record);
+    
+    /**
+     * 检查名字重复
+     * @param dspName
+     * @return
+     */
+    int checkName(String dspName);
+
+    /**
+     * 更新状态
+     * @param dsp
+     * @return
+     */
+	int updateStatus(Dsp dsp);
 }

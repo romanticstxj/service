@@ -436,6 +436,7 @@
                     "name": "<*||string||comment:需求方平台名称>",
                 	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
                     "bidUrl": "<string||comment:DSP URL>",
+                    "maxQPS": "<integer||comment:最大QPS>",
                     "bidPercent": "<integer||comment:加价百分比>"
                 }
             },
