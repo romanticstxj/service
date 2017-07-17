@@ -2,7 +2,6 @@ package com.madhouse.platform.premiummad.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
 import java.util.List;
 
 public class StringUtils {
@@ -43,7 +42,7 @@ public class StringUtils {
 	}
 
 	/**
-	 * 将指定byte数组转换成16位字符串
+	 * 将指定byte数组转换成32位字符串
 	 * 
 	 * @param bytes
 	 * @return 2015年3月3日下午1:36:36
@@ -58,7 +57,7 @@ public class StringUtils {
 			}
 			hexString.append(hex.toUpperCase());
 		}
-		return hexString.toString().substring(8, 24);
+		return hexString.toString();
 	}
 
 	/**
@@ -89,6 +88,33 @@ public class StringUtils {
 		return org.springframework.util.StringUtils.tokenizeToStringArray(ids, ",");
 	}
 	
-	
+	/**
+     * <p>Checks if a CharSequence is whitespace, empty ("") or null.</p>
+     *
+     * <pre>
+     * StringUtils.isBlank(null)      = true
+     * StringUtils.isBlank("")        = true
+     * StringUtils.isBlank(" ")       = true
+     * StringUtils.isBlank("bob")     = false
+     * StringUtils.isBlank("  bob  ") = false
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if the CharSequence is null, empty or whitespace
+     * @since 2.0
+     * @since 3.0 Changed signature from isBlank(String) to isBlank(CharSequence)
+     */
+    public static boolean isBlank(final CharSequence cs) {
+        int strLen;
+        if (cs == null || (strLen = cs.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (Character.isWhitespace(cs.charAt(i)) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
 	
 }

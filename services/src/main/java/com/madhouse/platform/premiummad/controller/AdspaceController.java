@@ -104,7 +104,7 @@ public class AdspaceController {
             return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
         Integer count = adspaceService.checkName(adspaceDto.getName().trim());
         if (count > 0) //检查名称
-            return ResponseUtils.response(StatusCode.SC20101,null);
+            return ResponseUtils.response(StatusCode.SC20207,null);
         Adspace adspace = new Adspace();
         BeanUtils.copyProperties(adspaceDto, adspace, SystemConstant.ADSPACE_BID_FLOOR);
         BeanUtils.setCreateParam(adspace);
@@ -121,8 +121,11 @@ public class AdspaceController {
     public ResponseDto<AdspaceDto> getAdspace(@RequestParam(value="id", required=true) Integer id,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
 		//权限check
+		if(userId == null){
+			return ResponseUtils.response(StatusCode.SC20006, null);
+		}
 		List<Integer> adspaceIdList = userAuthService.queryAdspaceIdList(userId, String.valueOf(id));
-		if(ObjectUtils.isEmpty(adspaceIdList) || adspaceIdList.get(0).intValue() != id.intValue()){
+		if(userId == null || ObjectUtils.isEmpty(adspaceIdList) || adspaceIdList.get(0).intValue() != id.intValue()){
 			return ResponseUtils.response(StatusCode.SC20006, null);
 		}
 		
@@ -158,7 +161,7 @@ public class AdspaceController {
         if (!adspaceDto.getName().equals(adspaceDto.getName())) { //名称不相等,检查名称
             Integer count = adspaceService.checkName(adspaceDto.getName().trim());
             if (count > 0)
-                return ResponseUtils.response(StatusCode.SC20101,null);
+                return ResponseUtils.response(StatusCode.SC20207,null);
         }
         BeanUtils.copyProperties(adspaceDto, adspace);
         BeanUtils.setUpdateParam(adspace);
