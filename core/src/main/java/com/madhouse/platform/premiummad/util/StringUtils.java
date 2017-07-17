@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class StringUtils {
 
@@ -67,5 +68,39 @@ public class StringUtils {
 	 */
 	public static boolean isEmpty(Object str) {
 		return (str == null || "".equals(str) || "".equals(str.toString().trim()));
+	}
+	
+	/**
+	 * 把idList转为逗号分隔的idStr
+	 * @param idList
+	 * @return
+	 */
+	public static String getIdsStr(List<Integer> idList){
+		return org.springframework.util.StringUtils.collectionToDelimitedString(idList, ",");
+	}
+	
+	/**
+	 * 把逗号分隔的idStr转换成id数组
+	 * @param ids
+	 * @return
+	 */
+	public static String[] splitIds(String ids){
+		return org.springframework.util.StringUtils.tokenizeToStringArray(ids, ",");
+	}
+
+	/**
+	 * 首字母大写
+	 * @param name
+	 * @return
+	 */
+	public static String toFirstUpperCase(String name) {
+		if (name != null && !name.isEmpty()) {
+			String other = "";
+			if (name.length() > 1) {
+				other = name.substring(1);
+			}
+			return name.substring(0, 1).toUpperCase() + other;
+		}
+		return "";
 	}
 }

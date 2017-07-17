@@ -1,17 +1,22 @@
 package com.madhouse.platform.premiummad.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.dto.MediaDto;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class MediaControllerTest {
 	
 	@Test
 	public void add(){
 		MediaDto mediaDto = new MediaDto();
-		mediaDto.setName("多对多");
-//		mediaDto.setCategory(2);
+//		mediaDto.setId(1);
+		mediaDto.setName("MediaTest");
+		mediaDto.setCategory(2);
 		mediaDto.setType(1);
 		mediaDto.setDescription("hello media");
 		mediaDto.setAccessType(1);
@@ -24,24 +29,22 @@ public class MediaControllerTest {
 	
 	@Test
 	public void detail(){
-		String link = "http://localhost:8080/services/media/detail?id=100001";
+		String link = "http://localhost:8080/services/media/detail?id=100030";
 		HttpUtilTest.httpGet(link);
 	}
 	
 	@Test
 	public void list(){
 //		String link = "http://localhost:8080/services/media/list?ids=8000005,8000004";
-		String link = "http://172.16.25.31:8080/services/media/list";
+		String link = "http://172.16.25.48:8080/services/media/list";
 //		String link = "http://172.16.25.48:8080/services/dict/list?type=1";
 		HttpUtilTest.httpGet(link);
-	}
-	
-	
+	} 
 	
 	@Test
 	public void update(){
 		MediaDto mediaDto = new MediaDto();
-		mediaDto.setId(8000004);
+		mediaDto.setId(100030);
 		mediaDto.setName("12");
 		mediaDto.setCategory(1);
 		mediaDto.setType(1);
@@ -50,8 +53,7 @@ public class MediaControllerTest {
 		mediaDto.setAdvertiserAuditMode(1);
 		mediaDto.setMaterialAuditMode(1);
 		mediaDto.setTimeout(30);
-		mediaDto.setUpdateType(1);
-		String link = "http://172.16.25.48:8080/services/media/update";
+		String link = "http://localhost:8080/services/media/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(mediaDto));
 	}
 	
@@ -60,9 +62,8 @@ public class MediaControllerTest {
 		MediaDto mediaDto = new MediaDto();
 		mediaDto.setId(100001);
 		mediaDto.setStatus(0);
-		mediaDto.setUpdateType(2);
 //		String link = "http://localhost:8080/services/media/update";
-		String link = "http://172.16.25.48:8080/services/media/update";
+		String link = "http://localhost:8080/services/media/updateStatus";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(mediaDto));
 	}
 	
@@ -70,6 +71,17 @@ public class MediaControllerTest {
 	public void testException(){
 		String link = "http://localhost:8080/services/media/exceptionTest?exType=2";
 		HttpUtilTest.httpGet(link);
+	}
+	
+	@Test
+	public void test(){
+		String[] ss = StringUtils.splitIds("33333,444,62");
+		System.out.println(ss);
+		List<Integer> list = new ArrayList<Integer>();
+		list.add(2);
+		list.add(3);
+		String s = StringUtils.getIdsStr(list);
+		System.out.println(s);
 	}
 	
 }

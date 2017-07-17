@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.madhouse.platform.premiummad.dao.MediaDao;
 import com.madhouse.platform.premiummad.entity.Media;
 import com.madhouse.platform.premiummad.service.IMediaService;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
@@ -19,10 +20,7 @@ public class MediaServiceImpl implements IMediaService {
 
 	@Override
 	public List<Media> queryAll(String ids) {
-		String[] idStrs = null;
-		if(ids != null){
-			idStrs = ids.split(",");
-		}
+		String[] idStrs = StringUtils.splitIds(ids);
 		return mediaDao.queryAll(idStrs);
 	}
 
