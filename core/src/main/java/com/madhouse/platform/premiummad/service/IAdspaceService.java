@@ -33,13 +33,6 @@ public interface IAdspaceService {
     Integer update(Adspace adspace, Double bidFloor);
     
     /**
-	 * 更新广告位Key
-	 * @param adspace
-	 * @return
-	 */
-	Integer updateAdspaceKey(Adspace adspace);
-
-    /**
      * 检查广告位名称
      * @param AdspaceName 广告位名称
      * @return Integer 返回按名称条件查询的数据条数
