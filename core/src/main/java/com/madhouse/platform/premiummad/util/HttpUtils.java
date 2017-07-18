@@ -1,8 +1,10 @@
 package com.madhouse.platform.premiummad.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -46,6 +48,20 @@ public class HttpUtils {
 		}
 		return header;
 	}
+	
+	public static String getBodyString(BufferedReader br) {
+		  String inputLine;
+		       String str = "";
+		     try {
+		       while ((inputLine = br.readLine()) != null) {
+		        str += inputLine;
+		       }
+		       br.close();
+		     } catch (IOException e) {
+		       System.out.println("IOException: " + e);
+		     }
+		     return str;
+		 }
 
 	public static Map<String, Object> get(String url) {
 		Map<String, Object> map = new HashMap<>();
