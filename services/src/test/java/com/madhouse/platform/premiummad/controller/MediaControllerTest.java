@@ -6,6 +6,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.MediaDto;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -45,7 +46,7 @@ public class MediaControllerTest {
 	public void update(){
 		MediaDto mediaDto = new MediaDto();
 		mediaDto.setId(100030);
-		mediaDto.setName("12");
+		mediaDto.setName("1222");
 		mediaDto.setCategory(1);
 		mediaDto.setType(1);
 		mediaDto.setDescription("hello media");
