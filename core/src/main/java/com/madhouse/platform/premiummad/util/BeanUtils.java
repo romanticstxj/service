@@ -220,7 +220,7 @@ public class BeanUtils {
 				if (requestAttributes != null && ((ServletRequestAttributes) requestAttributes).getRequest() != null) {
 					HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
 					userId = Integer.parseInt(request.getHeader(SystemConstant.USERID)!=null ? 
-								request.getHeader(SystemConstant.USERID) : "0");
+								request.getHeader(SystemConstant.USERID) : "-1");
 				}
 
 				/* 多数据源情况使用

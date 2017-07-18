@@ -43,7 +43,7 @@ public class HttpUtilTest {
 			StringEntity stringEntity = new StringEntity(entity, "UTF-8");
 			System.out.println(entity);
 			HttpPost post = new HttpPost(link);
-//			post.setHeader("X-From", "exchange.dev.onemad.com");
+			post.setHeader("X-From", "exchange.dev.onemad.com");
 			post.setHeader("X-User-Id", "1303");
 			post.setHeader("Content-Type", "application/json;charset=UTF-8");
 

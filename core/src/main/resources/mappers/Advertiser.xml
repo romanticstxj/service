@@ -1,10 +1,200 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.madhouse.platform.premiummad.dao.AdvertiserMapper" >
-  <select id="selectByAdvertiserKey" resultMap="BaseResultMap">
+  <select id="selectByAdvertiserKeyAndMediaIds" resultMap="BaseResultMap" parameterType="com.madhouse.platform.premiummad.model.AdvertiserModel">
     select 
     <include refid="Base_Column_List" />
     from mad_sys_advertiser
-    where advertiser_key = #{advertiserKey,jdbcType=INTEGER}
+    where advertiser_key = #{id,jdbcType=VARCHAR}
+      and dsp_id = #{dspId,jdbcType=INTEGER} and media_id in
+	   <foreach collection="mediaId" item="item" index="index"
+           open="(" close=")" separator=",">
+           #{item,jdbcType=INTEGER}
+        </foreach>
+  </select>
+  <insert id="insertByBatch" parameterType="java.util.List" >
+    insert into mad_sys_advertiser (dsp_id, advertiser_key, 
+      advertiser_name, media_id, industry, 
+      website, contact, address, 
+      phone, license, audited_user, 
+      status, reason, created_time, 
+      updated_time)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+	    (#{item.dspId,jdbcType=INTEGER}, #{item.advertiserKey,jdbcType=VARCHAR}, 
+	      #{item.advertiserName,jdbcType=VARCHAR}, #{item.mediaId,jdbcType=INTEGER}, #{item.industry,jdbcType=SMALLINT}, 
+	      #{item.website,jdbcType=VARCHAR}, #{item.contact,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, 
+	      #{item.phone,jdbcType=VARCHAR}, #{item.license,jdbcType=VARCHAR}, #{item.auditedUser,jdbcType=INTEGER}, 
+	      #{item.status,jdbcType=TINYINT}, #{item.reason,jdbcType=VARCHAR}, #{item.createdTime,jdbcType=TIMESTAMP}, 
+	      #{item.updatedTime,jdbcType=TIMESTAMP})
+	</foreach>
+  </insert>
+  <insert id="insertAdvertiser" parameterType="com.madhouse.platform.premiummad.entity.Advertiser"
+  		  useGeneratedKeys="true" keyProperty="id">
+    insert into mad_sys_advertiser
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="dspId != null" >
+        dsp_id,
+      </if>
+      <if test="advertiserKey != null" >
+        advertiser_key,
+      </if>
+      <if test="advertiserName != null" >
+        advertiser_name,
+      </if>
+      <if test="mediaId != null" >
+        media_id,
+      </if>
+      <if test="industry != null" >
+        industry,
+      </if>
+      <if test="website != null" >
+        website,
+      </if>
+      <if test="contact != null" >
+        contact,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="license != null" >
+        license,
+      </if>
+      <if test="auditedUser != null" >
+        audited_user,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="createdTime != null" >
+        created_time,
+      </if>
+      <if test="updatedTime != null" >
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dspId != null" >
+        #{dspId,jdbcType=INTEGER},
+      </if>
+      <if test="advertiserKey != null" >
+        #{advertiserKey,jdbcType=VARCHAR},
+      </if>
+      <if test="advertiserName != null" >
+        #{advertiserName,jdbcType=VARCHAR},
+      </if>
+      <if test="mediaId != null" >
+        #{mediaId,jdbcType=INTEGER},
+      </if>
+      <if test="industry != null" >
+        #{industry,jdbcType=SMALLINT},
+      </if>
+      <if test="website != null" >
+        #{website,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="license != null" >
+        #{license,jdbcType=VARCHAR},
+      </if>
+      <if test="auditedUser != null" >
+        #{auditedUser,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null" >
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByBath" parameterType="java.util.List">
+  	<foreach collection="list" item="item" index="index" separator=";" open="" close="">
+	    update mad_sys_advertiser
+	    <set >
+	      <if test="item.dspId != null" >
+	        dsp_id = #{item.dspId,jdbcType=INTEGER},
+	      </if>
+	      <if test="item.advertiserKey != null" >
+	        advertiser_key = #{item.advertiserKey,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.advertiserName != null" >
+	        advertiser_name = #{item.advertiserName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.mediaId != null" >
+	        media_id = #{item.mediaId,jdbcType=INTEGER},
+	      </if>
+	      <if test="item.industry != null" >
+	        industry = #{item.industry,jdbcType=SMALLINT},
+	      </if>
+	      <if test="item.website != null" >
+	        website = #{item.website,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.contact != null" >
+	        contact = #{item.contact,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.address != null" >
+	        address = #{item.address,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.phone != null" >
+	        phone = #{item.phone,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.license != null" >
+	        license = #{item.license,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.auditedUser != null" >
+	        audited_user = #{item.auditedUser,jdbcType=INTEGER},
+	      </if>
+	      <if test="item.status != null" >
+	        status = #{item.status,jdbcType=TINYINT},
+	      </if>
+	      <if test="item.reason != null" >
+	        reason = #{item.reason,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.createdTime != null" >
+	        created_time = #{item.createdTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="item.updatedTime != null" >
+	        updated_time = #{item.updatedTime,jdbcType=TIMESTAMP},
+	      </if>
+	    </set>
+	    where id = #{item.id,jdbcType=INTEGER}
+	</foreach>
+  </update>
+  <select id="selectByAdvertiserKeysAndDspId" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mad_sys_advertiser
+    where dsp_id = #{dspId,jdbcType=INTEGER} and advertiser_key in
+      <foreach collection="advertiserKeys" item="item" index="index"
+           open="(" close=")" separator=",">
+           #{item,jdbcType=INTEGER}
+       </foreach>
+       group by media_id
   </select>
 </mapper>

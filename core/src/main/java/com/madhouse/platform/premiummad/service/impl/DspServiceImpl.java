@@ -8,7 +8,6 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.DspMapper;
 import com.madhouse.platform.premiummad.entity.Dsp;
 import com.madhouse.platform.premiummad.exception.BusinessException;
-import com.madhouse.platform.premiummad.model.OperationResultModel;
 import com.madhouse.platform.premiummad.service.IDspService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -26,13 +25,10 @@ public class DspServiceImpl implements IDspService {
 	 * @return
 	 */
 	@Override
-	public OperationResultModel checkDspPermission(String dspId, String token) {
-		OperationResultModel result = new OperationResultModel();
-		
+	public void checkDspPermission(String dspId, String token) {
 		// 传入参数校验
 		if (StringUtils.isBlank(dspId) || !dspId.matches("[0-9]+") || StringUtils.isBlank(token)) {
-			result.setErrorMessage("dspId 或 token 无效");
-			return result;
+			throw new BusinessException(StatusCode.SC400, "dspId 或 token 未提供");
 		}
 		
 		// 查询dsp是否存在
@@ -42,17 +38,12 @@ public class DspServiceImpl implements IDspService {
 		Dsp dsp = dspDao.selectByIdAndToken(param);
 		
 		if (dsp == null) {
-			result.setErrorMessage("该 DSP 无权限[dspId=" + dspId + ",token=" + token + "]");
-			return result;
+			throw new BusinessException(StatusCode.SC405, "该 DSP 无权限[dspId=" + dspId + ",token=" + token + "]");
 		}
 		
 		if (dsp.getStatus() < 1) {
-			result.setErrorMessage("该 DSP权限未启用");
-			return result;
+			throw new BusinessException(StatusCode.SC405, "该 DSP权限未启用");
 		}
-		
-		result.setSuccessful(Boolean.TRUE);
-		return result;
 	}
 
 	@Override
