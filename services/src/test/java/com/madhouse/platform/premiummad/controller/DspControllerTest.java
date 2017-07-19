@@ -43,4 +43,10 @@ public class DspControllerTest {
 		String url = "http://localhost:8080/services/dsp/updateStatus";
 		HttpUtilTest.httpPost(url, JSON.toJSONString(dsp));
 	}
+	
+	@Test
+	public void list(){
+		String url = "http://localhost:8080/services/dsp/list?ids=1,2,600003";
+		HttpUtilTest.httpGet(url);
+	}
 }
