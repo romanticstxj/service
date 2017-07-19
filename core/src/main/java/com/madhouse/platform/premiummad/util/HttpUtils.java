@@ -34,7 +34,8 @@ public class HttpUtils {
 
 	private static CloseableHttpClient httpClient;
 
-	private static RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(10000).setConnectionRequestTimeout(10000).build();
+	private static RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(10000)
+			.setConnectionRequestTimeout(10000).build();
 
 	private static final String DEFAULT_CONTENT_TYPE = "application/json;charset=UTF-8";
 	private static final String FORM_URLENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded";
@@ -48,20 +49,20 @@ public class HttpUtils {
 		}
 		return header;
 	}
-	
+
 	public static String getBodyString(BufferedReader br) {
-		  String inputLine;
-		       String str = "";
-		     try {
-		       while ((inputLine = br.readLine()) != null) {
-		        str += inputLine;
-		       }
-		       br.close();
-		     } catch (IOException e) {
-		       System.out.println("IOException: " + e);
-		     }
-		     return str;
-		 }
+		String inputLine;
+		String str = "";
+		try {
+			while ((inputLine = br.readLine()) != null) {
+				str += inputLine;
+			}
+			br.close();
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage());
+		}
+		return str;
+	}
 
 	public static Map<String, Object> get(String url) {
 		Map<String, Object> map = new HashMap<>();

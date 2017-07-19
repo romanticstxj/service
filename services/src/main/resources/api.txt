@@ -356,12 +356,12 @@
             "parameters": {
                 "body": {
                 	"adspaceId": "<*||integer||comment:我方广告位ID>",
-                    "mediaAdspaceKey": "<*||string||comment:媒体方广告位Key>",
+                    "mediaAdspaceKey": "<string||comment:媒体方广告位Key>",
                     "dspMappingInfo": [
                     	{
-		                    "dspId": "<*||integer||comment:DSP在我们系统的ID>",
-		                	"dspMediaId": "<*||integer||comment:DSP方的媒体ID>",
-		                    "dspAdspaceKey": "<*||integer||comment:DSP方的广告位Key>"
+		                    "dspId": "<integer||comment:DSP在我们系统的ID>",
+		                	"dspMediaId": "<integer||comment:DSP方的媒体ID>",
+		                    "dspAdspaceKey": "<integer||comment:DSP方的广告位Key>"
                     	}
                     ]
                 }
@@ -383,12 +383,12 @@
             "parameters": {
                 "body": {
                 	"adspaceId": "<*||integer||comment:我方广告位ID>",
-                    "mediaAdspaceKey": "<*||string||comment:媒体方广告位Key>",
+                    "mediaAdspaceKey": "<string||comment:媒体方广告位Key>",
                     "dspMappingInfo": [
                     	{
-		                    "dspId": "<*||integer||comment:DSP在我们系统的ID>",
-		                	"dspMediaKey": "<*||string||comment:DSP方的媒体Key>",
-		                    "dspAdspaceKey": "<*||integer||comment:DSP方的广告位Key>"
+		                    "dspId": "<integer||comment:DSP在我们系统的ID>",
+		                	"dspMediaKey": "<string||comment:DSP方的媒体Key>",
+		                    "dspAdspaceKey": "<integer||comment:DSP方的广告位Key>"
                     	}
                     ]
                 }

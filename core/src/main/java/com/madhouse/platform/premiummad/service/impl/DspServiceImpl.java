@@ -1,5 +1,7 @@
 package com.madhouse.platform.premiummad.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +16,7 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
 public class DspServiceImpl implements IDspService {
-	
+
 	@Autowired
 	private DspMapper dspDao;
 	
@@ -101,5 +103,11 @@ public class DspServiceImpl implements IDspService {
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20002);
         return dspDao.updateStatus(dsp);
+	}
+	
+	@Override
+	public List<Dsp> queryAll(String ids) {
+		String[] idStrs = StringUtils.splitIds(ids);
+		return dspDao.queryAll(idStrs);
 	}
 }

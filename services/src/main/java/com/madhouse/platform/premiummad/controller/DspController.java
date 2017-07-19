@@ -28,6 +28,14 @@ public class DspController {
 	@Autowired
 	private IDspService dspService;
 	
+	@RequestMapping("/list")
+    public ResponseDto<DspDto> list(@RequestParam(value="ids", required=false) String ids) throws Exception {
+		List<Dsp> dsps = dspService.queryAll(ids);
+		List<DspDto> dspDtos = new ArrayList<>();
+        BeanUtils.copyList(dsps,dspDtos,DspDto.class);
+        return ResponseUtils.response(StatusCode.SC20000, dspDtos);
+    }
+	
 	/**
 	 * 创建dsp
 	 * @param dspDto

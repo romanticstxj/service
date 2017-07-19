@@ -11,7 +11,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.exception.BusinessException;
-import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class CommonInterceptor extends HandlerInterceptorAdapter{
@@ -23,9 +22,11 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 		
 		String userId = request.getHeader(SystemConstant.USERID);
 		String xForm = request.getHeader(SystemConstant.XFROM);
-		String requestBody = HttpUtils.getBodyString(request.getReader());
+//		String requestBody = HttpUtils.getBodyString(request.getReader());
+//		MyRequestWrapper myRequestWrapper = new MyRequestWrapper((HttpServletRequest) request);
+//        String requestBody = myRequestWrapper.getBody();
 		LOGGER.debug("Request Header, userId:"+userId + ", xform:" + xForm);
-		LOGGER.debug("Request body: " + requestBody);
+//		LOGGER.debug("Request body: " + requestBody);
 		if(userId != null){ //userId非空的情况下判断是否数字
 			if(!StringUtils.isNumeric(userId)){
 				throw new BusinessException(StatusCode.SC20007);
