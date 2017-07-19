@@ -27,9 +27,9 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	private AdspaceDao adspaceDao;
 	
 	@Override
-	public List<Adspace> queryAll(String ids) {
+	public List<Adspace> queryAllByParams(String ids, Integer status) {
 		String[] idStrs = StringUtils.splitIds(ids);
-		return adspaceDao.queryAll(idStrs);
+		return adspaceDao.queryAllByParams(idStrs, status);
 	}
 
 	@Override

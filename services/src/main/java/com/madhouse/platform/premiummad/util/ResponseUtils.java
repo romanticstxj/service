@@ -24,9 +24,11 @@ public class ResponseUtils {
 	public static <T> ResponseDto<T> response(StatusCode sc, List<T> data, String message) {
 		ResponseDto<T> responseDto = new ResponseDto<>();
 
-		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}" + ", with data:" + data);
+		int size = data != null ? data.size() : 0;
+		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}" + ", with data(" + size + "):" + data);
 
 		responseDto.setData(data);
+		responseDto.setSize(size);
 		responseDto.setCode(sc.getValue());
 		responseDto.setMessage(message != null ? message : sc.getDescrip());
 

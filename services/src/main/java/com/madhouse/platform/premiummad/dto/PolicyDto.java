@@ -3,6 +3,7 @@ package com.madhouse.platform.premiummad.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
@@ -23,6 +24,7 @@ public class PolicyDto implements Serializable{
     @NotNullAndBlank
     private Byte type; //策略类型(1: PDB, 2: PD, 4: PMP, 8: RTB)
     @NotNullAndBlank
+    @Min(message=SystemCommonMsg.ERROR_WEIGHT_FORMAT, value=1)
     private Integer weight; //权重
     
     private Date startDate;
@@ -235,6 +237,14 @@ public class PolicyDto implements Serializable{
 
 	public void setIsQuantityLimit(Integer isQuantityLimit) {
 		this.isQuantityLimit = isQuantityLimit;
+	}
+
+	public Integer getDealId() {
+		return dealId;
+	}
+
+	public void setDealId(Integer dealId) {
+		this.dealId = dealId;
 	}
 
 }

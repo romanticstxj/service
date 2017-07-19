@@ -11,7 +11,7 @@ public interface IAdspaceService {
      * 查询所有广告位
      * @return List
      */
-    List<Adspace> queryAll(String ids);
+    List<Adspace> queryAllByParams(String ids, Integer status);
 
     /**
      * 新建广告位

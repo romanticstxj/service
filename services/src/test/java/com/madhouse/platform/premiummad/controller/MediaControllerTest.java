@@ -16,15 +16,15 @@ public class MediaControllerTest {
 	public void add(){
 		MediaDto mediaDto = new MediaDto();
 //		mediaDto.setId(1);
-		mediaDto.setName("MediaTest");
+		mediaDto.setName("test0034");
 		mediaDto.setCategory(2);
 		mediaDto.setType(1);
-		mediaDto.setDescription("hello media");
+		mediaDto.setDescription("测试");
 		mediaDto.setAccessType(1);
-		mediaDto.setAdvertiserAuditMode(0);
-		mediaDto.setMaterialAuditMode(0);
-		mediaDto.setTimeout(200);
-		String link = "http://localhost:8080/services/media/create";
+		mediaDto.setAdvertiserAuditMode(1);
+		mediaDto.setMaterialAuditMode(1);
+		mediaDto.setTimeout(100);
+		String link = "http://172.16.25.31:8080/services/media/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(mediaDto));
 	}
 	

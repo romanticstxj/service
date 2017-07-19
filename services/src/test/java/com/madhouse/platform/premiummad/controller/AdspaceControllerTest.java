@@ -122,6 +122,4 @@ public class AdspaceControllerTest {
 		String link = "http://localhost:8080/services/adspace/list?userId=19&ids=100001,100002,100000";
 		HttpUtilTest.httpGet(link);
 	}
-	
-	
 }

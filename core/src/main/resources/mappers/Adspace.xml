@@ -85,7 +85,7 @@
 		${alias}.material_size, ${alias}.bid_floor, ${alias}.created_time, ${alias}.status
 	</sql>
 	
-	<select id="queryAll" parameterType="string" resultMap="baseResult">
+	<select id="queryAllByParams" parameterType="string" resultMap="baseResult">
 		SELECT 
 		<include refid="baseList">
             <property name="alias" value="a" />
@@ -93,11 +93,15 @@
         FROM mad_sys_adspace a 
         LEFT JOIN mad_sys_media m ON m.id = a.media_id
         LEFT JOIN mad_dict_layout l ON a.layout = l.code
+        WHERE 1=1
         <if test="idStrs != null and idStrs.length > 0">
-        	WHERE m.id IN 
+        	AND m.id IN 
         	<foreach collection="idStrs" item="mediaId" index="index" open="(" close=")" separator=",">
             	#{mediaId,jdbcType=INTEGER}
             </foreach>
+        </if>
+        <if test="status != null">
+        	AND a.status = #{status, jdbcType=INTEGER}
         </if>
         ORDER BY a.id
 	</select>

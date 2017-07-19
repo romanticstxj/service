@@ -47,5 +47,10 @@ public interface IDspService {
 	 */
 	int updateStatus(Dsp dsp);
 
+	/**
+	 * 查询所有dsp
+	 * @param ids
+	 * @return
+	 */
 	List<Dsp> queryAll(String ids);
 }

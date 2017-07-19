@@ -22,6 +22,7 @@ import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.DspMapping;
+import com.madhouse.platform.premiummad.rule.AdspaceRule;
 import com.madhouse.platform.premiummad.service.IAdspaceService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
@@ -50,16 +51,20 @@ public class AdspaceController {
 	 */
 	@RequestMapping("/list")
     public ResponseDto<AdspaceDto> list(@RequestParam(value="ids", required=false) String mediaIds,
+    		@RequestParam(value="status", required=false) Integer status,
     		@RequestParam(value="userId", required=false) Integer userIdByGet,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId,
     		HttpServletRequest request) throws Exception {
+		AdspaceRule.checkStatus(status);
+		
 		//获得userId，可以从url中获得（方便通过get请求获取数据），更为一般的是从requestHeader里获取
 		if(userIdByGet != null){ //优先获取get请求的userId参数
 			userId = userIdByGet;
 		}
+		
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
 		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
-		return listByMediaIds(returnedMediaIds);
+		return listByParams(returnedMediaIds, status);
     }
 	
 	/**
@@ -67,7 +72,7 @@ public class AdspaceController {
 	 * @param ids
 	 * @return
 	 */
-	private ResponseDto<AdspaceDto> listByMediaIds(String mediaIds){
+	private ResponseDto<AdspaceDto> listByParams(String mediaIds, Integer status){
 		//无权限查看任何媒体
 		if(mediaIds == null || mediaIds.equals("")){
 	        return ResponseUtils.response(StatusCode.SC20003, null);
@@ -75,7 +80,7 @@ public class AdspaceController {
 			if(mediaIds.equals(SystemConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
 				mediaIds = null;
 			}
-			List<Adspace> adspaces = adspaceService.queryAll(mediaIds);
+			List<Adspace> adspaces = adspaceService.queryAllByParams(mediaIds, status);
 			List<AdspaceDto> adspaceDtos = new ArrayList<>();
 	        BeanUtils.copyList(adspaces,adspaceDtos,AdspaceDto.class,"bidFloor");
 	        processAdspaceDto(adspaces, adspaceDtos);

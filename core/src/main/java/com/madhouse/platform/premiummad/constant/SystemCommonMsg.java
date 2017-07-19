@@ -7,4 +7,7 @@ public interface SystemCommonMsg {
 	String ERROR_UPDATE_TYPE = "updateType不正确";
 	String NO_UPDATE_STATUS = "更新状态时status不能为空";
 	String ERROR_UPDATE_STATUS = "更新状态时status范围有误";
+	
+	/* 策略验证信息 */
+	String ERROR_WEIGHT_FORMAT = "权重格式错误";
 }
