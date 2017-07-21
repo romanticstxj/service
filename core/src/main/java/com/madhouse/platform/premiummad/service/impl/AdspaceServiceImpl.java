@@ -1,6 +1,5 @@
 package com.madhouse.platform.premiummad.service.impl;
 
-import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
-import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
@@ -33,13 +31,14 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	}
 
 	@Override
-	public Integer insert(Adspace adspace, Double bidFloor, String xFrom) {
-		preprocessAdspaceParams(adspace, bidFloor);
+	public Integer insert(Adspace adspace, String xFrom) {
+		Integer count = checkName(adspace.getName().trim());
+        if (count > 0) //检查名称
+        	throw new BusinessException(StatusCode.SC20101);
 		adspaceDao.insert(adspace);
         
         postprocessAdspaceParams(adspace, xFrom);
         return updateAdspaceKey(adspace);
-        
 	}
 	
 	private void postprocessAdspaceParams(Adspace adspace, String xFrom) {
@@ -52,21 +51,22 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		adspace.setAdspaceKey(truncatedAdspaceKey);
 	}
 
-	private void preprocessAdspaceParams(Adspace adspace, Double bidFloor) {
-		//把页面上的底价（元）转换成数据库需要的底价（分）
-		Integer bidFloorUnitFen = Integer.parseInt(new DecimalFormat(SystemConstant.ZERO).format(bidFloor * SystemConstant.RATIO_FEN_TO_YUAN));
-		adspace.setBidFloor(bidFloorUnitFen);
-		
-	}
-
 	@Override
 	public Adspace queryAdspaceById(Integer adspaceId) {
 		return adspaceDao.queryAdspaceById(adspaceId);
 	}
 
 	@Override
-	public Integer update(Adspace adspace, Double bidFloor) {
-		preprocessAdspaceParams(adspace, bidFloor);
+	public Integer update(Adspace adspace) {
+		Adspace queryResult = queryAdspaceById(adspace.getId());
+        if (queryResult == null)
+        	throw new BusinessException(StatusCode.SC20002);
+        if (!queryResult.getName().equals(adspace.getName())) { //名称不相等,检查名称
+            Integer count = checkName(adspace.getName().trim());
+            if (count > 0)
+            	throw new BusinessException(StatusCode.SC20207);
+        }
+        
 		return adspaceDao.update(adspace);
 	}
 	

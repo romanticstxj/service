@@ -17,7 +17,7 @@ public interface IAdspaceService {
      * 新建广告位
      * @param Adspace 广告位对象
      */
-    Integer insert(Adspace adspace, Double bidFloor, String xFrom);
+    Integer insert(Adspace adspace, String xFrom);
 
     /**
      * 根据广告位Id查询
@@ -30,7 +30,7 @@ public interface IAdspaceService {
      * 更新广告位
      * @param adspace 广告位对象
      */
-    Integer update(Adspace adspace, Double bidFloor);
+    Integer update(Adspace adspace);
     
     /**
      * 检查广告位名称

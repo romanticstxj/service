@@ -1,5 +1,9 @@
 package com.madhouse.platform.premiummad.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.madhouse.platform.premiummad.entity.PolicyAdspace;
 
 public interface PolicyAdspaceDao {
@@ -50,4 +54,6 @@ public interface PolicyAdspaceDao {
      * @mbggenerated Wed Jul 19 17:12:16 CST 2017
      */
     int updateByPrimaryKey(PolicyAdspace record);
+    
+    int batchInsert(@Param("policyAdspaces") List<PolicyAdspace> policyAdspaces);
 }

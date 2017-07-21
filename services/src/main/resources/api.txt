@@ -15,7 +15,7 @@
 		                    "name": "<*||string||comment:媒体名字>",
                             "category": "<*||integer||comment:媒体分类(列表)>",
 		                    "type": "<*||integer||comment:媒体类型(1: APP, 2: WAP)>",
-                            "adspaceCount": "<||integer||comment:媒体的广告位数量>",
+                            "adCount": "<||integer||comment:媒体的广告位数量>",
 		                    "createdTime": "<||date||comment:媒体创建时间>",
                             "status": "<||integer||comment:状态(0:停用,1:启用）>"
                         }
@@ -38,7 +38,7 @@
                         {
                             "id": "<||integer||comment:自增id>",
                             "status": "<||integer||comment:状态(0:停用,1:启用）>",
-                            "adspaceCount": "<||integer||comment:媒体的广告位数量>",
+                            "adCount": "<||integer||comment:媒体的广告位数量>",
 		                    "name": "<*||string||comment:媒体名字>",
 		                    "category": "<*||integer||comment:媒体分类(列表)>",
 		                    "type": "<*||integer||comment:媒体类型(1: APP, 2: WAP)>",
@@ -806,17 +806,21 @@
                 	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
                 	"bidFloor": "<double||comment:单价(页面以元为单位)>",
                 	"description": "<string||comment:描述>",
-                    "adspaceDtos": [
+                    "policyAdspaceDtos": [
                     	{
-                            "id": "<*||integer||comment:广告位id>"
+                            "adspaceId": "<*||integer||comment:广告位id>",
+                            "adspaceDto": {
+	                            "bidType": "<*||integer||comment:售卖方式(1:CPM,2:CPC)>",
+			                	"bidFloor": "<*||double||comment:售卖单价(页面以元为单位)>",
+			                	"mediaDealId": "<string||comment:媒体dealId>",
+			                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
+                            }
                     	}
                     ],
-                    "dspDtos": [
-                    	{
-                    		"id": "<*||integer||comment:dsp id>",
-                    		"weight": "<integer||comment:权重>"
-                    	}
-                    ]
+                    "policyDspDto": {
+                		"dspId": "<*||integer||comment:dsp id>",
+                		"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
+                    }
                 }
             },
             "responses": {
@@ -835,7 +839,8 @@
             "_summary": "",
             "parameters": {
                 "query": {
-                	"id" : "<*||integer||comment:策略ID>"
+                	"id" : "<*||integer||comment:策略ID>",
+                	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>"
                 }
             },
             "responses": {

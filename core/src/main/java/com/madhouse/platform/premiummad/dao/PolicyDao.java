@@ -50,4 +50,8 @@ public interface PolicyDao {
      * @mbggenerated Wed Jul 19 11:37:35 CST 2017
      */
     int updateByPrimaryKey(Policy record);
+    
+    int checkName(String name);
+    
+    Policy selectCascadedlyByPrimaryKey(Integer id);
 }

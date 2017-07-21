@@ -2,7 +2,10 @@ package com.madhouse.platform.premiummad.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.List;
+
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 
 public class StringUtils {
 
@@ -176,5 +179,19 @@ public class StringUtils {
         }
         return true;
     }
+
+	public static Double convertCurrencyFentoYuan(Integer currencyFen) {
+		// TODO Auto-generated method stub
+		Double currencyYuan = (double) currencyFen / 100;
+		return currencyYuan;
+	}
+
+	public static Integer convertCurrencyYuanToFen(Double currencyYuan) {
+		Integer currencyFen = Integer.parseInt(new DecimalFormat(SystemConstant.ZERO).
+				format(currencyYuan * SystemConstant.RATIO_FEN_TO_YUAN));
+		return currencyFen;
+	}
+    
+    
 	
 }

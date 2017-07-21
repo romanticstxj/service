@@ -141,6 +141,31 @@
       </if>
     </trim>
   </insert>
+  
+  		<insert id="batchInsert" parameterType="java.util.List">
+    		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
+		        SELECT LAST_INSERT_ID()  
+		    </selectKey>  
+           		INSERT INTO mad_sys_policy_adspace (policy_id, adspace_id, 
+			      media_deal_id, bid_type, bid_floor, 
+			      status, created_user, created_time, 
+			      updated_user, updated_time) VALUES
+          		<foreach collection="policyAdspaces" index="index" item="policyAdspace" separator=",">
+          			(
+          				#{policyAdspace.policyId},
+          				#{policyAdspace.adspaceId},
+          				#{policyAdspace.mediaDealId},
+          				#{policyAdspace.bidType},
+          				#{policyAdspace.bidFloor},
+          				1,
+          				#{policyAdspace.createdUser},
+          				#{policyAdspace.createdTime},
+          				#{policyAdspace.updatedUser},
+          				#{policyAdspace.updatedTime}
+          			)
+        		</foreach>
+  		</insert>
+    
   <update id="updateByPrimaryKeySelective" parameterType="com.madhouse.platform.premiummad.entity.PolicyAdspace">
     <!--
       WARNING - @mbggenerated

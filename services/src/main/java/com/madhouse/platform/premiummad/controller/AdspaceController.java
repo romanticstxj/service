@@ -104,17 +104,11 @@ public class AdspaceController {
 	@RequestMapping("/create")
     public ResponseDto<AdspaceDto> addAdspace(@RequestBody AdspaceDto adspaceDto, 
     		@RequestHeader(value=SystemConstant.XFROM, required=true) String xFrom) {
-		String fieldName = BeanUtils.hasEmptyField(adspaceDto);
-        if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
-        Integer count = adspaceService.checkName(adspaceDto.getName().trim());
-        if (count > 0) //检查名称
-            return ResponseUtils.response(StatusCode.SC20207,null);
-        Adspace adspace = new Adspace();
-        BeanUtils.copyProperties(adspaceDto, adspace, SystemConstant.ADSPACE_BID_FLOOR);
-        BeanUtils.setCreateParam(adspace);
-        adspaceService.insert(adspace, adspaceDto.getBidFloor(), xFrom);
-        return ResponseUtils.response(StatusCode.SC20000,null);
+		AdspaceRule.validateDto(adspaceDto);
+        Adspace adspace = AdspaceRule.convertToModel(adspaceDto, new Adspace());
+        adspaceService.insert(adspace, xFrom);
+        List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
+        return ResponseUtils.response(StatusCode.SC20000, result);
 	}
 	
 	/**
@@ -135,21 +129,10 @@ public class AdspaceController {
 		}
 		
 		Adspace adspace = adspaceService.queryAdspaceById(id);
-		AdspaceDto adspaceDto = new AdspaceDto();
-        BeanUtils.copyProperties(adspace,adspaceDto,"bidFloor");
-        List<AdspaceDto> adspaceDtos = new ArrayList<>();
-        adspaceDtos.add(adspaceDto);
-        processAdspaceDto(adspace,adspaceDto);
-        return ResponseUtils.response(StatusCode.SC20000,adspaceDtos);
+		List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
+        return ResponseUtils.response(StatusCode.SC20000,result);
     }
 	
-	private void processAdspaceDto(Adspace adspace, AdspaceDto adspaceDto) {
-		// TODO Auto-generated method stub
-		Integer bidFloorUnitFen = adspace.getBidFloor();
-		Double bidFloor =  (double)bidFloorUnitFen / 100;
-		adspaceDto.setBidFloor(bidFloor);
-	}
-
 	/**
 	 * 更新广告位
 	 * @param adspaceDto
@@ -157,21 +140,11 @@ public class AdspaceController {
 	 */
 	@RequestMapping("/update")
     public ResponseDto<AdspaceDto> updateAdspace(@RequestBody @Validated(Update.class) AdspaceDto adspaceDto) {
-		String fieldName = BeanUtils.hasEmptyField(adspaceDto);
-        if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
-        Adspace adspace = adspaceService.queryAdspaceById(adspaceDto.getId());
-        if (adspace == null)
-            return ResponseUtils.response(StatusCode.SC20002, null);
-        if (!adspaceDto.getName().equals(adspaceDto.getName())) { //名称不相等,检查名称
-            Integer count = adspaceService.checkName(adspaceDto.getName().trim());
-            if (count > 0)
-                return ResponseUtils.response(StatusCode.SC20207,null);
-        }
-        BeanUtils.copyProperties(adspaceDto, adspace);
-        BeanUtils.setUpdateParam(adspace);
-        adspaceService.update(adspace, adspaceDto.getBidFloor());
-        return ResponseUtils.response(StatusCode.SC20000,null);
+		AdspaceRule.validateDto(adspaceDto);
+        Adspace adspace = AdspaceRule.convertToModel(adspaceDto, new Adspace());
+        adspaceService.update(adspace);
+        List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
+        return ResponseUtils.response(StatusCode.SC20000, result);
     }
 	
 	/**

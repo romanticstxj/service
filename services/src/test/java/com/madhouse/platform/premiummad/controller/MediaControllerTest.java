@@ -16,11 +16,11 @@ public class MediaControllerTest {
 	public void add(){
 		MediaDto mediaDto = new MediaDto();
 //		mediaDto.setId(1);
-		mediaDto.setName("test0034");
+		mediaDto.setName("test00334");
 		mediaDto.setCategory(2);
 		mediaDto.setType(1);
 		mediaDto.setDescription("测试");
-		mediaDto.setAccessType(1);
+		mediaDto.setAccessType(2);
 		mediaDto.setAdvertiserAuditMode(1);
 		mediaDto.setMaterialAuditMode(1);
 		mediaDto.setTimeout(100);

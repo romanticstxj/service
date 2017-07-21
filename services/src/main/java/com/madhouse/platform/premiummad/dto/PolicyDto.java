@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -26,7 +27,7 @@ public class PolicyDto implements Serializable{
     @NotNullAndBlank
     @Min(message=SystemCommonMsg.ERROR_WEIGHT_FORMAT, value=1)
     private Integer weight; //权重
-    
+    @NotNullAndBlank
     private Date startDate;
     @NotNullAndBlank
     private Integer isEndDate; //0:不限结束时间，1:限制结束时间
@@ -62,6 +63,10 @@ public class PolicyDto implements Serializable{
     private Byte status;
 
     private String description;
+    
+    private List<PolicyAdspaceDto> policyAdspaces;
+    
+    private PolicyDspDto policyDsp;
 
 	public Integer getId() {
 		return id;
@@ -245,6 +250,22 @@ public class PolicyDto implements Serializable{
 
 	public void setDealId(Integer dealId) {
 		this.dealId = dealId;
+	}
+
+	public List<PolicyAdspaceDto> getPolicyAdspaces() {
+		return policyAdspaces;
+	}
+
+	public void setPolicyAdspaces(List<PolicyAdspaceDto> policyAdspaces) {
+		this.policyAdspaces = policyAdspaces;
+	}
+
+	public PolicyDspDto getPolicyDsp() {
+		return policyDsp;
+	}
+
+	public void setPolicyDsp(PolicyDspDto policyDsp) {
+		this.policyDsp = policyDsp;
 	}
 
 }
