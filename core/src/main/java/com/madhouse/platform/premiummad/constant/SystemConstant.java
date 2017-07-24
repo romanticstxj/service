@@ -29,6 +29,7 @@ public interface SystemConstant {
     String XFROM = "X-From";
     String USERID = "X-User-Id";
     String ZERO = "0";
+    int BASE_FACTOR = 2;
 
     String BATCH_DATA_KEY = "dataList";//批量操作时,Map传参中的key值
 

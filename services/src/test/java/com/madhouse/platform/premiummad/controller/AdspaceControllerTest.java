@@ -1,21 +1,24 @@
 package com.madhouse.platform.premiummad.controller;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.AdspaceDto;
 import com.madhouse.platform.premiummad.dto.AdspaceMappingDto;
 import com.madhouse.platform.premiummad.dto.DspMappingDto;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class AdspaceControllerTest {
 	
 	@Test
 	public void add(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-		adspaceDto.setName("adspace992");
+		adspaceDto.setName("adspace932");
 		adspaceDto.setMediaId(100004);
 		adspaceDto.setTerminalType(1);
 		adspaceDto.setTerminalOs(1);
@@ -24,9 +27,11 @@ public class AdspaceControllerTest {
 		adspaceDto.setBidFloor(3.59);
 		adspaceDto.setAdType(1);
 		adspaceDto.setLayout(102);
-		adspaceDto.setMaterialType(1);
+		adspaceDto.setMaterialType("2,4");
 		adspaceDto.setMaterialSize("1024*768");
 		adspaceDto.setMaterialMaxKbyte(300);
+		adspaceDto.setLogoType("1,2");
+		adspaceDto.setVideoType("8,32");
 		adspaceDto.setDescription("desc");
 		String link = "http://localhost:8080/services/adspace/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(adspaceDto));
@@ -103,7 +108,7 @@ public class AdspaceControllerTest {
 		adspaceDto.setBidFloor(3.55);
 		adspaceDto.setAdType(3);
 		adspaceDto.setLayout(102);
-		adspaceDto.setMaterialType(1);
+		adspaceDto.setMaterialType("1,2,4");
 		adspaceDto.setMaterialSize("1024*768");
 		adspaceDto.setMaterialMaxKbyte(300);
 		adspaceDto.setDescription("desc");
@@ -113,13 +118,25 @@ public class AdspaceControllerTest {
 	
 	@Test
 	public void detail(){
-		String link = "http://localhost:8080/services/adspace/detail?id=200010";
+		String link = "http://localhost:8080/services/adspace/detail?id=200012";
 		HttpUtilTest.httpGet(link);
 	}
 	
 	@Test
 	public void list(){
-		String link = "http://localhost:8080/services/adspace/list?userId=19&ids=100001,100002,100000";
+		String link = "http://localhost:8080/services/adspace/list";
 		HttpUtilTest.httpGet(link);
+		
+//		int i = 1;
+//		int j = 2;
+//		int t = i | j;
+//		int multiValueLength = Integer.parseInt(
+//    			new DecimalFormat(SystemConstant.ZERO).format(Math.floor(Math.log(9)/Math.log(2))));
+//		double result =Math.pow(2, multiValueLength);
+//		System.out.println(StringUtils.multiValueToSingleValue(new int[]{8,16}));
+//		System.out.println(StringUtils.singleValueToMultiValue(StringUtils.multiValueToSingleValue(new int[]{8,32})));
+//		1 & 2;
 	}
+	
+	
 }

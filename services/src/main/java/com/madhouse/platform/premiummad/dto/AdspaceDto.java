@@ -41,13 +41,13 @@ public class AdspaceDto implements Serializable{
 	private Integer layout;	//广告形式
 	private String layoutName;
 	@NotNullAndBlank
-	private Integer materialType;
+	private String materialType; //物料格式
 	@NotNullAndBlank
 	private String materialSize;
 	@NotNullAndBlank
 	private Integer materialMaxKbyte;
 	
-	private Integer logoType;
+	private String logoType;
 	
 	private String logoSize;
 	
@@ -59,7 +59,7 @@ public class AdspaceDto implements Serializable{
 	
 	private Integer mainPicNumber;
 
-	private Integer videoType;
+	private String videoType;
 	
 	private Integer videoSize;
 	
@@ -175,14 +175,6 @@ public class AdspaceDto implements Serializable{
 		this.layoutName = layoutName;
 	}
 
-	public Integer getMaterialType() {
-		return materialType;
-	}
-
-	public void setMaterialType(Integer materialType) {
-		this.materialType = materialType;
-	}
-
 	public String getMaterialSize() {
 		return materialSize;
 	}
@@ -197,14 +189,6 @@ public class AdspaceDto implements Serializable{
 
 	public void setMaterialMaxKbyte(Integer materialMaxKbyte) {
 		this.materialMaxKbyte = materialMaxKbyte;
-	}
-
-	public Integer getLogoType() {
-		return logoType;
-	}
-
-	public void setLogoType(Integer logoType) {
-		this.logoType = logoType;
 	}
 
 	public String getLogoSize() {
@@ -245,14 +229,6 @@ public class AdspaceDto implements Serializable{
 
 	public void setMainPicNumber(Integer mainPicNumber) {
 		this.mainPicNumber = mainPicNumber;
-	}
-
-	public Integer getVideoType() {
-		return videoType;
-	}
-
-	public void setVideoType(Integer videoType) {
-		this.videoType = videoType;
 	}
 
 	public Integer getVideoSize() {
@@ -303,6 +279,30 @@ public class AdspaceDto implements Serializable{
 		this.status = status;
 	}
 
+	public String getMaterialType() {
+		return materialType;
+	}
+
+	public void setMaterialType(String materialType) {
+		this.materialType = materialType;
+	}
+
+	public String getLogoType() {
+		return logoType;
+	}
+
+	public void setLogoType(String logoType) {
+		this.logoType = logoType;
+	}
+
+	public String getVideoType() {
+		return videoType;
+	}
+
+	public void setVideoType(String videoType) {
+		this.videoType = videoType;
+	}
+
 	@Override
 	public String toString() {
 		return "AdspaceDto [id=" + id + ", status=" + status + ", name=" + name + ", adspaceKey=" + adspaceKey
@@ -316,5 +316,4 @@ public class AdspaceDto implements Serializable{
 				+ ", videoMaxKbyte=" + videoMaxKbyte + ", videoDuration=" + videoDuration + ", description="
 				+ description + ", createdTime=" + createdTime + "]";
 	}
-
 }

@@ -29,10 +29,28 @@ public class AdspaceRule extends BaseRule{
         Integer bidFloorUnitFen = StringUtils.convertCurrencyYuanToFen(adspaceDto.getBidFloor());
         adspace.setBidFloor(bidFloorUnitFen);
         
+        //把页面上的部分多选项转化为数据库的单值
+        int materialType = convertMultiChoiceToSingleChoice(adspaceDto.getMaterialType());
+        int logoType = convertMultiChoiceToSingleChoice(adspaceDto.getLogoType());
+        int videoType = convertMultiChoiceToSingleChoice(adspaceDto.getVideoType());
+        adspace.setMaterialType(materialType);
+        adspace.setLogoType(logoType);
+        adspace.setVideoType(videoType);
 		
 		return adspace;
 	}
 	
+	private static int convertMultiChoiceToSingleChoice(String multiChoice) {
+        int[] splitedMultiChoices = StringUtils.splitIdsToInt(multiChoice);
+        int materialType = StringUtils.multiValueToSingleValue(splitedMultiChoices);
+        return materialType;
+	}
+	
+	private static String convertSingleChoiceToMultiChoice(int singleChoice) {
+        String multiChoice = StringUtils.singleValueToMultiValue(singleChoice);
+        return multiChoice;
+	}
+
 	public static List<AdspaceDto> convertToDto(Adspace adspace, AdspaceDto adspaceDto) {
 		
         BeanUtils.copyProperties(adspace,adspaceDto,"bidFloor");
@@ -41,6 +59,13 @@ public class AdspaceRule extends BaseRule{
         
         Double bidFloor = StringUtils.convertCurrencyFentoYuan(adspace.getBidFloor());
         adspaceDto.setBidFloor(bidFloor);
+        
+        String materialType = convertSingleChoiceToMultiChoice(adspace.getMaterialType());
+        String logoType = convertSingleChoiceToMultiChoice(adspace.getLogoType());
+        String videoType = convertSingleChoiceToMultiChoice(adspace.getVideoType());
+        adspaceDto.setMaterialType(materialType);
+        adspaceDto.setLogoType(logoType);
+        adspaceDto.setVideoType(videoType);
         
 		return adspaceDtos;
 	}

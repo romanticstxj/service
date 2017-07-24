@@ -34,7 +34,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	public Integer insert(Adspace adspace, String xFrom) {
 		Integer count = checkName(adspace.getName().trim());
         if (count > 0) //检查名称
-        	throw new BusinessException(StatusCode.SC20101);
+        	throw new BusinessException(StatusCode.SC20207);
 		adspaceDao.insert(adspace);
         
         postprocessAdspaceParams(adspace, xFrom);
