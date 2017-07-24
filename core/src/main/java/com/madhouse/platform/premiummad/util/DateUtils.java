@@ -28,4 +28,29 @@ public class DateUtils {
 		return simpleDateFormat.parse(dateStr);
 	}
 
+	/**
+	 * 两个日期多少秒
+	 * 
+	 * @param date1
+	 *            Date1
+	 * @param date2
+	 *            Date2
+	 * @return long
+	 */
+	public static long getDateSecondSubtract(Date date1, Date date2) {
+		return (date2.getTime() - date1.getTime()) / (1000);
+	}
+
+	/**
+	 * 两个日期相差几天
+	 * 
+	 * @param date1
+	 *            Date1
+	 * @param date2
+	 *            Date2
+	 * @return long
+	 */
+	public static long getDateSubtract(Date date1, Date date2) {
+		return (date2.getTime() - date1.getTime()) / (24 * 60 * 60 * 1000);
+	}
 }

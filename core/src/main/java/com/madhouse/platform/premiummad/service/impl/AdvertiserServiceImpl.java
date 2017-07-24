@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.madhouse.platform.premiummad.constant.AdvertiserAuditMode;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -25,6 +29,8 @@ import com.madhouse.platform.premiummad.service.IAdvertiserService;
 @Transactional(rollbackFor = RuntimeException.class)
 public class AdvertiserServiceImpl implements IAdvertiserService {
 
+	private Logger LOGGER = LoggerFactory.getLogger(AdvertiserServiceImpl.class);
+	
 	@Autowired
 	private SysMediaMapper mediaDao;
 
@@ -45,9 +51,9 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		}
 
 		// 获取广告主ID列表
-		List<String> advertiserIds = new ArrayList<String>();
+		List<Integer> advertiserIds = new ArrayList<Integer>();
 		for (AdvertiserAuditResultModel item : auditResults) {
-			advertiserIds.add(item.getId());
+			advertiserIds.add(Integer.valueOf(item.getId()));
 		}
 
 		// 校验我方系统是否存在
@@ -68,6 +74,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 			Advertiser updateItem = new Advertiser();
 			updateItem.setStatus(Byte.valueOf(item.getStatus().toString()));
 			updateItem.setUpdatedTime(new Date());
+			updateItem.setReason(item.getErrorMessage());
 			updateItem.setId(Integer.valueOf(item.getId()));
 
 			updatedAdvertisers.add(updateItem);
@@ -75,7 +82,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 
 		int effortRows = advertiserDao.updateByBath(updatedAdvertisers);
 		if (effortRows != updatedAdvertisers.size()) {
-			throw new BusinessException(StatusCode.SC500);
+			LOGGER.info("广告主部分更新失败");
 		}
 	}
 
@@ -87,13 +94,15 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 	 */
 	@Transactional
 	@Override
-	public void updateStatusAfterUpload(List<String> advertiserIds) {
+	public void updateStatusAfterUpload(Map<Integer, String> advertiserIdKeys) {
 		// 参数为空
-		if (advertiserIds == null || advertiserIds.isEmpty()) {
+		if (advertiserIdKeys == null || advertiserIdKeys.keySet().isEmpty()) {
 			return;
 		}
 
 		// 获取我方的广告主，并校验我方系统是否存在
+		List<Integer> advertiserIds = new ArrayList<>();
+		advertiserIds.addAll(advertiserIdKeys.keySet());
 		List<Advertiser> advertisers = advertiserDao.selectByIds(advertiserIds);
 		if (advertisers == null || advertisers.size() != advertiserIds.size()) {
 			throw new BusinessException(StatusCode.SC500, "存在无效的广告主ID");
@@ -107,6 +116,8 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 			// 状态修改为审核中
 			updateItem.setStatus(Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10003.getValue())));
 			updateItem.setUpdatedTime(new Date());
+			// 媒体返回的广告key
+			updateItem.setMediaAdvertiserKey(advertiserIdKeys.get(item.getId()));
 			updateItem.setId(item.getId());
 
 			updatedAdvertisers.add(updateItem);
@@ -114,7 +125,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 
 		int effortRows = advertiserDao.updateByBath(updatedAdvertisers);
 		if (effortRows != updatedAdvertisers.size()) {
-			throw new BusinessException(StatusCode.SC500);
+			LOGGER.info("广告主部分更新失败");
 		}
 	}
 
@@ -193,10 +204,17 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		audit(uploadedMedias, classfiedMaps.get(4), classfiedMaps.get(3));
 	}
 
+	/**
+	 * 不审核媒体，自动审核
+	 * 
+	 * @param uploadedMedias
+	 * @param unUploadedAdvertisers
+	 * @param rejectedAdvertisers
+	 */
 	private void audit(List<SysMedia> uploadedMedias, Map<Integer, Advertiser> unUploadedAdvertisers, Map<Integer, Advertiser> rejectedAdvertisers) {
 		for (SysMedia media : uploadedMedias) {
-			// 平台审核不处理
-			if (AdvertiserAuditMode.AAM10002.getValue() == media.getAdvertiserAuditMode().intValue()) {
+			// 平台、媒体审核不处理
+			if (AdvertiserAuditMode.AAM10002.getValue() == media.getAdvertiserAuditMode().intValue() || AdvertiserAuditMode.AAM10003.getValue() == media.getAdvertiserAuditMode().intValue()) {
 				continue;
 			}
 
@@ -211,24 +229,12 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 					updateItem.setStatus(Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10004.getValue())));
 					updateItem.setUpdatedTime(new Date());
 					updateItem.setId(item.getId());
-					
+
 					int effortRows = advertiserDao.updateByPrimaryKeySelective(updateItem);
 					if (effortRows != 1) {
 						throw new BusinessException(StatusCode.SC500);
 					}
 				}
-
-				// 如果模式是媒体审核，推送给媒体，状态修改为审核中
-				/*
-				 * if (AdvertiserAuditMode.AAM10003.getValue() ==
-				 * media.getAdvertiserAuditMode().intValue()) { // 推送给媒体 TODO
-				 * 
-				 * // 状态修改为审核中 updateItem.setStatus(Byte.valueOf(String.valueOf(
-				 * MaterialStatusCode.MSC10003.getValue())));
-				 * updateItem.setUpdatedTime(new Date());
-				 * 
-				 * updateItem.setId(item.getId()); }
-				 */
 			}
 		}
 	}

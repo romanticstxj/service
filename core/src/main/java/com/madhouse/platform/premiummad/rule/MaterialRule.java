@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.madhouse.platform.premiummad.constant.AdvertiserType;
 import com.madhouse.platform.premiummad.constant.DeliveryType;
+import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.entity.Material;
@@ -49,13 +49,13 @@ public class MaterialRule extends BaseRule {
 	 * @param entity
 	 */
 	public static void paramterValidate(MaterialModel entity) {
-		if (AdvertiserType.getDescrip(entity.getActType().intValue()) == null) {
-			throw new BusinessException(StatusCode.SC419, "广告类型编码不存在");
+		if (Layout.getDescrip(entity.getLayout().intValue()) == null) {
+			throw new BusinessException(StatusCode.SC419, "广告形式编码不存在");
 		}
 		if (DeliveryType.getDescrip(entity.getDeliveryType().intValue()) == null) {
 			throw new BusinessException(StatusCode.SC415, "投放方式编码不存在");
 		}
-		if (entity.getMediaId() == null || entity.getMediaId().isEmpty()) {
+		if (entity.getMediaId() == null) {
 			throw new BusinessException(StatusCode.SC400, "素材关联的媒体ID必须");
 		}
 		if (entity.getAdm() == null || entity.getAdm().isEmpty()) {
@@ -102,7 +102,9 @@ public class MaterialRule extends BaseRule {
 		Map<Integer, Material> rejectedMaterials = new HashMap<Integer, Material>();
 
 		Set<Integer> usedMediaIdSet = new HashSet<Integer>();
-		for (Integer mediaId : entity.getMediaId()) {
+		List<Integer> mediaIds = new ArrayList<Integer>();
+		mediaIds.add(entity.getMediaId());
+		for (Integer mediaId : mediaIds) {
 			// 重复媒体过滤
 			if (usedMediaIdSet.contains(Integer.valueOf(mediaId))) {
 				continue;
@@ -174,10 +176,11 @@ public class MaterialRule extends BaseRule {
 			material.setUpdatedTime(new Date());
 		}
 
+		material.setAdspaceIds(parseToString(entity.getAdspaceId(), "|"));
 		material.setAdvertiserKey(entity.getAdvertiserId());
 		material.setActiveType(entity.getActType() != null ? Byte.valueOf(entity.getActType().toString()) : 0);
 		material.setAdMaterials(parseToString(entity.getAdm())); // 广告素材URL(多个用半角逗号分隔)
-		material.setAdType(Short.valueOf(entity.getAdType().toString()));
+		material.setLayout(Short.valueOf(entity.getLayout().toString()));
 		material.setAgency(entity.getAgency());
 		material.setBrand(entity.getBrand());
 		material.setClkUrls(parseToString(entity.getMonitor(), ClKURL)); // 点击监测URL(多个用半角逗号分隔)

@@ -7,6 +7,25 @@ import org.apache.commons.lang3.StringUtils;
 
 public class BaseRule {
 	/**
+	 * 将列表以 split 连接成字符串返回
+	 * 
+	 * @param list
+	 * @param split
+	 * @return
+	 */
+	public static String parseToString(List<Integer> list, String split) {
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
+		
+		StringBuilder result = new StringBuilder();
+		for (Integer item : list) {
+			result.append(split + item.toString());
+		}
+		return result.substring(1);
+	}
+	
+	/**
 	 * 解析以 , 分割的字符串
 	 * 
 	 * @param str

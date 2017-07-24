@@ -24,8 +24,8 @@
     <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     
-	<!--<task:annotation-driven/>
-    <task:executor id="taskExecutor" pool-size="100-10000" queue-capacity="10" />-->
+	<!-- <task:annotation-driven/>
+    <task:executor id="taskExecutor" pool-size="100-10000" queue-capacity="10" /> -->
 
     <!--proxy-target-class="true"强制使用cglib代理, 如果为false则spring会自动选择 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
@@ -102,12 +102,35 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <!-- 使用annotation注解方式配置事务 -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+	<bean id="threadPool"
+        class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <!-- 核心线程数 -->
+        <property name="corePoolSize" value="3" />
+        <!-- 最大线程数 -->
+        <property name="maxPoolSize" value="10" />
+        <!-- 队列最大长度 >=mainExecutor.maxSize -->
+        <property name="queueCapacity" value="25" />
+        <!-- 线程池维护线程所允许的空闲时间 -->
+        <property name="keepAliveSeconds" value="300" />
+        <!-- 线程池对拒绝任务(无线程可用)的处理策略 ThreadPoolExecutor.CallerRunsPolicy策略 ,调用者的线程会执行该任务,如果执行器已关闭,则丢弃.  -->
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
+        </property>
+    </bean>
     
+    <!-- 使用annotation注解方式配置事务 -->
+    <!-- <tx:annotation-driven transaction-manager="transactionManager"/> -->
+
 	<!-- 基于XML配置任务调度 -->
-    <!-- <task:scheduled-tasks>
-        <task:scheduled ref="sohuNewsUploadMaterialApiTask" method="uploadSohuMaterial" cron="0 2/5 * * * ?"/>
-	    <task:scheduled ref="sohuNewsCustomerListApiTask" method="list" cron="${cron.sohuNewsCustomerListApiTask}"/>
+   <!--  <task:scheduled-tasks> -->
+    	<!-- sohu News -->
+        <!--<task:scheduled ref="sohuNewsCustomerCreateApiTask" method="create" cron="${cron.sohuNewsCustomerCreateApiTask}"/>
+    	<task:scheduled ref="sohuNewsCustomerListApiTask" method="list" cron="${cron.sohuNewsCustomerListApiTask}"/>
+        <task:scheduled ref="sohuNewsUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>
+        <task:scheduled ref="sohuNewsStatusApiTask" method="getStatusDetail" cron="${cron.sohutvStatusApiTask}"/>
+	 -->
+		<!-- Dianping -->
+ 		<!--<task:scheduled ref="dianpingMaterialUploadApiTask" method="uploadMaterial" cron="${cron.dianpingMaterialUploadApiTask}"/>
+        <task:scheduled ref="dianpingGetStatusApiTask" method="getStatusResponse" cron="${cron.dianpingGetStatusApiTask}"/>
 	</task:scheduled-tasks> -->
 </beans>

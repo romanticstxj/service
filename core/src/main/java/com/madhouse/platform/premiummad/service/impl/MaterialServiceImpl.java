@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.madhouse.platform.premiummad.constant.MaterialAuditMode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -26,6 +30,9 @@ import com.madhouse.platform.premiummad.service.IMaterialService;
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
 public class MaterialServiceImpl implements IMaterialService {
+	
+	private Logger LOGGER = LoggerFactory.getLogger(MaterialServiceImpl.class);
+	
 	@Autowired
 	private SysMediaMapper mediaDao;
 
@@ -48,20 +55,7 @@ public class MaterialServiceImpl implements IMaterialService {
 			return;
 		}
 
-		// 获取素材ID列表
-		List<String> materialIds = new ArrayList<String>();
-		for (MaterialAuditResultModel item : auditResults) {
-			materialIds.add(item.getId());
-		}
-
-		// 校验我方系统是否存在
-		List<Material> materials = materialDao.selectByIds(materialIds);
-		if (materials == null || materials.size() != materialIds.size()) {
-			throw new BusinessException(StatusCode.SC500, "存在无效的素材ID");
-		}
-
 		// 已驳回或已通过的记录更新状态
-		List<Material> updatedMaterials = new ArrayList<Material>();
 		for (MaterialAuditResultModel item : auditResults) {
 			// 审核中的素材不处理
 			if (item.getStatus() == null || MaterialStatusCode.MSC10003.getValue() == item.getStatus().intValue()) {
@@ -72,14 +66,14 @@ public class MaterialServiceImpl implements IMaterialService {
 			Material updateItem = new Material();
 			updateItem.setStatus(Byte.valueOf(item.getStatus().toString()));
 			updateItem.setUpdatedTime(new Date());
+			updateItem.setReason(item.getErrorMessage());
 			updateItem.setId(Integer.valueOf(item.getId()));
-
-			updatedMaterials.add(updateItem);
-		}
-
-		int effortRows = materialDao.updateByBath(updatedMaterials);
-		if (effortRows != updatedMaterials.size()) {
-			throw new BusinessException(StatusCode.SC500);
+			
+			int effortRows = materialDao.updateByMediaAndMediaMaterialKey(updateItem);
+			if (effortRows != 1) {
+				LOGGER.info("素材更新失败[mediaId=" + updateItem.getMediaId() + ",mediaMaterialKey=" + updateItem.getMediaMaterialKey() + "]");
+				continue;
+			}
 		}
 	}
 
@@ -91,13 +85,15 @@ public class MaterialServiceImpl implements IMaterialService {
 	 */
 	@Transactional
 	@Override
-	public void updateStatusAfterUpload(List<String> materialIds) {
+	public void updateStatusAfterUpload(Map<Integer, String> materialIdKeys) {
 		// 参数为空
-		if (materialIds == null || materialIds.isEmpty()) {
+		if (materialIdKeys == null || materialIdKeys.isEmpty()) {
 			return;
 		}
 
 		// 获取我方的广告主，并校验我方系统是否存在
+		List<Integer> materialIds = new ArrayList<>();
+		materialIds.addAll(materialIdKeys.keySet());
 		List<Material> materials = materialDao.selectByIds(materialIds);
 		if (materials == null || materials.size() != materialIds.size()) {
 			throw new BusinessException(StatusCode.SC500, "存在无效的素材ID");
@@ -110,6 +106,7 @@ public class MaterialServiceImpl implements IMaterialService {
 
 			// 状态修改为审核中
 			updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10003.getValue())));
+			updateItem.setMediaMaterialKey(materialIdKeys.get(item.getId()));
 			updateItem.setUpdatedTime(new Date());
 			updateItem.setId(item.getId());
 
@@ -118,7 +115,7 @@ public class MaterialServiceImpl implements IMaterialService {
 
 		int effortRows = materialDao.updateByBath(updatedMaterials);
 		if (effortRows != updatedMaterials.size()) {
-			throw new BusinessException(StatusCode.SC500);
+			LOGGER.info("素材部分更新失败");
 		}
 	}
 
@@ -158,10 +155,12 @@ public class MaterialServiceImpl implements IMaterialService {
 		MaterialRule.paramterValidate(entity);
 
 		// 查询关联的媒体是否存在且有效
-		String[] distinctMediaIds = MaterialRule.parseListToDistinctArray(entity.getMediaId());
+		String[] distinctMediaIds = {entity.getMediaId().toString()};
 		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
 		MediaRule.checkMedias(distinctMediaIds, uploadedMedias);
 
+		// 广告位必须的媒体需要校验 TODO
+		
 		// 判断所有需要广告主需要审核的媒体是否都已审核通过
 		String errorMsg = advertiserService.validateAdKeyAndMedias(uploadedMedias, entity.getDspId(), entity.getAdvertiserId());
 		if (!StringUtils.isBlank(errorMsg)) {
@@ -206,8 +205,8 @@ public class MaterialServiceImpl implements IMaterialService {
 
 	private void audit(List<SysMedia> uploadedMedias, Map<Integer, Material> unUploadedMaterials, Map<Integer, Material> rejectedMaterials) {
 		for (SysMedia media : uploadedMedias) {
-			// 平台审核不处理
-			if (MaterialAuditMode.MAM10002.getValue() == media.getMaterialAuditMode().intValue()) {
+			// 平台、媒体审核不处理
+			if (MaterialAuditMode.MAM10002.getValue() == media.getMaterialAuditMode().intValue() || MaterialAuditMode.MAM10003.getValue() == media.getMaterialAuditMode().intValue()) {
 				continue;
 			}
 
@@ -228,18 +227,6 @@ public class MaterialServiceImpl implements IMaterialService {
 						throw new BusinessException(StatusCode.SC500);
 					}
 				}
-
-				// 如果模式是媒体审核，推送给媒体，状态修改为审核中
-				/*
-				 * if (MaterialAuditMode.MAM10003.getValue() ==
-				 * media.getMaterialAuditMode().intValue()) { // 推送给媒体 TODO
-				 * 
-				 * // 状态修改为审核中 updateItem.setStatus(Byte.valueOf(String.valueOf(
-				 * MaterialStatusCode.MSC10003.getValue())));
-				 * updateItem.setUpdatedTime(new Date());
-				 * 
-				 * updateItem.setId(item.getId()); }
-				 */
 			}
 		}
 	}

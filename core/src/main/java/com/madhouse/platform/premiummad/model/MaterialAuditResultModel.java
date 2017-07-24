@@ -21,6 +21,11 @@ public class MaterialAuditResultModel {
 	 * 审核未通过原因
 	 */
 	private String errorMessage;
+	
+	/**
+	 * 媒体方key
+	 */
+	private String mediaMaterialKey;
 
 	public String getId() {
 		return id;
@@ -53,5 +58,12 @@ public class MaterialAuditResultModel {
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
-	
+
+	public String getMediaMaterialKey() {
+		return mediaMaterialKey;
+	}
+
+	public void setMediaMaterialKey(String mediaMaterialKey) {
+		this.mediaMaterialKey = mediaMaterialKey;
+	}
 }

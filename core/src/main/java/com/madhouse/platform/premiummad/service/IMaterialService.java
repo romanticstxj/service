@@ -1,6 +1,7 @@
 package com.madhouse.platform.premiummad.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.model.MaterialModel;
@@ -34,8 +35,8 @@ public interface IMaterialService {
 	/**
 	 * 素材提交媒体后更改状态为审核中
 	 * 
-	 * @param materialIds
-	 *            我方的广告主ID
+	 * @param materialIdKeys
+	 *            我方的素材ID
 	 */
-	void updateStatusAfterUpload(List<String> materialIds);
+	void updateStatusAfterUpload(Map<Integer, String> materialIdKeys);
 }

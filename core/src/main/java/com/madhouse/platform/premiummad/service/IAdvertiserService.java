@@ -1,6 +1,7 @@
 package com.madhouse.platform.premiummad.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
@@ -41,8 +42,8 @@ public interface IAdvertiserService {
 	 * @param advertiserIds
 	 *            我方的广告主ID
 	 */
-	void updateStatusAfterUpload(List<String> advertiserIds);
-
+	void updateStatusAfterUpload(Map<Integer, String> advertiserIdKeys);
+	
 	/**
 	 * 根据媒体返回的结果更新状态
 	 * 
