@@ -181,7 +181,6 @@
         UPDATE mad_sys_adspace
         <set>
               <if test="name != null">name = #{name},</if>
-              <if test="adspaceKey != null">adspace_key = #{adspaceKey},</if>
               <if test="mediaId != null">media_id = #{mediaId},</if>
               <if test="terminalType != null">terminal_type = #{terminalType},</if>
               <if test="terminalOs != null">terminal_os = #{terminalOs},</if>
@@ -207,6 +206,16 @@
               <if test="createdUser != null">created_user = #{createdUser},</if>
               <if test="updatedUser != null">updated_user = #{updatedUser},</if>
               <if test="createdTime != null">created_time = #{createdTime},</if>
+              <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    
+    <update id="updateAdspaceKey" parameterType="com.madhouse.platform.premiummad.entity.Adspace">
+        UPDATE mad_sys_adspace
+        <set>
+              <if test="adspaceKey != null">adspace_key = #{adspaceKey},</if>
+              <if test="updatedUser != null">updated_user = #{updatedUser},</if>
               <if test="updatedTime != null">updated_time = #{updatedTime},</if>
         </set>
         WHERE id = #{id}

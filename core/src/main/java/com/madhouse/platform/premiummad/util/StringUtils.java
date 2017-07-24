@@ -102,6 +102,9 @@ public class StringUtils {
 	 * @return
 	 */
 	public static int[] splitIdsToInt(String ids) {
+		if (ids == null) {
+			return null;
+		}
 		int ret[] = new int[ids.length()];
 		StringTokenizer toKenizer = new StringTokenizer(ids, ",");
 		int i = 0;
@@ -229,14 +232,21 @@ public class StringUtils {
 
 	public static int multiValueToSingleValue(int[] multiValue) {
 		int result = 0;
+		if(multiValue == null || multiValue.length == 0){
+			return result;
+		}
 		for (int i = 0; i < multiValue.length; i++) {
 			result |= multiValue[i];
 		}
 		return result;
 	}
 
-	public static String singleValueToMultiValue(int singleValue) {
+	public static String singleValueToMultiValue(Integer singleValue) {
 
+		if(singleValue == null || singleValue.intValue() <= 0){
+			return "";
+		}
+		
 		int temp = Integer.parseInt(new DecimalFormat(SystemConstant.ZERO)
 				.format(Math.floor(Math.log(singleValue) / Math.log(SystemConstant.BASE_FACTOR))));
 		int nearestBaseNumber = (int) Math.pow(SystemConstant.BASE_FACTOR, temp);

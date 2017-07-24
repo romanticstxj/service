@@ -46,7 +46,7 @@ public class AdspaceRule extends BaseRule{
         return materialType;
 	}
 	
-	private static String convertSingleChoiceToMultiChoice(int singleChoice) {
+	private static String convertSingleChoiceToMultiChoice(Integer singleChoice) {
         String multiChoice = StringUtils.singleValueToMultiValue(singleChoice);
         return multiChoice;
 	}

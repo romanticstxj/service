@@ -40,11 +40,11 @@ public class AdspaceDto implements Serializable{
 	@NotNullAndBlank
 	private Integer layout;	//广告形式
 	private String layoutName;
-	@NotNullAndBlank
+	
 	private String materialType; //物料格式
-	@NotNullAndBlank
+	
 	private String materialSize;
-	@NotNullAndBlank
+	
 	private Integer materialMaxKbyte;
 	
 	private String logoType;
@@ -61,7 +61,7 @@ public class AdspaceDto implements Serializable{
 
 	private String videoType;
 	
-	private Integer videoSize;
+	private String videoSize;
 	
 	private Integer videoMaxKbyte;
 	
@@ -231,11 +231,11 @@ public class AdspaceDto implements Serializable{
 		this.mainPicNumber = mainPicNumber;
 	}
 
-	public Integer getVideoSize() {
+	public String getVideoSize() {
 		return videoSize;
 	}
 
-	public void setVideoSize(Integer videoSize) {
+	public void setVideoSize(String videoSize) {
 		this.videoSize = videoSize;
 	}
 

@@ -15,6 +15,7 @@ import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.DspMapping;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.service.IAdspaceService;
+import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Service
@@ -75,7 +76,8 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		if(queryResult > 0){
 			throw new BusinessException(StatusCode.SC20206);
 		}
-		return adspaceDao.update(adspace);
+		BeanUtils.setUpdateParam(adspace);
+		return adspaceDao.updateAdspaceKey(adspace);
 	}
 
 	@Override

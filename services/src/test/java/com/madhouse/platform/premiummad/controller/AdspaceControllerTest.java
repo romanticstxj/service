@@ -18,7 +18,7 @@ public class AdspaceControllerTest {
 	@Test
 	public void add(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-		adspaceDto.setName("adspace932");
+		adspaceDto.setName("adspace55");
 		adspaceDto.setMediaId(100004);
 		adspaceDto.setTerminalType(1);
 		adspaceDto.setTerminalOs(1);
@@ -30,9 +30,10 @@ public class AdspaceControllerTest {
 		adspaceDto.setMaterialType("2,4");
 		adspaceDto.setMaterialSize("1024*768");
 		adspaceDto.setMaterialMaxKbyte(300);
-		adspaceDto.setLogoType("1,2");
+//		adspaceDto.setLogoType("1,2");
 		adspaceDto.setVideoType("8,32");
 		adspaceDto.setDescription("desc");
+//		String link = "http://172.16.25.48:8080/services/adspace/create";
 		String link = "http://localhost:8080/services/adspace/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(adspaceDto));
 	}
@@ -98,27 +99,28 @@ public class AdspaceControllerTest {
 	@Test
 	public void update(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-		adspaceDto.setId(200000);
-		adspaceDto.setName("adspace5");
+		adspaceDto.setId(200009);
+		adspaceDto.setName("adspace43");
 		adspaceDto.setMediaId(100001);
-		adspaceDto.setTerminalType(2);
+		adspaceDto.setTerminalType(1);
 		adspaceDto.setTerminalOs(1);
 		adspaceDto.setSupportHttps(1);
 		adspaceDto.setBidType(1);
-		adspaceDto.setBidFloor(3.55);
+		adspaceDto.setBidFloor(21.00);
 		adspaceDto.setAdType(3);
 		adspaceDto.setLayout(102);
 		adspaceDto.setMaterialType("1,2,4");
-		adspaceDto.setMaterialSize("1024*768");
+		adspaceDto.setMaterialSize("11*12");
 		adspaceDto.setMaterialMaxKbyte(300);
 		adspaceDto.setDescription("desc");
+//		String link = "http://172.16.25.48:8080/services/adspace/update";
 		String link = "http://localhost:8080/services/adspace/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(adspaceDto));
 	}
 	
 	@Test
 	public void detail(){
-		String link = "http://localhost:8080/services/adspace/detail?id=200012";
+		String link = "http://172.16.25.48:8080/services/adspace/detail?id=200000";
 		HttpUtilTest.httpGet(link);
 	}
 	

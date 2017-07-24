@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import com.madhouse.platform.premiummad.entity.Policy;
 import com.madhouse.platform.premiummad.rule.PolicyRule;
 import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
+import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 
 @RestController
@@ -48,9 +50,19 @@ public class PolicyController {
 	 */
 	@RequestMapping("/detail")
     public ResponseDto<PolicyDto> getPolicy(@RequestParam(value="id", required=true) Integer id,
-    		@RequestParam(value="type", required=true) Integer type) {
+    		@RequestParam(value="type", required=true) Integer type,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
+		//权限check
+		if(userId == null){
+			return ResponseUtils.response(StatusCode.SC20006, null);
+		}
 		
-		Policy policy = policyService.queryPolicyById(id);
+		List<Integer> policyIdList = userAuthService.queryPolicyIdList(userId, String.valueOf(id));
+		if(userId == null || ObjectUtils.isEmpty(policyIdList) || policyIdList.get(0).intValue() != id.intValue()){
+			return ResponseUtils.response(StatusCode.SC20006, null);
+		}
+		
+		Policy policy = policyService.queryPolicyById(id, type);
 		List<PolicyDto> result = PolicyRule.convertToDto(policy, new PolicyDto());
 		return ResponseUtils.response(StatusCode.SC20000, result);
 	}

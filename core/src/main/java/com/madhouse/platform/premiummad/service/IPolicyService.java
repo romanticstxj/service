@@ -6,5 +6,5 @@ public interface IPolicyService {
 	
 	int insert(Policy policy);
 
-	Policy queryPolicyById(Integer id);
+	Policy queryPolicyById(Integer id, Integer type);
 }

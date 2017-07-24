@@ -1,11 +1,9 @@
 package com.madhouse.platform.premiummad.rule;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
-import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.PolicyAdspaceDto;
 import com.madhouse.platform.premiummad.dto.PolicyDspDto;
 import com.madhouse.platform.premiummad.dto.PolicyDto;
@@ -81,16 +79,16 @@ public class PolicyRule {
 		Integer isEndDate = policyDto.getEndDate() == null ? 0 : 1;
 		policyDto.setIsEndDate(isEndDate);
 		
-		
-		
 		if(policyAdspaceDtos != null){
 			for(int i=0; i<policyAdspaceDtos.size(); i++){
 				Double bidFloor = StringUtils.convertCurrencyFentoYuan(policy.getPolicyAdspaces().get(i).getBidFloor());
 				policyAdspaceDtos.get(i).setBidFloor(bidFloor);
 			}
 		}
-		        
-		return null;
+		
+		List<PolicyDto> result = new ArrayList<PolicyDto>();
+		result.add(policyDto);
+		return result;
 	}
 	
 	public static void validateDto(PolicyDto policyDto){

@@ -58,8 +58,8 @@ public class PolicyServiceImpl implements IPolicyService {
 	}
 	
 	@Override
-	public Policy queryPolicyById(Integer id) {
-		return policyDao.selectCascadedlyByPrimaryKey(id);
+	public Policy queryPolicyById(Integer id, Integer type) {
+		return policyDao.selectCascadedlyByPrimaryKey(id, type);
 	}
 
 }

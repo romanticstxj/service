@@ -38,5 +38,7 @@ public interface AdspaceDao {
 
 	int queryByAdspaceKey(String adspaceKey);
 
+	Integer updateAdspaceKey(Adspace adspace);
+
 	
 }

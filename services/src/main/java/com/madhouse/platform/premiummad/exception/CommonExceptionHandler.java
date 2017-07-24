@@ -25,6 +25,10 @@ public class CommonExceptionHandler {
 	@ResponseBody
 	public ResponseDto<Object> handleAllException(Exception ex) {
 		logger.error(LogUtils.getDetailException(ex));
-		return ResponseUtils.response(StatusCode.SC30001, null);
+		if (ex instanceof BusinessException) {
+			return ResponseUtils.response(((BusinessException) ex).getStatusCode(), null, ex.getMessage());
+		} else {
+			return ResponseUtils.response(StatusCode.SC30001, null);
+		}
 	}
 }
