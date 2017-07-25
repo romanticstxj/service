@@ -1,5 +1,7 @@
 package com.madhouse.platform.premiummad.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.madhouse.platform.premiummad.entity.Policy;
@@ -56,4 +58,11 @@ public interface PolicyDao {
     int checkName(String name);
     
     Policy selectCascadedlyByPrimaryKey(@Param("id") Integer id, @Param("type") Integer type);
+
+	int update(Policy policy);
+	
+	List<Policy> queryAllByParams(@Param("idStrs") String[] idStrs, @Param("status") Integer status, 
+			@Param("type") Integer type);
+
+	int updateStatus(Policy policy);
 }

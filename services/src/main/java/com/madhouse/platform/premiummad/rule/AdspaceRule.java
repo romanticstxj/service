@@ -13,14 +13,6 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class AdspaceRule extends BaseRule{
 
-	public static void checkStatus(Integer status){
-		if(status != null){
-			if(status != 0 && status != 1){ //如果状态值不正确
-				throw new BusinessException(StatusCode.SC20008);
-			}
-		}
-	}
-	
 	public static Adspace convertToModel(AdspaceDto adspaceDto, Adspace adspace){
 		BeanUtils.copyProperties(adspaceDto, adspace, SystemConstant.ADSPACE_BID_FLOOR);
         BeanUtils.setCreateParam(adspace);

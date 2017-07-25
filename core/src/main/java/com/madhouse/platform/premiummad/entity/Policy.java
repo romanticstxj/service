@@ -6,10 +6,12 @@ import java.util.List;
 public class Policy extends BaseEntity{
 	
 	private Integer id;
+	
+	private Integer dealId;
 
     private String name;
     
-    private Byte type; //策略类型(1: PDB, 2: PD, 4: PMP, 8: RTB)
+    private Integer type; //策略类型(1: PDB, 2: PD, 4: PMP, 8: RTB)
     
     private Integer weight; //权重
     
@@ -101,7 +103,7 @@ public class Policy extends BaseEntity{
      *
      * @mbggenerated Wed Jul 19 11:37:35 CST 2017
      */
-    public Byte getType() {
+    public Integer getType() {
         return type;
     }
 
@@ -113,7 +115,7 @@ public class Policy extends BaseEntity{
      *
      * @mbggenerated Wed Jul 19 11:37:35 CST 2017
      */
-    public void setType(Byte type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -459,6 +461,14 @@ public class Policy extends BaseEntity{
 
 	public void setPolicyDsp(PolicyDsp policyDsp) {
 		this.policyDsp = policyDsp;
+	}
+
+	public Integer getDealId() {
+		return dealId;
+	}
+
+	public void setDealId(Integer dealId) {
+		this.dealId = dealId;
 	}
 
 }

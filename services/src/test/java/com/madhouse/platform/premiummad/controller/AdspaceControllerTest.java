@@ -120,7 +120,8 @@ public class AdspaceControllerTest {
 	
 	@Test
 	public void detail(){
-		String link = "http://172.16.25.48:8080/services/adspace/detail?id=200000";
+//		String link = "http://172.16.25.48:8080/services/adspace/detail?id=200000";
+		String link = "http://localhost:8080/services/adspace/detail?id=200033";
 		HttpUtilTest.httpGet(link);
 	}
 	

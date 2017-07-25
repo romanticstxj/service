@@ -62,7 +62,7 @@ public class MediaController {
     private ResponseDto<MediaDto> listByMediaIds(String ids) throws Exception {
 		//无权限查看任何媒体
 		if(ids == null || ids.equals("")){
-	        return ResponseUtils.response(StatusCode.SC20003, null);
+	        return ResponseUtils.response(StatusCode.SC20006, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			if(ids.equals(SystemConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
 				ids = null;

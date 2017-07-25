@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.dto.AdspaceDto;
 import com.madhouse.platform.premiummad.dto.PolicyAdspaceDto;
 import com.madhouse.platform.premiummad.dto.PolicyDspDto;
 import com.madhouse.platform.premiummad.dto.PolicyDto;
+import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.Policy;
 import com.madhouse.platform.premiummad.entity.PolicyAdspace;
 import com.madhouse.platform.premiummad.entity.PolicyDsp;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
+import com.madhouse.platform.premiummad.util.ResponseUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
-public class PolicyRule {
+public class PolicyRule extends BaseRule{
 	
 	public static Policy convertToModel(PolicyDto dto, Policy entity){
 		
@@ -81,6 +84,12 @@ public class PolicyRule {
 		
 		if(policyAdspaceDtos != null){
 			for(int i=0; i<policyAdspaceDtos.size(); i++){
+				//copy adspace
+				AdspaceDto adspaceDto = new AdspaceDto();
+				BeanUtils.copyProperties(policy.getPolicyAdspaces().get(i).getAdspace(), adspaceDto);
+				policyAdspaceDtos.get(i).setAdspace(adspaceDto);
+				
+				//convert bidfloor in policyadspace
 				Double bidFloor = StringUtils.convertCurrencyFentoYuan(policy.getPolicyAdspaces().get(i).getBidFloor());
 				policyAdspaceDtos.get(i).setBidFloor(bidFloor);
 			}
@@ -95,5 +104,21 @@ public class PolicyRule {
 		String fieldName = BeanUtils.hasEmptyField(policyDto);
         if (fieldName != null)
         	throw new BusinessException(StatusCode.SC20001, fieldName + " cannot be null");
+	}
+	
+	public static List<PolicyDto> convertToDtoList(List<Policy> policies, ArrayList<PolicyDto> policyDtos) {
+        //copy entity to dto
+		BeanUtils.copyList(policies,policyDtos,PolicyDto.class);
+        for(int i=0; i<policyDtos.size(); i++){
+        	PolicyDspDto policyDspDto = new PolicyDspDto();
+        	BeanUtils.copyProperties(policies.get(i).getPolicyDsp(), policyDspDto);
+        	policyDtos.get(i).setPolicyDsp(policyDspDto);
+        	
+        	//设置前端结束时间限制与否的开关
+    		Integer isEndDate = policyDtos.get(i).getEndDate() == null ? 0 : 1;
+    		policyDtos.get(i).setIsEndDate(isEndDate);
+        }
+        
+        return policyDtos;
 	}
 }

@@ -22,8 +22,9 @@ public class PolicyDto implements Serializable{
 	private Integer dealId;
     @NotNullAndBlank
     private String name;
+    @NotNull(message=SystemCommonMsg.NO_UPDATE_TYPE, groups={Update.class, UpdateStatus.class})
     @NotNullAndBlank
-    private Byte type; //策略类型(1: PDB, 2: PD, 4: PMP, 8: RTB)
+    private Integer type; //策略类型(1: PDB, 2: PD, 4: PMP, 8: RTB)
     @NotNullAndBlank
     @Min(message=SystemCommonMsg.ERROR_WEIGHT_FORMAT, value=1)
     private Integer weight; //权重
@@ -84,11 +85,11 @@ public class PolicyDto implements Serializable{
 		this.name = name;
 	}
 
-	public Byte getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(Byte type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 

@@ -56,4 +56,6 @@ public interface PolicyAdspaceDao {
     int updateByPrimaryKey(PolicyAdspace record);
     
     int batchInsert(@Param("policyAdspaces") List<PolicyAdspace> policyAdspaces);
+
+	int deleteByPolicyId(Integer policyId);
 }

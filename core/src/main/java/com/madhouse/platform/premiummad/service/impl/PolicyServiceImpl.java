@@ -14,6 +14,7 @@ import com.madhouse.platform.premiummad.entity.Policy;
 import com.madhouse.platform.premiummad.entity.PolicyAdspace;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.service.IPolicyService;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
@@ -60,6 +61,38 @@ public class PolicyServiceImpl implements IPolicyService {
 	@Override
 	public Policy queryPolicyById(Integer id, Integer type) {
 		return policyDao.selectCascadedlyByPrimaryKey(id, type);
+	}
+	
+	@Override
+	public int update(Policy policy) {
+		Policy queryResult = queryPolicyById(policy.getId(), policy.getType());
+        if (queryResult == null)
+        	throw new BusinessException(StatusCode.SC20002);
+        if (!queryResult.getName().equals(policy.getName())) { //名称不相等,检查名称
+            Integer count = checkName(policy.getName().trim());
+            if (count > 0)
+            	throw new BusinessException(StatusCode.SC20401);
+        }
+        
+		policyDao.update(policy);
+		
+		policyAdspaceDao.deleteByPolicyId(policy.getId());
+		return policyAdspaceDao.batchInsert(policy.getPolicyAdspaces());
+	}
+
+	@Override
+	public List<Policy> queryAllByParams(String policyIds, Integer status, Integer type) {
+		String[] idStrs = StringUtils.splitIds(policyIds);
+		return policyDao.queryAllByParams(idStrs, status, type);
+	}
+
+	@Override
+	public int updateStatus(Policy policy) {
+		Policy queryResult = queryPolicyById(policy.getId(), policy.getType());
+        if (queryResult == null)
+        	throw new BusinessException(StatusCode.SC20002);
+        
+		return policyDao.updateStatus(policy);
 	}
 
 }

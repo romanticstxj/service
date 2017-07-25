@@ -226,4 +226,9 @@
       updated_time = #{updatedTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <delete id="deleteByPolicyId" parameterType="java.lang.Integer">
+    delete from mad_sys_policy_adspace
+    where policy_id = #{policyId,jdbcType=INTEGER}
+  </delete>
 </mapper>

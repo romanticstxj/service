@@ -222,8 +222,10 @@
     "/adspace/detail": {
         "get": {
             "_summary": "",
-            "query": {
-                "id" : "<*||integer||comment:广告位ID>"
+            "parameters": {
+	            "query": {
+	                "id" : "<*||integer||comment:广告位ID>"
+	            }
             },
             "responses": {
                 "200": {
@@ -331,8 +333,10 @@
     "/adspace/mapping/detail": {
         "get": {
             "_summary": "查询广告位映射",
-            "query": {
-                "id" : "<*||integer||comment:我方广告位ID>"
+            "parameters": {
+	            "query": {
+	                "id" : "<*||integer||comment:我方广告位ID>"
+	            }            
             },
             "responses": {
                 "200": {

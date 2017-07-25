@@ -87,12 +87,12 @@
 	
 	<select id="queryAllByParams" parameterType="string" resultMap="baseResult">
 		SELECT 
-		<include refid="baseList">
+		<include refid="baseColumns">
             <property name="alias" value="a" />
         </include>, m.name mediaName, l.name layoutName
         FROM mad_sys_adspace a 
         LEFT JOIN mad_sys_media m ON m.id = a.media_id
-        LEFT JOIN mad_dict_layout l ON a.layout = l.code
+        LEFT JOIN mad_dict_layout l ON a.layout = l.code AND a.adtype = l.ad_type AND a.terminal_type = l.terminal_type
         WHERE 1=1
         <if test="idStrs != null and idStrs.length > 0">
         	AND m.id IN 
@@ -227,7 +227,7 @@
             <property name="alias" value="a" />
         </include>, l.name layoutName, m.name mediaName
         FROM mad_sys_adspace a
-        LEFT JOIN mad_dict_layout l ON a.layout = l.code
+        LEFT JOIN mad_dict_layout l ON a.layout = l.code AND a.adtype = l.ad_type AND a.terminal_type = l.terminal_type
         LEFT JOIN mad_sys_media m ON a.media_id = m.id
         WHERE a.id = #{id}
 	</select>

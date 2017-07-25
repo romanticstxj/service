@@ -50,4 +50,5 @@ public interface SystemConstant {
     String JDBC_SCHEMA = "premiummad_dev";
 
 	String SYSTEM_ADMIN_MEDIA_ID = "-1";
+	String SYSTEM_ADMIN_POLICY_ID = "-1";
 }
