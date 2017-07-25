@@ -1,7 +1,5 @@
 package com.madhouse.platform.premiummad.media.model;
 
-import java.util.List;
-
 public class MojiMaterialUploadResponse {
 	private String code;
 	private String message;

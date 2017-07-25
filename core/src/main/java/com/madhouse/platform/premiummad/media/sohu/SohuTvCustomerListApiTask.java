@@ -22,9 +22,9 @@ import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 
 @Component
-public class SohuNewsCustomerListApiTask {
+public class SohuTvCustomerListApiTask {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SohuNewsCustomerListApiTask.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(SohuTvCustomerListApiTask.class);
 
 	@Value("${sohu.customer.list}")
 	private String cutomerListUrl;
@@ -34,39 +34,39 @@ public class SohuNewsCustomerListApiTask {
 
 	@Autowired
 	private AdvertiserMapper advertiserDao;
-	
+
 	@Autowired
 	private IAdvertiserService advertiserService;
 
 	/**
-	 * 查询搜狐新闻广告主审核状态
+	 * 查询搜狐TV广告主审核状态
 	 */
 	public void list() {
-		LOGGER.info("++++++++++Sohu News get advertiser list begin+++++++++++");
-		
+		LOGGER.info("++++++++++Sohu TV get advertiser list begin+++++++++++");
+
 		// 获取我方媒体待审核的广告主
-		List<Advertiser> unAuditAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.SOHUNEWS.getValue(), AdvertiserStatusCode.ASC10003.getValue());
-		
+		List<Advertiser> unAuditAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.SOHUTV.getValue(), AdvertiserStatusCode.ASC10003.getValue());
+
 		if (unAuditAdvertisers == null || unAuditAdvertisers.isEmpty()) {
-			LOGGER.info("++++++++++Sohu News no advertisers need to audit+++++++++++");
+			LOGGER.info("++++++++++Sohu TV no advertisers need to audit+++++++++++");
 			return;
 		}
-		
+
 		for (Advertiser item : unAuditAdvertisers) {
 			Map<String, Object> paramMap = new HashMap<>();
 			paramMap.put("customer_key", item.getMediaAdvertiserKey());
 			paramMap.put("customer_name", item.getAdvertiserName());
 			String request = sohuAuth.setHttpMethod("GET").setApiUrl(cutomerListUrl).setParamMap(paramMap).buildRequest();
-			LOGGER.info("SohuNewsCustomerListApiTask.list param request:{}", request);
+			LOGGER.info("SohuTvCustomerListApiTask.list param request:{}", request);
 			String url = cutomerListUrl + "?" + request;
 			Map<String, Object> getMap = HttpUtils.get(url);
 			String result = (String) getMap.get("responseBody");
-			LOGGER.info("SohuNewsCustomerListApiTask.list http get:{}. result json: {}", url, result);
-			SohuResponse sohutvResponse = JSONObject.parseObject(result, SohuResponse.class);
+			LOGGER.info("SohuTvCustomerListApiTask.list http get:{}. result json: {}", url, result);
+			SohuResponse sohuResponse = JSONObject.parseObject(result, SohuResponse.class);
 
-			if (sohutvResponse != null) {
-				if (sohutvResponse.isStatus()) {
-					SohuCustomerListResponse sohuCustomerListResponse = JSONObject.parseObject(sohutvResponse.getContent().toString(), SohuCustomerListResponse.class);
+			if (sohuResponse != null) {
+				if (sohuResponse.isStatus()) {
+					SohuCustomerListResponse sohuCustomerListResponse = JSONObject.parseObject(sohuResponse.getContent().toString(), SohuCustomerListResponse.class);
 					List<SohuCustomerListDetail> sohuCustomerListDetails = sohuCustomerListResponse.getItems();
 					handleResults(item, sohuCustomerListDetails);
 				}
@@ -89,7 +89,7 @@ public class SohuNewsCustomerListApiTask {
 		List<AdvertiserAuditResultModel> auditResults = new ArrayList<AdvertiserAuditResultModel>();
 		String customerKeyNet = sohuCustomerListDetails.get(0).getCustomer_key();
 		SohuCustomerListDetail sohuCustomerDetail = sohuCustomerListDetails.get(0);
-		// 获取搜狐新闻的审核状态
+		// 获取搜狐TV的审核状态
 		Integer statusNet = sohuCustomerDetail.getStatus();
 		// 根据广告key判断
 		if (unauditAdvertiser.getAdvertiserKey().equals(customerKeyNet)) {

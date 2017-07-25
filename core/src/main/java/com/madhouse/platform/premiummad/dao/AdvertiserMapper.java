@@ -82,9 +82,10 @@ public interface AdvertiserMapper {
 	 * 
 	 * @param advertiserKeys
 	 * @param dspId
+	 * @param mediaId
 	 * @return
 	 */
-	List<Advertiser> selectByAdvertiserKeysAndDspId(@Param("advertiserKeys") String[] advertiserKeys, @Param("dspId") String dspId);
+	List<Advertiser> selectByAdvertiserKeysAndDspId(@Param("advertiserKeys") String[] advertiserKeys, @Param("dspId") String dspId, @Param("mediaId") Integer mediaId);
 
 	/**
 	 * 根据主键ID获取广告主

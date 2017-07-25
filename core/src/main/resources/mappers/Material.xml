@@ -333,6 +333,9 @@
 	      <if test="item.reason != null" >
 	        reason = #{item.reason,jdbcType=VARCHAR},
 	      </if>
+	      <if test="mediaMaterialKey != null" >
+	        media_material_key = #{item.mediaMaterialKey,jdbcType=VARCHAR},
+	      </if>
 	      <if test="item.createdTime != null" >
 	        created_time = #{item.createdTime,jdbcType=TIMESTAMP},
 	      </if>
@@ -352,7 +355,7 @@
            open="(" close=")" separator=",">
            #{item,jdbcType=INTEGER}
        </foreach>
-       group by media_id
+       order by media_id
   </select>
   <select id="selectByIds" resultMap="BaseResultMap" parameterType="java.util.List">
     select 

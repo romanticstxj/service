@@ -24,35 +24,35 @@ import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
-public class SohuNewsStatusApiTask {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(SohuNewsStatusApiTask.class);
+public class SohutvStatusApiTask {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SohutvStatusApiTask.class);
 
 	@Value("${sohu.material.list}")
 	private String materialListUrl;
-	
+
+	@Value("#{'${sohu.material.pageList}'.split(',')}")
+	private List<String> pageList;
+
 	@Autowired
-	private SohuNewsAuth sohuAuth;
-	
+	private SohuAuth sohuAuth;
+
 	@Autowired
 	private MaterialMapper materialDao;
-	
+
 	@Autowired
 	private IMaterialService materialService;
-	
-	/**
-	 * 获取素材审核结果
-	 */
+
 	public void getStatusDetail() {
-		LOGGER.info("++++++++++Sohu News get material list begin+++++++++++");
+		LOGGER.info("++++++++++Sohu Tv get material list begin+++++++++++");
 
 		// 我方系统未审核的素材
-		List<Material> unAuditMaterials = materialDao.selectMediaMaterials(MediaMapping.SOHUNEWS.getValue(), MaterialStatusCode.MSC10003.getValue());
+		List<Material> unAuditMaterials = materialDao.selectMediaMaterials(MediaMapping.SOHUTV.getValue(), MaterialStatusCode.MSC10003.getValue());
 		if (unAuditMaterials == null || unAuditMaterials.isEmpty()) {
-			LOGGER.info("++++++++++Sohu News no materials need to audit+++++++++++");
+			LOGGER.info("++++++++++Sohu Tv no materials need to audit+++++++++++");
 			return;
 		}
-		
+
 		for (Material item : unAuditMaterials) {
 			Map<String, Object> paramMap = new HashMap<>();
 			paramMap.put("customer_key", item.getAdvertiserKey());
@@ -62,12 +62,12 @@ public class SohuNewsStatusApiTask {
 			Map<String, Object> objectMap = HttpUtils.get(url);
 
 			if (objectMap.get(HttpUtils.RESPONSE_BODY_KEY) == null) {
-				LOGGER.info("SoHuNewsMaterialStatus-responseJson info： " + objectMap.get(HttpUtils.RESPONSE_BODY_KEY) + "is NULL");
+				LOGGER.info("SoHuTvMaterialStatus-responseJson info： " + objectMap.get(HttpUtils.RESPONSE_BODY_KEY) + "is NULL");
 				return;
 			}
 
 			String getResult = objectMap.get(HttpUtils.RESPONSE_BODY_KEY).toString();
-			LOGGER.info("SoHuNewsMaterialStatus-responseJson info： " + getResult);
+			LOGGER.info("SoHuTvMaterialStatus-responseJson info： " + getResult);
 
 			if (!StringUtils.isEmpty(getResult)) {
 				SohuResponse sohuResponse = JSON.parseObject(getResult, SohuResponse.class);
@@ -83,7 +83,7 @@ public class SohuNewsStatusApiTask {
 			}
 		}
 	}
-	
+
 	/**
 	 * 处理查询结果
 	 * 
@@ -96,7 +96,7 @@ public class SohuNewsStatusApiTask {
 			return;
 		}
 
-		// 返回结果处理     
+		// 返回结果处理
 		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 		SohuStatusDetailResponse statusDetail = list.get(0);
 		if (statusDetail.getFile_source().equals(auditMaterial.getMediaMaterialKey())) {
@@ -104,7 +104,7 @@ public class SohuNewsStatusApiTask {
 			auditItem.setId(auditMaterial.getId().toString());
 			auditItem.setMediaId(auditMaterial.getMediaId().toString());
 			auditItem.setMediaMaterialKey(auditMaterial.getMediaMaterialKey());
-			
+
 			// 根据返回的审核结果设置内容
 			int statusNet = statusDetail.getStatus();
 			if (statusNet == 1) {// 审核通过
@@ -115,7 +115,7 @@ public class SohuNewsStatusApiTask {
 				auditItem.setErrorMessage(statusDetail.getAudit_info());
 				auditResults.add(auditItem);
 			} else if (statusNet == 0) {// 未审核
-				LOGGER.info("SoHuNewsMaterialStatus :" + statusDetail.getFile_source() + "Not audit");
+				LOGGER.info("SoHuTvMaterialStatus :" + statusDetail.getFile_source() + "Not audit");
 			}
 		} else {
 			LOGGER.info("返回结果与请求不匹配");

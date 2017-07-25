@@ -183,7 +183,7 @@
 	        reason = #{item.reason,jdbcType=VARCHAR},
 	      </if>
 	      <if test="mediaAdvertiserKey != null" >
-	        media_advertiser_key = #{mediaAdvertiserKey,jdbcType=VARCHAR},
+	        media_advertiser_key = #{item.mediaAdvertiserKey,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.createdTime != null" >
 	        created_time = #{item.createdTime,jdbcType=TIMESTAMP},
@@ -199,12 +199,16 @@
     select 
     <include refid="Base_Column_List" />
     from mad_sys_advertiser
-    where dsp_id = #{dspId,jdbcType=INTEGER} and advertiser_key in
+    where dsp_id = #{dspId,jdbcType=INTEGER} 
+      <if test="mediaId != null" >
+	      and media_id = #{mediaId,jdbcType=INTEGER}
+	  </if>
+        and advertiser_key in
       <foreach collection="advertiserKeys" item="item" index="index"
            open="(" close=")" separator=",">
            #{item,jdbcType=INTEGER}
        </foreach>
-       group by media_id
+       order by media_id
   </select>
   <select id="selectByIds" resultMap="BaseResultMap" parameterType="java.util.List">
     select 

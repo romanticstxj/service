@@ -63,7 +63,6 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		}
 
 		// 已驳回或已通过的记录更新状态
-		List<Advertiser> updatedAdvertisers = new ArrayList<Advertiser>();
 		for (AdvertiserAuditResultModel item : auditResults) {
 			// 审核中的广告主不处理
 			if (item.getStatus() == null || AdvertiserStatusCode.ASC10003.getValue() == item.getStatus().intValue()) {
@@ -76,14 +75,14 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 			updateItem.setUpdatedTime(new Date());
 			updateItem.setReason(item.getErrorMessage());
 			updateItem.setId(Integer.valueOf(item.getId()));
-
-			updatedAdvertisers.add(updateItem);
+			
+			int effortRows = advertiserDao.updateByPrimaryKeySelective(updateItem);
+			if (effortRows != 1) {
+				LOGGER.info("获取媒体状态后，广告主状态更新失败[advertiserId=" + updateItem.getId() + ",status=" + updateItem.getStatus() + "]");
+			}
 		}
 
-		int effortRows = advertiserDao.updateByBath(updatedAdvertisers);
-		if (effortRows != updatedAdvertisers.size()) {
-			LOGGER.info("广告主部分更新失败");
-		}
+		
 	}
 
 	/**
@@ -109,7 +108,6 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		}
 
 		// 设置状态为审核中
-		List<Advertiser> updatedAdvertisers = new ArrayList<Advertiser>();
 		for (Advertiser item : advertisers) {
 			Advertiser updateItem = new Advertiser();
 
@@ -120,12 +118,10 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 			updateItem.setMediaAdvertiserKey(advertiserIdKeys.get(item.getId()));
 			updateItem.setId(item.getId());
 
-			updatedAdvertisers.add(updateItem);
-		}
-
-		int effortRows = advertiserDao.updateByBath(updatedAdvertisers);
-		if (effortRows != updatedAdvertisers.size()) {
-			LOGGER.info("广告主部分更新失败");
+			int effortRows = advertiserDao.updateByPrimaryKeySelective(updateItem);
+			if (effortRows != 1) {
+				LOGGER.info("推送媒体后，广告主关联媒体信息更新失败[advertiserId=" + updateItem.getId() + ",mediaAdvertiserKey=" + updateItem.getMediaAdvertiserKey() + "]");
+			}
 		}
 	}
 
@@ -145,7 +141,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		// 查询广告主的审核结果
 		List<AdvertiserAuditResultModel> results = new ArrayList<AdvertiserAuditResultModel>();
 		if (idStrs != null && idStrs.length > 1) {
-			List<Advertiser> selectAdvertisers = advertiserDao.selectByAdvertiserKeysAndDspId(idStrs, dspId);
+			List<Advertiser> selectAdvertisers = advertiserDao.selectByAdvertiserKeysAndDspId(idStrs, dspId, null);
 			AdvertiserRule.convert(selectAdvertisers, results);
 		}
 

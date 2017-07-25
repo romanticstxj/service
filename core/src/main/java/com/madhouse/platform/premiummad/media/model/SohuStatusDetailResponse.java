@@ -1,6 +1,6 @@
 package com.madhouse.platform.premiummad.media.model;
 
-public class SohutvStatusDetailResponse {
+public class SohuStatusDetailResponse {
 	private String customer_key;// 客户唯一key
 	private String material_name;// 素材名称
 	private String file_source;// 素材源地址

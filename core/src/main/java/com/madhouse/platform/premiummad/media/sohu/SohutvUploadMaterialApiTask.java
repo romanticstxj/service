@@ -11,38 +11,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
-import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.model.SohuSlave;
-import com.madhouse.platform.premiummad.media.model.SohuUploadMaterialRequest;
 import com.madhouse.platform.premiummad.media.model.SohuResponse;
+import com.madhouse.platform.premiummad.media.model.SohuUploadMaterialRequest;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.DateUtils;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
-public class SohuNewsUploadMaterialApiTask {
+public class SohutvUploadMaterialApiTask {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SohuNewsUploadMaterialApiTask.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SohutvUploadMaterialApiTask.class);
 
 	@Value("${sohu.material.create}")
     private String materialCreateUrl;
+
+	 @Value("#{'${sohu.datasource}'.split(',')}")
+	private List<String> sohuDatasource;
 
 	@Value("${imp.url}")
 	private String impUrl;
 
 	@Value("${clk.url}")
 	private String clkUrl;
-	
+
 	@Autowired
-	private SohuNewsAuth sohuAuth;
-	
+	private SohuAuth sohuAuth;
+
 	@Autowired
 	private MaterialMapper materialDao;
 	
@@ -59,7 +60,7 @@ public class SohuNewsUploadMaterialApiTask {
 		LOGGER.info("++++++++++Sohu News upload material begin+++++++++++");
 
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.SOHUNEWS.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.SOHUTV.getValue(), MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
 			LOGGER.info("搜狐没有未上传的广告主");
 			LOGGER.info("++++++++++Sohu News upload material end+++++++++++");
@@ -89,8 +90,6 @@ public class SohuNewsUploadMaterialApiTask {
 						} else {
 							LOGGER.error("素材[materialId=" + material.getId() + "]上传失败");
 						}
-					} else {
-						LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + sohutvResponse.getMessage());
 					}
 				}
 			}
@@ -172,7 +171,7 @@ public class SohuNewsUploadMaterialApiTask {
 		uploadMaterialRequest.setAdvertising_type("101000"); // 品牌，写死
 
 		// 指定素材提交到哪个媒体审核。1：搜狐门户；2：搜狐视频。
-		uploadMaterialRequest.setSubmit_to("1"); // 搜狐新闻
+		uploadMaterialRequest.setSubmit_to("2");// 搜狐视频
 
 		// 指定素材将用于何种投放方式。1：RTB；2：PDB；3：PMP；4：Preferred Deal
 		uploadMaterialRequest.setDelivery_type(getMediaDeliveryType(material.getDeliveryType()));
@@ -183,100 +182,6 @@ public class SohuNewsUploadMaterialApiTask {
 
 		// 素材有效期
 		uploadMaterialRequest.setExpire(getExpire(material.getEndDate()));
-
-		// 素材类型，应该与 file_source 的指向相符，可能取值包括
-		// 1：图片；2：Flash；3：视频；4：iframe；5：script；6：文字；7：特型广告
-		uploadMaterialRequest.setMaterial_type(7);
-
-		// 特型广告模板，取值参见特型广告素材规范表。若填写该参数，表明当前上传的素 main_attr 和 slave 参数；若不填写该参数，
-		// 则表明当前上传的素材将用于普通广告位，此时也不用提供 main_attr 和 slave 参数。
-		//(搜狐新闻中)开屏广告位:一个物料如果绑定了一个开屏，一个非开屏，那么就传一次开屏的广告位的请求
-		if (Layout.LO10005.getValue() == material.getLayout().intValue() || Layout.LO20007.getValue() == material.getLayout().intValue()) {
-			uploadMaterialRequest.setTemplate("apploading");
-			uploadMaterialRequest.setMain_attr("loading_pic");
-
-			List<SohuSlave> slave = new ArrayList<SohuSlave>();
-			if (!StringUtils.isEmpty(material.getTitle())) {
-				SohuSlave title = new SohuSlave();
-				title.setSource(material.getTitle());
-				title.setAttr("ad_txt");
-				slave.add(title);
-			} else {
-				SohuSlave title = new SohuSlave();
-				title.setSource(" ");
-				title.setAttr("ad_txt");
-				slave.add(title);
-			}
-			if (!StringUtils.isEmpty(material.getDescription())) {
-				SohuSlave text = new SohuSlave();
-				text.setSource(material.getDescription());
-				text.setAttr("share_txt");
-				slave.add(text);
-			} else {
-				SohuSlave text = new SohuSlave();
-				text.setSource(" ");
-				text.setAttr("share_txt");
-				slave.add(text);
-			}
-			uploadMaterialRequest.setSlave(slave);
-
-			LOGGER.info("material-souhuNews:materialId:" + material.getId() + "开屏");
-		} else {
-			// 非开屏：图文信息流(物料格式是图片)和视频信息流(物料格式是.mp4且有封面)
-			List<SohuSlave> slave = new ArrayList<SohuSlave>();
-			// 视频信息流
-			if (material.getAdMaterials().contains(".mp4") && !material.getCover().equals("") && !material.getCover().equals(null)) {
-				// 1:file_source变为封面图片地址
-				// 物料地址：slave:
-				// [{""source"":""示例广告标题"",""attr"":""title""},{""source"":""http://www.example.com/ad/video.mp4"",""attr"":""video""}]"
-				// 图文信息流
-				if (!StringUtils.isEmpty(material.getDescription())) {
-					SohuSlave text = new SohuSlave();
-					text.setSource(url);// 物料.mp4
-					text.setAttr("video");
-					slave.add(text);
-				} else {
-					SohuSlave text = new SohuSlave();
-					text.setSource(" ");
-					text.setAttr("video");
-					slave.add(text);
-				}
-				String coverPath = StringUtils.isEmpty(material.getCover()) ? "" : material.getCover();
-				uploadMaterialRequest.setFile_source(coverPath.startsWith("http") ? coverPath : "http" + coverPath);// 重新赋值：图片封面地址
-				uploadMaterialRequest.setTemplate("info_video");
-				LOGGER.info("material-souhuNews:materialId:" + material.getId() + "非开屏:视频信息流");
-			} else {
-				// 图文信息流
-				if (!StringUtils.isEmpty(material.getDescription())) {
-					SohuSlave text = new SohuSlave();
-					text.setSource(material.getDescription());
-					text.setAttr("summary");
-					slave.add(text);
-				} else {
-					SohuSlave text = new SohuSlave();
-					text.setSource(" ");
-					text.setAttr("summary");
-					slave.add(text);
-				}
-				uploadMaterialRequest.setTemplate("info_pictxt");
-				LOGGER.info("material-souhuNews:materialId:" + material.getId() + "非开屏:图文信息流");
-			}
-			
-			// 图片信息流和视频信息流 公共参数
-			if (!StringUtils.isEmpty(material.getTitle())) {
-				SohuSlave title = new SohuSlave();
-				title.setSource(material.getTitle());
-				title.setAttr("title");
-				slave.add(title);
-			} else {
-				SohuSlave title = new SohuSlave();
-				title.setSource(" ");
-				title.setAttr("title");
-				slave.add(title);
-			}
-			uploadMaterialRequest.setSlave(slave);
-			uploadMaterialRequest.setMain_attr("picture");
-		}
 
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("customer_key", uploadMaterialRequest.getCustomer_key());

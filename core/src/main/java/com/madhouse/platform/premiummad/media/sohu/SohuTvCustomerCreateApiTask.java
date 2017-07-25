@@ -3,13 +3,11 @@ package com.madhouse.platform.premiummad.media.sohu;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
@@ -20,15 +18,15 @@ import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 
 @Component
-public class SohuNewsCustomerCreateApiTask {
+public class SohuTvCustomerCreateApiTask {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(SohuNewsCustomerCreateApiTask.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(SohuTvCustomerCreateApiTask.class);
 
 	@Value("${sohu.customer.create}")
 	private String customerCreateUrl;
 
 	@Autowired
-	private SohuNewsAuth sohuAuth;
+	private SohuAuth sohuAuth;
 
 	@Autowired
 	private AdvertiserMapper advertiserDao;
@@ -36,36 +34,33 @@ public class SohuNewsCustomerCreateApiTask {
 	@Autowired
 	private IAdvertiserService advertiserService;
 
-	/**
-	 * 上传搜狐新闻广告主
-	 */
 	public void create() {
-		LOGGER.info("++++++++++Sohu News upload advertiser begin+++++++++++");
+		LOGGER.info("++++++++++Sohu TV upload advertiser begin+++++++++++");
 
 		// 查询所有待审核且媒体的广告主的审核状态是媒体审核的
-		List<Advertiser> unSubmitAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.SOHUNEWS.getValue(), AdvertiserStatusCode.ASC10002.getValue());
+		List<Advertiser> unSubmitAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.SOHUTV.getValue(), AdvertiserStatusCode.ASC10002.getValue());
 		if (unSubmitAdvertisers == null || unSubmitAdvertisers.isEmpty()) {
-			LOGGER.info("搜狐新闻没有未上传的广告主");
-			LOGGER.info("++++++++++Sohu News upload advertiser end+++++++++++");
+			LOGGER.info("搜狐TV没有未上传的广告主");
+			LOGGER.info("++++++++++Sohu TV upload advertiser end+++++++++++");
 			return;
 		}
 
 		// 上传到媒体
-		LOGGER.info("SohuNewsCustomerCreateApiTask-sohuNews", unSubmitAdvertisers.size());
+		LOGGER.info("SohuTvCustomerCreateApiTask-sohuNews", unSubmitAdvertisers.size());
 		Map<Integer, String> advertiserIdKeys = new HashMap<Integer, String>();
 		for (Advertiser advertiser : unSubmitAdvertisers) {
 			Map<String, Object> paramMap = buildCreatePara(advertiser);
 			String request = sohuAuth.setHttpMethod("POST").setApiUrl(customerCreateUrl).setParamMap(paramMap).buildRequest();
-			LOGGER.info("SohuNewsCustomerCreateApiTask.reqquest: {}", request);
+			LOGGER.info("SohuTvCustomerCreateApiTask.reqquest: {}", request);
 			String result = HttpUtils.post(customerCreateUrl, request);
-			LOGGER.info("SohuNewsCustomerCreateApiTask.udpate http post:{}. result json: {}", customerCreateUrl, result);
+			LOGGER.info("SohuTvCustomerCreateApiTask.udpate http post:{}. result json: {}", customerCreateUrl, result);
 			SohuResponse sohutvResponse = JSONObject.parseObject(result, SohuResponse.class);
 			if (sohutvResponse != null) {
 				if (sohutvResponse.isStatus()) {
 					String customKey = sohutvResponse.getContent().toString();
 					advertiserIdKeys.put(advertiser.getId(), customKey);
 				} else {
-					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败-" + sohutvResponse.getMessage());
+					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败");
 				}
 			}
 		}
@@ -75,7 +70,7 @@ public class SohuNewsCustomerCreateApiTask {
 			advertiserService.updateStatusAfterUpload(advertiserIdKeys);
 		}
 
-		LOGGER.info("++++++++++Sohu News upload advertiser end+++++++++++");
+		LOGGER.info("++++++++++Sohu TV upload advertiser end+++++++++++");
 	}
 
 	/**

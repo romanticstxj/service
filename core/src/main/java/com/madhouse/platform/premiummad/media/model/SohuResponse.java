@@ -1,6 +1,6 @@
 package com.madhouse.platform.premiummad.media.model;
 
-public class SohutvResponse {
+public class SohuResponse {
 
 	private boolean status;
 	private int code;
