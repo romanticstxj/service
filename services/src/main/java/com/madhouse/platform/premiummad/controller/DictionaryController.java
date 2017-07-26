@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.DictDto;
+import com.madhouse.platform.premiummad.dto.LocationDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Dict;
+import com.madhouse.platform.premiummad.entity.Location;
 import com.madhouse.platform.premiummad.service.IDictService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
@@ -39,6 +41,9 @@ public class DictionaryController {
 			case SystemConstant.DICT_ADSPACE_LAYOUT: //广告位形式
 				result = listAdspaceLayout(terminalType, adType);
 				break;
+			case SystemConstant.DICT_LOCATION: //地域
+				result = listAdspaceLayout(terminalType, adType);
+				break;	
 			default: 
 				result = ResponseUtils.response(StatusCode.SC20001, null);
 		}
@@ -46,6 +51,19 @@ public class DictionaryController {
 		return result;
     }
 	
+	@RequestMapping(value="/list/location", method = RequestMethod.GET)
+    public ResponseDto<LocationDto> list() throws Exception {
+		ResponseDto<LocationDto> result = listLocations();
+		return result;
+    }
+	
+	private ResponseDto<LocationDto> listLocations() {
+		List<Location> dicts = dictService.queryAllLocations();
+		List<LocationDto> dictDtos = new ArrayList<LocationDto>();
+		BeanUtils.copyList(dicts,dictDtos,LocationDto.class);
+		return ResponseUtils.response(StatusCode.SC20000, dictDtos);
+	}
+
 	private ResponseDto<DictDto> listMediaCategories(){
 		
 		List<Dict> dicts = dictService.queryAllMediaCategories();

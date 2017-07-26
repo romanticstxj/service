@@ -74,10 +74,19 @@ public class PolicyServiceImpl implements IPolicyService {
             	throw new BusinessException(StatusCode.SC20401);
         }
         
+        Integer policyId = policy.getId();
+        List<PolicyAdspace> policyAdspaces = policy.getPolicyAdspaces();
+        if(policyAdspaces != null){
+        	for(int i=0; i< policyAdspaces.size(); i++){
+        		//设置policyId到策略广告位关联表
+        		policyAdspaces.get(i).setPolicyId(policyId);
+        	}
+        }
+        
 		policyDao.update(policy);
 		
-		policyAdspaceDao.deleteByPolicyId(policy.getId());
-		return policyAdspaceDao.batchInsert(policy.getPolicyAdspaces());
+		policyAdspaceDao.deleteByPolicyId(policyId);
+		return policyAdspaceDao.batchInsert(policyAdspaces);
 	}
 
 	@Override

@@ -41,6 +41,7 @@ public interface SystemConstant {
     
     int DICT_MEDIA_CATEGORY = 1;
     int DICT_ADSPACE_LAYOUT = 2;
+    int DICT_LOCATION = 3;
     
     // ignore Properties
     String ADSPACE_BID_FLOOR = "bidFloor";
