@@ -41,58 +41,58 @@ public class AdspaceControllerTest {
 	@Test
 	public void addMapping(){
 		AdspaceMappingDto amd = new AdspaceMappingDto();
-		amd.setAdspaceId(5);
-		amd.setMediaAdspaceKey("555");
+		amd.setAdspaceId(200004);
+		amd.setMediaAdspaceKey("11111");
 		List<DspMappingDto> dsps = new ArrayList<DspMappingDto>();
 		DspMappingDto dsp = new DspMappingDto();
-		dsp.setDspAdspaceKey("dspAdspaceKey1");
-		dsp.setDspMediaId(300001);
-		dsp.setDspId(500001);
+		dsp.setDspAdspaceKey("1234");
+		dsp.setDspMediaId("sdf");
+		dsp.setDspId(1);
 		dsps.add(dsp);
-		dsp = new DspMappingDto();
-//		dsp.setDspAdspaceKey("dspAdspaceKey2");
-		dsp.setDspMediaId(300002);
-		dsp.setDspId(500002);
-		dsps.add(dsp);
-		dsp = new DspMappingDto();
-		dsp.setDspAdspaceKey("dspAdspaceKey3");
-		dsp.setDspMediaId(300003);
-		dsp.setDspId(500003);
-		dsps.add(dsp);
+//		dsp = new DspMappingDto();
+////		dsp.setDspAdspaceKey("dspAdspaceKey2");
+//		dsp.setDspMediaId(300002);
+//		dsp.setDspId(500002);
+//		dsps.add(dsp);
+//		dsp = new DspMappingDto();
+//		dsp.setDspAdspaceKey("dspAdspaceKey3");
+//		dsp.setDspMediaId(300003);
+//		dsp.setDspId(500003);
+//		dsps.add(dsp);
 		amd.setDspMappings(dsps);
-		String link = "http://localhost:8080/services/adspace/mapping/create";
+		String link = "http://172.16.25.48:8080/services/adspace/mapping/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(amd));
 	}
 	
 	@Test
 	public void mappingDetail(){
-		String link = "http://localhost:8080/services/adspace/mapping/detail?id=3";
+		String link = "http://localhost:8080/services/adspace/mapping/detail?id=200005";
 		HttpUtilTest.httpGet(link);
 	}
 	
 	@Test
-	public void updateMapping(){
+	public void createandupdateMapping(){
 		AdspaceMappingDto amd = new AdspaceMappingDto();
 		amd.setAdspaceId(3);
-		amd.setMediaAdspaceKey("555");
+		amd.setMediaAdspaceKey("4444");
 		List<DspMappingDto> dsps = new ArrayList<DspMappingDto>();
 		DspMappingDto dsp = new DspMappingDto();
 		dsp.setDspAdspaceKey("dspAdspaceKey1");
-		dsp.setDspMediaId(300001);
+		dsp.setDspMediaId("d");
 		dsp.setDspId(500001);
 		dsps.add(dsp);
 		dsp = new DspMappingDto();
 //		dsp.setDspAdspaceKey("dspAdspaceKey2");
-		dsp.setDspMediaId(300002);
+		dsp.setDspMediaId("f");
 		dsp.setDspId(500002);
 		dsps.add(dsp);
 		dsp = new DspMappingDto();
 		dsp.setDspAdspaceKey("dspAdspaceKey3");
-		dsp.setDspMediaId(300003);
-		dsp.setDspId(500003);
+		dsp.setDspMediaId("a");
+		dsp.setDspId(500004);
 		dsps.add(dsp);
 		amd.setDspMappings(dsps);
-		String link = "http://localhost:8080/services/adspace/mapping/update";
+		String link = "http://localhost:8080/services/adspace/mapping/relate";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(amd));
 	}
 	

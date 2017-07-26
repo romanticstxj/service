@@ -413,6 +413,33 @@
             }
         }
     },
+    "/adspace/mapping/relate": {
+        "post": {
+            "_summary": "关联我方广告位到媒体方广告位和dsp方广告位的映射",
+            "parameters": {
+                "body": {
+                	"adspaceId": "<*||integer||comment:我方广告位ID>",
+                    "mediaAdspaceKey": "<string||comment:媒体方广告位Key>",
+                    "dspMappingInfo": [
+                    	{
+		                    "dspId": "<integer||comment:DSP在我们系统的ID>",
+		                	"dspMediaId": "<integer||comment:DSP方的媒体ID>",
+		                    "dspAdspaceKey": "<integer||comment:DSP方的广告位Key>"
+                    	}
+                    ]
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
     "/dsp/list": {
         "get": {
             "_summary": "需求方平台列表",

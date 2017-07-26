@@ -69,4 +69,6 @@ public interface IAdspaceService {
 	 */
 	StatusCode updateAdspaceMapping(AdspaceMapping adspaceMapping);
 
+	int createAndUpdateAdspaceMapping(AdspaceMapping adspaceMapping);
+
 }

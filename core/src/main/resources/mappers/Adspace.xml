@@ -47,8 +47,9 @@
         <result property="adspaceId" column="adspaceId1" jdbcType="INTEGER" />
         <result property="mediaAdspaceKey" column="media_adspace_key" jdbcType="VARCHAR" />
         <collection property="dspMappings" ofType="com.madhouse.platform.premiummad.entity.DspMapping" column="adspaceId2">  
+            <result property="adspaceId" column="adspaceId2" jdbcType="INTEGER" />
             <result property="dspId" column="dsp_id" jdbcType="INTEGER" />
-            <result property="dspMediaId" column="dsp_media_id" jdbcType="INTEGER" />
+            <result property="dspMediaId" column="dsp_media_id" jdbcType="VARCHAR" />
             <result property="dspAdspaceKey" column="dsp_adspace_key" jdbcType="VARCHAR" />
         </collection>  
     </resultMap>

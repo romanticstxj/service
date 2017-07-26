@@ -210,6 +210,7 @@ public class AdspaceController {
 		AdspaceMapping adspaceMapping = adspaceService.queryAdspaceMappingById(id);
 		AdspaceMappingDto adspaceMappingDto = new AdspaceMappingDto();
 		BeanUtils.copyProperties(adspaceMapping, adspaceMappingDto);
+		adspaceMappingDto.setAdspaceId(id);
 		List<AdspaceMappingDto> result = new ArrayList<AdspaceMappingDto>();
 		result.add(adspaceMappingDto);
 		return ResponseUtils.response(StatusCode.SC20000,result);
@@ -249,6 +250,41 @@ public class AdspaceController {
   		//更新映射关系
   		StatusCode statusCode = adspaceService.updateAdspaceMapping(adspaceMapping);
 		return ResponseUtils.response(statusCode,null);
+	}
+	
+	/**
+	 * 添加我方广告位和媒体、dsp方广告位的映射
+	 * @param adspaceMappingDto
+	 * @return
+	 */
+	@RequestMapping("/mapping/relate")
+	public ResponseDto<AdspaceDto> relateAdspaceMapping(@RequestBody AdspaceMappingDto adspaceMappingDto) {
+		//对dto表单做check
+		String fieldName = BeanUtils.hasEmptyField(adspaceMappingDto);
+        if (fieldName != null)
+            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
+        String mediaAdspaceKey = adspaceMappingDto.getMediaAdspaceKey();
+        List<DspMappingDto> dspMappingDtos = adspaceMappingDto.getDspMappings();
+        //媒体映射信息和dsp映射信息不能全为空
+        if(StringUtils.isEmpty(mediaAdspaceKey) && ObjectUtils.isEmpty(dspMappingDtos)){
+        	return ResponseUtils.response(StatusCode.SC20204, null);
+        }
+        
+        AdspaceMapping adspaceMapping = new AdspaceMapping();
+        BeanUtils.copyProperties(adspaceMappingDto, adspaceMapping, "dspMappings");
+        List<DspMapping> dspMappings = new ArrayList<DspMapping>();
+        BeanUtils.copyList(adspaceMappingDto.getDspMappings(), dspMappings, DspMapping.class);
+        adspaceMapping.setDspMappings(dspMappings);
+        BeanUtils.setCreateParam(adspaceMapping);
+        //分解出广告位和dsp的关联信息，插入数据库
+  		Integer adspaceId = adspaceMappingDto.getAdspaceId(); //我方广告位id
+  		for(int i=0; i<dspMappings.size(); i++){ 
+  			dspMappings.get(i).setAdspaceId(adspaceId);
+  			BeanUtils.setCreateParam(dspMappings.get(i));
+  		}
+  		
+  		adspaceService.createAndUpdateAdspaceMapping(adspaceMapping);
+		return ResponseUtils.response(StatusCode.SC20000,null);
 	}
 	
 }

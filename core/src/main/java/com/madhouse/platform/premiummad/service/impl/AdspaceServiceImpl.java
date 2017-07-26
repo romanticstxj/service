@@ -179,6 +179,9 @@ public class AdspaceServiceImpl implements IAdspaceService {
 			return StatusCode.SC20205;
 		}
 		
+		adspaceDao.removeAdspaceMediaMapping(adspaceMapping.getAdspaceId());
+		adspaceDao.removeAdspaceDspMapping(adspaceMapping.getAdspaceId());
+		
 		String mediaAdspaceKey = adspaceMapping.getMediaAdspaceKey();
 		if(!StringUtils.isEmpty(mediaAdspaceKey)){ //媒体映射信息存在
 			AdspaceMapping queryParam = new AdspaceMapping();
@@ -197,12 +200,42 @@ public class AdspaceServiceImpl implements IAdspaceService {
 			}
 		}
 		
-		adspaceDao.removeAdspaceMediaMapping(adspaceMapping.getAdspaceId());
-		adspaceDao.removeAdspaceDspMapping(adspaceMapping.getAdspaceId());
+		
 		adspaceDao.insertAdspaceMediaMapping(adspaceMapping);
 		adspaceDao.insertAdspaceDspMapping(dspMappings);
 		
 		return StatusCode.SC20000;
+	}
+	
+	@Override
+	public int createAndUpdateAdspaceMapping(AdspaceMapping adspaceMapping) {
+		AdspaceMapping queryObject = queryAdspaceMappingById(adspaceMapping.getAdspaceId());
+		if(queryObject != null){ //数据库里有映射信息，先删除
+			adspaceDao.removeAdspaceMediaMapping(adspaceMapping.getAdspaceId());
+			adspaceDao.removeAdspaceDspMapping(adspaceMapping.getAdspaceId());
+		}
+		
+		//插入更新数据前做check
+		String mediaAdspaceKey = adspaceMapping.getMediaAdspaceKey();
+		if(!StringUtils.isEmpty(mediaAdspaceKey)){ //媒体映射信息存在
+			AdspaceMapping queryParam = new AdspaceMapping();
+			queryParam.setMediaAdspaceKey(mediaAdspaceKey);
+			int queryResult = queryAdspaceMediaMapping(queryParam);
+			if(queryResult > 0){ //媒体方广告位Key不可重复
+				throw new BusinessException(StatusCode.SC20201);
+			}
+		}
+		
+		List<DspMapping> dspMappings = adspaceMapping.getDspMappings();
+		if(dspMappings != null && dspMappings.size() > 0){
+			boolean result = isDspMappingDuplicated(dspMappings);
+			if(!result){ //DSP ID不可重复
+				throw new BusinessException(StatusCode.SC20202);
+			}
+		}
+		
+		adspaceDao.insertAdspaceMediaMapping(adspaceMapping);
+		return adspaceDao.insertAdspaceDspMapping(dspMappings);
 	}
 
 	
