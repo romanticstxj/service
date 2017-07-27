@@ -3,7 +3,7 @@ package com.madhouse.platform.premiummad.media.model;
 public class MojiMaterialUploadDataResponse {
 	private String id;
 	private String img_url;
-	
+
 	public String getImg_url() {
 		return img_url;
 	}
@@ -20,5 +20,4 @@ public class MojiMaterialUploadDataResponse {
 		this.id = id;
 	}
 
-	
 }

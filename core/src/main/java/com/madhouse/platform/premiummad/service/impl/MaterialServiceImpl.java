@@ -159,8 +159,6 @@ public class MaterialServiceImpl implements IMaterialService {
 		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
 		MediaRule.checkMedias(distinctMediaIds, uploadedMedias);
 
-		// 广告位必须的媒体需要校验 TODO
-		
 		// 判断所有需要广告主需要审核的媒体是否都已审核通过
 		String errorMsg = advertiserService.validateAdKeyAndMedias(uploadedMedias, entity.getDspId(), entity.getAdvertiserId());
 		if (!StringUtils.isBlank(errorMsg)) {
@@ -173,7 +171,7 @@ public class MaterialServiceImpl implements IMaterialService {
 		MaterialRule.classifyMaterials(materials, entity, classfiedMaps);
 
 		// 存在待审核、审核中，审核通过的不允许推送，提示信息
-		errorMsg = MaterialRule.validateMaterials(classfiedMaps, entity.getId());
+		errorMsg = MaterialRule.validateMaterials(classfiedMaps, entity.getId(), entity.getMediaId());
 		if (errorMsg != null) {
 			throw new BusinessException(StatusCode.SC411, errorMsg);
 		}

@@ -33,9 +33,30 @@ public class DianpingMaterialUploadApiTask {
 
 	@Value("${imp_montior_pm}")
 	private String imp_montior_pm;
+	
+	@Value("${imp_montior_ex}")
+	private String imp_montior_ex;
 
 	@Value("${clk_montior_ex}")
 	private String clk_montior_ex;
+	
+	@Value("${mh_ad_beta_mapping_ios_1}")
+	private String mh_ad_beta_mapping_ios_1;
+
+	@Value("${mh_ad_beta_mapping_android_1}")
+	private String mh_ad_beta_mapping_android_1;
+
+	@Value("${mh_ad_beta_mapping_ios_2}")
+	private String mh_ad_beta_mapping_ios_2;
+
+	@Value("${mh_ad_beta_mapping_android_2}")
+	private String mh_ad_beta_mapping_android_2;
+
+	@Value("${mh_ad_beta_mapping_ios_3}")
+	private String mh_ad_beta_mapping_ios_3;
+
+	@Value("${mh_ad_beta_mapping_android_3}")
+	private String mh_ad_beta_mapping_android_3;
 
 	@Autowired
 	private MaterialMapper materialDao;
@@ -75,10 +96,10 @@ public class DianpingMaterialUploadApiTask {
 					LOGGER.info("DianpingUploadMaterial--SUCCESS");
 					materialIdKeys.put(material.getId(), dianpingGetStatusResponse.getData().getCreativeId());
 				} else {
-					// TODO error Log
+					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + dianpingGetStatusResponse.getRet() + " " + dianpingGetStatusResponse.getMsg());
 				}
 			} else {
-				// TODO error Log
+				LOGGER.error("素材[materialId=" + material.getId() + "]上传失败");
 			}
 		}
 
@@ -99,19 +120,23 @@ public class DianpingMaterialUploadApiTask {
 	private Map<String, String> buildMaterialRequest(Material material) {
 		DianpingUploadCreativeRequest request = new DianpingUploadCreativeRequest();
 		// 创意对应广告位 ID
-		request.setSlotId(0); // TODO
+		request.setSlotId(getMediaAdspaceId(material.getAdspaceId()));
 
 		// 封装creativeInfoRequest对象
 		DianpingCreativeInfoRequest creativeInfoRequest = new DianpingCreativeInfoRequest();
-		List<String> imgList = new ArrayList<String>();
-		List<String> textList = new ArrayList<String>();
-
+		
 		// 物料上传地址
-		String url = ""; // TODO
-		imgList.add(url);
+		List<String> imgList = new ArrayList<String>();
+		if (null != material.getAdMaterials() && !material.getAdMaterials().equals("")) {
+			String[] adMaterials = material.getAdMaterials().split("|");
+			for (int i = 0; i < adMaterials.length; i++) {
+				imgList.add(adMaterials[i]);
+			}
+		}
 		creativeInfoRequest.setImg(imgList);
 
 		// 物料标题
+		List<String> textList = new ArrayList<String>();
 		if (null != material.getTitle() && !material.getTitle().equals("")) {
 			textList.add(material.getTitle());
 		}
@@ -123,8 +148,8 @@ public class DianpingMaterialUploadApiTask {
 
 		// 曝光打点检测地址(数组,JSON 格式)
 		List<String> impressionMonitorList = new ArrayList<String>();
-		String impressionMonitor0 = imp_montior_pm + "{IMP_MACRO0}";
-		String impressionMonitor1 = "";
+		String impressionMonitor0 = imp_montior_pm + "{IMP_MACRO0}";// PremiumMad Url														// URL
+		String impressionMonitor1 = imp_montior_ex + "{IMP_MACRO2}";// exchange
 		impressionMonitorList.add(impressionMonitor0);
 
 		if (null != material.getImpUrls() && !material.getImpUrls().equals("")) {
@@ -164,5 +189,21 @@ public class DianpingMaterialUploadApiTask {
 		paramMap.put("clickMonitor", JSON.toJSONString(request.getClickMonitor()));
 
 		return paramMap;
+	}
+	
+	/**
+	 * 获取
+	 * @param adspaceId
+	 * @return
+	 */
+	private int getMediaAdspaceId(int adspaceId) {
+		if (String.valueOf(adspaceId).equals(mh_ad_beta_mapping_ios_1) || String.valueOf(adspaceId).equals(mh_ad_beta_mapping_android_1)) {// 点评闪惠交易成功页
+			return Integer.valueOf(mh_ad_beta_mapping_ios_1);
+		} else if (String.valueOf(adspaceId).equals(mh_ad_beta_mapping_ios_2) || String.valueOf(adspaceId).equals(mh_ad_beta_mapping_android_2)) {// 点评电影交易成功页
+			return Integer.valueOf(mh_ad_beta_mapping_ios_2);
+		} else if (String.valueOf(adspaceId).equals(mh_ad_beta_mapping_ios_3) || String.valueOf(adspaceId).equals(mh_ad_beta_mapping_android_3)) {// 点评电影票详情页
+			return Integer.valueOf(mh_ad_beta_mapping_ios_3);
+		}
+		return 0;
 	}
 }

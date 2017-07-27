@@ -3,7 +3,7 @@
 <mapper namespace="com.madhouse.platform.premiummad.dao.MaterialMapper" >
   <sql id="materialBaseColumns">
 	${alias}.id, ${alias}.dsp_id, ${alias}.material_key, ${alias}.material_name, ${alias}.advertiser_key, 
-	${alias}.layout, ${alias}.media_id, ${alias}.adspace_ids,${alias}.delivery_type, ${alias}.brand, 
+	${alias}.layout, ${alias}.media_id, ${alias}.adspace_id,${alias}.delivery_type, ${alias}.brand, 
 	${alias}.agency, ${alias}.deal_id, ${alias}.start_date, ${alias}.end_date,  ${alias}.size, ${alias}.icon, 
 	${alias}.title, ${alias}.description, ${alias}.cover, ${alias}.ad_materials, ${alias}.duration, 
 	${alias}.lpg_url, ${alias}.active_type, ${alias}.imp_urls, ${alias}.clk_urls, ${alias}.sec_urls, 
@@ -21,7 +21,7 @@
   <insert id="insertByBatch" parameterType="com.madhouse.platform.premiummad.entity.Material" >
     insert into mad_sys_material (dsp_id, material_key, 
       material_name, advertiser_key, layout, 
-      media_id, adspace_ids, delivery_type, 
+      media_id, adspace_id, delivery_type, 
       brand, agency, deal_id, 
       start_date, end_date, size, 
       icon, title, description, 
@@ -34,7 +34,7 @@
     <foreach collection="list" item="item" index="index" separator=",">
 	    (#{item.dspId,jdbcType=INTEGER}, #{item.materialKey,jdbcType=VARCHAR}, 
 	      #{item.materialName,jdbcType=VARCHAR}, #{item.advertiserKey,jdbcType=VARCHAR}, #{item.layout,jdbcType=SMALLINT}, 
-	      #{item.mediaId,jdbcType=INTEGER}, #{item.adspaceIds,jdbcType=VARCHAR}, #{item.deliveryType,jdbcType=TINYINT}, 
+	      #{item.mediaId,jdbcType=INTEGER}, #{item.adspaceId,jdbcType=VARCHAR}, #{item.deliveryType,jdbcType=TINYINT}, 
 	      #{item.brand,jdbcType=VARCHAR}, #{item.agency,jdbcType=VARCHAR}, #{item.dealId,jdbcType=INTEGER}, 
 	      #{item.startDate,jdbcType=DATE}, #{item.endDate,jdbcType=DATE}, #{item.size,jdbcType=VARCHAR}, 
 	      #{item.icon,jdbcType=VARCHAR}, #{item.title,jdbcType=VARCHAR}, #{item.description,jdbcType=VARCHAR}, 
@@ -70,8 +70,8 @@
       <if test="mediaId != null" >
         media_id,
       </if>
-      <if test="adspaceIds != null" >
-        adspace_ids,
+      <if test="adspaceId != null" >
+        adspace_id,
       </if>
       <if test="deliveryType != null" >
         delivery_type,
@@ -168,8 +168,8 @@
       <if test="mediaId != null" >
         #{mediaId,jdbcType=INTEGER},
       </if>
-      <if test="adspaceIds != null" >
-        #{adspaceIds,jdbcType=VARCHAR},
+      <if test="adspaceId != null" >
+        #{adspaceId,jdbcType=VARCHAR},
       </if>
       <if test="deliveryType != null" >
         #{deliveryType,jdbcType=TINYINT},
@@ -267,8 +267,8 @@
 	      <if test="mediaId != null" >
 	        media_id = #{mediaId,jdbcType=INTEGER},
 	      </if>
-	      <if test="adspaceIds != null" >
-	        adspace_ids = #{adspaceIds,jdbcType=VARCHAR},
+	      <if test="adspaceId != null" >
+	        adspace_id = #{adspaceId,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.deliveryType != null" >
 	        delivery_type = #{item.deliveryType,jdbcType=TINYINT},
@@ -396,8 +396,8 @@
       <if test="layout != null" >
         layout = #{layout,jdbcType=SMALLINT},
       </if>
-      <if test="adspaceIds != null" >
-        adspace_ids = #{adspaceIds,jdbcType=VARCHAR},
+      <if test="adspaceId != null" >
+        adspace_id = #{adspaceId,jdbcType=VARCHAR},
       </if>
       <if test="deliveryType != null" >
         delivery_type = #{deliveryType,jdbcType=TINYINT},

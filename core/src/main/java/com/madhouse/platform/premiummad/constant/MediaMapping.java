@@ -7,7 +7,9 @@ public enum MediaMapping {
 	SOHUNEWS(100000, "搜狐新闻"), 
 	SOHUTV(100001, "搜狐TV"),
 	TENCENT(100002, "腾讯"),
-	DIANPING(100003, "美团点评");
+	DIANPING(100003, "美团点评"),
+	MOJI(100004, "墨迹天气"),
+	IQYI(100005, "爱奇艺");
 
 	int value;
 	String descrip;
@@ -25,4 +27,12 @@ public enum MediaMapping {
 		return descrip;
 	}
 
+	public static String getDescrip(int value) {
+		for (MediaMapping item : MediaMapping.values()) {
+			if (item.getValue() == value) {
+				return item.getDescrip();
+			}
+		}
+		return "";
+	}
 }

@@ -24,8 +24,8 @@
     <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     
-	<!-- <task:annotation-driven/>
-    <task:executor id="taskExecutor" pool-size="100-10000" queue-capacity="10" /> -->
+	<task:annotation-driven/>
+    <task:executor id="taskExecutor" pool-size="100-10000" queue-capacity="10" />
 
     <!--proxy-target-class="true"强制使用cglib代理, 如果为false则spring会自动选择 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
@@ -97,6 +97,7 @@
         <property name="basePackage" value="com.madhouse.platform.premiummad.dao"/>
     </bean>
 
+
     <!-- 事务配置 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
@@ -119,18 +120,34 @@
     </bean>
     
     <!-- 使用annotation注解方式配置事务 -->
-    <!-- <tx:annotation-driven transaction-manager="transactionManager"/> -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
 	<!-- 基于XML配置任务调度 -->
-   <!--  <task:scheduled-tasks> -->
+    <task:scheduled-tasks>
     	<!-- sohu News -->
-        <!--<task:scheduled ref="sohuNewsCustomerCreateApiTask" method="create" cron="${cron.sohuNewsCustomerCreateApiTask}"/>
+        <task:scheduled ref="sohuNewsCustomerCreateApiTask" method="create" cron="${cron.sohuNewsCustomerCreateApiTask}"/>
     	<task:scheduled ref="sohuNewsCustomerListApiTask" method="list" cron="${cron.sohuNewsCustomerListApiTask}"/>
         <task:scheduled ref="sohuNewsUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>
         <task:scheduled ref="sohuNewsStatusApiTask" method="getStatusDetail" cron="${cron.sohutvStatusApiTask}"/>
-	 -->
+		
+		<!-- sohu TV -->
+        <task:scheduled ref="sohuTvCustomerCreateApiTask" method="create" cron="${cron.sohuTvCustomerCreateApiTask}"/>
+        <task:scheduled ref="sohuTvCustomerListApiTask" method="list" cron="${cron.sohuTvCustomerListApiTask}"/>
+        <task:scheduled ref="sohutvStatusApiTask" method="getStatusDetail" cron="${cron.sohutvStatusApiTask}"/>
+        <task:scheduled ref="sohutvUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>
+		
 		<!-- Dianping -->
- 		<!--<task:scheduled ref="dianpingMaterialUploadApiTask" method="uploadMaterial" cron="${cron.dianpingMaterialUploadApiTask}"/>
+ 		<task:scheduled ref="dianpingMaterialUploadApiTask" method="uploadMaterial" cron="${cron.dianpingMaterialUploadApiTask}"/>
         <task:scheduled ref="dianpingGetStatusApiTask" method="getStatusResponse" cron="${cron.dianpingGetStatusApiTask}"/>
-	</task:scheduled-tasks> -->
+        
+        <!-- moji -->
+        <task:scheduled ref="mojiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.mojiMaterialUploadApiTask}"/>
+        <task:scheduled ref="mojiMaterialStatusApiTask" method="getStatusResponse" cron="${cron.mojiMaterialStatusApiTask}"/>
+        
+        <!-- iqiyi -->
+        <task:scheduled ref="iQiyiCustomerCreateOrUpdateApiTask" method="createOrUpadate" cron="${cron.iqiyiCustomerCreateApiTask}"/>
+        <task:scheduled ref="iQiyiCustomerStatusApiTask" method="batchStatus" cron="${cron.iqiyiCustomerListApiTask}"/>
+        <task:scheduled ref="iQiyiMaterialStatusApiTask" method="getStatusDetail" cron="${cron.iqiyiMaterialStatusApiTask}"/>
+        <task:scheduled ref="iQiyiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.iqiyiMaterialUploadApiTask}"/>
+	</task:scheduled-tasks>
 </beans>
