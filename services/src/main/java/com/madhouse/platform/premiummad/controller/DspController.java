@@ -32,9 +32,8 @@ public class DspController {
 	@RequestMapping("/list")
     public ResponseDto<DspDto> list(@RequestParam(value="ids", required=false) String ids) throws Exception {
 		List<Dsp> dsps = dspService.queryAll(ids);
-		List<DspDto> dspDtos = new ArrayList<>();
-        BeanUtils.copyList(dsps,dspDtos,DspDto.class);
-        return ResponseUtils.response(StatusCode.SC20000, dspDtos);
+		List<DspDto> result = DspRule.convertToDtoList(dsps, new ArrayList<DspDto>());
+        return ResponseUtils.response(StatusCode.SC20000, result);
     }
 	
 	/**

@@ -454,6 +454,6 @@
         <if test="type != null">
         	AND p.type = #{type, jdbcType=INTEGER}
         </if>
-        ORDER BY p.id
+        ORDER BY p.id DESC
 	</select>
 </mapper>
