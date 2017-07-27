@@ -14,5 +14,9 @@ public class DictControllerTest {
 		HttpUtilTest.httpGet(link);
 	}
 	
-	
+	@Test
+	public void listLocations(){
+		String link = "http://localhost:8080/services/dict/list/location";
+		HttpUtilTest.httpGet(link);
+	}
 }

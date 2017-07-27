@@ -39,4 +39,21 @@
             </foreach>
         </if>
 	</select>
+	
+	<select id="queryPolicyIdList" parameterType="string" resultType="integer">
+		SELECT * FROM (
+			SELECT up.policy_id policyId
+	        FROM mad_sys_user_policy up
+	        WHERE up.user_id = #{userId}
+	        UNION 
+	        SELECT p.id policyId
+	        FROM mad_sys_policy p
+	        WHERE p.created_user = #{userId}
+        ) t <if test="policyIds != null and policyIds.length > 0">
+        	WHERE t.policyId IN 
+        	<foreach collection="policyIds" item="policyId" index="index" open="(" close=")" separator=",">
+            	#{policyId,jdbcType=INTEGER}
+            </foreach>
+        </if>
+	</select>
 </mapper>

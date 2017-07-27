@@ -10,4 +10,5 @@ public interface UserAuthDao {
 
 	List<Integer> queryAdspaceIdList(@Param("userId") Integer userId, @Param("adspaceIds") String[] adspaceIds);
 	
+	List<Integer> queryPolicyIdList(@Param("userId") Integer userId, @Param("policyIds") String[] policyIds);
 }
