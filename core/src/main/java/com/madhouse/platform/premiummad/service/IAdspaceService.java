@@ -71,4 +71,6 @@ public interface IAdspaceService {
 
 	int createAndUpdateAdspaceMapping(AdspaceMapping adspaceMapping);
 
+	int removeAdspaceMapping(Integer adspaceId);
+
 }

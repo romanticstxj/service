@@ -8,13 +8,11 @@ import com.madhouse.platform.premiummad.dto.AdspaceDto;
 import com.madhouse.platform.premiummad.dto.PolicyAdspaceDto;
 import com.madhouse.platform.premiummad.dto.PolicyDspDto;
 import com.madhouse.platform.premiummad.dto.PolicyDto;
-import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.Policy;
 import com.madhouse.platform.premiummad.entity.PolicyAdspace;
 import com.madhouse.platform.premiummad.entity.PolicyDsp;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
-import com.madhouse.platform.premiummad.util.ResponseUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class PolicyRule extends BaseRule{

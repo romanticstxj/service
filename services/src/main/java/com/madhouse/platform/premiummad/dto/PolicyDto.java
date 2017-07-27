@@ -8,7 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
-import com.madhouse.platform.premiummad.constant.SystemCommonMsg;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -16,17 +16,17 @@ public class PolicyDto implements Serializable{
 
 	private static final long serialVersionUID = -3532246711555090831L;
 	
-	@NotNull(message=SystemCommonMsg.NO_UPDATE_ID, groups={Update.class, UpdateStatus.class})
+	@NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_ID, groups={Update.class, UpdateStatus.class})
     private Integer id;
 	
 	private Integer dealId;
     @NotNullAndBlank
     private String name;
-    @NotNull(message=SystemCommonMsg.NO_UPDATE_TYPE, groups={Update.class, UpdateStatus.class})
+    @NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_TYPE, groups={Update.class, UpdateStatus.class})
     @NotNullAndBlank
     private Integer type; //策略类型(1: PDB, 2: PD, 4: PMP, 8: RTB)
     @NotNullAndBlank
-    @Min(message=SystemCommonMsg.ERROR_WEIGHT_FORMAT, value=1)
+    @Min(message=SystemConstant.ErrorMessage.ERROR_WEIGHT_FORMAT, value=1)
     private Integer weight; //权重
     @NotNullAndBlank
     private Date startDate;
@@ -60,7 +60,7 @@ public class PolicyDto implements Serializable{
     private Integer bidType;
 
     private Integer bidFloor;
-    @NotNull(message=SystemCommonMsg.NO_UPDATE_STATUS, groups=UpdateStatus.class)
+    @NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_STATUS, groups=UpdateStatus.class)
     private Byte status;
 
     private String description;

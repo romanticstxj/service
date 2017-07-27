@@ -15,7 +15,7 @@ import com.madhouse.platform.premiummad.dto.ResponseDto;
  * @author Xingjie.Teng
  */
 public class ResponseUtils {
-	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
+	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
 
 	public static <T> ResponseDto<T> response(StatusCode sc, List<T> lists) {
 		return response(sc, lists, null);

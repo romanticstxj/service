@@ -18,7 +18,7 @@ import com.madhouse.platform.premiummad.util.ResponseUtils;
 @ControllerAdvice
 public class CommonExceptionHandler {
 	
-	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD_ERROR);
+	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD_ERROR);
 	
 	@ExceptionHandler(Exception.class)
 	@ResponseBody

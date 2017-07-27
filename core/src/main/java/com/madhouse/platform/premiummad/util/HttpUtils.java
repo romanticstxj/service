@@ -24,7 +24,7 @@ import com.madhouse.platform.premiummad.constant.SystemConstant;
 
 public class HttpUtils {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
 
 	public static final String RESPONSE_CODE_KEY = "responseCode";
 

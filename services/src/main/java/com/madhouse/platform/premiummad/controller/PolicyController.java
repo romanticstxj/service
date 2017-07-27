@@ -58,7 +58,7 @@ public class PolicyController {
 		if(policyIds == null || policyIds.equals("")){
 	        return ResponseUtils.response(StatusCode.SC20006, null);
 		} else{ // admin权限，查询所有policy;非admin，有部分policy权限
-			if(policyIds.equals(SystemConstant.SYSTEM_ADMIN_POLICY_ID)){ //如果是管理员
+			if(policyIds.equals(SystemConstant.OtherConstant.SYSTEM_ADMIN_POLICY_ID)){ //如果是管理员
 				policyIds = null;
 			}
 			List<Policy> policies = policyService.queryAllByParams(policyIds, status, type);

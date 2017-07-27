@@ -132,8 +132,28 @@
             "_summary": "获取常量表数据，type是这些字典表的类型",
             "parameters": {
                 "query": {
-                	"type": "<*||integer||comment:查询的字典表类型(1:媒体分类, 2:广告形式, 。。。)>"
+                	"type": "<*||integer||comment:查询的字典表类型(1:媒体分类, 2:广告形式, 。。。)>",
+                	"terminalType": "<integer||comment:查询广告形式时的额外参数>",
+                	"adType": "<integer||comment:查询广告形式时的额外参数>"
                 }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "code": "",
+                            "name": ""
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dict/list/location": {
+        "get": {
+            "_summary": "获取地域表常量表数据",
+            "parameters": {
+                "query": null
             },
             "responses": {
                 "200": {
@@ -530,6 +550,26 @@
                     "body": [
                         {
                             "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/updateStatus": {
+        "post": {
+            "_summary": "更新dsp状态",
+            "parameters": {
+                "body": {
+                	"id": "<*||integer||comment:dsp id>",
+                    "status": "<*||integer||comment:状态(0:停用,1:启用）>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "id": "<*||integer||comment:dsp id>"
                         }
                     ]
                 }

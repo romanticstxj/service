@@ -77,7 +77,7 @@ public class AdspaceController {
 		if(mediaIds == null || mediaIds.equals("")){
 	        return ResponseUtils.response(StatusCode.SC20006, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
-			if(mediaIds.equals(SystemConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
+			if(mediaIds.equals(SystemConstant.OtherConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
 				mediaIds = null;
 			}
 			List<Adspace> adspaces = adspaceService.queryAllByParams(mediaIds, status);
@@ -103,7 +103,7 @@ public class AdspaceController {
 	 */
 	@RequestMapping("/create")
     public ResponseDto<AdspaceDto> addAdspace(@RequestBody AdspaceDto adspaceDto, 
-    		@RequestHeader(value=SystemConstant.XFROM, required=true) String xFrom) {
+    		@RequestHeader(value=SystemConstant.Request.XFROM, required=true) String xFrom) {
 		AdspaceRule.validateDto(adspaceDto);
         Adspace adspace = AdspaceRule.convertToModel(adspaceDto, new Adspace());
         adspaceService.insert(adspace, xFrom);
@@ -267,6 +267,7 @@ public class AdspaceController {
         List<DspMappingDto> dspMappingDtos = adspaceMappingDto.getDspMappings();
         //媒体映射信息和dsp映射信息不能全为空
         if(StringUtils.isEmpty(mediaAdspaceKey) && ObjectUtils.isEmpty(dspMappingDtos)){
+        	adspaceService.removeAdspaceMapping(adspaceMappingDto.getAdspaceId());
         	return ResponseUtils.response(StatusCode.SC20204, null);
         }
         

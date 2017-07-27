@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.springframework.util.Base64Utils;
+
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 
 public class StringUtils {
@@ -64,6 +66,31 @@ public class StringUtils {
 			hexString.append(hex.toUpperCase());
 		}
 		return hexString.toString();
+	}
+	
+	public static String generateToken(String agid, String appid, String appkey, String time) {
+
+		String sha1key = appid + appkey + time;
+		StringBuffer sign = new StringBuffer();
+		try {
+			MessageDigest digest = java.security.MessageDigest.getInstance("SHA-1");
+			digest.update(sha1key.getBytes());
+			byte messageDigest[] = digest.digest();
+			// 字节数组转换为 十六进制 数
+			for (int i = 0; i < messageDigest.length; i++) {
+				String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
+				if (shaHex.length() < 2) {
+					sign.append(0);
+				}
+				sign.append(shaHex);
+			}
+
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+		String key = agid + "," + appid + "," + time + "," + sign;
+		return Base64Utils.encodeToString(key.getBytes());
 	}
 
 	/**
@@ -226,7 +253,7 @@ public class StringUtils {
 
 	public static Integer convertCurrencyYuanToFen(Double currencyYuan) {
 		Integer currencyFen = Integer.parseInt(
-				new DecimalFormat(SystemConstant.ZERO).format(currencyYuan * SystemConstant.RATIO_FEN_TO_YUAN));
+				new DecimalFormat(SystemConstant.OtherConstant.ZERO).format(currencyYuan * SystemConstant.OtherConstant.RATIO_FEN_TO_YUAN));
 		return currencyFen;
 	}
 
@@ -247,9 +274,9 @@ public class StringUtils {
 			return "";
 		}
 		
-		int temp = Integer.parseInt(new DecimalFormat(SystemConstant.ZERO)
-				.format(Math.floor(Math.log(singleValue) / Math.log(SystemConstant.BASE_FACTOR))));
-		int nearestBaseNumber = (int) Math.pow(SystemConstant.BASE_FACTOR, temp);
+		int temp = Integer.parseInt(new DecimalFormat(SystemConstant.OtherConstant.ZERO)
+				.format(Math.floor(Math.log(singleValue) / Math.log(SystemConstant.OtherConstant.BASE_FACTOR))));
+		int nearestBaseNumber = (int) Math.pow(SystemConstant.OtherConstant.BASE_FACTOR, temp);
 		List<Integer> result = new ArrayList<Integer>();
 		do {
 			if ((singleValue & nearestBaseNumber) != 0) { // 把多选项添加进结果集中
@@ -260,6 +287,17 @@ public class StringUtils {
 		} while (nearestBaseNumber > 0);
 		Collections.reverse(result); // 多选项从小到大排列
 		return getIdsStr(result);
+	}
+	
+	public static int convertMultiChoiceToSingleChoice(String multiChoice) {
+        int[] splitedMultiChoices = StringUtils.splitIdsToInt(multiChoice);
+        int singleChoice = StringUtils.multiValueToSingleValue(splitedMultiChoices);
+        return singleChoice;
+	}
+	
+	public static String convertSingleChoiceToMultiChoice(Integer singleChoice) {
+        String multiChoice = StringUtils.singleValueToMultiValue(singleChoice);
+        return multiChoice;
 	}
 
 }

@@ -211,8 +211,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	public int createAndUpdateAdspaceMapping(AdspaceMapping adspaceMapping) {
 		AdspaceMapping queryObject = queryAdspaceMappingById(adspaceMapping.getAdspaceId());
 		if(queryObject != null){ //数据库里有映射信息，先删除
-			adspaceDao.removeAdspaceMediaMapping(adspaceMapping.getAdspaceId());
-			adspaceDao.removeAdspaceDspMapping(adspaceMapping.getAdspaceId());
+			removeAdspaceMapping(adspaceMapping.getAdspaceId());
 		}
 		
 		//插入更新数据前做check
@@ -234,9 +233,15 @@ public class AdspaceServiceImpl implements IAdspaceService {
 			}
 		}
 		
-		adspaceDao.insertAdspaceMediaMapping(adspaceMapping);
-		return adspaceDao.insertAdspaceDspMapping(dspMappings);
+		if(dspMappings != null && dspMappings.size()>0){
+			adspaceDao.insertAdspaceDspMapping(dspMappings);
+		}
+		return adspaceDao.insertAdspaceMediaMapping(adspaceMapping);
 	}
 
+	public int removeAdspaceMapping(Integer adspaceId) {
+		adspaceDao.removeAdspaceMediaMapping(adspaceId);
+		return adspaceDao.removeAdspaceDspMapping(adspaceId);
+	}
 	
 }

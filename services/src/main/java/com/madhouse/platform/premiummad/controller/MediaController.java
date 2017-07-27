@@ -64,7 +64,7 @@ public class MediaController {
 		if(ids == null || ids.equals("")){
 	        return ResponseUtils.response(StatusCode.SC20006, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
-			if(ids.equals(SystemConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
+			if(ids.equals(SystemConstant.OtherConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
 				ids = null;
 			}
 			List<Media> medias = mediaService.queryAll(ids);

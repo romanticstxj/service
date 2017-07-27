@@ -24,7 +24,7 @@ import com.madhouse.platform.premiummad.constant.SystemConstant;
 @Aspect
 public class LogAspect {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
 
 	@Pointcut("execution(* com.madhouse.platform.premiummad.controller.*.*(..))")
 	public void logPointCut() {

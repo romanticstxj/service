@@ -267,21 +267,21 @@
     </insert>
     
     <insert id="insertAdspaceDspMapping" parameterType="java.util.List">
-    		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
-		        SELECT LAST_INSERT_ID()  
-		    </selectKey>  
+   		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
+	        SELECT LAST_INSERT_ID()  
+	    </selectKey>  
            	INSERT INTO mad_sys_adspace_mapping_dsp (adspace_id, dsp_id, dsp_media_id, 
           		dsp_adspace_key,created_time, status) VALUES
-          		<foreach collection="dspMappings" index="index" item="dspMapping" separator=",">
-          			(
-          				#{dspMapping.adspaceId},
-          				#{dspMapping.dspId},
-          				#{dspMapping.dspMediaId},
-          				#{dspMapping.dspAdspaceKey},
-          				#{dspMapping.createdTime},
-          				1
-          			)
-        		</foreach>
+	          		<foreach collection="dspMappings" index="index" item="dspMapping" separator=",">
+	          			(
+	          				#{dspMapping.adspaceId},
+	          				#{dspMapping.dspId},
+	          				#{dspMapping.dspMediaId},
+	          				#{dspMapping.dspAdspaceKey},
+	          				#{dspMapping.createdTime},
+	          				1
+	          			)
+	        		</foreach>
     </insert>
     
     <select id="queryAdspaceMediaMapping" parameterType="com.madhouse.platform.premiummad.entity.AdspaceMapping" 

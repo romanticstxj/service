@@ -14,7 +14,7 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 public class AdspaceRule extends BaseRule{
 
 	public static Adspace convertToModel(AdspaceDto adspaceDto, Adspace adspace){
-		BeanUtils.copyProperties(adspaceDto, adspace, SystemConstant.ADSPACE_BID_FLOOR);
+		BeanUtils.copyProperties(adspaceDto, adspace, SystemConstant.OtherConstant.ADSPACE_BID_FLOOR);
         BeanUtils.setCreateParam(adspace);
         
         //把页面上的底价（元）转换成数据库需要的底价（分）
@@ -22,9 +22,9 @@ public class AdspaceRule extends BaseRule{
         adspace.setBidFloor(bidFloorUnitFen);
         
         //把页面上的部分多选项转化为数据库的单值
-        int materialType = convertMultiChoiceToSingleChoice(adspaceDto.getMaterialType());
-        int logoType = convertMultiChoiceToSingleChoice(adspaceDto.getLogoType());
-        int videoType = convertMultiChoiceToSingleChoice(adspaceDto.getVideoType());
+        int materialType = StringUtils.convertMultiChoiceToSingleChoice(adspaceDto.getMaterialType());
+        int logoType = StringUtils.convertMultiChoiceToSingleChoice(adspaceDto.getLogoType());
+        int videoType = StringUtils.convertMultiChoiceToSingleChoice(adspaceDto.getVideoType());
         adspace.setMaterialType(materialType);
         adspace.setLogoType(logoType);
         adspace.setVideoType(videoType);
@@ -32,17 +32,6 @@ public class AdspaceRule extends BaseRule{
 		return adspace;
 	}
 	
-	private static int convertMultiChoiceToSingleChoice(String multiChoice) {
-        int[] splitedMultiChoices = StringUtils.splitIdsToInt(multiChoice);
-        int materialType = StringUtils.multiValueToSingleValue(splitedMultiChoices);
-        return materialType;
-	}
-	
-	private static String convertSingleChoiceToMultiChoice(Integer singleChoice) {
-        String multiChoice = StringUtils.singleValueToMultiValue(singleChoice);
-        return multiChoice;
-	}
-
 	public static List<AdspaceDto> convertToDto(Adspace adspace, AdspaceDto adspaceDto) {
 		
         BeanUtils.copyProperties(adspace,adspaceDto,"bidFloor");
@@ -52,9 +41,9 @@ public class AdspaceRule extends BaseRule{
         Double bidFloor = StringUtils.convertCurrencyFentoYuan(adspace.getBidFloor());
         adspaceDto.setBidFloor(bidFloor);
         
-        String materialType = convertSingleChoiceToMultiChoice(adspace.getMaterialType());
-        String logoType = convertSingleChoiceToMultiChoice(adspace.getLogoType());
-        String videoType = convertSingleChoiceToMultiChoice(adspace.getVideoType());
+        String materialType = StringUtils.convertSingleChoiceToMultiChoice(adspace.getMaterialType());
+        String logoType = StringUtils.convertSingleChoiceToMultiChoice(adspace.getLogoType());
+        String videoType = StringUtils.convertSingleChoiceToMultiChoice(adspace.getVideoType());
         adspaceDto.setMaterialType(materialType);
         adspaceDto.setLogoType(logoType);
         adspaceDto.setVideoType(videoType);

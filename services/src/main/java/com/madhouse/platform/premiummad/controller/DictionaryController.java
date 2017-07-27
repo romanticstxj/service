@@ -35,15 +35,12 @@ public class DictionaryController {
 		ResponseDto<DictDto> result = null;
 		
 		switch(type){
-			case SystemConstant.DICT_MEDIA_CATEGORY: //媒体分类
+			case SystemConstant.OtherConstant.DICT_MEDIA_CATEGORY: //媒体分类
 				result = listMediaCategories();
 				break;
-			case SystemConstant.DICT_ADSPACE_LAYOUT: //广告位形式
+			case SystemConstant.OtherConstant.DICT_ADSPACE_LAYOUT: //广告位形式
 				result = listAdspaceLayout(terminalType, adType);
 				break;
-			case SystemConstant.DICT_LOCATION: //地域
-				result = listAdspaceLayout(terminalType, adType);
-				break;	
 			default: 
 				result = ResponseUtils.response(StatusCode.SC20001, null);
 		}

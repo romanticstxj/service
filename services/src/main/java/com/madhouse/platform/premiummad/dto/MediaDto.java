@@ -6,16 +6,16 @@ import java.util.Date;
 import javax.validation.constraints.NotNull;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
-import com.madhouse.platform.premiummad.constant.SystemCommonMsg;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
 public class MediaDto implements Serializable{
 	
 	private static final long serialVersionUID = 1634655943775249685L;
-	@NotNull(message=SystemCommonMsg.NO_UPDATE_ID, groups={Update.class, UpdateStatus.class})
+	@NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_ID, groups={Update.class, UpdateStatus.class})
 	private Integer id;
-	@NotNull(message=SystemCommonMsg.NO_UPDATE_STATUS, groups=UpdateStatus.class)
+	@NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_STATUS, groups=UpdateStatus.class)
 	private Integer status;
 	
 	private Integer adCount;
