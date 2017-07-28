@@ -22,7 +22,7 @@
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
     <!-- <context:property-placeholder location="file:/services/apps/smartexchange-task/conf/jdbc.properties,file:/services/apps/smartexchange-task/conf/exchange.properties" ignore-unresolvable="true" file-encoding="UTF-8" /> -->
-    <context:property-placeholder location="exchange.properties,jdbc.properties" ignore-unresolvable="true" file-encoding="UTF-8" />
+    <context:property-placeholder location="metadata.properties,jdbc.properties" ignore-unresolvable="true" file-encoding="UTF-8" />
 
     <!-- spring配置数据源  -->
     <bean id="parentDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"
@@ -37,17 +37,7 @@
         <property name="maxPoolPreparedStatementPerConnectionSize"
                   value="${jdbc.maxPoolPreparedStatementPerConnectionSize}"/>
     </bean>
-
-    <bean id="dataSource" class="com.madhouse.platform.premiummad.holder.DynamicDataSource">
-        <property name="targetDataSources">
-            <map key-type="java.lang.String">
-                <entry key="metaData" value-ref="dataSourceMetaData"/>
-            </map>
-        </property>
-        <property name="defaultTargetDataSource" ref="dataSourceMetaData"/>
-        <property name="lenientFallback" value="false"/> <!--如获取数据源为空不使用默认数据源，抛异常IllegalStateException -->
-    </bean>
-
+    
     <bean id="dataSourceMetaData" parent="parentDataSource">
         <property name="url" value="${jdbc.premiummad.url}"/>
         <property name="username" value="${jdbc.premiummad.username}"/>
@@ -55,7 +45,7 @@
     </bean>
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="dataSourceMetaData"/>
         <property name="configLocation" value="classpath:mybatis.xml"/>
         <property name="mapperLocations" value="classpath:mappers/*.xml"/>
     </bean>
@@ -66,18 +56,18 @@
 
     <!-- 事务配置  -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="dataSourceMetaData"/>
     </bean>
 
    <!--  使用annotation注解方式配置事务 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <!-- jedis pool配置 -->
+    <!-- jedis pool配置
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
         <property name="maxTotal" value="${redis.maxActive}"/>
         <property name="maxIdle" value="${redis.maxIdle}"/>
         <property name="maxWaitMillis" value="${redis.maxWait}"/>
-    </bean>
+    </bean> -->
     
     <!-- 基于xml配置 -->
     <task:scheduled-tasks>
