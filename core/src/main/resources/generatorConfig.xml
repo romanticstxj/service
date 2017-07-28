@@ -2,7 +2,7 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration >
   <classPathEntry
-		location="D:/repo-zg/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar" />
+		location="C:/Users/Madhouse/.m2/repository/mysql/mysql-connector-java/5.1.31/mysql-connector-java-5.1.31.jar" />
   <context id="mySql" >
     <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://172.16.25.26/premiummad_dev" userId="root" password="tomcat2008" />
     
@@ -30,12 +30,7 @@
 		<property name="enableSubPackages" value="true" />
 	</javaClientGenerator>
 
-	<table tableName="mad_sys_advertiser" domainObjectName="Advertiser"
-		enableCountByExample="false" enableUpdateByExample="false"
-		enableDeleteByExample="false" enableSelectByExample="false"
-		selectByExampleQueryId="false"></table>
-		
-	<table tableName="mad_sys_material" domainObjectName="Material"
+	<table tableName="mad_dict_location" domainObjectName="Location"
 		enableCountByExample="false" enableUpdateByExample="false"
 		enableDeleteByExample="false" enableSelectByExample="false"
 		selectByExampleQueryId="false"></table>

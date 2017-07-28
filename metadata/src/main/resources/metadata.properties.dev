@@ -1,0 +1,41 @@
+redis.host.list=172.16.25.133:6379
+redis.default.db=0
+redis.key=se:adspaceMap
+redis.special.media.key=se:adspaceKeyMap
+redis.task.datasource=smartexchange,sesandbox
+redis.creative_url_creative_id.key=creative_url_creative_id_map
+premiummad.creativeid.http.url = http://172.16.26.209:8080/maddsp-services/dianping/queryMaterialUrl
+premiummad.creativeid.http.header.userId = 123
+premiummad.creativeid.http.header.url = madhouse.mp.com
+redis.timeout=100000
+redis.maxActive=300
+redis.maxIdle=100
+redis.maxWait=1000
+
+# special media Id
+##toutiao
+mediaId_toutiao=68
+sandbox_mediaId_toutiao=-1
+
+##baofeng
+mediaId_baofeng=64
+sandbox_mediaId_baofeng=-1
+
+##xiaomi
+mediaId_xiaomi=-1
+sandbox_mediaId_xiaomi=89
+
+redis_rt_key_type=imp,clk,adcall,pg,premiummad,tencent,baidu,adsage,meila,reachmax
+
+
+
+cron.db2RedisTask = */20 * * * * ?
+
+cron.specialMmediaInitToRedisTask = 0 */2 * * * ?
+
+cron.RTData2DBTask = */10 * * * * ?
+
+cron.delDataFromRedisTask = 0 10 0 * * ?
+
+cron.meiTuDianPingCridCreativeUrlTask = 0 */1 * * * ?
+

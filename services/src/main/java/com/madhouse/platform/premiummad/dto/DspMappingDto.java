@@ -8,7 +8,7 @@ public class DspMappingDto {
 	@NotNullAndBlank
 	private Integer dspId; //DSP在我们系统的ID
 	@NotNullAndBlank
-	private Integer dspMediaId; //DSP方的媒体id
+	private String dspMediaId; //DSP方的媒体id
 	@NotNullAndBlank
 	private String dspAdspaceKey; //DSP方的广告位Key
 
@@ -28,11 +28,11 @@ public class DspMappingDto {
 		this.dspId = dspId;
 	}
 
-	public Integer getDspMediaId() {
+	public String getDspMediaId() {
 		return dspMediaId;
 	}
 
-	public void setDspMediaId(Integer dspMediaId) {
+	public void setDspMediaId(String dspMediaId) {
 		this.dspMediaId = dspMediaId;
 	}
 

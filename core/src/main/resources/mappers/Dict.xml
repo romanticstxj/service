@@ -2,44 +2,65 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.madhouse.platform.premiummad.dao.DictDao">
-	<resultMap id="baseResult" type="com.madhouse.platform.premiummad.entity.Dict">
+	<resultMap id="mediaResultMap" type="com.madhouse.platform.premiummad.entity.Dict">
         <result property="code" column="code" jdbcType="INTEGER" />
         <result property="name" column="name" jdbcType="VARCHAR" />
     </resultMap>
     
-    <resultMap id="resultAdspaceLayout" type="com.madhouse.platform.premiummad.entity.Dict">
+    <resultMap id="adspaceLayoutResultMap" type="com.madhouse.platform.premiummad.entity.Dict">
         <result property="code" column="code" jdbcType="INTEGER" />
         <result property="name" column="name" jdbcType="VARCHAR" />
         <result property="terminalType" column="terminal_type" jdbcType="INTEGER" />
         <result property="adType" column="ad_type" jdbcType="INTEGER" />
     </resultMap>
+    
+    <resultMap id="locationResultMap" type="com.madhouse.platform.premiummad.entity.Location" >
+	    <id column="id" property="id" jdbcType="INTEGER" />
+	    <result column="level" property="level" jdbcType="INTEGER" />
+	    <result column="parent_code" property="parentCode" jdbcType="VARCHAR" />
+	    <result column="code" property="code" jdbcType="VARCHAR" />
+	    <result column="name" property="name" jdbcType="VARCHAR" />
+	    <result column="domestic" property="domestic" jdbcType="INTEGER" />
+	</resultMap>
 	
-	<sql id="baseList">
+	<sql id="mediaCategoryList">
 		${alias}.code, ${alias}.name
 	</sql>
 	
-	<sql id="listAdspaceLayout">
+	<sql id="adspaceLayoutList">
 		${alias}.code, ${alias}.name, ${alias}.terminal_type, ${alias}.ad_type
 	</sql>
 	
-	<select id="queryAllMediaCategories" resultMap="baseResult">
+	<sql id="locationList" >
+    	id, level, parent_code, code, name, domestic
+  	</sql>
+	
+	<select id="queryAllMediaCategories" resultMap="mediaResultMap">
 		SELECT 
-		<include refid="baseList">
+		<include refid="mediaCategoryList">
             <property name="alias" value="mc" />
         </include>
         FROM mad_dict_media_category mc 
         ORDER BY mc.code
 	</select>
 	
-	<select id="queryAllAdspaceLayout" parameterType="com.madhouse.platform.premiummad.entity.Dict" resultMap="resultAdspaceLayout">
+	<select id="queryAllAdspaceLayout" parameterType="com.madhouse.platform.premiummad.entity.Dict" resultMap="adspaceLayoutResultMap">
 		SELECT 
-		<include refid="listAdspaceLayout">
+		<include refid="adspaceLayoutList">
             <property name="alias" value="l" />
         </include>
         FROM mad_dict_layout l 
         WHERE 1 = 1
         <if test="terminalType != null">AND l.terminal_type = #{terminalType}</if>
         <if test="adType != null">AND l.ad_type = #{adType}</if>
+        ORDER BY l.code
+	</select>
+	
+	<select id="queryAllLocations" resultMap="locationResultMap">
+		SELECT 
+		<include refid="locationList">
+        </include>
+        FROM mad_dict_location l 
         ORDER BY l.code
 	</select>
 	

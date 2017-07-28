@@ -2,8 +2,14 @@ package com.madhouse.platform.premiummad.util;
 
 import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -219,8 +225,8 @@ public class BeanUtils {
 				RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 				if (requestAttributes != null && ((ServletRequestAttributes) requestAttributes).getRequest() != null) {
 					HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-					userId = Integer.parseInt(request.getHeader(SystemConstant.USERID)!=null ? 
-								request.getHeader(SystemConstant.USERID) : "0");
+					userId = Integer.parseInt(request.getHeader(SystemConstant.Request.USERID)!=null ? 
+								request.getHeader(SystemConstant.Request.USERID) : "-1");
 				}
 
 				/* 多数据源情况使用
@@ -281,5 +287,53 @@ public class BeanUtils {
 			}
 		}
 	}
+	
+	public static <T extends Serializable> T copy(T input) {  
+	    ByteArrayOutputStream baos = null;  
+	    ObjectOutputStream oos = null;  
+	    ByteArrayInputStream bis = null;  
+	    ObjectInputStream ois = null;  
+	    try {  
+	        baos = new ByteArrayOutputStream();  
+	        oos = new ObjectOutputStream(baos);  
+	        oos.writeObject(input);  
+	        oos.flush();  
+	  
+	        byte[] bytes = baos.toByteArray();  
+	        bis = new ByteArrayInputStream(bytes);  
+	        ois = new ObjectInputStream(bis);  
+	        Object result = ois.readObject();  
+	        return (T) result;  
+	    } catch (IOException e) {  
+	        throw new IllegalArgumentException("Object can't be copied", e);  
+	    } catch (ClassNotFoundException e) {  
+	        throw new IllegalArgumentException("Unable to reconstruct serialized object due to invalid class definition", e);  
+	    } finally {  
+	        try {
+				oos.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
+	        try {
+				baos.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        try {
+				bis.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        try {
+				ois.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }  
+	}  
 
 }

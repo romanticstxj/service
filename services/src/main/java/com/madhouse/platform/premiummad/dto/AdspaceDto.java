@@ -6,7 +6,7 @@ import java.util.Date;
 import javax.validation.constraints.NotNull;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
-import com.madhouse.platform.premiummad.constant.SystemCommonMsg;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -14,9 +14,9 @@ public class AdspaceDto implements Serializable{
 
 	private static final long serialVersionUID = -1387509375255091486L;
 
-	@NotNull(message=SystemCommonMsg.NO_UPDATE_ID, groups={Update.class, UpdateStatus.class})
+	@NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_ID, groups={Update.class, UpdateStatus.class})
 	private Integer id;
-	@NotNull(message=SystemCommonMsg.NO_UPDATE_STATUS, groups=UpdateStatus.class)
+	@NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_STATUS, groups=UpdateStatus.class)
 	private Integer status;
 	@NotNullAndBlank
 	private String name;
@@ -40,14 +40,14 @@ public class AdspaceDto implements Serializable{
 	@NotNullAndBlank
 	private Integer layout;	//广告形式
 	private String layoutName;
-	@NotNullAndBlank
-	private Integer materialType;
-	@NotNullAndBlank
+	
+	private String materialType; //物料格式
+	
 	private String materialSize;
-	@NotNullAndBlank
+	
 	private Integer materialMaxKbyte;
 	
-	private Integer logoType;
+	private String logoType;
 	
 	private String logoSize;
 	
@@ -59,9 +59,9 @@ public class AdspaceDto implements Serializable{
 	
 	private Integer mainPicNumber;
 
-	private Integer videoType;
+	private String videoType;
 	
-	private Integer videoSize;
+	private String videoSize;
 	
 	private Integer videoMaxKbyte;
 	
@@ -175,14 +175,6 @@ public class AdspaceDto implements Serializable{
 		this.layoutName = layoutName;
 	}
 
-	public Integer getMaterialType() {
-		return materialType;
-	}
-
-	public void setMaterialType(Integer materialType) {
-		this.materialType = materialType;
-	}
-
 	public String getMaterialSize() {
 		return materialSize;
 	}
@@ -197,14 +189,6 @@ public class AdspaceDto implements Serializable{
 
 	public void setMaterialMaxKbyte(Integer materialMaxKbyte) {
 		this.materialMaxKbyte = materialMaxKbyte;
-	}
-
-	public Integer getLogoType() {
-		return logoType;
-	}
-
-	public void setLogoType(Integer logoType) {
-		this.logoType = logoType;
 	}
 
 	public String getLogoSize() {
@@ -247,19 +231,11 @@ public class AdspaceDto implements Serializable{
 		this.mainPicNumber = mainPicNumber;
 	}
 
-	public Integer getVideoType() {
-		return videoType;
-	}
-
-	public void setVideoType(Integer videoType) {
-		this.videoType = videoType;
-	}
-
-	public Integer getVideoSize() {
+	public String getVideoSize() {
 		return videoSize;
 	}
 
-	public void setVideoSize(Integer videoSize) {
+	public void setVideoSize(String videoSize) {
 		this.videoSize = videoSize;
 	}
 
@@ -303,6 +279,30 @@ public class AdspaceDto implements Serializable{
 		this.status = status;
 	}
 
+	public String getMaterialType() {
+		return materialType;
+	}
+
+	public void setMaterialType(String materialType) {
+		this.materialType = materialType;
+	}
+
+	public String getLogoType() {
+		return logoType;
+	}
+
+	public void setLogoType(String logoType) {
+		this.logoType = logoType;
+	}
+
+	public String getVideoType() {
+		return videoType;
+	}
+
+	public void setVideoType(String videoType) {
+		this.videoType = videoType;
+	}
+
 	@Override
 	public String toString() {
 		return "AdspaceDto [id=" + id + ", status=" + status + ", name=" + name + ", adspaceKey=" + adspaceKey
@@ -316,5 +316,4 @@ public class AdspaceDto implements Serializable{
 				+ ", videoMaxKbyte=" + videoMaxKbyte + ", videoDuration=" + videoDuration + ", description="
 				+ description + ", createdTime=" + createdTime + "]";
 	}
-
 }

@@ -2,29 +2,12 @@ package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
+import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.exception.BusinessException;
 
-public class BaseRule {
-	/**
-	 * 将列表以 split 连接成字符串返回
-	 * 
-	 * @param list
-	 * @param split
-	 * @return
-	 */
-	public static String parseToString(List<Integer> list, String split) {
-		if (list == null || list.isEmpty()) {
-			return null;
-		}
-		
-		StringBuilder result = new StringBuilder();
-		for (Integer item : list) {
-			result.append(split + item.toString());
-		}
-		return result.substring(1);
-	}
-	
+public class BaseRule {	
+
 	/**
 	 * 解析以 , 分割的字符串
 	 * 
@@ -70,5 +53,13 @@ public class BaseRule {
 			strArray[i] = String.valueOf(list.get(i));
 		}
 		return strArray;
+	}
+	
+	public static void checkStatus(Integer status){
+		if(status != null){
+			if(status != 0 && status != 1){ //如果状态值不正确
+				throw new BusinessException(StatusCode.SC20008);
+			}
+		}
 	}
 }

@@ -19,12 +19,16 @@ import com.madhouse.platform.premiummad.util.ResponseUtils;
 @ControllerAdvice
 public class CommonExceptionHandler {
 	
-	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD_ERROR);
+	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD_ERROR);
 	
 	@ExceptionHandler(Exception.class)
 	@ResponseBody
 	public ResponseDto<Object> handleAllException(Exception ex) {
 		logger.error(LogUtils.getDetailException(ex));
-		return ResponseUtils.response(StatusCode.SC30001, null, ex.getMessage());
+		if (ex instanceof BusinessException) {
+			return ResponseUtils.response(((BusinessException) ex).getStatusCode(), null, ex.getMessage());
+		} else {
+			return ResponseUtils.response(StatusCode.SC30001, null);
+		}
 	}
 }

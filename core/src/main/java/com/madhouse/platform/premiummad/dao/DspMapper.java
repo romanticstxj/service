@@ -1,5 +1,9 @@
 package com.madhouse.platform.premiummad.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.madhouse.platform.premiummad.entity.Dsp;
 
 public interface DspMapper {
@@ -58,4 +62,25 @@ public interface DspMapper {
 	 * @return
 	 */
 	Dsp selectByIdAndToken(Dsp record);
+    
+    /**
+     * 检查名字重复
+     * @param dspName
+     * @return
+     */
+    int checkName(String dspName);
+
+    /**
+     * 更新状态
+     * @param dsp
+     * @return
+     */
+	int updateStatus(Dsp dsp);
+
+	/**
+	 * 查询dsp列表，可以含参ids
+	 * @param idStrs
+	 * @return
+	 */
+	List<Dsp> queryAll(@Param("idStrs") String[] idStrs);
 }

@@ -14,6 +14,8 @@ public class ResponseDto<T> implements Serializable {
 	
 	private String message;
 	
+	private Integer size;
+	
 	private List<T> data;
 
 	public Integer getCode() {
@@ -38,6 +40,14 @@ public class ResponseDto<T> implements Serializable {
 
 	public void setData(List<T> data) {
 		this.data = data;
+	}
+
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
 	}
 
 

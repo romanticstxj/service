@@ -11,9 +11,6 @@
 	<context:component-scan base-package="com.madhouse.platform.premiummad.controller" />
 	<context:annotation-config />
 	
-	<context:property-placeholder location="classpath:exchange.properties"
-                                  ignore-unresolvable="true" file-encoding="UTF-8"/>
-
 	<aop:aspectj-autoproxy proxy-target-class="true" /><!-- 要拦截controller需要再springmvc的配置文件中加这一行 -->
 
 	<!-- 启用默认配置 -->
@@ -45,4 +42,12 @@
 
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+	     <mvc:interceptor>  
+			<mvc:mapping path="/**" />
+	         <bean class="com.madhouse.platform.premiummad.interceptor.CommonInterceptor"></bean>
+	     </mvc:interceptor>
+	        <!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法 -->
+	</mvc:interceptors>
 </beans>  

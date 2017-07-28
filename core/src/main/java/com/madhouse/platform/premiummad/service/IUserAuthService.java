@@ -10,5 +10,7 @@ public interface IUserAuthService {
 	 */
 	List<Integer> queryMediaIdList(Integer userId, String mediaIds);
 
-	List<Integer> queryAdspaceIdList(Integer userId, String valueOf);
+	List<Integer> queryAdspaceIdList(Integer userId, String adspaceIds);
+
+	List<Integer> queryPolicyIdList(Integer userId, String policyIds);
 }
