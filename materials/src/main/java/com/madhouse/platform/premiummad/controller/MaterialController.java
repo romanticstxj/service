@@ -30,15 +30,16 @@ import com.madhouse.platform.premiummad.util.ResponseUtils;
 @RestController
 @RequestMapping("/material")
 public class MaterialController {
-	
+
 	@Autowired
 	private MaterialServiceImpl materialService;
-	
+
 	/**
-     * DSP端提交素材
-     * @return materialDto
-	 * @throws Exception 
-     */
+	 * DSP端提交素材
+	 * 
+	 * @return materialDto
+	 * @throws Exception
+	 */
 	@TokenFilter
 	@RequestMapping("/upload")
 	public ResponseDto<Void> list(@RequestBody MaterialDto materialDto, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
@@ -47,13 +48,15 @@ public class MaterialController {
 		materialService.upload(entity);
 		return ResponseUtils.response(StatusCode.SC200);
 	}
-	
+
 	/**
-     * DSP端查询素材审核状态
-     * @param ids DSP平台定义的素材 ID ，多个素材 ID 可用半角 【,】间隔；
-     * @return materialAuditResultDto
-	 * @throws Exception 
-     */
+	 * DSP端查询素材审核状态
+	 * 
+	 * @param ids
+	 *            DSP平台定义的素材 ID ，多个素材 ID 可用半角 【,】间隔；
+	 * @return materialAuditResultDto
+	 * @throws Exception
+	 */
 	@TokenFilter
 	@RequestMapping("/status")
 	public ResponseDto<MaterialAuditResultDto> list(@RequestParam(value = "ids", required = false) String ids, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
@@ -62,12 +65,13 @@ public class MaterialController {
 		BeanUtils.copyList(modelResults, dtoResults, MaterialAuditResultDto.class);
 		return ResponseUtils.response(StatusCode.SC200, dtoResults);
 	}
-	
+
 	/**
 	 * 上传素材对象转换
+	 * 
 	 * @param materialDto
 	 * @return
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	private MaterialModel convert(MaterialDto materialDto) throws ParseException {
 		MaterialModel entity = new MaterialModel();
@@ -91,16 +95,17 @@ public class MaterialController {
 
 		return entity;
 	}
-	
+
 	/**
 	 * 根据指定的日期format 解析成 date 类型
+	 * 
 	 * @param dateStr
 	 * @param format
 	 * @return
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	private Date parseToDate(String dateStr, String format) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat(format);  
-		return sdf.parse(dateStr);  
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		return sdf.parse(dateStr);
 	}
 }

@@ -2,7 +2,7 @@ package com.madhouse.platform.premiummad.model;
 
 public class AdvertiserAuditResultModel {
 	/**
-	 * 广告主 ID
+	 * 广告主 ID(DSN 或  我方系统的id)
 	 */
 	private String id;
 	
@@ -21,6 +21,11 @@ public class AdvertiserAuditResultModel {
 	 * 审核未通过原因
 	 */
 	private String errorMessage;
+	
+	/**
+	 * 媒体方存储的广告主key
+	 */
+	private String mediaAdvertiserKey;
 
 	public String getId() {
 		return id;
@@ -53,5 +58,12 @@ public class AdvertiserAuditResultModel {
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
-	
+
+	public String getMediaAdvertiserKey() {
+		return mediaAdvertiserKey;
+	}
+
+	public void setMediaAdvertiserKey(String mediaAdvertiserKey) {
+		this.mediaAdvertiserKey = mediaAdvertiserKey;
+	}
 }

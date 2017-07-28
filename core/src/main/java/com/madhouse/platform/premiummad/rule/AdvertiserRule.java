@@ -20,23 +20,25 @@ import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.model.AdvertiserModel;
 
 public class AdvertiserRule extends BaseRule {
-	
+
 	/**
 	 * 提取 map 的 values
+	 * 
 	 * @param map
 	 * @return
 	 */
 	public static List<Advertiser> convert(Map<Integer, Advertiser> map) {
 		List<Advertiser> list = new ArrayList<Advertiser>();
 		Iterator<Entry<Integer, Advertiser>> iterator = map.entrySet().iterator();
-		while(iterator.hasNext()) {
+		while (iterator.hasNext()) {
 			list.add(iterator.next().getValue());
 		}
 		return list;
 	}
-	
+
 	/**
 	 * 校验参数合法性
+	 * 
 	 * @param entity
 	 */
 	public static void paramterValidate(AdvertiserModel entity) {
@@ -50,6 +52,7 @@ public class AdvertiserRule extends BaseRule {
 
 	/**
 	 * 存在待审核、审核中，审核通过的不允许推送，提示信息
+	 * 
 	 * @param classfiedMaps
 	 * @param AdvertiserId
 	 * @return
@@ -70,9 +73,10 @@ public class AdvertiserRule extends BaseRule {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 将需要上传的广告主媒体关系分类（上传过和为上传过）
+	 * 
 	 * @param advertiserMedias
 	 * @param entity
 	 * @param classfiedMaps
@@ -91,7 +95,7 @@ public class AdvertiserRule extends BaseRule {
 				continue;
 			}
 			usedMediaIdSet.add(Integer.valueOf(mediaId));
-			
+
 			boolean record = false;
 			for (Advertiser advertiser : advertisers) {
 				if (advertiser.getAdvertiserKey().equals(entity.getId()) && advertiser.getMediaId().intValue() == mediaId.intValue()) {
@@ -134,9 +138,10 @@ public class AdvertiserRule extends BaseRule {
 		classfiedMaps.add(3, rejectedAdvertisers); // 已驳回
 		classfiedMaps.add(4, unUploadedAdvertisers); // 未上传过
 	}
-	
+
 	/**
 	 * 构建广告主实体
+	 * 
 	 * @param source
 	 * @return
 	 */
@@ -145,7 +150,7 @@ public class AdvertiserRule extends BaseRule {
 		if (advertiser == null) {
 			advertiser = new Advertiser();
 			advertiser.setDspId(Integer.valueOf(entity.getDspId()));
-			advertiser.setAdvertiserKey(entity.getId()); //DSP端提供的广告主ID
+			advertiser.setAdvertiserKey(entity.getId()); // DSP端提供的广告主ID
 			advertiser.setMediaId(mediaId);
 			advertiser.setStatus(Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10002.getValue()))); // 状态置为待审核
 			advertiser.setCreatedTime(new Date());
@@ -161,16 +166,17 @@ public class AdvertiserRule extends BaseRule {
 		advertiser.setLicense(entity.getLience());
 		advertiser.setPhone(entity.getPhone());
 		advertiser.setWebsite(entity.getWebSite());
-		
+
 		// set default value
 		advertiser.setAuditedUser(Integer.valueOf(0));
 		advertiser.setReason("");
-		
+
 		return advertiser;
 	}
-	
+
 	/**
 	 * 对象转换器
+	 * 
 	 * @param source
 	 * @param destination
 	 */
@@ -178,14 +184,15 @@ public class AdvertiserRule extends BaseRule {
 		if (source == null) {
 			return;
 		}
-		
+
 		if (source.isEmpty()) {
 			return;
 		}
-		
+
 		for (Advertiser sourceItem : source) {
 			AdvertiserAuditResultModel destinationItem = new AdvertiserAuditResultModel();
-			destinationItem.setId(sourceItem.getAdvertiserKey()); //DSP 传过来的广告主ID
+			destinationItem.setId(sourceItem.getAdvertiserKey()); // DSP
+																	// 传过来的广告主ID
 			destinationItem.setMediaId(String.valueOf(sourceItem.getMediaId()));
 			destinationItem.setStatus(Integer.valueOf(sourceItem.getStatus()));
 			destinationItem.setErrorMessage(sourceItem.getReason());
