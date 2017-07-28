@@ -26,7 +26,7 @@ public interface IMaterialService {
 	void upload(MaterialModel entity);
 
 	/**
-	 * 根据媒体返回的结果更新状态
+	 * 根据媒体返回的结果更新状态-通过媒体key更新
 	 * 
 	 * @param auditResults
 	 */
@@ -39,4 +39,11 @@ public interface IMaterialService {
 	 *            我方的素材ID
 	 */
 	void updateStatusAfterUpload(Map<Integer, String> materialIdKeys);
+
+	/**
+	 * 根据媒体返回的结果更新状态-通过素材ID更新
+	 * 
+	 * @param auditResults
+	 */
+	void updateStatusToMediaByMaterialId(List<MaterialAuditResultModel> auditResults);
 }

@@ -43,7 +43,7 @@ public class MaterialServiceImpl implements IMaterialService {
 	private IAdvertiserService advertiserService;
 
 	/**
-	 * 根据媒体返回的结果更新状态
+	 * 根据媒体返回的结果更新状态-通过媒体key更新
 	 * 
 	 * @param auditResults
 	 */
@@ -67,11 +67,48 @@ public class MaterialServiceImpl implements IMaterialService {
 			updateItem.setStatus(Byte.valueOf(item.getStatus().toString()));
 			updateItem.setUpdatedTime(new Date());
 			updateItem.setReason(item.getErrorMessage());
-			updateItem.setId(Integer.valueOf(item.getId()));
+			updateItem.setMediaMaterialKey(item.getMediaMaterialKey());
 			
 			int effortRows = materialDao.updateByMediaAndMediaMaterialKey(updateItem);
 			if (effortRows != 1) {
 				LOGGER.info("素材更新失败[mediaId=" + updateItem.getMediaId() + ",mediaMaterialKey=" + updateItem.getMediaMaterialKey() + "]");
+				continue;
+			}
+		}
+	}
+	
+	/**
+	 * 根据媒体返回的结果更新状态-通过素材ID更新
+	 * 
+	 * @param auditResults
+	 */
+	@Transactional
+	@Override
+	public void updateStatusToMediaByMaterialId(List<MaterialAuditResultModel> auditResults) {
+		// 参数校验
+		if (auditResults == null || auditResults.isEmpty()) {
+			return;
+		}
+
+		// 已驳回或已通过的记录更新状态
+		for (MaterialAuditResultModel item : auditResults) {
+			// 审核中的素材不处理
+			if (item.getStatus() == null || MaterialStatusCode.MSC10003.getValue() == item.getStatus().intValue()) {
+				continue;
+			}
+
+			// 更新审核状态
+			Material updateItem = new Material();
+			updateItem.setStatus(Byte.valueOf(item.getStatus().toString()));
+			updateItem.setUpdatedTime(new Date());
+			updateItem.setReason(item.getErrorMessage());
+			// 部分媒体审核成功后会生产一个新的key作为投放时候使用，此处做更新
+			updateItem.setMediaMaterialKey(item.getMediaMaterialKey());
+			updateItem.setId(Integer.valueOf(item.getId()));
+			
+			int effortRows = materialDao.updateByPrimaryKeySelective(updateItem);
+			if (effortRows != 1) {
+				LOGGER.info("素材更新失败[mediaId=" + updateItem.getMediaId() + ",materialId=" + updateItem.getId() + "]");
 				continue;
 			}
 		}

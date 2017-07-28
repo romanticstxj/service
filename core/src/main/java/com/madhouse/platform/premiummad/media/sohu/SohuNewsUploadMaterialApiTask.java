@@ -92,6 +92,8 @@ public class SohuNewsUploadMaterialApiTask {
 					} else {
 						LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + sohutvResponse.getMessage());
 					}
+				} else {
+					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败");
 				}
 			}
 		}
@@ -106,6 +108,7 @@ public class SohuNewsUploadMaterialApiTask {
 	
 	/**
 	 * 处理上传物料api的请求json
+	 * 
 	 * 
 	 * @param material
 	 * @return
