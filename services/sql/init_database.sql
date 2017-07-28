@@ -1,5 +1,5 @@
 /* 媒体表 */
-DROP IF EXISTS `mad_sys_media`;
+DROP TABLE IF EXISTS `mad_sys_media`;
 CREATE TABLE `mad_sys_media` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '名称',
@@ -22,7 +22,7 @@ CREATE TABLE `mad_sys_media` (
 ) ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8;
 
 /* 广告位表 */
-DROP IF EXISTS `mad_sys_adspace`;
+DROP TABLE IF EXISTS `mad_sys_adspace`;
 CREATE TABLE `mad_sys_adspace` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '名称',
@@ -62,3 +62,24 @@ CREATE TABLE `mad_sys_adspace` (
   KEY `name` (`name`),
   KEY `ad_mode_status_name` (`layout`,`status`,`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=200000 DEFAULT CHARSET=utf8;
+
+/* DSP表 */
+DROP TABLE IF EXISTS `mad_sys_dsp`;
+CREATE TABLE `mad_sys_dsp` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '名称',
+  `bid_url` varchar(255) NOT NULL DEFAULT '' COMMENT 'DSP URL',
+  `winnotice_url` varchar(255) DEFAULT '' COMMENT 'WINNOTICE URL',
+  `delivery_type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)',
+  `bid_percent` int(10) unsigned DEFAULT '0' COMMENT '加价百分比',
+  `token` char(32) NOT NULL DEFAULT '' COMMENT 'Token',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态(0: 停用, 1: 启用)',
+  `max_qps` int(10) unsigned DEFAULT NULL COMMENT '最大QPS',
+  `created_user` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建者',
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_user` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新者',
+  `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=600010 DEFAULT CHARSET=utf8;

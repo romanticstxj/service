@@ -33,12 +33,26 @@ public class AdspaceRule extends BaseRule{
 	}
 	
 	public static List<AdspaceDto> convertToDto(Adspace adspace, AdspaceDto adspaceDto) {
-		
-        BeanUtils.copyProperties(adspace,adspaceDto,"bidFloor");
+        BeanUtils.copyProperties(adspace,adspaceDto);
         List<AdspaceDto> adspaceDtos = new ArrayList<>();
         adspaceDtos.add(adspaceDto);
         
-        Double bidFloor = StringUtils.convertCurrencyFentoYuan(adspace.getBidFloor());
+        convertToDtoSpecifically(adspace, adspaceDto);
+		return adspaceDtos;
+	}
+	
+	public static List<AdspaceDto> convertToDtoList(List<Adspace> entities, ArrayList<AdspaceDto> dtos) {
+        //copy entity to dto
+		BeanUtils.copyList(entities,dtos,AdspaceDto.class);
+        for(int i=0; i<dtos.size(); i++){
+        	convertToDtoSpecifically(entities.get(i), dtos.get(i));
+        }
+        
+        return dtos;
+	}
+	
+	private static void convertToDtoSpecifically(Adspace adspace, AdspaceDto adspaceDto) {
+		Double bidFloor = StringUtils.convertCurrencyFentoYuan(adspace.getBidFloor());
         adspaceDto.setBidFloor(bidFloor);
         
         String materialType = StringUtils.convertSingleChoiceToMultiChoice(adspace.getMaterialType());
@@ -47,10 +61,8 @@ public class AdspaceRule extends BaseRule{
         adspaceDto.setMaterialType(materialType);
         adspaceDto.setLogoType(logoType);
         adspaceDto.setVideoType(videoType);
-        
-		return adspaceDtos;
 	}
-	
+
 	public static void validateDto(AdspaceDto adspaceDto){
 		String fieldName = BeanUtils.hasEmptyField(adspaceDto);
         if (fieldName != null)

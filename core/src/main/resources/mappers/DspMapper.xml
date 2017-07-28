@@ -245,7 +245,7 @@
             	#{id,jdbcType=INTEGER}
             </foreach>
         </if>
-        ORDER BY d.id
+        ORDER BY d.id DESC
 	</select>
 	
 </mapper>

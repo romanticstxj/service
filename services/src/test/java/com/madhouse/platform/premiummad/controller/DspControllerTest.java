@@ -46,10 +46,8 @@ public class DspControllerTest {
 	
 	@Test
 	public void list(){
-		String url = "http://localhost:8080/services/dsp/list?ids=1,2,600003";
+		String url = "http://localhost:8080/services/dsp/list";
 		HttpUtilTest.httpGet(url);
 	}
-	
-	
 	
 }
