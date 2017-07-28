@@ -1,5 +1,7 @@
 package com.madhouse.platform.premiummad.service;
 
+import java.util.List;
+
 import com.madhouse.platform.premiummad.entity.Dsp;
 
 public interface IDspService {
@@ -44,4 +46,11 @@ public interface IDspService {
 	 * @return
 	 */
 	int updateStatus(Dsp dsp);
+
+	/**
+	 * 查询所有dsp
+	 * @param ids
+	 * @return
+	 */
+	List<Dsp> queryAll(String ids);
 }

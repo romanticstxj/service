@@ -15,7 +15,7 @@ import com.madhouse.platform.premiummad.dto.ResponseDto;
  * @author Xingjie.Teng
  */
 public class ResponseUtils {
-	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
+	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
 
 	public static <T> ResponseDto<T> response(StatusCode sc, List<T> lists) {
 		return response(sc, lists, null);
@@ -24,9 +24,11 @@ public class ResponseUtils {
 	public static <T> ResponseDto<T> response(StatusCode sc, List<T> data, String message) {
 		ResponseDto<T> responseDto = new ResponseDto<>();
 
-		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}" + ", with data:" + data);
+		int size = data != null ? data.size() : 0;
+		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}" + ", with data(" + size + "):" + data);
 
 		responseDto.setData(data);
+		responseDto.setSize(size);
 		responseDto.setCode(sc.getValue());
 		responseDto.setMessage(message != null ? message : sc.getDescrip());
 

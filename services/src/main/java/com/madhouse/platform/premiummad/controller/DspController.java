@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dto.DspDto;
-import com.madhouse.platform.premiummad.dto.MediaDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Dsp;
+import com.madhouse.platform.premiummad.rule.DspRule;
 import com.madhouse.platform.premiummad.service.IDspService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
-import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -31,18 +30,10 @@ public class DspController {
 	private IDspService dspService;
 	
 	@RequestMapping("/list")
-    public ResponseDto<MediaDto> list(@RequestParam(value="ids", required=false) String mediaIds,
-    		@RequestParam(value="userId", required=false) Integer userIdByGet,
-    		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
-//		//获得userId，可以从url中获得（方便通过get请求获取数据），更为一般的是从requestHeader里获取
-//		if(userIdByGet != null){ //优先获取get请求的userId参数
-//			userId = userIdByGet;
-//		}
-//		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
-//		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
-//		return listByMediaIds(returnedMediaIds);
-		
-		return null;
+    public ResponseDto<DspDto> list(@RequestParam(value="ids", required=false) String ids) throws Exception {
+		List<Dsp> dsps = dspService.queryAll(ids);
+		List<DspDto> result = DspRule.convertToDtoList(dsps, new ArrayList<DspDto>());
+        return ResponseUtils.response(StatusCode.SC20000, result);
     }
 	
 	/**
@@ -59,11 +50,9 @@ public class DspController {
         Integer count = dspService.checkName(dspDto.getName().trim());
         if (count > 0) //检查名称
             return ResponseUtils.response(StatusCode.SC20302,null);
-        Dsp dsp = new Dsp();
-        BeanUtils.copyProperties(dspDto, dsp);
-        BeanUtils.setCreateParam(dsp);
+        Dsp dsp = DspRule.convertToModel(dspDto, new Dsp());
         dspService.insertWithParamsProcess(dsp, xFrom);
-        List<DspDto> result = convertResult(dsp, new DspDto());
+        List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
 	}
 	
@@ -75,12 +64,12 @@ public class DspController {
 	@RequestMapping("/detail")
 	public ResponseDto<DspDto> getDsp(@RequestParam(value="id", required=true) Integer id) {
 		Dsp dsp = dspService.queryById(id);
-		List<DspDto> result = convertResult(dsp, new DspDto());
+		List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
     }
 	
 	/**
-	 * 更新广告位
+	 * 更新dsp
 	 * @param dspDto
 	 * @return
 	 */
@@ -89,35 +78,24 @@ public class DspController {
 		String fieldName = BeanUtils.hasEmptyField(dspDto);
         if (fieldName != null)
             return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
-        Dsp dsp = new Dsp();
-        BeanUtils.copyProperties(dspDto, dsp);
-        BeanUtils.setUpdateParam(dsp);
+        Dsp dsp = DspRule.convertToModel(dspDto, new Dsp());
         dspService.update(dsp);
-        List<DspDto> result = convertResult(dsp, new DspDto());
+        List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
     }
 	
 	/**
-	 * 更新广告位状态
+	 * 更新dsp
 	 * @param dspDto
 	 * @return
 	 */
 	@RequestMapping("/updateStatus")
     public ResponseDto<DspDto> updateDspStatus(
     		@RequestBody @Validated(UpdateStatus.class) DspDto dspDto) {
-        Dsp dsp = new Dsp();
-        BeanUtils.copyProperties(dspDto, dsp);
-        BeanUtils.setUpdateParam(dsp);
+		Dsp dsp = DspRule.convertToModel(dspDto, new Dsp());
         dspService.updateStatus(dsp);
-        List<DspDto> result = convertResult(dsp, new DspDto());
+        List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
     }
-	
-	private List<DspDto> convertResult(Dsp dsp, DspDto dspDto) {
-        BeanUtils.copyProperties(dsp,dspDto);
-        List<DspDto> dspDtos = new ArrayList<>();
-        dspDtos.add(dspDto);
-        return dspDtos;
-	}
 	
 }

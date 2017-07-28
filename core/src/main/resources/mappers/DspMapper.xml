@@ -232,5 +232,20 @@
         </set>
         WHERE id = #{id}
     </update>
+    
+    <select id="queryAll" parameterType="string" resultMap="BaseResultMap">
+		SELECT 
+		<include refid="Base_Column_List">
+            <property name="alias" value="d" />
+        </include>
+        FROM mad_sys_dsp d
+        <if test="idStrs != null and idStrs.length > 0">
+        	WHERE d.id IN 
+        	<foreach collection="idStrs" item="id" index="index" open="(" close=")" separator=",">
+            	#{id,jdbcType=INTEGER}
+            </foreach>
+        </if>
+        ORDER BY d.id DESC
+	</select>
 	
 </mapper>

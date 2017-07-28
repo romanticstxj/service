@@ -20,7 +20,7 @@ import com.madhouse.platform.premiummad.constant.SystemConstant;
  */
 public class PerformanceFilter implements Filter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -31,7 +31,7 @@ public class PerformanceFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		long beginTime = System.currentTimeMillis();
 //		LOGGER.debug("url:" + req.getHeader(SystemConstant.URL));
-		LOGGER.debug("userId:"+req.getHeader(SystemConstant.USERID));
+		LOGGER.debug("userId:"+req.getHeader(SystemConstant.Request.USERID));
 
 		chain.doFilter(request, response);
 

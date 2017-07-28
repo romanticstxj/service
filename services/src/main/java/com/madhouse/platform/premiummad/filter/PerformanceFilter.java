@@ -20,7 +20,7 @@ import com.madhouse.platform.premiummad.constant.SystemConstant;
  */
 public class PerformanceFilter implements Filter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {

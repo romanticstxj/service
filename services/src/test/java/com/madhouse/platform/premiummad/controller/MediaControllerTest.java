@@ -16,28 +16,28 @@ public class MediaControllerTest {
 	public void add(){
 		MediaDto mediaDto = new MediaDto();
 //		mediaDto.setId(1);
-		mediaDto.setName("MediaTest");
+		mediaDto.setName("test00334");
 		mediaDto.setCategory(2);
 		mediaDto.setType(1);
-		mediaDto.setDescription("hello media");
-		mediaDto.setAccessType(1);
-		mediaDto.setAdvertiserAuditMode(0);
-		mediaDto.setMaterialAuditMode(0);
-		mediaDto.setTimeout(200);
-		String link = "http://localhost:8080/services/media/create";
+		mediaDto.setDescription("测试");
+		mediaDto.setAccessType(2);
+		mediaDto.setAdvertiserAuditMode(1);
+		mediaDto.setMaterialAuditMode(1);
+		mediaDto.setTimeout(100);
+		String link = "http://172.16.25.31:8080/services/media/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(mediaDto));
 	}
 	
 	@Test
 	public void detail(){
-		String link = "http://localhost:8080/services/media/detail?id=100030";
+		String link = "http://172.16.25.31:8080/services/media/detail?id=100000";
 		HttpUtilTest.httpGet(link);
 	}
 	
 	@Test
 	public void list(){
 //		String link = "http://localhost:8080/services/media/list?ids=8000005,8000004";
-		String link = "http://172.16.25.48:8080/services/media/list";
+		String link = "http://172.16.25.31:8080/services/media/list";
 //		String link = "http://172.16.25.48:8080/services/dict/list?type=1";
 		HttpUtilTest.httpGet(link);
 	} 

@@ -35,7 +35,7 @@ public class Adspace extends BaseEntity{
 
 	private Integer videoType;
 	
-	private Integer videoSize;
+	private String videoSize;
 	
 	private Integer videoMaxKbyte;
 	
@@ -231,11 +231,11 @@ public class Adspace extends BaseEntity{
 		this.videoType = videoType;
 	}
 
-	public Integer getVideoSize() {
+	public String getVideoSize() {
 		return videoSize;
 	}
 
-	public void setVideoSize(Integer videoSize) {
+	public void setVideoSize(String videoSize) {
 		this.videoSize = videoSize;
 	}
 

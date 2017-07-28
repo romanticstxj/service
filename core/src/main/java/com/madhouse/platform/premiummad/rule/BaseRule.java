@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.exception.BusinessException;
+
 public class BaseRule {	
 	/**
 	 * 解析以 , 分割的字符串
@@ -51,5 +54,13 @@ public class BaseRule {
 			strArray[i] = String.valueOf(list.get(i));
 		}
 		return strArray;
+	}
+	
+	public static void checkStatus(Integer status){
+		if(status != null){
+			if(status != 0 && status != 1){ //如果状态值不正确
+				throw new BusinessException(StatusCode.SC20008);
+			}
+		}
 	}
 }

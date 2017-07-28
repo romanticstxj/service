@@ -15,13 +15,13 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class CommonInterceptor extends HandlerInterceptorAdapter{
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.LOGGER_PREMIUMMAD);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		
-		String userId = request.getHeader(SystemConstant.USERID);
-		String xForm = request.getHeader(SystemConstant.XFROM);
+		String userId = request.getHeader(SystemConstant.Request.USERID);
+		String xForm = request.getHeader(SystemConstant.Request.XFROM);
 //		String requestBody = HttpUtils.getBodyString(request.getReader());
 //		MyRequestWrapper myRequestWrapper = new MyRequestWrapper((HttpServletRequest) request);
 //        String requestBody = myRequestWrapper.getBody();
