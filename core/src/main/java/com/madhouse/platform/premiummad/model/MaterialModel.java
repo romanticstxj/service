@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
-
 public class MaterialModel implements Serializable {
 
 	private static final long serialVersionUID = -4527909581700251071L;
@@ -18,32 +16,27 @@ public class MaterialModel implements Serializable {
 	/**
 	 * DSP 定义的素材ID
 	 */
-	@NotNullAndBlank
 	private String id;
 	
 	/**
 	 * 素材名称
 	 */
-	@NotNullAndBlank
 	private String name;
 	
 	/**
-	 * 广告类型
+	 * 广告形式
 	 */
-	@NotNullAndBlank
-	private Integer adType;
+	private Integer layout;
 	
 	/**
 	 * DSP 平台定义的广告主ID
 	 */
-	@NotNullAndBlank
 	private String advertiserId;
 	
 	/**
 	 * 投放类型
 	 * 1: PDB、2:PD、4:PMP、8:RTB
 	 */
-	@NotNullAndBlank
 	private Integer deliveryType;
 	
 	/**
@@ -69,26 +62,27 @@ public class MaterialModel implements Serializable {
 	/**
 	 * 失效日期(yyyy-MM-dd)
 	 */
-	@NotNullAndBlank
 	private Date endDate;
 	
 	/**
-	 * PremiumMAD 平台定义的媒体ID，可同时制定多个媒体
+	 * PremiumMAD 平台定义的媒体ID
 	 */
-	@NotNullAndBlank
-	private List<Integer> mediaId;
+	private Integer mediaId;
+	
+	/**
+	 * 广告位，可指定多个
+	 */
+	private List<Integer> adspaceId;
 	
 	/**
 	 * 广告素材宽度（单位:pixel)
 	 */
-	@NotNullAndBlank
-	private Integer weight;
+	private Integer w;
 	
 	/**
 	 * 广告素材高度（单位:pixel)
 	 */
-	@NotNullAndBlank
-	private Integer height;
+	private Integer h;
 	
 	/**
 	 * 信息流广告图标URL
@@ -113,7 +107,6 @@ public class MaterialModel implements Serializable {
 	/**
 	 * 广告素材URL
 	 */
-	@NotNullAndBlank
 	private List<String> adm;
 	
 	/**
@@ -150,14 +143,6 @@ public class MaterialModel implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Integer getAdType() {
-		return adType;
-	}
-
-	public void setAdType(Integer adType) {
-		this.adType = adType;
 	}
 
 	public String getAdvertiserId() {
@@ -216,28 +201,44 @@ public class MaterialModel implements Serializable {
 		this.endDate = endDate;
 	}
 
-	public List<Integer> getMediaId() {
+	public Integer getLayout() {
+		return layout;
+	}
+
+	public void setLayout(Integer layout) {
+		this.layout = layout;
+	}
+
+	public Integer getMediaId() {
 		return mediaId;
 	}
 
-	public void setMediaId(List<Integer> mediaId) {
+	public void setMediaId(Integer mediaId) {
 		this.mediaId = mediaId;
 	}
 
-	public Integer getWeight() {
-		return weight;
+	public List<Integer> getAdspaceId() {
+		return adspaceId;
 	}
 
-	public void setWeight(Integer weight) {
-		this.weight = weight;
+	public void setAdspaceId(List<Integer> adspaceId) {
+		this.adspaceId = adspaceId;
 	}
 
-	public Integer getHeight() {
-		return height;
+	public Integer getW() {
+		return w;
 	}
 
-	public void setHeight(Integer height) {
-		this.height = height;
+	public void setW(Integer w) {
+		this.w = w;
+	}
+
+	public Integer getH() {
+		return h;
+	}
+
+	public void setH(Integer h) {
+		this.h = h;
 	}
 
 	public String getIcon() {

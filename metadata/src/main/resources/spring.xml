@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+        http://www.springframework.org/schema/tx
+     	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/task 
+        http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+        
+    <context:component-scan base-package="com.madhouse.platform.premiummad"/>
+    <!-- <context:component-scan base-package="com.madhouse.platform.premiummad.util"/> -->
+    <task:annotation-driven/>
+
+    <!--proxy-target-class="true"强制使用cglib代理 如果为false则spring会自动选择 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!-- <context:property-placeholder location="file:/services/apps/smartexchange-task/conf/jdbc.properties,file:/services/apps/smartexchange-task/conf/exchange.properties" ignore-unresolvable="true" file-encoding="UTF-8" /> -->
+    <context:property-placeholder location="metadata.properties,jdbc.properties" ignore-unresolvable="true" file-encoding="UTF-8" />
+
+    <!-- spring配置数据源  -->
+    <bean id="parentDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"
+          abstract="true">
+        <property name="maxActive" value="${jdbc.maxActive}"/>
+        <property name="initialSize" value="${jdbc.initialSize}"/>
+        <property name="minIdle" value="${jdbc.minIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.minEvictableIdleTimeMillis}"/>
+        <property name="validationQuery" value="${jdbc.validationQuery}"/>
+        <property name="testWhileIdle" value="${jdbc.testWhileIdle}"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize"
+                  value="${jdbc.maxPoolPreparedStatementPerConnectionSize}"/>
+    </bean>
+    
+    <bean id="dataSourceMetaData" parent="parentDataSource">
+        <property name="url" value="${jdbc.premiummad.url}"/>
+        <property name="username" value="${jdbc.premiummad.username}"/>
+        <property name="password" value="${jdbc.premiummad.password}"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceMetaData"/>
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+        <property name="mapperLocations" value="classpath:mappers/*.xml"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.madhouse.platform.premiummad.dao"/>
+    </bean>
+
+    <!-- 事务配置  -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSourceMetaData"/>
+    </bean>
+
+   <!--  使用annotation注解方式配置事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- jedis pool配置
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="${redis.maxActive}"/>
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <property name="maxWaitMillis" value="${redis.maxWait}"/>
+    </bean> -->
+    
+    <!-- 基于xml配置 -->
+    <task:scheduled-tasks>
+        <task:scheduled ref="mediaTask" method="run" cron="${cron.db2RedisTask}"/>
+    </task:scheduled-tasks>
+
+
+</beans>

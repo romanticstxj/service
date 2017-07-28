@@ -12,6 +12,7 @@ public class MediaRule extends BaseRule {
 
 	/**
 	 * 媒体是否存在且有效
+	 * 
 	 * @param mediaIds
 	 * @param uploadedMedias
 	 */

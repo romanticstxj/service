@@ -1,0 +1,22 @@
+jdbc.driverClassName=com.mysql.jdbc.Driver
+
+jdbc.smartexchange.url=jdbc:mysql://172.16.25.133:3306/smartexchange
+jdbc.smartexchange.username=pengxu
+jdbc.smartexchange.password=hellopengxu
+
+jdbc.sesandbox.url=jdbc:mysql://172.16.25.133:3306/sesandbox
+jdbc.sesandbox.username=pengxu
+jdbc.sesandbox.password=hellopengxu
+
+
+jdbc.initialSize=3
+jdbc.minIdle=3
+jdbc.maxActive=50
+jdbc.timeBetweenEvictionRunsMillis=60000
+jdbc.minEvictableIdleTimeMillis=3600000
+jdbc.validationQuery=SELECT 'x'
+jdbc.testWhileIdle=true
+jdbc.maxPoolPreparedStatementPerConnectionSize=20
+
+
+

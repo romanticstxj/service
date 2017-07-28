@@ -21,15 +21,16 @@ import com.madhouse.platform.premiummad.util.ResponseUtils;
 @RestController
 @RequestMapping("/advertiser")
 public class AdvertiserController {
-	
+
 	@Autowired
 	private IAdvertiserService advertiserService;
-	
+
 	/**
-     * DSP端提交广告主
-     * @return advertiserDto
-	 * @throws Exception 
-     */
+	 * DSP端提交广告主
+	 * 
+	 * @return advertiserDto
+	 * @throws Exception
+	 */
 	@TokenFilter
 	@RequestMapping("/upload")
 	public ResponseDto<Void> list(@RequestBody AdvertiserDto advertiserDto, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
@@ -39,13 +40,15 @@ public class AdvertiserController {
 		advertiserService.upload(entity);
 		return ResponseUtils.response(StatusCode.SC200);
 	}
-	
+
 	/**
-     * DSP端查询广告主审核状态
-     * @param ids DSP平台定义的广告主 ID ，多个 广告主 ID 可用半角 【,】间隔；
-     * @return advertiserAuditResultDtos
-	 * @throws Exception 
-     */
+	 * DSP端查询广告主审核状态
+	 * 
+	 * @param ids
+	 *            DSP平台定义的广告主 ID ，多个 广告主 ID 可用半角 【,】间隔；
+	 * @return advertiserAuditResultDtos
+	 * @throws Exception
+	 */
 	@TokenFilter
 	@RequestMapping("/status")
 	public ResponseDto<AdvertiserAuditResultDto> list(@RequestParam(value = "ids", required = false) String ids, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
