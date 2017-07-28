@@ -477,7 +477,8 @@
 		                	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
 		                    "status": "<integer||comment:状态(0: 停用, 1: 启用)>",
 		                    "createdTime": "<||date||comment:创建时间>",
-		                    "bidPercent": "<integer||comment:加价百分比>"
+		                    "bidPercent": "<integer||comment:加价百分比>",
+		                    "token": "<*||string||comment:dsp token>"
                         }
                     ]
                 }
@@ -522,9 +523,10 @@
                         	"id": "<*||integer||comment:dspid>",
                         	"name": "<*||string||comment:需求方平台名称>",
 		                	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
-		                	"bidUrl": "<string||comment:DSP URL>",
 		                    "status": "<integer||comment:状态(0: 停用, 1: 启用)>",
-		                    "bidPercent": "<integer||comment:加价百分比>"
+		                    "createdTime": "<||date||comment:创建时间>",
+		                    "bidPercent": "<integer||comment:加价百分比>",
+		                    "token": "<*||string||comment:dsp token>"
                         }
                     ]
                 }

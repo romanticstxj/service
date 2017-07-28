@@ -31,4 +31,15 @@ public class DspRule extends BaseRule{
         
 		return dtos;
 	}
+	
+	public static List<DspDto> convertToDtoList(List<Dsp> entities, ArrayList<DspDto> dtos) {
+        //copy entity to dto
+		BeanUtils.copyList(entities,dtos,DspDto.class);
+        for(int i=0; i<dtos.size(); i++){
+    		String deliveryTypeStr = StringUtils.convertSingleChoiceToMultiChoice((int)entities.get(i).getDeliveryType());
+    		dtos.get(i).setDeliveryType(deliveryTypeStr);
+        }
+        
+        return dtos;
+	}
 }

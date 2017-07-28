@@ -81,18 +81,8 @@ public class AdspaceController {
 				mediaIds = null;
 			}
 			List<Adspace> adspaces = adspaceService.queryAllByParams(mediaIds, status);
-			List<AdspaceDto> adspaceDtos = new ArrayList<>();
-	        BeanUtils.copyList(adspaces,adspaceDtos,AdspaceDto.class,"bidFloor");
-	        processAdspaceDto(adspaces, adspaceDtos);
-	        return ResponseUtils.response(StatusCode.SC20000,adspaceDtos);
-		}
-	}
-	
-	private void processAdspaceDto(List<Adspace> adspaces, List<AdspaceDto> adspaceDtos) {
-		//convert bid floor unit from Fen to Yuan for displaying
-		for(int i=0; i<adspaceDtos.size(); i++){
-			Integer bidFloorUnitFen = adspaces.get(i).getBidFloor();
-			adspaceDtos.get(i).setBidFloor((double)bidFloorUnitFen / 100);
+			List<AdspaceDto> result = AdspaceRule.convertToDtoList(adspaces, new ArrayList<AdspaceDto>());
+	        return ResponseUtils.response(StatusCode.SC20000, result);
 		}
 	}
 	

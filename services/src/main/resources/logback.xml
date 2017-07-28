@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<property name="LOG_ROOT_HOME" value="/services/logs" />
+	<property name="LOG_ROOT_HOME" value="logs" />
 	<property name="APP_NAME" value="premiummad" />
 	<property name="LOG_HOME" value="${LOG_ROOT_HOME}/${APP_NAME}" />
 
@@ -15,7 +15,7 @@
 		<file>${LOG_HOME}/services.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${LOG_HOME}/services-%d{yyyy-MM-dd}.log</fileNamePattern>
-			<maxHistory>2</maxHistory>
+			<maxHistory>90</maxHistory>
 		</rollingPolicy>
 		<encoder>
 			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n </pattern>
@@ -26,7 +26,7 @@
 		<file>${LOG_HOME}/error.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${LOG_HOME}/error-%d{yyyy-MM-dd}.log</fileNamePattern>
-			<maxHistory>2</maxHistory>
+			<maxHistory>90</maxHistory>
 		</rollingPolicy>
 		<encoder>
 			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n </pattern>
@@ -35,7 +35,6 @@
 
 	<root level="DEBUG">
 		<appender-ref ref="stdout" />
-		<appender-ref ref="premiummadAppender" />
 	</root>
 
 	<logger name="premiummad" level="DEBUG" additivity="false">
