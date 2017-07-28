@@ -28,5 +28,11 @@ public class UserAuthServiceImpl implements IUserAuthService {
 		String[] idStrs = StringUtils.splitIds(adspaceIds);
 		return userAuthDao.queryAdspaceIdList(userId, idStrs);
 	}
+	
+	@Override
+	public List<Integer> queryPolicyIdList(Integer userId, String policyIds) {
+		String[] idStrs = StringUtils.splitIds(policyIds);
+		return userAuthDao.queryPolicyIdList(userId, idStrs);
+	}
 
 }

@@ -22,6 +22,7 @@ import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.DspMapping;
+import com.madhouse.platform.premiummad.rule.AdspaceRule;
 import com.madhouse.platform.premiummad.service.IAdspaceService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
@@ -50,16 +51,20 @@ public class AdspaceController {
 	 */
 	@RequestMapping("/list")
     public ResponseDto<AdspaceDto> list(@RequestParam(value="ids", required=false) String mediaIds,
+    		@RequestParam(value="status", required=false) Integer status,
     		@RequestParam(value="userId", required=false) Integer userIdByGet,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId,
     		HttpServletRequest request) throws Exception {
+		AdspaceRule.checkStatus(status);
+		
 		//获得userId，可以从url中获得（方便通过get请求获取数据），更为一般的是从requestHeader里获取
 		if(userIdByGet != null){ //优先获取get请求的userId参数
 			userId = userIdByGet;
 		}
+		
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
 		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
-		return listByMediaIds(returnedMediaIds);
+		return listByParams(returnedMediaIds, status);
     }
 	
 	/**
@@ -67,15 +72,15 @@ public class AdspaceController {
 	 * @param ids
 	 * @return
 	 */
-	private ResponseDto<AdspaceDto> listByMediaIds(String mediaIds){
+	private ResponseDto<AdspaceDto> listByParams(String mediaIds, Integer status){
 		//无权限查看任何媒体
 		if(mediaIds == null || mediaIds.equals("")){
-	        return ResponseUtils.response(StatusCode.SC20003, null);
+	        return ResponseUtils.response(StatusCode.SC20006, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
-			if(mediaIds.equals(SystemConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
+			if(mediaIds.equals(SystemConstant.OtherConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
 				mediaIds = null;
 			}
-			List<Adspace> adspaces = adspaceService.queryAll(mediaIds);
+			List<Adspace> adspaces = adspaceService.queryAllByParams(mediaIds, status);
 			List<AdspaceDto> adspaceDtos = new ArrayList<>();
 	        BeanUtils.copyList(adspaces,adspaceDtos,AdspaceDto.class,"bidFloor");
 	        processAdspaceDto(adspaces, adspaceDtos);
@@ -98,18 +103,12 @@ public class AdspaceController {
 	 */
 	@RequestMapping("/create")
     public ResponseDto<AdspaceDto> addAdspace(@RequestBody AdspaceDto adspaceDto, 
-    		@RequestHeader(value=SystemConstant.XFROM, required=true) String xFrom) {
-		String fieldName = BeanUtils.hasEmptyField(adspaceDto);
-        if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
-        Integer count = adspaceService.checkName(adspaceDto.getName().trim());
-        if (count > 0) //检查名称
-            return ResponseUtils.response(StatusCode.SC20207,null);
-        Adspace adspace = new Adspace();
-        BeanUtils.copyProperties(adspaceDto, adspace, SystemConstant.ADSPACE_BID_FLOOR);
-        BeanUtils.setCreateParam(adspace);
-        adspaceService.insert(adspace, adspaceDto.getBidFloor(), xFrom);
-        return ResponseUtils.response(StatusCode.SC20000,null);
+    		@RequestHeader(value=SystemConstant.Request.XFROM, required=true) String xFrom) {
+		AdspaceRule.validateDto(adspaceDto);
+        Adspace adspace = AdspaceRule.convertToModel(adspaceDto, new Adspace());
+        adspaceService.insert(adspace, xFrom);
+        List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
+        return ResponseUtils.response(StatusCode.SC20000, result);
 	}
 	
 	/**
@@ -130,21 +129,10 @@ public class AdspaceController {
 		}
 		
 		Adspace adspace = adspaceService.queryAdspaceById(id);
-		AdspaceDto adspaceDto = new AdspaceDto();
-        BeanUtils.copyProperties(adspace,adspaceDto,"bidFloor");
-        List<AdspaceDto> adspaceDtos = new ArrayList<>();
-        adspaceDtos.add(adspaceDto);
-        processAdspaceDto(adspace,adspaceDto);
-        return ResponseUtils.response(StatusCode.SC20000,adspaceDtos);
+		List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
+        return ResponseUtils.response(StatusCode.SC20000,result);
     }
 	
-	private void processAdspaceDto(Adspace adspace, AdspaceDto adspaceDto) {
-		// TODO Auto-generated method stub
-		Integer bidFloorUnitFen = adspace.getBidFloor();
-		Double bidFloor =  (double)bidFloorUnitFen / 100;
-		adspaceDto.setBidFloor(bidFloor);
-	}
-
 	/**
 	 * 更新广告位
 	 * @param adspaceDto
@@ -152,21 +140,11 @@ public class AdspaceController {
 	 */
 	@RequestMapping("/update")
     public ResponseDto<AdspaceDto> updateAdspace(@RequestBody @Validated(Update.class) AdspaceDto adspaceDto) {
-		String fieldName = BeanUtils.hasEmptyField(adspaceDto);
-        if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
-        Adspace adspace = adspaceService.queryAdspaceById(adspaceDto.getId());
-        if (adspace == null)
-            return ResponseUtils.response(StatusCode.SC20002, null);
-        if (!adspaceDto.getName().equals(adspaceDto.getName())) { //名称不相等,检查名称
-            Integer count = adspaceService.checkName(adspaceDto.getName().trim());
-            if (count > 0)
-                return ResponseUtils.response(StatusCode.SC20207,null);
-        }
-        BeanUtils.copyProperties(adspaceDto, adspace);
-        BeanUtils.setUpdateParam(adspace);
-        adspaceService.update(adspace, adspaceDto.getBidFloor());
-        return ResponseUtils.response(StatusCode.SC20000,null);
+		AdspaceRule.validateDto(adspaceDto);
+        Adspace adspace = AdspaceRule.convertToModel(adspaceDto, new Adspace());
+        adspaceService.update(adspace);
+        List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
+        return ResponseUtils.response(StatusCode.SC20000, result);
     }
 	
 	/**
@@ -232,6 +210,7 @@ public class AdspaceController {
 		AdspaceMapping adspaceMapping = adspaceService.queryAdspaceMappingById(id);
 		AdspaceMappingDto adspaceMappingDto = new AdspaceMappingDto();
 		BeanUtils.copyProperties(adspaceMapping, adspaceMappingDto);
+		adspaceMappingDto.setAdspaceId(id);
 		List<AdspaceMappingDto> result = new ArrayList<AdspaceMappingDto>();
 		result.add(adspaceMappingDto);
 		return ResponseUtils.response(StatusCode.SC20000,result);
@@ -271,6 +250,42 @@ public class AdspaceController {
   		//更新映射关系
   		StatusCode statusCode = adspaceService.updateAdspaceMapping(adspaceMapping);
 		return ResponseUtils.response(statusCode,null);
+	}
+	
+	/**
+	 * 添加我方广告位和媒体、dsp方广告位的映射
+	 * @param adspaceMappingDto
+	 * @return
+	 */
+	@RequestMapping("/mapping/relate")
+	public ResponseDto<AdspaceDto> relateAdspaceMapping(@RequestBody AdspaceMappingDto adspaceMappingDto) {
+		//对dto表单做check
+		String fieldName = BeanUtils.hasEmptyField(adspaceMappingDto);
+        if (fieldName != null)
+            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
+        String mediaAdspaceKey = adspaceMappingDto.getMediaAdspaceKey();
+        List<DspMappingDto> dspMappingDtos = adspaceMappingDto.getDspMappings();
+        //媒体映射信息和dsp映射信息不能全为空
+        if(StringUtils.isEmpty(mediaAdspaceKey) && ObjectUtils.isEmpty(dspMappingDtos)){
+        	adspaceService.removeAdspaceMapping(adspaceMappingDto.getAdspaceId());
+        	return ResponseUtils.response(StatusCode.SC20204, null);
+        }
+        
+        AdspaceMapping adspaceMapping = new AdspaceMapping();
+        BeanUtils.copyProperties(adspaceMappingDto, adspaceMapping, "dspMappings");
+        List<DspMapping> dspMappings = new ArrayList<DspMapping>();
+        BeanUtils.copyList(adspaceMappingDto.getDspMappings(), dspMappings, DspMapping.class);
+        adspaceMapping.setDspMappings(dspMappings);
+        BeanUtils.setCreateParam(adspaceMapping);
+        //分解出广告位和dsp的关联信息，插入数据库
+  		Integer adspaceId = adspaceMappingDto.getAdspaceId(); //我方广告位id
+  		for(int i=0; i<dspMappings.size(); i++){ 
+  			dspMappings.get(i).setAdspaceId(adspaceId);
+  			BeanUtils.setCreateParam(dspMappings.get(i));
+  		}
+  		
+  		adspaceService.createAndUpdateAdspaceMapping(adspaceMapping);
+		return ResponseUtils.response(StatusCode.SC20000,null);
 	}
 	
 }

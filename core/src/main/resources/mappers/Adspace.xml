@@ -47,8 +47,9 @@
         <result property="adspaceId" column="adspaceId1" jdbcType="INTEGER" />
         <result property="mediaAdspaceKey" column="media_adspace_key" jdbcType="VARCHAR" />
         <collection property="dspMappings" ofType="com.madhouse.platform.premiummad.entity.DspMapping" column="adspaceId2">  
+            <result property="adspaceId" column="adspaceId2" jdbcType="INTEGER" />
             <result property="dspId" column="dsp_id" jdbcType="INTEGER" />
-            <result property="dspMediaId" column="dsp_media_id" jdbcType="INTEGER" />
+            <result property="dspMediaId" column="dsp_media_id" jdbcType="VARCHAR" />
             <result property="dspAdspaceKey" column="dsp_adspace_key" jdbcType="VARCHAR" />
         </collection>  
     </resultMap>
@@ -85,19 +86,23 @@
 		${alias}.material_size, ${alias}.bid_floor, ${alias}.created_time, ${alias}.status
 	</sql>
 	
-	<select id="queryAll" parameterType="string" resultMap="baseResult">
+	<select id="queryAllByParams" parameterType="string" resultMap="baseResult">
 		SELECT 
-		<include refid="baseList">
+		<include refid="baseColumns">
             <property name="alias" value="a" />
         </include>, m.name mediaName, l.name layoutName
         FROM mad_sys_adspace a 
         LEFT JOIN mad_sys_media m ON m.id = a.media_id
-        LEFT JOIN mad_dict_layout l ON a.layout = l.code
+        LEFT JOIN mad_dict_layout l ON a.layout = l.code AND a.adtype = l.ad_type AND a.terminal_type = l.terminal_type
+        WHERE 1=1
         <if test="idStrs != null and idStrs.length > 0">
-        	WHERE m.id IN 
+        	AND m.id IN 
         	<foreach collection="idStrs" item="mediaId" index="index" open="(" close=")" separator=",">
             	#{mediaId,jdbcType=INTEGER}
             </foreach>
+        </if>
+        <if test="status != null">
+        	AND a.status = #{status, jdbcType=INTEGER}
         </if>
         ORDER BY a.id
 	</select>
@@ -177,7 +182,6 @@
         UPDATE mad_sys_adspace
         <set>
               <if test="name != null">name = #{name},</if>
-              <if test="adspaceKey != null">adspace_key = #{adspaceKey},</if>
               <if test="mediaId != null">media_id = #{mediaId},</if>
               <if test="terminalType != null">terminal_type = #{terminalType},</if>
               <if test="terminalOs != null">terminal_os = #{terminalOs},</if>
@@ -208,13 +212,23 @@
         WHERE id = #{id}
     </update>
     
+    <update id="updateAdspaceKey" parameterType="com.madhouse.platform.premiummad.entity.Adspace">
+        UPDATE mad_sys_adspace
+        <set>
+              <if test="adspaceKey != null">adspace_key = #{adspaceKey},</if>
+              <if test="updatedUser != null">updated_user = #{updatedUser},</if>
+              <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    
     <select id="queryAdspaceById" parameterType="integer" resultMap="baseResult">
 		SELECT 
 		<include refid="baseColumns">
             <property name="alias" value="a" />
         </include>, l.name layoutName, m.name mediaName
         FROM mad_sys_adspace a
-        LEFT JOIN mad_dict_layout l ON a.layout = l.code
+        LEFT JOIN mad_dict_layout l ON a.layout = l.code AND a.adtype = l.ad_type AND a.terminal_type = l.terminal_type
         LEFT JOIN mad_sys_media m ON a.media_id = m.id
         WHERE a.id = #{id}
 	</select>
@@ -253,21 +267,21 @@
     </insert>
     
     <insert id="insertAdspaceDspMapping" parameterType="java.util.List">
-    		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
-		        SELECT LAST_INSERT_ID()  
-		    </selectKey>  
+   		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
+	        SELECT LAST_INSERT_ID()  
+	    </selectKey>  
            	INSERT INTO mad_sys_adspace_mapping_dsp (adspace_id, dsp_id, dsp_media_id, 
           		dsp_adspace_key,created_time, status) VALUES
-          		<foreach collection="dspMappings" index="index" item="dspMapping" separator=",">
-          			(
-          				#{dspMapping.adspaceId},
-          				#{dspMapping.dspId},
-          				#{dspMapping.dspMediaId},
-          				#{dspMapping.dspAdspaceKey},
-          				#{dspMapping.createdTime},
-          				1
-          			)
-        		</foreach>
+	          		<foreach collection="dspMappings" index="index" item="dspMapping" separator=",">
+	          			(
+	          				#{dspMapping.adspaceId},
+	          				#{dspMapping.dspId},
+	          				#{dspMapping.dspMediaId},
+	          				#{dspMapping.dspAdspaceKey},
+	          				#{dspMapping.createdTime},
+	          				1
+	          			)
+	        		</foreach>
     </insert>
     
     <select id="queryAdspaceMediaMapping" parameterType="com.madhouse.platform.premiummad.entity.AdspaceMapping" 

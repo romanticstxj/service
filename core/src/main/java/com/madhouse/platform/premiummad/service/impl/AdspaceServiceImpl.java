@@ -1,6 +1,5 @@
 package com.madhouse.platform.premiummad.service.impl;
 
-import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,13 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
-import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.DspMapping;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.service.IAdspaceService;
+import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Service
@@ -27,19 +26,20 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	private AdspaceDao adspaceDao;
 	
 	@Override
-	public List<Adspace> queryAll(String ids) {
+	public List<Adspace> queryAllByParams(String ids, Integer status) {
 		String[] idStrs = StringUtils.splitIds(ids);
-		return adspaceDao.queryAll(idStrs);
+		return adspaceDao.queryAllByParams(idStrs, status);
 	}
 
 	@Override
-	public Integer insert(Adspace adspace, Double bidFloor, String xFrom) {
-		preprocessAdspaceParams(adspace, bidFloor);
+	public Integer insert(Adspace adspace, String xFrom) {
+		Integer count = checkName(adspace.getName().trim());
+        if (count > 0) //检查名称
+        	throw new BusinessException(StatusCode.SC20207);
 		adspaceDao.insert(adspace);
         
         postprocessAdspaceParams(adspace, xFrom);
         return updateAdspaceKey(adspace);
-        
 	}
 	
 	private void postprocessAdspaceParams(Adspace adspace, String xFrom) {
@@ -52,21 +52,22 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		adspace.setAdspaceKey(truncatedAdspaceKey);
 	}
 
-	private void preprocessAdspaceParams(Adspace adspace, Double bidFloor) {
-		//把页面上的底价（元）转换成数据库需要的底价（分）
-		Integer bidFloorUnitFen = Integer.parseInt(new DecimalFormat(SystemConstant.ZERO).format(bidFloor * SystemConstant.RATIO_FEN_TO_YUAN));
-		adspace.setBidFloor(bidFloorUnitFen);
-		
-	}
-
 	@Override
 	public Adspace queryAdspaceById(Integer adspaceId) {
 		return adspaceDao.queryAdspaceById(adspaceId);
 	}
 
 	@Override
-	public Integer update(Adspace adspace, Double bidFloor) {
-		preprocessAdspaceParams(adspace, bidFloor);
+	public Integer update(Adspace adspace) {
+		Adspace queryResult = queryAdspaceById(adspace.getId());
+        if (queryResult == null)
+        	throw new BusinessException(StatusCode.SC20002);
+        if (!queryResult.getName().equals(adspace.getName())) { //名称不相等,检查名称
+            Integer count = checkName(adspace.getName().trim());
+            if (count > 0)
+            	throw new BusinessException(StatusCode.SC20207);
+        }
+        
 		return adspaceDao.update(adspace);
 	}
 	
@@ -75,7 +76,8 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		if(queryResult > 0){
 			throw new BusinessException(StatusCode.SC20206);
 		}
-		return adspaceDao.update(adspace);
+		BeanUtils.setUpdateParam(adspace);
+		return adspaceDao.updateAdspaceKey(adspace);
 	}
 
 	@Override
@@ -177,6 +179,9 @@ public class AdspaceServiceImpl implements IAdspaceService {
 			return StatusCode.SC20205;
 		}
 		
+		adspaceDao.removeAdspaceMediaMapping(adspaceMapping.getAdspaceId());
+		adspaceDao.removeAdspaceDspMapping(adspaceMapping.getAdspaceId());
+		
 		String mediaAdspaceKey = adspaceMapping.getMediaAdspaceKey();
 		if(!StringUtils.isEmpty(mediaAdspaceKey)){ //媒体映射信息存在
 			AdspaceMapping queryParam = new AdspaceMapping();
@@ -195,13 +200,48 @@ public class AdspaceServiceImpl implements IAdspaceService {
 			}
 		}
 		
-		adspaceDao.removeAdspaceMediaMapping(adspaceMapping.getAdspaceId());
-		adspaceDao.removeAdspaceDspMapping(adspaceMapping.getAdspaceId());
+		
 		adspaceDao.insertAdspaceMediaMapping(adspaceMapping);
 		adspaceDao.insertAdspaceDspMapping(dspMappings);
 		
 		return StatusCode.SC20000;
 	}
+	
+	@Override
+	public int createAndUpdateAdspaceMapping(AdspaceMapping adspaceMapping) {
+		AdspaceMapping queryObject = queryAdspaceMappingById(adspaceMapping.getAdspaceId());
+		if(queryObject != null){ //数据库里有映射信息，先删除
+			removeAdspaceMapping(adspaceMapping.getAdspaceId());
+		}
+		
+		//插入更新数据前做check
+		String mediaAdspaceKey = adspaceMapping.getMediaAdspaceKey();
+		if(!StringUtils.isEmpty(mediaAdspaceKey)){ //媒体映射信息存在
+			AdspaceMapping queryParam = new AdspaceMapping();
+			queryParam.setMediaAdspaceKey(mediaAdspaceKey);
+			int queryResult = queryAdspaceMediaMapping(queryParam);
+			if(queryResult > 0){ //媒体方广告位Key不可重复
+				throw new BusinessException(StatusCode.SC20201);
+			}
+		}
+		
+		List<DspMapping> dspMappings = adspaceMapping.getDspMappings();
+		if(dspMappings != null && dspMappings.size() > 0){
+			boolean result = isDspMappingDuplicated(dspMappings);
+			if(!result){ //DSP ID不可重复
+				throw new BusinessException(StatusCode.SC20202);
+			}
+		}
+		
+		if(dspMappings != null && dspMappings.size()>0){
+			adspaceDao.insertAdspaceDspMapping(dspMappings);
+		}
+		return adspaceDao.insertAdspaceMediaMapping(adspaceMapping);
+	}
 
+	public int removeAdspaceMapping(Integer adspaceId) {
+		adspaceDao.removeAdspaceMediaMapping(adspaceId);
+		return adspaceDao.removeAdspaceDspMapping(adspaceId);
+	}
 	
 }

@@ -3,11 +3,13 @@ package com.madhouse.platform.premiummad.dao;
 import java.util.List;
 
 import com.madhouse.platform.premiummad.entity.Dict;
+import com.madhouse.platform.premiummad.entity.Location;
 
 public interface DictDao {
 
-	public List<Dict> queryAllMediaCategories();
+	List<Dict> queryAllMediaCategories();
 
-	public List<Dict> queryAllAdspaceLayout(Dict dict);
+	List<Dict> queryAllAdspaceLayout(Dict dict);
 
+	List<Location> queryAllLocations();
 }

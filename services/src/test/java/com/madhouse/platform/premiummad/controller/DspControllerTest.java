@@ -9,8 +9,8 @@ public class DspControllerTest {
 	@Test
 	public void add(){
 		DspDto dsp = new DspDto();
-		dsp.setName("dspName1");
-		dsp.setDeliveryType((byte) 2);
+		dsp.setName("dspName22");
+		dsp.setDeliveryType("1,2,8");
 		dsp.setBidUrl("http://baidu.com");
 		String url = "http://localhost:8080/services/dsp/create";
 		String dspStr = JSON.toJSONString(dsp);
@@ -19,16 +19,16 @@ public class DspControllerTest {
 	
 	@Test
 	public void get(){
-		String url = "http://localhost:8080/services/dsp/detail?id=1";
+		String url = "http://localhost:8080/services/dsp/detail?id=600004";
 		HttpUtilTest.httpGet(url);
 	}
 	
 	@Test
 	public void update(){
 		DspDto dsp = new DspDto();
-		dsp.setId(600002);
-		dsp.setName("dspName2");
-		dsp.setDeliveryType((byte) 8);
+		dsp.setId(600004);
+		dsp.setName("dspName22");
+		dsp.setDeliveryType("2,8");
 		dsp.setBidUrl("http://baidu.com");
 		dsp.setStatus(2);
 		String url = "http://localhost:8080/services/dsp/update";
@@ -38,8 +38,8 @@ public class DspControllerTest {
 	@Test
 	public void updateStatus(){
 		DspDto dsp = new DspDto();
-		dsp.setId(600002);
-//		dsp.setStatus(1);
+		dsp.setId(600004);
+		dsp.setStatus(1);
 		String url = "http://localhost:8080/services/dsp/updateStatus";
 		HttpUtilTest.httpPost(url, JSON.toJSONString(dsp));
 	}
@@ -49,4 +49,7 @@ public class DspControllerTest {
 		String url = "http://localhost:8080/services/dsp/list?ids=1,2,600003";
 		HttpUtilTest.httpGet(url);
 	}
+	
+	
+	
 }

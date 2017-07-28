@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.madhouse.platform.premiummad.dao.DictDao;
 import com.madhouse.platform.premiummad.entity.Dict;
+import com.madhouse.platform.premiummad.entity.Location;
 import com.madhouse.platform.premiummad.service.IDictService;
 
 @Service
@@ -26,5 +27,11 @@ public class DictServiceImpl implements IDictService {
 	public List<Dict> queryAllAdspaceLayout(Dict dict) {
 		return dictDao.queryAllAdspaceLayout(dict);
 	}
+	
+	@Override
+	public List<Location> queryAllLocations() {
+		return dictDao.queryAllLocations();
+	}
+
 
 }
