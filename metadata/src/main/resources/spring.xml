@@ -71,7 +71,8 @@
     
     <!-- 基于xml配置 -->
     <task:scheduled-tasks>
-        <task:scheduled ref="mediaTask" method="run" cron="${cron.db2RedisTask}"/>
+        <!-- <task:scheduled ref="mediaTask" method="run" cron="${cron.mediaTask}"/> -->
+        <task:scheduled ref="dspTask" method="run" cron="${cron.dspTask}"/>
     </task:scheduled-tasks>
 
 

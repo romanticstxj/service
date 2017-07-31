@@ -136,18 +136,30 @@
         <task:scheduled ref="sohutvStatusApiTask" method="getStatusDetail" cron="${cron.sohutvStatusApiTask}"/>
         <task:scheduled ref="sohutvUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>
 		
-		<!-- Dianping -->
+		<!-- Dianping
  		<task:scheduled ref="dianpingMaterialUploadApiTask" method="uploadMaterial" cron="${cron.dianpingMaterialUploadApiTask}"/>
-        <task:scheduled ref="dianpingGetStatusApiTask" method="getStatusResponse" cron="${cron.dianpingGetStatusApiTask}"/>
+        <task:scheduled ref="dianpingGetStatusApiTask" method="getStatusResponse" cron="${cron.dianpingGetStatusApiTask}"/>-->
         
-        <!-- moji -->
+        <!-- moji
         <task:scheduled ref="mojiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.mojiMaterialUploadApiTask}"/>
-        <task:scheduled ref="mojiMaterialStatusApiTask" method="getStatusResponse" cron="${cron.mojiMaterialStatusApiTask}"/>
+        <task:scheduled ref="mojiMaterialStatusApiTask" method="getStatusResponse" cron="${cron.mojiMaterialStatusApiTask}"/> -->
         
-        <!-- iqiyi -->
+        <!-- iqiyi
         <task:scheduled ref="iQiyiCustomerCreateOrUpdateApiTask" method="createOrUpadate" cron="${cron.iqiyiCustomerCreateApiTask}"/>
         <task:scheduled ref="iQiyiCustomerStatusApiTask" method="batchStatus" cron="${cron.iqiyiCustomerListApiTask}"/>
         <task:scheduled ref="iQiyiMaterialStatusApiTask" method="getStatusDetail" cron="${cron.iqiyiMaterialStatusApiTask}"/>
-        <task:scheduled ref="iQiyiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.iqiyiMaterialUploadApiTask}"/>
+        <task:scheduled ref="iQiyiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.iqiyiMaterialUploadApiTask}"/> -->
+        
+        <!-- toutiao
+        <task:scheduled ref="toutiaoMaterialUploadApiTask" method="uploadMaterial" cron="${cron.toutiaoMaterialUploadApiTask}"/>
+        <task:scheduled ref="toutiaoMaterialStatusApiTask" method="getStatusDetail" cron="${cron.toutiaoMaterialStatusApiTask}"/> -->
+        
+        <!-- Momo
+        <task:scheduled ref="momoMaterialUploadApiTask" method="uploadMaterial" cron="${cron.momoMaterialUploadApiTask}"/>
+        <task:scheduled ref="momoGetStatusApiTask" method="getStatusResponse" cron="${cron.momoMaterialStatusApiTask}"/> -->
+        
+        <!-- Letv
+        <task:scheduled ref="letvUploadMaterialApiTask" method="uploadMaterial" cron="${cron.momoMaterialUploadApiTask}"/>
+        <task:scheduled ref="letvStatusApiTask" method="getStatusResponse" cron="${cron.momoMaterialStatusApiTask}"/> -->
 	</task:scheduled-tasks>
 </beans>
