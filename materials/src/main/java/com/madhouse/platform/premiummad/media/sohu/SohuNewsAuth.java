@@ -14,7 +14,7 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 @Component
 public class SohuNewsAuth {
 
-	private static final String AUTH_CONSUMER_kEY = "auth_consumer_key";
+	private static final String AUTH_CONSUMER_KEY = "auth_consumer_key";
 
 	private static final String AUTH_NONCE = "auth_nonce";
 
@@ -143,7 +143,7 @@ public class SohuNewsAuth {
 			}
 		}
 		// 加上签名校验参数
-		paramMap.put(AUTH_CONSUMER_kEY, authConsumerKeyValue);
+		paramMap.put(AUTH_CONSUMER_KEY, authConsumerKeyValue);
 		paramMap.put(AUTH_NONCE, getAuthNonce());
 		paramMap.put(AUTH_SIGNATURE_METHOD, AUTH_SIGNATURE_METHOD_VALUE);
 		paramMap.put(AUTH_TIMESTAMP, getAuthTimestamp());
