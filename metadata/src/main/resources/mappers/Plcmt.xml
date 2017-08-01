@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.madhouse.platform.premiummad.dao.PlcmtDao">
+	<resultMap id="baseResult" type="com.madhouse.platform.premiummad.entity.Adspace">
+		<id property="id" column="id" jdbcType="INTEGER" />
+        <result property="name" column="name" jdbcType="VARCHAR" />
+        <result property="adspaceKey" column="adspace_key" jdbcType="VARCHAR" />
+        <result property="mediaId" column="media_id" jdbcType="INTEGER" />
+        <result property="terminalType" column="terminal_type" jdbcType="INTEGER" />
+        <result property="terminalOs" column="terminal_os" jdbcType="INTEGER" />
+        <result property="enableHttps" column="support_https" jdbcType="BIT" />
+        <result property="bidType" column="bid_type" jdbcType="INTEGER" />
+        <result property="bidFloor" column="bid_floor" jdbcType="INTEGER" />
+        <result property="adType" column="adtype" jdbcType="INTEGER" />
+        <result property="layout" column="layout" jdbcType="INTEGER" />
+        <result property="materialType" column="material_type" jdbcType="INTEGER" />
+        <result property="materialSize" column="material_size" jdbcType="VARCHAR" />
+        <result property="materialMaxKbyte" column="material_max_kbyte" jdbcType="INTEGER" />
+        <result property="logoType" column="logo_type" jdbcType="INTEGER" />
+        <result property="logoSize" column="logo_size" jdbcType="VARCHAR" />
+        <result property="logoMaxKbyte" column="logo_max_kbyte" jdbcType="INTEGER" />
+        <result property="titleMaxLength" column="title_max_length" jdbcType="INTEGER" />
+        <result property="descMaxLength" column="desc_max_length" jdbcType="INTEGER" />
+        <result property="mainPicNumber" column="main_pic_number" jdbcType="INTEGER" />
+        <result property="videoType" column="video_type" jdbcType="INTEGER" />
+        <result property="videoSize" column="video_size" jdbcType="VARCHAR" />
+        <result property="videoMaxKbyte" column="video_max_kbyte" jdbcType="INTEGER" />
+        <result property="videoDuration" column="video_duration" jdbcType="VARCHAR" />
+        <result property="status" column="status" jdbcType="INTEGER" />
+        <result property="description" column="description" jdbcType="VARCHAR" />
+	</resultMap>
+	
+    <select id="queryAll" resultMap="baseResult">
+		select * from mad_sys_adspace_copy WHERE status >=0 
+	</select>
+	
+	
+
+</mapper>
