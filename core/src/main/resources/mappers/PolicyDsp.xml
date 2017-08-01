@@ -122,6 +122,27 @@
       </if>
     </trim>
   </insert>
+  
+  	<insert id="batchInsert" parameterType="java.util.List">
+   		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
+	        SELECT LAST_INSERT_ID()  
+	    </selectKey>  
+          		INSERT INTO mad_sys_policy_dsp (policy_id, dsp_id, 
+          		status, created_user, created_time, 
+		      	updated_user, updated_time) VALUES
+         		<foreach collection="policyDsps" index="index" item="policyDsp" separator=",">
+         			(
+         				#{policyDsp.policyId},
+         				#{policyDsp.dspId},
+         				1,
+         				#{policyDsp.createdUser},
+         				#{policyDsp.createdTime},
+         				#{policyDsp.updatedUser},
+         				#{policyDsp.updatedTime}
+         			)
+       		</foreach>
+ 		</insert>
+  		
   <update id="updateByPrimaryKeySelective" parameterType="com.madhouse.platform.premiummad.entity.PolicyDsp" >
     <!--
       WARNING - @mbggenerated

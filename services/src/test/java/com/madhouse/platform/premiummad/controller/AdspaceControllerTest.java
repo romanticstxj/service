@@ -11,6 +11,8 @@ import com.madhouse.platform.premiummad.dto.AdspaceDto;
 import com.madhouse.platform.premiummad.dto.AdspaceMappingDto;
 import com.madhouse.platform.premiummad.dto.DspMappingDto;
 
+import redis.clients.jedis.Jedis;
+
 public class AdspaceControllerTest {
 	
 	@Test
@@ -65,7 +67,8 @@ public class AdspaceControllerTest {
 	@Test
 	public void mappingDetail(){
 		System.out.println(SystemConstant.Logging.LOGGER_PREMIUMMAD);
-		String link = "http://localhost:8080/services/adspace/mapping/detail?id=200005";
+		String link = "http://172.16.25.48:8080/services/adspace/mapping/detail?id=200005";
+//		String link = "http://localhost:8080/services/adspace/mapping/detail?id=200005";
 		HttpUtilTest.httpGet(link);
 	}
 	
@@ -138,7 +141,20 @@ public class AdspaceControllerTest {
 //		System.out.println(StringUtils.multiValueToSingleValue(new int[]{8,16}));
 //		System.out.println(StringUtils.singleValueToMultiValue(StringUtils.multiValueToSingleValue(new int[]{8,32})));
 //		1 & 2;
+		
+		
 	}
 	
-	
+	@Test 
+	public void test1Normal() { 
+	    Jedis jedis = new Jedis("172.16.25.26"); 
+	    long start = System.currentTimeMillis(); 
+	    for (int i = 0; i < 100000; i++) { 
+	        long result = jedis.del("n" + i); 
+	    } 
+	    
+	    long end = System.currentTimeMillis(); 
+	    System.out.println("Simple SET: " + ((end - start)/1000.0) + " seconds"); 
+	    jedis.disconnect(); 
+	} 
 }

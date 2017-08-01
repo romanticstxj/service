@@ -28,7 +28,7 @@ public class CommonExceptionHandler {
 		if (ex instanceof BusinessException) {
 			return ResponseUtils.response(((BusinessException) ex).getStatusCode(), null, ex.getMessage());
 		} else {
-			return ResponseUtils.response(StatusCode.SC30001, null);
+			return ResponseUtils.response(StatusCode.SC30001, null, ex.getMessage());
 		}
 	}
 }

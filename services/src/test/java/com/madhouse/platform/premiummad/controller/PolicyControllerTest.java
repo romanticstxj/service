@@ -1,5 +1,6 @@
 package com.madhouse.platform.premiummad.controller;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,10 @@ public class PolicyControllerTest {
 	
 	@Test
 	public void add() throws ParseException{
+		File file = new File("log");
+		file.getAbsolutePath();
 		PolicyDto policyDto = new PolicyDto();
-		policyDto.setName("mypolicy22");
+		policyDto.setName("mypolicy2223");
 		policyDto.setWeight(10);
 		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-07-20"));
 		policyDto.setIsEndDate(0);
@@ -47,11 +50,16 @@ public class PolicyControllerTest {
 		policyAdspaceDtos.add(policyAdspaceDto);
 //		policyAdspaceDto.setAdspace(adspace);
 		
+		List<PolicyDspDto> policyDspDtos = new ArrayList<PolicyDspDto>();
 		PolicyDspDto policyDspDto = new PolicyDspDto();
 		policyDspDto.setDspId(600002);
 		policyDspDto.setStatus((byte) 1);
-		policyDto.setPolicyDsp(policyDspDto);
-		
+		policyDspDtos.add(policyDspDto);
+//		policyDspDto = new PolicyDspDto();
+//		policyDspDto.setDspId(600003);
+//		policyDspDto.setStatus((byte) 0);
+//		policyDspDtos.add(policyDspDto);
+		policyDto.setPolicyDsps(policyDspDtos);
 		String link = "http://localhost:8080/services/policy/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(policyDto));
 	}
@@ -113,10 +121,12 @@ public class PolicyControllerTest {
 		policyAdspaceDtos.add(policyAdspaceDto);
 //		policyAdspaceDto.setAdspace(adspace);
 		
+		List<PolicyDspDto> policyDspDtos = new ArrayList<PolicyDspDto>();
 		PolicyDspDto policyDspDto = new PolicyDspDto();
 		policyDspDto.setDspId(600002);
-		policyDspDto.setStatus((byte) 0);
-		policyDto.setPolicyDsp(policyDspDto);
+		policyDspDto.setStatus((byte) 1);
+		policyDspDtos.add(policyDspDto);
+		policyDto.setPolicyDsps(policyDspDtos);
 		
 		String link = "http://localhost:8080/services/policy/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(policyDto));

@@ -67,7 +67,7 @@ public class PolicyDto implements Serializable{
     
     private List<PolicyAdspaceDto> policyAdspaces;
     
-    private PolicyDspDto policyDsp;
+    private List<PolicyDspDto> policyDsps;
 
 	public Integer getId() {
 		return id;
@@ -261,12 +261,12 @@ public class PolicyDto implements Serializable{
 		this.policyAdspaces = policyAdspaces;
 	}
 
-	public PolicyDspDto getPolicyDsp() {
-		return policyDsp;
+	public List<PolicyDspDto> getPolicyDsps() {
+		return policyDsps;
 	}
 
-	public void setPolicyDsp(PolicyDspDto policyDsp) {
-		this.policyDsp = policyDsp;
+	public void setPolicyDsps(List<PolicyDspDto> policyDsps) {
+		this.policyDsps = policyDsps;
 	}
 
 }
