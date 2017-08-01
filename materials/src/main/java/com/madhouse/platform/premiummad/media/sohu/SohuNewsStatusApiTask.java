@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
+import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.model.SohuContentMaterialResponse;
 import com.madhouse.platform.premiummad.media.model.SohuResponse;
@@ -40,6 +44,9 @@ public class SohuNewsStatusApiTask {
 	@Autowired
 	private IMaterialService materialService;
 	
+	@Autowired
+	private AdvertiserMapper advertiserDao;
+	
 	/**
 	 * 获取素材审核结果
 	 */
@@ -54,9 +61,20 @@ public class SohuNewsStatusApiTask {
 		}
 		
 		for (Material item : unAuditMaterials) {
+			// 获取该素材的广告主,若广告主不存在不做处理
+			String[] advertiserKeys = { item.getAdvertiserKey() };
+			List<Advertiser> advertisers = advertiserDao.selectByAdvertiserKeysAndDspId(advertiserKeys, String.valueOf(item.getDspId()), item.getMediaId());
+			if (advertisers == null || advertisers.size() != 1) {
+				LOGGER.error("广告主不存在[advertiserKey=" + item.getAdvertiserKey() + "dspId=" + item.getDspId() + "]");
+				break;
+			}
+			
 			Map<String, Object> paramMap = new HashMap<>();
-			paramMap.put("customer_key", item.getAdvertiserKey());
+			paramMap.put("customer_key", advertisers.get(0).getMediaAdvertiserKey());
 			paramMap.put("file_source", item.getMediaMaterialKey());
+			paramMap.put("perpage", 50);
+			paramMap.put("page", 1);
+			
 			String request = sohuAuth.setHttpMethod("GET").setApiUrl(materialListUrl).setParamMap(paramMap).buildRequest();
 			String url = materialListUrl + "?" + request;
 			Map<String, Object> objectMap = HttpUtils.get(url);

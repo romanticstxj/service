@@ -9,7 +9,10 @@ public enum MediaMapping {
 	TENCENT(100002, "腾讯"),
 	DIANPING(100003, "美团点评"),
 	MOJI(100004, "墨迹天气"),
-	IQYI(100005, "爱奇艺");
+	IQYI(100005, "爱奇艺"),
+	LETV(100006, "乐视"),
+	MOMO(100007, "陌陌"),
+	TOUTIAO(100008, "今日头条");
 
 	int value;
 	String descrip;

@@ -68,6 +68,7 @@ public class MaterialServiceImpl implements IMaterialService {
 			updateItem.setUpdatedTime(new Date());
 			updateItem.setReason(item.getErrorMessage());
 			updateItem.setMediaMaterialKey(item.getMediaMaterialKey());
+			updateItem.setMediaId(Integer.valueOf(item.getMediaId()));
 			
 			int effortRows = materialDao.updateByMediaAndMediaMaterialKey(updateItem);
 			if (effortRows != 1) {

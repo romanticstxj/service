@@ -124,20 +124,23 @@ public class SohutvUploadMaterialApiTask {
 		uploadMaterialRequest.setMaterial_name(material.getMaterialName());
 
 		// 素材上传地址，不可重复
-		String path = StringUtils.isEmpty(material.getAdMaterials()) ? "" : material.getAdMaterials();
-		String url = path.startsWith("http") ? path : "http" + path;
-		uploadMaterialRequest.setFile_source(url);// 物料上传地址
+		uploadMaterialRequest.setFile_source(material.getAdMaterials());// 物料上传地址
 
 		// 曝光监测地址
 		List<String> impUrls = new ArrayList<String>();
 		if (material.getImpUrls() != null && !material.getImpUrls().isEmpty()) {
 			// 素材表里以 |分割
-			String[] impTrackUrlArray = material.getImpUrls().split("|");
+			String[] impTrackUrlArray = material.getImpUrls().split("\\|");
 			if (impTrackUrlArray != null) {
 				for (int i = 0; i < impTrackUrlArray.length; i++) {
+					// 时间
+					if (impTrackUrlArray[i].matches("^-?\\d+$")) {
+						continue;
+					}
+					
 					impUrls.add(impTrackUrlArray[i]);
 					// 媒体最多支持5个
-					if (i == 4) {
+					if (impUrls.size() == 4) {
 						break;
 					}
 				}
@@ -150,7 +153,7 @@ public class SohutvUploadMaterialApiTask {
 		List<String> clkTrackUrl = new ArrayList<String>();
 		if (material.getClkUrls() != null && !material.getClkUrls().isEmpty()) {
 			// 素材表里以 |分割
-			String[] clkTrackUrlArray = material.getClkUrls().split("|");
+			String[] clkTrackUrlArray = material.getClkUrls().split("\\|");
 			if (null != clkTrackUrlArray) {
 				for (int i = 0; i < clkTrackUrlArray.length; i++) {
 					clkTrackUrl.add(clkTrackUrlArray[i]);

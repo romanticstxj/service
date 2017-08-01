@@ -57,7 +57,7 @@ public class SohuNewsUploadMaterialApiTask {
 	 */
 	public void uploadSohuMaterial() {
 		LOGGER.info("++++++++++Sohu News upload material begin+++++++++++");
-
+		
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.SOHUNEWS.getValue(), MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
@@ -128,20 +128,23 @@ public class SohuNewsUploadMaterialApiTask {
 		uploadMaterialRequest.setMaterial_name(material.getMaterialName());
 
 		// 素材上传地址，不可重复
-		String path = StringUtils.isEmpty(material.getAdMaterials()) ? "" : material.getAdMaterials();
-		String url = path.startsWith("http") ? path : "http" + path;
-		uploadMaterialRequest.setFile_source(url);// 物料上传地址
+		uploadMaterialRequest.setFile_source(material.getAdMaterials());// 物料上传地址
 
 		// 曝光监测地址
 		List<String> impUrls = new ArrayList<String>();
 		if (material.getImpUrls() != null && !material.getImpUrls().isEmpty()) {
 			// 素材表里以 |分割
-			String[] impTrackUrlArray = material.getImpUrls().split("|");
+			String[] impTrackUrlArray = material.getImpUrls().split("\\|");
 			if (impTrackUrlArray != null) {
 				for (int i = 0; i < impTrackUrlArray.length; i++) {
+					// 时间
+					if (impTrackUrlArray[i].matches("^-?\\d+$")) {
+						continue;
+					}
+					
 					impUrls.add(impTrackUrlArray[i]);
 					// 媒体最多支持5个
-					if (i == 4) {
+					if (impUrls.size() == 3) {
 						break;
 					}
 				}
@@ -154,12 +157,12 @@ public class SohuNewsUploadMaterialApiTask {
 		List<String> clkTrackUrl = new ArrayList<String>();
 		if (material.getClkUrls() != null && !material.getClkUrls().isEmpty()) {
 			// 素材表里以 |分割
-			String[] clkTrackUrlArray = material.getClkUrls().split("|");
+			String[] clkTrackUrlArray = material.getClkUrls().split("\\|");
 			if (null != clkTrackUrlArray) {
 				for (int i = 0; i < clkTrackUrlArray.length; i++) {
 					clkTrackUrl.add(clkTrackUrlArray[i]);
 					// 媒体最多设置 5 个
-					if (i == 4) {
+					if (i == 3) {
 						break;
 					}
 				}
@@ -235,7 +238,8 @@ public class SohuNewsUploadMaterialApiTask {
 				// 图文信息流
 				if (!StringUtils.isEmpty(material.getDescription())) {
 					SohuSlave text = new SohuSlave();
-					text.setSource(url);// 物料.mp4
+					text.setSource(material.getAdMaterials()
+							);// 物料.mp4
 					text.setAttr("video");
 					slave.add(text);
 				} else {

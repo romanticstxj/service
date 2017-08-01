@@ -56,6 +56,8 @@ public class SohuNewsCustomerListApiTask {
 			Map<String, Object> paramMap = new HashMap<>();
 			paramMap.put("customer_key", item.getMediaAdvertiserKey());
 			paramMap.put("customer_name", item.getAdvertiserName());
+			paramMap.put("perpage", 50);
+			paramMap.put("page", 1);
 			String request = sohuAuth.setHttpMethod("GET").setApiUrl(cutomerListUrl).setParamMap(paramMap).buildRequest();
 			LOGGER.info("SohuNewsCustomerListApiTask.list param request:{}", request);
 			String url = cutomerListUrl + "?" + request;
@@ -92,7 +94,7 @@ public class SohuNewsCustomerListApiTask {
 		// 获取搜狐新闻的审核状态
 		Integer statusNet = sohuCustomerDetail.getStatus();
 		// 根据广告key判断
-		if (unauditAdvertiser.getAdvertiserKey().equals(customerKeyNet)) {
+		if (unauditAdvertiser.getMediaAdvertiserKey().equals(customerKeyNet)) {
 			Integer changedStatusNet = null;
 			// 媒体未审核
 			if (statusNet == 0) {
