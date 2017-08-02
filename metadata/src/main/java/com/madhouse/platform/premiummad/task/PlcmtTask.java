@@ -33,6 +33,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     @Value("${PLACEMENT_META_DATA}")
     private String PLACEMENT_META_DATA;
     
+    @Value("${EXPIRATION_DATE}")
+    private Integer EXPIRATION_DATE;
+    
     @Autowired
     private IPlcmtService plcmtService;
     
@@ -47,81 +50,86 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             long begin = System.currentTimeMillis();
             for (Adspace adspace : listAdspaces) {
                 PlcmtMetaData metaData = new PlcmtMetaData();
-                if(null != adspace){
-                    BeanUtils.copyProperties(adspace, metaData);
-                    //广告类型(1: 普通硬广, 2: 视频, 3: 原生)
-                    switch (adspace.getAdType()) {
-                        case Constant.PlcmtType.BANNER:
-                            metaData.setBanner(getImage(adspace, metaData));
-                            break;
-                        case Constant.PlcmtType.VIDEO:
-                            PlcmtMetaData.Video video = getVideo(adspace, metaData);
-                            switch (adspace.getLayout()) {
-                                case Constant.Layout.VIDEO_201 :
-                                    video.setStartDelay(Constant.StartDelay.BEFORE_COMMENCEMENT);
-                                    video.setLinearity(Constant.Linearity.PATCH_VIDEO);
-                                    break;
-                                case Constant.Layout.VIDEO_202 :
-                                    video.setStartDelay(Constant.StartDelay.IN_THE_POST);
-                                    video.setLinearity(Constant.Linearity.PATCH_VIDEO);
-                                    break;
-                                case Constant.Layout.VIDEO_203 :
-                                    video.setStartDelay(Constant.StartDelay.POST);
-                                    video.setLinearity(Constant.Linearity.PATCH_VIDEO);
-                                    break;
-                                case Constant.Layout.VIDEO_211:
-                                    String[] videoMaterialSize = StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
-                                    video.setW(Integer.parseInt(videoMaterialSize[0]));
-                                    video.setH(Integer.parseInt(videoMaterialSize[1]));
-                                    video.setMimes(queryMimesByType(adspace.getMaterialType()));
-                                    video.setLinearity(Constant.Linearity.SUSPENSION_PAUSE);
-                                    break;
-                                case Constant.Layout.VIDEO_221:
-                                    video.setLinearity(Constant.Linearity.BOOT_VIDEO);
-                                    break;
-                                case Constant.Layout.VIDEO_222:
-                                    video.setLinearity(Constant.Linearity.SHUTDOWN_VIDEO);
-                                    break;
-                                case Constant.Layout.VIDEO_231:
-                                    video.setLinearity(Constant.Linearity.SCREEN_VIDEO);
-                                    break;
-                            }
-                            
-                            metaData.setVideo(video);
-                            break;
-                        case Constant.PlcmtType.NATIVE:
-                            PlcmtMetaData.Native natives = metaData.new Native();
-                            if(adspace.getLayout().equals(Constant.Layout.NATIVE_311)){
-                                PlcmtMetaData.Image nativesImage = metaData.new Image();
-                                String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getVideoSize(), "*");
-                                nativesImage.setW(Integer.parseInt(videoSize[0]));
-                                nativesImage.setH(Integer.parseInt(videoSize[1]));
-                                nativesImage.setMimes(queryMimesByType(adspace.getMaterialType()));
-                                natives.setCover(nativesImage);
-                                natives.setVideo(getVideo(adspace, metaData));
-                            } else {
-                                metaData.setLayout(adspace.getLayout()+adspace.getMainPicNumber());
-                                natives.setCover(getImage(adspace, metaData));
-                            }
-                            PlcmtMetaData.Image nativesIcon = metaData.new Image();
-                            if(!org.apache.commons.lang3.StringUtils.isEmpty(adspace.getLogoSize())){
-                                String[] nativesIconSize = StringUtils.tokenizeToStringArray(adspace.getLogoSize(), "*");
-                                nativesIcon.setW(Integer.parseInt(nativesIconSize[0]));
-                                nativesIcon.setH(Integer.parseInt(nativesIconSize[1]));
-                            }
-                            if(!org.apache.commons.lang3.StringUtils.isEmpty(adspace.getLogoType()+"")){
-                                nativesIcon.setMimes(queryMimesByType(adspace.getLogoType()));
-                            }
-                            natives.setIcon(nativesIcon);
-                            natives.setTitle(adspace.getTitleMaxLength() > 0 ? adspace.getTitleMaxLength() : 0);
-                            natives.setDesc(adspace.getDescMaxLength() > 0 ? adspace.getDescMaxLength() : 0);
-                            metaData.setNatives(natives);
-                            break;
+                try {
+                    if(null != adspace){
+                        BeanUtils.copyProperties(adspace, metaData);
+                        //广告类型(1: 普通硬广, 2: 视频, 3: 原生)
+                        switch (adspace.getAdType()) {
+                            case Constant.PlcmtType.BANNER:
+                                metaData.setBanner(getImage(adspace, metaData));
+                                break;
+                            case Constant.PlcmtType.VIDEO:
+                                PlcmtMetaData.Video video = getVideo(adspace, metaData);
+                                switch (adspace.getLayout()) {
+                                    case Constant.Layout.VIDEO_201 :
+                                        video.setStartDelay(Constant.StartDelay.BEFORE_COMMENCEMENT);
+                                        video.setLinearity(Constant.Linearity.PATCH_VIDEO);
+                                        break;
+                                    case Constant.Layout.VIDEO_202 :
+                                        video.setStartDelay(Constant.StartDelay.IN_THE_POST);
+                                        video.setLinearity(Constant.Linearity.PATCH_VIDEO);
+                                        break;
+                                    case Constant.Layout.VIDEO_203 :
+                                        video.setStartDelay(Constant.StartDelay.POST);
+                                        video.setLinearity(Constant.Linearity.PATCH_VIDEO);
+                                        break;
+                                    case Constant.Layout.VIDEO_211:
+                                        String[] videoMaterialSize = StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
+                                        video.setW(Integer.parseInt(videoMaterialSize[0]));
+                                        video.setH(Integer.parseInt(videoMaterialSize[1]));
+                                        video.setMimes(queryMimesByType(adspace.getMaterialType()));
+                                        video.setLinearity(Constant.Linearity.SUSPENSION_PAUSE);
+                                        break;
+                                    case Constant.Layout.VIDEO_221:
+                                        video.setLinearity(Constant.Linearity.BOOT_VIDEO);
+                                        break;
+                                    case Constant.Layout.VIDEO_222:
+                                        video.setLinearity(Constant.Linearity.SHUTDOWN_VIDEO);
+                                        break;
+                                    case Constant.Layout.VIDEO_231:
+                                        video.setLinearity(Constant.Linearity.SCREEN_VIDEO);
+                                        break;
+                                }
+                                
+                                metaData.setVideo(video);
+                                break;
+                            case Constant.PlcmtType.NATIVE:
+                                PlcmtMetaData.Native natives = metaData.new Native();
+                                if(adspace.getLayout().equals(Constant.Layout.NATIVE_311)){
+                                    PlcmtMetaData.Image nativesImage = metaData.new Image();
+                                    String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getVideoSize(), "*");
+                                    nativesImage.setW(Integer.parseInt(videoSize[0]));
+                                    nativesImage.setH(Integer.parseInt(videoSize[1]));
+                                    nativesImage.setMimes(queryMimesByType(adspace.getMaterialType()));
+                                    natives.setCover(nativesImage);
+                                    natives.setVideo(getVideo(adspace, metaData));
+                                } else {
+                                    metaData.setLayout(adspace.getLayout()+adspace.getMainPicNumber());
+                                    natives.setCover(getImage(adspace, metaData));
+                                }
+                                PlcmtMetaData.Image nativesIcon = metaData.new Image();
+                                if(!org.apache.commons.lang3.StringUtils.isEmpty(adspace.getLogoSize())){
+                                    String[] nativesIconSize = StringUtils.tokenizeToStringArray(adspace.getLogoSize(), "*");
+                                    nativesIcon.setW(Integer.parseInt(nativesIconSize[0]));
+                                    nativesIcon.setH(Integer.parseInt(nativesIconSize[1]));
+                                }
+                                if(!org.apache.commons.lang3.StringUtils.isEmpty(adspace.getLogoType()+"")){
+                                    nativesIcon.setMimes(queryMimesByType(adspace.getLogoType()));
+                                }
+                                natives.setIcon(nativesIcon);
+                                natives.setTitle(adspace.getTitleMaxLength() > 0 ? adspace.getTitleMaxLength() : 0);
+                                natives.setDesc(adspace.getDescMaxLength() > 0 ? adspace.getDescMaxLength() : 0);
+                                metaData.setNatives(natives);
+                                break;
+                        }
+                        
                     }
-                    
+                    redisMaster.set(String.format(this.PLACEMENT_META_DATA, String.valueOf(adspace.getId())), JSON.toJSONString(metaData), "NX", "EX", EXPIRATION_DATE);
+                    redisMaster.sadd(this.ALL_PLACEMENT, String.valueOf(adspace.getId()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LOGGER.error("------------PlcmtTask-----is_for------error:{}",e.toString());
                 }
-                redisMaster.set(String.format(this.PLACEMENT_META_DATA, String.valueOf(adspace.getId())), JSON.toJSONString(metaData), "NX", "EX", 500);
-                redisMaster.sadd(this.ALL_PLACEMENT, String.valueOf(adspace.getId()));
             }
             LOGGER.info("op plcmt_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----------  End--");

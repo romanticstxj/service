@@ -35,6 +35,9 @@ public class DspTask {
     @Value("${DSP_META_DATA}")
     private String DSP_META_DATA;
     
+    @Value("${EXPIRATION_DATE}")
+    private Integer EXPIRATION_DATE;
+    
     public void run() {
         try {
             LOGGER.debug("------------DSPTask-----------start--");
@@ -42,7 +45,7 @@ public class DspTask {
             final List<DSPMetaData> listMedias = service.queryAll();
             long begin = System.currentTimeMillis();
             for (DSPMetaData metaData : listMedias) {
-                redisMaster.set(String.format(this.DSP_META_DATA, String.valueOf(metaData.getId())), JSON.toJSONString(metaData), "NX", "EX", 500);
+                redisMaster.set(String.format(this.DSP_META_DATA, String.valueOf(metaData.getId())), JSON.toJSONString(metaData), "NX", "EX", EXPIRATION_DATE);
                 redisMaster.sadd(this.ALL_DSP, String.valueOf(metaData.getId()));
             }
             LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
