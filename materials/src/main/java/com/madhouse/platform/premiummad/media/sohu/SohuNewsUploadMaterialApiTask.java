@@ -33,6 +33,9 @@ public class SohuNewsUploadMaterialApiTask {
 
 	@Value("${sohu.material.create}")
     private String materialCreateUrl;
+	
+	@Value("${sohu.material.delete}")
+    private String materialDeleteUrl;
 
 	@Value("${imp.url}")
 	private String impUrl;
@@ -71,6 +74,16 @@ public class SohuNewsUploadMaterialApiTask {
 
 		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
 		for (Material material : unSubmitMaterials) {
+			// 如果素材上传过，重新上传需要先删除该素材
+//			if (!StringUtils.isBlank(material.getMediaMaterialKey())) {
+//				boolean success = deleteMaterial(material);
+//				if (!success) {
+//					LOGGER.info("物料删除失败[materialId=" + material.getId() + "]");
+//					continue;
+//				}
+//			}
+			
+			// 上传到媒体
 			Map<String, Object> paramMap = buildMaterialRequest(material);
 			if (paramMap == null) {
 				continue;
@@ -104,6 +117,30 @@ public class SohuNewsUploadMaterialApiTask {
 		}
 
 		LOGGER.info("++++++++++Sohu News upload material end+++++++++++");
+	}
+	
+	/**
+	 * 删除已提交的素材 - 针对已驳回的情况
+	 * 
+	 * @param material
+	 */
+	private boolean deleteMaterial(Material material) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("file_source", material.getMediaMaterialKey());
+		String request = sohuAuth.setHttpMethod("POST").setApiUrl(materialDeleteUrl).setParamMap(paramMap).buildRequest();
+		LOGGER.info("SoHuUploadMaterial-deleteMaterial-request" + request);
+		String result = HttpUtils.post(materialDeleteUrl, request);
+		LOGGER.info("SoHuUploadMaterial-deleteMaterial-response" + result);
+		if (!StringUtils.isEmpty(result)) {
+			SohuResponse sohutvResponse = JSON.parseObject(result, SohuResponse.class);
+			if (sohutvResponse != null) {
+				boolean status = sohutvResponse.isStatus();
+				if (status) {// 删除物料成功
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**

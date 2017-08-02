@@ -127,14 +127,14 @@
     	<!-- sohu News -->
         <task:scheduled ref="sohuNewsCustomerCreateApiTask" method="create" cron="${cron.sohuNewsCustomerCreateApiTask}"/>
     	<task:scheduled ref="sohuNewsCustomerListApiTask" method="list" cron="${cron.sohuNewsCustomerListApiTask}"/>
-        <task:scheduled ref="sohuNewsUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>
-        <task:scheduled ref="sohuNewsStatusApiTask" method="getStatusDetail" cron="${cron.sohutvStatusApiTask}"/>
+        <task:scheduled ref="sohuNewsUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohuNewsUploadMaterialApiTask}"/>
+        <task:scheduled ref="sohuNewsStatusApiTask" method="getStatusDetail" cron="${cron.sohuNewsStatusApiTask}"/>
 		
-		<!-- sohu TV -->
+		<!-- sohu TV 
         <task:scheduled ref="sohuTvCustomerCreateApiTask" method="create" cron="${cron.sohuTvCustomerCreateApiTask}"/>
         <task:scheduled ref="sohuTvCustomerListApiTask" method="list" cron="${cron.sohuTvCustomerListApiTask}"/>
         <task:scheduled ref="sohutvStatusApiTask" method="getStatusDetail" cron="${cron.sohutvStatusApiTask}"/>
-        <task:scheduled ref="sohutvUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>
+        <task:scheduled ref="sohutvUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>-->
 		
 		<!-- Dianping
  		<task:scheduled ref="dianpingMaterialUploadApiTask" method="uploadMaterial" cron="${cron.dianpingMaterialUploadApiTask}"/>

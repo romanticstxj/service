@@ -40,6 +40,11 @@ public class ToutiaoMaterialUploadApiTask {
 	private String mh_toutiao_mapping_ios_2;
 	@Value("${mh_toutiao_mapping_android_2}")
 	private String mh_toutiao_mapping_android_2;
+	
+	@Value("${toutiao_logickey_ios_1}")
+	private String toutiao_logickey_ios_1;
+	@Value("${toutiao_logickey_ios_2}")
+	private String toutiao_logickey_ios_2;
 
 	@Autowired
     private ToutiaoHttpUtil toutiaoHttpUtil;
@@ -102,7 +107,62 @@ public class ToutiaoMaterialUploadApiTask {
 	 */
 	private List<ToutiaoMaterialUploadRequest> buildMaterialRequest(Material material) {
 		List<ToutiaoMaterialUploadRequest> list = new ArrayList<ToutiaoMaterialUploadRequest>();
-		// TODO
+		ToutiaoMaterialUploadRequest request = new ToutiaoMaterialUploadRequest();
+		// 素材的图片地址
+		request.setImg_url(material.getAdMaterials());
+		// 广告类型
+		request.setAd_type(getMediaAdType(material.getAdspaceId()));
+		// 获胜的 url
+		request.setNurl(IToutiaoConstant.NURL.getDescription().replace("{adspaceid}", getMediaNurl(material.getAdspaceId())));
+		request.setAdid(material.getId() + String.valueOf(material.getAdspaceId()) + 1);
+		request.setHeight(Integer.valueOf(material.getSize().split("x")[1]));
+		request.setWidth(Integer.valueOf(material.getSize().split("x")[0]));
+		// 素材的落地页，以审核时提交为准
+		request.setClick_through_url(material.getLpgUrl());
+		// 素材的标题
+		request.setTitle(material.getTitle());
+		// 素材的来源
+		request.setSource(material.getDescription());
+		request.setIs_inapp(1);
+		request.setClick_url(null); // TODO
+		// 展示监测 ur
+		List<String> show_url = new ArrayList<String>();
+		show_url.add(IToutiaoConstant.IMP_MONITOR_PM.getDescription());// 展示
+		request.setShow_url(show_url);
+		list.add(request);
 		return list;
+	}
+	
+	/**
+	 * 与媒体方获胜的 url
+	 * 一个物料对应madhouse2个广告位，对应头条一个广告位,一个物料只审核一次
+	 * 
+	 * @param dbAdspaceId
+	 * @return
+	 */
+	private String getMediaNurl(Integer dbAdspaceId) {
+		if (String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_ios_1) || String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_android_1)) {
+			return toutiao_logickey_ios_1;
+		}
+		if (String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_ios_2) || String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_android_2)) {
+			return toutiao_logickey_ios_2;
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取媒体方的广告类型
+	 * 
+	 * @param dbAdspaceId
+	 * @return
+	 */
+	private int getMediaAdType(Integer dbAdspaceId) {
+		if (String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_ios_1) || String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_android_1)) {
+			return IToutiaoConstant.TOUTIAO_FEED_LP_LARGE.getValue();
+		}
+		if (String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_ios_2) || String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_android_2)) {
+			return IToutiaoConstant.OUTIAO_FEED_LP_SMALL.getValue();
+		}
+		return 0;
 	}
 }

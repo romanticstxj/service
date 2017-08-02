@@ -182,7 +182,7 @@
 	      <if test="item.reason != null" >
 	        reason = #{item.reason,jdbcType=VARCHAR},
 	      </if>
-	      <if test="mediaAdvertiserKey != null" >
+	      <if test="item.mediaAdvertiserKey != null" >
 	        media_advertiser_key = #{item.mediaAdvertiserKey,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.createdTime != null" >
