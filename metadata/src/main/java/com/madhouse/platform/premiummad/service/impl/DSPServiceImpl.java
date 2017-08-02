@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.madhouse.platform.premiummad.dao.DSPDao;
+import com.madhouse.platform.premiummad.entity.DSPMappingMetaData;
 import com.madhouse.platform.premiummad.entity.DSPMetaData;
 import com.madhouse.platform.premiummad.service.IDSPService;
 
@@ -22,9 +23,9 @@ public class DSPServiceImpl implements IDSPService {
         return dspDao.queryAll();
     }
 
+    @Override
+    public List<DSPMappingMetaData> queryAdspaceMappingDsp() {
+        return dspDao.queryAdspaceMappingDsp();
+    }
 
-
-
-
-	
 }

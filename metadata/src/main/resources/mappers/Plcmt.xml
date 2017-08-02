@@ -31,10 +31,17 @@
         <result property="description" column="description" jdbcType="VARCHAR" />
 	</resultMap>
 	
+	<resultMap id="mediaMappingResult" type="com.madhouse.platform.premiummad.entity.MediaMappingMetaData">
+        <result property="adspaceId" column="adspace_id" jdbcType="INTEGER" />
+        <result property="mappingKey" column="media_adspace_key" jdbcType="VARCHAR" />
+    </resultMap>
+    
     <select id="queryAll" resultMap="baseResult">
 		select * from mad_sys_adspace WHERE status >=0 
 	</select>
-	
+	<select id="queryMediaMappingMetaData" resultMap="mediaMappingResult">
+		select * from mad_sys_adspace_mapping_media WHERE status >0 
+	</select>
 	
 
 </mapper>

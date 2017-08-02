@@ -46,6 +46,7 @@ public class MediaTask {
                 redisMaster.set(String.format(this.MEDIA_META_DATA, String.valueOf(media.getId())), JSON.toJSONString(media), "NX", "EX", EXPIRATION_DATE);
                 redisMaster.sadd(this.ALL_MEDIA, String.valueOf(media.getId()));
             }
+            redisMaster.expire(this.ALL_MEDIA, EXPIRATION_DATE);
             LOGGER.info("op media_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------MediaTask-----------  End--");
         } catch (Exception e) {

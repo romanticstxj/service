@@ -15,17 +15,17 @@
 			<maxHistory>5</maxHistory>
 		</rollingPolicy>
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n </pattern>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{1} %L - %msg%xEx%n </pattern>
 		</encoder>
 	</appender>
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n </pattern>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{1} %L - %msg%xEx%n </pattern>
 		</encoder>
 	</appender>
 
-	<logger name="metadata" level="DEBUG" additivity="false">
+	<logger name="metadata" level="INFO" additivity="false">
 		<appender-ref ref="metadataAppender" />
 	</logger>
 

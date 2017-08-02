@@ -12,10 +12,19 @@
 		<result  column="api_type" jdbcType="INTEGER" property="apiType"/>
 	</resultMap>
 	
+	<resultMap id="baseMappingResult" type="com.madhouse.platform.premiummad.entity.DSPMappingMetaData">
+        <result property="adspaceId" column="adspace_id" jdbcType="INTEGER" />
+        <result property="mappingKey" column="media_adspace_key" jdbcType="VARCHAR" />
+        <result property="dspId" column="dsp_id" jdbcType="INTEGER" />
+        <result property="dspMediaId" column="dsp_media_id" jdbcType="INTEGER" />
+    </resultMap>
+	
     <select id="queryAll" resultMap="baseResult">
 		select id,bid_url,winnotice_url,token,api_type,status,api_type from mad_sys_dsp
 	</select>
 	
-	
+	<select id="queryAdspaceMappingDsp" resultMap="baseMappingResult">
+  		select  * from mad_sys_adspace_mapping_dsp where `status`>0
+	</select>
 
 </mapper>

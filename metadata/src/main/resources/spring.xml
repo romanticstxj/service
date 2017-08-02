@@ -71,11 +71,12 @@
     
     <!-- 基于xml配置 -->
     <task:scheduled-tasks>
-        <!-- <task:scheduled ref="mediaTask" method="run" cron="${cron.mediaTask}"/>
+        <task:scheduled ref="mediaTask" method="run" cron="${cron.mediaTask}"/>
         <task:scheduled ref="dspTask" method="run" cron="${cron.dspTask}"/>
-        <task:scheduled ref="plcmtTask" method="run" cron="${cron.plcmtTask}"/> -->
+        <task:scheduled ref="plcmtTask" method="run" cron="${cron.plcmtTask}"/>
         <task:scheduled ref="policyTask" method="run" cron="${cron.policyTask}"/>
-        
+        <task:scheduled ref="dspTask" method="plcmtMappingDsp" cron="${cron.plcmtMappingDspTask}"/>
+    	<task:scheduled ref="plcmtTask" method="plcmtMappingMedia" cron="${cron.plcmtMappingMediaTask}"/>
     </task:scheduled-tasks>
 
 

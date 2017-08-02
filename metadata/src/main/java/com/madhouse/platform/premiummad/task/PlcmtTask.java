@@ -15,6 +15,8 @@ import redis.clients.jedis.Jedis;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.entity.Adspace;
+import com.madhouse.platform.premiummad.entity.DSPMappingMetaData;
+import com.madhouse.platform.premiummad.entity.MediaMappingMetaData;
 import com.madhouse.platform.premiummad.entity.PlcmtMetaData;
 import com.madhouse.platform.premiummad.entity.PlcmtMetaData.Image;
 import com.madhouse.platform.premiummad.service.IPlcmtService;
@@ -32,6 +34,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     
     @Value("${PLACEMENT_META_DATA}")
     private String PLACEMENT_META_DATA;
+    
+    @Value("${MEDIA_MAPPING_DATA}")
+    private String MEDIA_MAPPING_DATA;
     
     @Value("${EXPIRATION_DATE}")
     private Integer EXPIRATION_DATE;
@@ -131,6 +136,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                     LOGGER.error("------------PlcmtTask-----is_for------error:{}",e.toString());
                 }
             }
+            redisMaster.expire(this.ALL_PLACEMENT, EXPIRATION_DATE);
             LOGGER.info("op plcmt_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----------  End--");
         } catch (Exception e) {
@@ -183,6 +189,19 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
         return video;
     }
     
+    public void plcmtMappingMedia() {
+        try {
+            LOGGER.debug("------------PlcmtTask------adspaceMappingDsp-----start--");
+            this.redisMaster = rm.getJedisPoolMaster().getResource();
+            List<MediaMappingMetaData> list = plcmtService.queryAdspaceMappingMedia();
+            long begin = System.currentTimeMillis();
+            redisMaster.set(this.MEDIA_MAPPING_DATA, JSON.toJSONString(list), "NX", "EX", EXPIRATION_DATE);
+            LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.debug("------------PlcmtTask-----adspaceMappingDsp------End--");
+        } catch (Exception e) {
+            LOGGER.error("------------PlcmtTask-----adspaceMappingDsp------error:{}",e.toString());
+        }
+    }
     
    
 }

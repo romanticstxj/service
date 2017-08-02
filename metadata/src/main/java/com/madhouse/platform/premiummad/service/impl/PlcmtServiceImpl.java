@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.madhouse.platform.premiummad.dao.MimesDao;
 import com.madhouse.platform.premiummad.dao.PlcmtDao;
 import com.madhouse.platform.premiummad.entity.Adspace;
+import com.madhouse.platform.premiummad.entity.MediaMappingMetaData;
 import com.madhouse.platform.premiummad.service.IPlcmtService;
 
 @Service
@@ -29,6 +30,11 @@ public class PlcmtServiceImpl implements IPlcmtService {
     @Override
     public List<String> queryMimesById(List<Integer> list) {
         return mimesDao.queryMimesById(list);
+    }
+
+    @Override
+    public List<MediaMappingMetaData> queryAdspaceMappingMedia() {
+        return plcmtDao.queryMediaMappingMetaData();
     }
 
 	
