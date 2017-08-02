@@ -76,7 +76,7 @@ public class MediaControllerTest {
 	
 	@Test
 	public void test(){
-		String[] ss = StringUtils.splitIds("33333,444,62");
+		String[] ss = StringUtils.splitToStringArray("33333,444,62");
 		System.out.println(ss);
 		List<Integer> list = new ArrayList<Integer>();
 		list.add(2);

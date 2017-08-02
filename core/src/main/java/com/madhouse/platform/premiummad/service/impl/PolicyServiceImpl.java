@@ -112,7 +112,7 @@ public class PolicyServiceImpl implements IPolicyService {
 
 	@Override
 	public List<Policy> queryAllByParams(String policyIds, Integer status, Integer type) {
-		String[] idStrs = StringUtils.splitIds(policyIds);
+		String[] idStrs = StringUtils.splitToStringArray(policyIds);
 		return policyDao.queryAllByParams(idStrs, status, type);
 	}
 
@@ -123,6 +123,16 @@ public class PolicyServiceImpl implements IPolicyService {
         	throw new BusinessException(StatusCode.SC20002);
         
 		return policyDao.updateStatus(policy);
+	}
+
+	@Override
+	public Policy queryById(Integer id) {
+		return null;
+	}
+
+	@Override
+	public List<Policy> queryAll(String ids) {
+		return null;
 	}
 
 }

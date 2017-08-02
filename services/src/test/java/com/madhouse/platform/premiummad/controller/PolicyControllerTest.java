@@ -20,7 +20,7 @@ public class PolicyControllerTest {
 		File file = new File("log");
 		file.getAbsolutePath();
 		PolicyDto policyDto = new PolicyDto();
-		policyDto.setName("mypolicy2223");
+		policyDto.setName("mypolicy2225");
 		policyDto.setWeight(10);
 		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-07-20"));
 		policyDto.setIsEndDate(0);

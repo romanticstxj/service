@@ -1,10 +1,8 @@
 package com.madhouse.platform.premiummad.service;
 
-import java.util.List;
-
 import com.madhouse.platform.premiummad.entity.Dsp;
 
-public interface IDspService {
+public interface IDspService extends IBaseService<Dsp>{
 
 	/**
 	 * DSP 权限校验（在 mad_sys_dsp 存在且 已启用）
@@ -20,38 +18,4 @@ public interface IDspService {
      */
 	int insertWithParamsProcess(Dsp dsp, String xFrom);
 
-    /**
-     * 检查名称重复
-     * @param dspName
-     * @return
-     */
-	int checkName(String dspName);
-
-    /**
-     * 更新dsp
-     * @param dsp
-     * @return
-     */
-    int update(Dsp dsp);
-
-    /**
-     * 根据id查询dsp
-     * @param id
-     * @return
-     */
-	Dsp queryById(Integer id);
-
-	/**
-	 * 更新dsp状态
-	 * @param dsp
-	 * @return
-	 */
-	int updateStatus(Dsp dsp);
-
-	/**
-	 * 查询所有dsp
-	 * @param ids
-	 * @return
-	 */
-	List<Dsp> queryAll(String ids);
 }

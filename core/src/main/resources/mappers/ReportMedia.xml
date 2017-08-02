@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.madhouse.platform.premiummad.dao.ReportMediaDao" >
+  <resultMap id="BaseResultMap" type="ReportMedia" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="media_id" property="mediaId" jdbcType="INTEGER" />
+    <result column="adspace_id" property="adspaceId" jdbcType="INTEGER" />
+    <result column="carrier" property="carrier" jdbcType="INTEGER" />
+    <result column="conn" property="conn" jdbcType="INTEGER" />
+    <result column="device" property="device" jdbcType="INTEGER" />
+    <result column="location" property="location" jdbcType="INTEGER" />
+    <result column="date" property="date" jdbcType="DATE" />
+    <result column="hour" property="hour" jdbcType="TINYINT" />
+    <result column="reqs" property="reqs" jdbcType="BIGINT" />
+    <result column="bids" property="bids" jdbcType="BIGINT" />
+    <result column="errs" property="errs" jdbcType="BIGINT" />
+    <result column="imps" property="imps" jdbcType="BIGINT" />
+    <result column="clks" property="clks" jdbcType="BIGINT" />
+    <result column="vimps" property="vimps" jdbcType="BIGINT" />
+    <result column="vclks" property="vclks" jdbcType="BIGINT" />
+    <result column="income" property="income" jdbcType="BIGINT" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ${alias}.id, ${alias}.media_id, SUM(${alias}.reqs), SUM(${alias}.bids), SUM(${alias}.errs), SUM(${alias}.imps), 
+    SUM(${alias}.clks), SUM(${alias}.vimps), SUM(${alias}.vclks), SUM(${alias}.income), 
+    ${alias}.created_time, ${alias}.updated_time
+  </sql>
+  
+  <select id="queryMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
+    SELECT <include refid="Base_Column_List"><property name="alias" value="rm" /></include> ,m.name mediaName
+    <if test="hasAdspace != null and hasAdspace == true">, rm.adspace_id, a.name adspaceName</if>
+    <if test="hasDate != null and hasDate == true"> ,rm.date </if>
+    <if test="hasHour != null and hasHour == true"> ,rm.hour </if>
+    FROM mad_report_media rm
+    LEFT JOIN mad_sys_media m ON rm.media_id = m.id
+    LEFT JOIN mad_sys_adspace a ON rm.adspace_id = a.id
+    WHERE rm.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rm.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <if test="mediaId != null"> AND rm.media_id = #{mediaId} </if>
+    GROUP BY rm.media_id <if test="hasAdspace != null and hasAdspace == true">, rm.adspace_id</if>
+    <if test="hasDate != null and hasDate == true">, rm.date</if>
+    <if test="hasHour != null and hasHour == true">, rm.hour</if>
+    ORDER BY rm.media_id
+  </select>
+  
+  <select id="queryRtMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
+    SELECT <include refid="Base_Column_List"><property name="alias" value="rm" /></include> ,m.name mediaName
+    <if test="hasAdspace != null and hasAdspace == true">, rm.adspace_id, a.name adspaceName</if>
+    <if test="hasDate != null and hasDate == true"> ,rm.date </if>
+    <if test="hasHour != null and hasHour == true"> ,rm.hour </if>
+    FROM mad_report_media_rt rm
+    LEFT JOIN mad_sys_media m ON rm.media_id = m.id
+    LEFT JOIN mad_sys_adspace a ON rm.adspace_id = a.id
+    WHERE rm.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rm.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <if test="mediaId != null"> AND rm.media_id = #{mediaId} </if>
+    GROUP BY rm.media_id <if test="hasAdspace != null and hasAdspace == true">, rm.adspace_id</if>
+    <if test="hasDate != null and hasDate == true">, rm.date</if>
+    <if test="hasHour != null and hasHour == true">, rm.hour</if>
+    ORDER BY rm.media_id
+  </select>
+  
+  <select id="queryMediaLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
+    SELECT <include refid="Base_Column_List"><property name="alias" value="rm" /></include>,
+    m.name mediaName, rm.location, 
+    IF(l.domestic=0, '其他', IF(l.code LIKE '%0000', l.name, l.name)) cityName,
+    IF(l.domestic=0, '其他', IF(l.code LIKE '%0000', l.name, lp.name)) provinceName
+    <if test="hasAdspace != null and hasAdspace == true">, rm.adspace_id, a.name adspaceName</if>
+    <if test="hasDate != null and hasDate == true"> ,rm.date </if>
+    <if test="hasHour != null and hasHour == true"> ,rm.hour </if>
+    FROM mad_report_media_location rm
+    LEFT JOIN mad_sys_media m ON rm.media_id = m.id
+    LEFT JOIN mad_sys_adspace a ON rm.adspace_id = a.id
+    LEFT JOIN mad_dict_location l ON rm.location = l.code
+    LEFT JOIN mad_dict_location lp ON l.parent_code = lp.code
+    WHERE rm.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rm.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <if test="mediaId != null"> AND rm.media_id = #{mediaId} </if>
+    GROUP BY rm.media_id, rm.location <if test="hasAdspace != null and hasAdspace == true">, rm.adspace_id</if>
+    <if test="hasDate != null and hasDate == true">, rm.date</if>
+    <if test="hasHour != null and hasHour == true">, rm.hour</if>
+    ORDER BY rm.media_id
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+      This element was generated on Tue Aug 01 18:00:00 CST 2017.
+    -->
+    select 
+    <include refid="Base_Column_List" />
+    from mad_report_media
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+      This element was generated on Tue Aug 01 18:00:00 CST 2017.
+    -->
+    delete from mad_report_media
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.madhouse.platform.premiummad.entity.ReportMedia" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+      This element was generated on Tue Aug 01 18:00:00 CST 2017.
+    -->
+    insert into mad_report_media (id, media_id, adspace_id, 
+      date, hour, reqs, bids, 
+      errs, imps, clks, vimps, 
+      vclks, income, created_time, 
+      updated_time)
+    values (#{id,jdbcType=INTEGER}, #{mediaId,jdbcType=INTEGER}, #{adspaceId,jdbcType=INTEGER}, 
+      #{date,jdbcType=DATE}, #{hour,jdbcType=TINYINT}, #{reqs,jdbcType=BIGINT}, #{bids,jdbcType=BIGINT}, 
+      #{errs,jdbcType=BIGINT}, #{imps,jdbcType=BIGINT}, #{clks,jdbcType=BIGINT}, #{vimps,jdbcType=BIGINT}, 
+      #{vclks,jdbcType=BIGINT}, #{income,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.madhouse.platform.premiummad.entity.ReportMedia" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+      This element was generated on Tue Aug 01 18:00:00 CST 2017.
+    -->
+    insert into mad_report_media
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="mediaId != null" >
+        media_id,
+      </if>
+      <if test="adspaceId != null" >
+        adspace_id,
+      </if>
+      <if test="date != null" >
+        date,
+      </if>
+      <if test="hour != null" >
+        hour,
+      </if>
+      <if test="reqs != null" >
+        reqs,
+      </if>
+      <if test="bids != null" >
+        bids,
+      </if>
+      <if test="errs != null" >
+        errs,
+      </if>
+      <if test="imps != null" >
+        imps,
+      </if>
+      <if test="clks != null" >
+        clks,
+      </if>
+      <if test="vimps != null" >
+        vimps,
+      </if>
+      <if test="vclks != null" >
+        vclks,
+      </if>
+      <if test="income != null" >
+        income,
+      </if>
+      <if test="createdTime != null" >
+        created_time,
+      </if>
+      <if test="updatedTime != null" >
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="mediaId != null" >
+        #{mediaId,jdbcType=INTEGER},
+      </if>
+      <if test="adspaceId != null" >
+        #{adspaceId,jdbcType=INTEGER},
+      </if>
+      <if test="date != null" >
+        #{date,jdbcType=DATE},
+      </if>
+      <if test="hour != null" >
+        #{hour,jdbcType=TINYINT},
+      </if>
+      <if test="reqs != null" >
+        #{reqs,jdbcType=BIGINT},
+      </if>
+      <if test="bids != null" >
+        #{bids,jdbcType=BIGINT},
+      </if>
+      <if test="errs != null" >
+        #{errs,jdbcType=BIGINT},
+      </if>
+      <if test="imps != null" >
+        #{imps,jdbcType=BIGINT},
+      </if>
+      <if test="clks != null" >
+        #{clks,jdbcType=BIGINT},
+      </if>
+      <if test="vimps != null" >
+        #{vimps,jdbcType=BIGINT},
+      </if>
+      <if test="vclks != null" >
+        #{vclks,jdbcType=BIGINT},
+      </if>
+      <if test="income != null" >
+        #{income,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null" >
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.madhouse.platform.premiummad.entity.ReportMedia" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+      This element was generated on Tue Aug 01 18:00:00 CST 2017.
+    -->
+    update mad_report_media
+    <set >
+      <if test="mediaId != null" >
+        media_id = #{mediaId,jdbcType=INTEGER},
+      </if>
+      <if test="adspaceId != null" >
+        adspace_id = #{adspaceId,jdbcType=INTEGER},
+      </if>
+      <if test="date != null" >
+        date = #{date,jdbcType=DATE},
+      </if>
+      <if test="hour != null" >
+        hour = #{hour,jdbcType=TINYINT},
+      </if>
+      <if test="reqs != null" >
+        reqs = #{reqs,jdbcType=BIGINT},
+      </if>
+      <if test="bids != null" >
+        bids = #{bids,jdbcType=BIGINT},
+      </if>
+      <if test="errs != null" >
+        errs = #{errs,jdbcType=BIGINT},
+      </if>
+      <if test="imps != null" >
+        imps = #{imps,jdbcType=BIGINT},
+      </if>
+      <if test="clks != null" >
+        clks = #{clks,jdbcType=BIGINT},
+      </if>
+      <if test="vimps != null" >
+        vimps = #{vimps,jdbcType=BIGINT},
+      </if>
+      <if test="vclks != null" >
+        vclks = #{vclks,jdbcType=BIGINT},
+      </if>
+      <if test="income != null" >
+        income = #{income,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null" >
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null" >
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.madhouse.platform.premiummad.entity.ReportMedia" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+      This element was generated on Tue Aug 01 18:00:00 CST 2017.
+    -->
+    update mad_report_media
+    set media_id = #{mediaId,jdbcType=INTEGER},
+      adspace_id = #{adspaceId,jdbcType=INTEGER},
+      date = #{date,jdbcType=DATE},
+      hour = #{hour,jdbcType=TINYINT},
+      reqs = #{reqs,jdbcType=BIGINT},
+      bids = #{bids,jdbcType=BIGINT},
+      errs = #{errs,jdbcType=BIGINT},
+      imps = #{imps,jdbcType=BIGINT},
+      clks = #{clks,jdbcType=BIGINT},
+      vimps = #{vimps,jdbcType=BIGINT},
+      vclks = #{vclks,jdbcType=BIGINT},
+      income = #{income,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

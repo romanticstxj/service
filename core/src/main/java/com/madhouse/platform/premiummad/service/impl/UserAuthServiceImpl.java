@@ -19,19 +19,19 @@ public class UserAuthServiceImpl implements IUserAuthService {
 
 	@Override
 	public List<Integer> queryMediaIdList(Integer userId, String mediaIds) {
-		String[] idStrs = StringUtils.splitIds(mediaIds);
+		String[] idStrs = StringUtils.splitToStringArray(mediaIds);
 		return userAuthDao.queryMediaIdList(userId, idStrs);
 	}
 
 	@Override
 	public List<Integer> queryAdspaceIdList(Integer userId, String adspaceIds) {
-		String[] idStrs = StringUtils.splitIds(adspaceIds);
+		String[] idStrs = StringUtils.splitToStringArray(adspaceIds);
 		return userAuthDao.queryAdspaceIdList(userId, idStrs);
 	}
 	
 	@Override
 	public List<Integer> queryPolicyIdList(Integer userId, String policyIds) {
-		String[] idStrs = StringUtils.splitIds(policyIds);
+		String[] idStrs = StringUtils.splitToStringArray(policyIds);
 		return userAuthDao.queryPolicyIdList(userId, idStrs);
 	}
 

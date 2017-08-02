@@ -118,7 +118,7 @@ public class AdspaceController {
 			return ResponseUtils.response(StatusCode.SC20006, null);
 		}
 		
-		Adspace adspace = adspaceService.queryAdspaceById(id);
+		Adspace adspace = adspaceService.queryById(id);
 		List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
         return ResponseUtils.response(StatusCode.SC20000,result);
     }
@@ -145,7 +145,7 @@ public class AdspaceController {
 	@RequestMapping("/updateStatus")
     public ResponseDto<AdspaceDto> updateAdspaceStatus(
     		@RequestBody @Validated(UpdateStatus.class) AdspaceDto adspaceDto) {
-		Adspace adspace = adspaceService.queryAdspaceById(adspaceDto.getId());
+		Adspace adspace = adspaceService.queryById(adspaceDto.getId());
         if (adspace == null)
             return ResponseUtils.response(StatusCode.SC20002, null);
         BeanUtils.copyProperties(adspaceDto, adspace);

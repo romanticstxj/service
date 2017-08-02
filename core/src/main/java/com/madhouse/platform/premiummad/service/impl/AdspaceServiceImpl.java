@@ -27,7 +27,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	
 	@Override
 	public List<Adspace> queryAllByParams(String ids, Integer status) {
-		String[] idStrs = StringUtils.splitIds(ids);
+		String[] idStrs = StringUtils.splitToStringArray(ids);
 		return adspaceDao.queryAllByParams(idStrs, status);
 	}
 
@@ -53,13 +53,13 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	}
 
 	@Override
-	public Adspace queryAdspaceById(Integer adspaceId) {
+	public Adspace queryById(Integer adspaceId) {
 		return adspaceDao.queryAdspaceById(adspaceId);
 	}
 
 	@Override
-	public Integer update(Adspace adspace) {
-		Adspace queryResult = queryAdspaceById(adspace.getId());
+	public int update(Adspace adspace) {
+		Adspace queryResult = queryById(adspace.getId());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20002);
         if (!queryResult.getName().equals(adspace.getName())) { //名称不相等,检查名称
@@ -81,12 +81,12 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	}
 
 	@Override
-	public Integer checkName(String adspaceName) {
+	public int checkName(String adspaceName) {
 		return adspaceDao.checkName(adspaceName);
 	}
 
 	@Override
-	public Integer updateStatus(Adspace adspace) {
+	public int updateStatus(Adspace adspace) {
 		return adspaceDao.updateStatus(adspace);
 	}
 
@@ -242,6 +242,18 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	public int removeAdspaceMapping(Integer adspaceId) {
 		adspaceDao.removeAdspaceMediaMapping(adspaceId);
 		return adspaceDao.removeAdspaceDspMapping(adspaceId);
+	}
+
+	@Override
+	public int insert(Adspace t) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Adspace> queryAll(String ids) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

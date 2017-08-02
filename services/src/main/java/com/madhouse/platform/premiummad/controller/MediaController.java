@@ -110,7 +110,7 @@ public class MediaController {
 			return ResponseUtils.response(StatusCode.SC20006, null);
 		}
 		
-        Media media = mediaService.queryMediaById(id);
+        Media media = mediaService.queryById(id);
         List<MediaDto> result = convertResult(media, new MediaDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
     }
@@ -133,7 +133,7 @@ public class MediaController {
 		String fieldName = BeanUtils.hasEmptyField(mediaDto);
         if (fieldName != null)
             return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
-        Media media = mediaService.queryMediaById(mediaDto.getId());
+        Media media = mediaService.queryById(mediaDto.getId());
         if (media == null)
             return ResponseUtils.response(StatusCode.SC20002, null);
         if (!mediaDto.getName().equals(media.getName())) { //名称不相等,检查名称
@@ -166,7 +166,7 @@ public class MediaController {
 		}
 				
 		//更新媒体的状态
-		Media media = mediaService.queryMediaById(mediaDto.getId());
+		Media media = mediaService.queryById(mediaDto.getId());
         if (media == null)
             return ResponseUtils.response(StatusCode.SC20002, null);
         BeanUtils.copyProperties(mediaDto, media);

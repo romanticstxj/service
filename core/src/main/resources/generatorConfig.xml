@@ -30,7 +30,7 @@
 		<property name="enableSubPackages" value="true" />
 	</javaClientGenerator>
 
-	<table tableName="mad_dict_location" domainObjectName="Location"
+	<table tableName="mad_report_media" domainObjectName="ReportMedia"
 		enableCountByExample="false" enableUpdateByExample="false"
 		enableDeleteByExample="false" enableSelectByExample="false"
 		selectByExampleQueryId="false"></table>
