@@ -1,41 +1,52 @@
-redis.host.list=172.16.25.133:6379
-redis.default.db=0
-redis.key=se:adspaceMap
-redis.special.media.key=se:adspaceKeyMap
-redis.task.datasource=smartexchange,sesandbox
-redis.creative_url_creative_id.key=creative_url_creative_id_map
-premiummad.creativeid.http.url = http://172.16.26.209:8080/maddsp-services/dianping/queryMaterialUrl
-premiummad.creativeid.http.header.userId = 123
-premiummad.creativeid.http.header.url = madhouse.mp.com
+##Redis服务器地址  
+redis.host=172.16.25.26
+#服务端口  
+redis.port=6379
+#超时时间：单位ms  
+redis.timeout=3000
+#授权密码       
+#redis.password=nick123
+#redis.default.db=0
+
 redis.timeout=100000
+#最大连接数：能够同时建立的“最大链接个数”
 redis.maxActive=300
+#最大空闲数：空闲链接数大于maxIdle时，将进行回收 
 redis.maxIdle=100
+#最大等待时间：单位ms 
 redis.maxWait=1000
-
-# special media Id
-##toutiao
-mediaId_toutiao=68
-sandbox_mediaId_toutiao=-1
-
-##baofeng
-mediaId_baofeng=64
-sandbox_mediaId_baofeng=-1
-
-##xiaomi
-mediaId_xiaomi=-1
-sandbox_mediaId_xiaomi=89
-
-redis_rt_key_type=imp,clk,adcall,pg,premiummad,tencent,baidu,adsage,meila,reachmax
+#最小空闲数：低于minIdle时，将创建新的链接 
+redis.minIdle=5
 
 
 
-cron.db2RedisTask = */20 * * * * ?
 
-cron.specialMmediaInitToRedisTask = 0 */2 * * * ?
 
-cron.RTData2DBTask = */10 * * * * ?
+ALL_MEDIA = set:all_media
+MEDIA_META_DATA = str:%s:media_info
 
-cron.delDataFromRedisTask = 0 10 0 * * ?
+ALL_PLACEMENT = set:all_plcmt
+PLACEMENT_META_DATA = str:%s:plcmt_info
 
-cron.meiTuDianPingCridCreativeUrlTask = 0 */1 * * * ?
+ALL_ADBLOCK = set:all_adblock
+ADBLOCK_META_DATA = str:%s:adblock_info
 
+ALL_POLICY = set:all_policy
+POLICY_META_DATA = str:%s:policy_info
+
+ALL_DSP = set:all_dsp
+DSP_META_DATA = str:%s:dsp_info
+
+MEDIA_MAPPING_DATA = str:media_mapping_data
+DSP_MAPPING_DATA = str:dsp_mapping_data
+
+EXPIRATION_DATE = 180
+
+
+
+cron.mediaTask = */60 * * * * ?
+cron.dspTask = */60 * * * * ?
+cron.plcmtTask = */60 * * * * ?
+cron.policyTask = */60 * * * * ?
+cron.plcmtMappingDspTask = */60 * * * * ?
+cron.plcmtMappingMediaTask = */60 * * * * ?
