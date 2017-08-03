@@ -39,8 +39,8 @@ public class DspTask {
     @Value("${DSP_MAPPING_DATA}")
     private String DSP_MAPPING_DATA;
     
-    @Value("${EXPIRATION_DATE}")
-    private Integer EXPIRATION_DATE;
+    @Value("${EXPIRATION_TIME}")
+    private Integer EXPIRATION_TIME;
     
     public void loadDSPMetaData() {
         try {
@@ -49,10 +49,10 @@ public class DspTask {
             final List<DSPMetaData> lists = service.queryAll();
             long begin = System.currentTimeMillis();
             for (DSPMetaData metaData : lists) {
-                redisMaster.setex(String.format(this.DSP_META_DATA, String.valueOf(metaData.getId())), EXPIRATION_DATE, JSON.toJSONString(metaData));
+                redisMaster.setex(String.format(this.DSP_META_DATA, String.valueOf(metaData.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
                 redisMaster.sadd(this.ALL_DSP, String.valueOf(metaData.getId()));
             }
-            redisMaster.expire(this.ALL_DSP, EXPIRATION_DATE);
+            redisMaster.expire(this.ALL_DSP, EXPIRATION_TIME);
             LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------DSPTask-----run------  End--");
         } catch (Exception e) {
@@ -65,7 +65,7 @@ public class DspTask {
             this.redisMaster = rm.getJedisPoolMaster().getResource();
             final List<DSPMappingMetaData> lists = service.queryAdspaceMappingDsp();
             long begin = System.currentTimeMillis();
-            redisMaster.setex(this.DSP_MAPPING_DATA, EXPIRATION_DATE ,JSON.toJSONString(lists));
+            redisMaster.setex(this.DSP_MAPPING_DATA, EXPIRATION_TIME ,JSON.toJSONString(lists));
             LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------DSPTask-----plcmtMappingDsp------End--");
         } catch (Exception e) {

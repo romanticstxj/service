@@ -27,8 +27,8 @@ public class MediaTask {
     @Value("${MEDIA_META_DATA}")
     private String MEDIA_META_DATA;
     
-    @Value("${EXPIRATION_DATE}")
-    private Integer EXPIRATION_DATE;
+    @Value("${EXPIRATION_TIME}")
+    private Integer EXPIRATION_TIME;
     
     @Autowired
     private IMediaService mediaService;
@@ -43,10 +43,10 @@ public class MediaTask {
             final List<MediaMetaData> listMedias = mediaService.queryAll();
             long begin = System.currentTimeMillis();
             for (MediaMetaData media : listMedias) {
-                redisMaster.setex(String.format(this.MEDIA_META_DATA, String.valueOf(media.getId())), EXPIRATION_DATE,JSON.toJSONString(media));
+                redisMaster.setex(String.format(this.MEDIA_META_DATA, String.valueOf(media.getId())), EXPIRATION_TIME,JSON.toJSONString(media));
                 redisMaster.sadd(this.ALL_MEDIA, String.valueOf(media.getId()));
             }
-            redisMaster.expire(this.ALL_MEDIA, EXPIRATION_DATE);
+            redisMaster.expire(this.ALL_MEDIA, EXPIRATION_TIME);
             LOGGER.info("op media_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------MediaTask-----------  End--");
         } catch (Exception e) {

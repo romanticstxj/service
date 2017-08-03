@@ -2,12 +2,12 @@ package com.madhouse.platform.premiummad.entity;
 
 public class Adspace {
 	
-	private Integer id;
+	private long id;
 	
 	private String name;
 	
 	private String adspaceKey;
-	private Integer mediaId;
+	private long mediaId;
 	private String mediaName;
 	private Integer terminalType; 
 	private Integer terminalOs;
@@ -47,11 +47,11 @@ public class Adspace {
 	
 	private Integer status;
 
-	public Integer getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -71,11 +71,11 @@ public class Adspace {
 		this.adspaceKey = adspaceKey;
 	}
 
-	public Integer getMediaId() {
+	public long getMediaId() {
 		return mediaId;
 	}
 
-	public void setMediaId(Integer mediaId) {
+	public void setMediaId(long mediaId) {
 		this.mediaId = mediaId;
 	}
 

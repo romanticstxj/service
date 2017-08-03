@@ -38,8 +38,8 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     @Value("${MEDIA_MAPPING_DATA}")
     private String MEDIA_MAPPING_DATA;
     
-    @Value("${EXPIRATION_DATE}")
-    private Integer EXPIRATION_DATE;
+    @Value("${EXPIRATION_TIME}")
+    private Integer EXPIRATION_TIME;
     
     @Autowired
     private IPlcmtService plcmtService;
@@ -129,14 +129,14 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                         }
                         
                     }
-                    redisMaster.setex(String.format(this.PLACEMENT_META_DATA, String.valueOf(adspace.getId())), EXPIRATION_DATE, JSON.toJSONString(metaData));
+                    redisMaster.setex(String.format(this.PLACEMENT_META_DATA, String.valueOf(adspace.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
                     redisMaster.sadd(this.ALL_PLACEMENT, String.valueOf(adspace.getId()));
                 } catch (Exception e) {
                     e.printStackTrace();
                     LOGGER.error("------------PlcmtTask-----is_for------error:{}",e.toString());
                 }
             }
-            redisMaster.expire(this.ALL_PLACEMENT, EXPIRATION_DATE);
+            redisMaster.expire(this.ALL_PLACEMENT, EXPIRATION_TIME);
             LOGGER.info("op plcmt_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----------  End--");
         } catch (Exception e) {
@@ -195,7 +195,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             this.redisMaster = rm.getJedisPoolMaster().getResource();
             List<MediaMappingMetaData> list = plcmtService.queryAdspaceMappingMedia();
             long begin = System.currentTimeMillis();
-            redisMaster.setex(this.MEDIA_MAPPING_DATA, EXPIRATION_DATE, JSON.toJSONString(list));
+            redisMaster.setex(this.MEDIA_MAPPING_DATA, EXPIRATION_TIME, JSON.toJSONString(list));
             LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----adspaceMappingDsp------End--");
         } catch (Exception e) {

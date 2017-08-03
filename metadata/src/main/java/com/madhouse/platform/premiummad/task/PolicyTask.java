@@ -36,8 +36,8 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     @Value("${POLICY_META_DATA}")
     private String POLICY_META_DATA;
     
-    @Value("${EXPIRATION_DATE}")
-    private Integer EXPIRATION_DATE;
+    @Value("${EXPIRATION_TIME}")
+    private Integer EXPIRATION_TIME;
     
     @Autowired
     private IPolicyService policyService;
@@ -88,7 +88,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                             }
                             metaData.setAdspaceInfoMap(adspaceInfo);
                         }
-                        redisMaster.setex(String.format(this.POLICY_META_DATA, String.valueOf(policy.getId())), EXPIRATION_DATE, JSON.toJSONString(metaData));
+                        redisMaster.setex(String.format(this.POLICY_META_DATA, String.valueOf(policy.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
                         redisMaster.sadd(this.ALL_POLICY, String.valueOf(policy.getId()));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -96,7 +96,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                     }
                 }
             }
-            redisMaster.expire(this.ALL_POLICY, EXPIRATION_DATE);
+            redisMaster.expire(this.ALL_POLICY, EXPIRATION_TIME);
             LOGGER.info("op policy_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PolicyTask-----------  End--");
         } catch (Exception e) {
