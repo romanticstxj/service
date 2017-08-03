@@ -36,14 +36,14 @@ public class MediaTask {
     @Autowired
     private ResourceManager rm;
     
-    public void run() {
+    public void loadMediaMetaData() {
         try {
             LOGGER.debug("------------MediaTask-----------start--");
             this.redisMaster = rm.getJedisPoolMaster().getResource();
             final List<MediaMetaData> listMedias = mediaService.queryAll();
             long begin = System.currentTimeMillis();
             for (MediaMetaData media : listMedias) {
-                redisMaster.set(String.format(this.MEDIA_META_DATA, String.valueOf(media.getId())), JSON.toJSONString(media), "NX", "EX", EXPIRATION_DATE);
+                redisMaster.setex(String.format(this.MEDIA_META_DATA, String.valueOf(media.getId())), EXPIRATION_DATE,JSON.toJSONString(media));
                 redisMaster.sadd(this.ALL_MEDIA, String.valueOf(media.getId()));
             }
             redisMaster.expire(this.ALL_MEDIA, EXPIRATION_DATE);

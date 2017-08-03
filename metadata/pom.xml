@@ -177,7 +177,7 @@
 	</dependencies>
 	
 	<build>
-        <finalName>smartexchange-task</finalName>
+        <finalName>metadata</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -215,7 +215,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.madhouse.platform.smartexchange.task.MainTask</mainClass>
+                            <mainClass>com.madhouse.platform.premiummad.task.MainTask</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

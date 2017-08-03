@@ -45,7 +45,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     @Autowired
     private ResourceManager rm;
     
-    public void run() {
+    public void loadPolicyMetaData() {
         try {
             LOGGER.debug("------------PolicyTask-----------start--");
             this.redisMaster = rm.getJedisPoolMaster().getResource();
@@ -88,7 +88,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                             }
                             metaData.setAdspaceInfoMap(adspaceInfo);
                         }
-                        redisMaster.set(String.format(this.POLICY_META_DATA, String.valueOf(policy.getId())), JSON.toJSONString(metaData), "NX", "EX", EXPIRATION_DATE);
+                        redisMaster.setex(String.format(this.POLICY_META_DATA, String.valueOf(policy.getId())), EXPIRATION_DATE, JSON.toJSONString(metaData));
                         redisMaster.sadd(this.ALL_POLICY, String.valueOf(policy.getId()));
                     } catch (Exception e) {
                         e.printStackTrace();

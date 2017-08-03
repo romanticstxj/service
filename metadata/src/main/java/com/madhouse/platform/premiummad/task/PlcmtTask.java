@@ -47,7 +47,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     @Autowired
     private ResourceManager rm;
     
-    public void run() {
+    public void loadPlcmtMetaData() {
         try {
             LOGGER.debug("------------PlcmtTask-----------start--");
             this.redisMaster = rm.getJedisPoolMaster().getResource();
@@ -129,7 +129,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                         }
                         
                     }
-                    redisMaster.set(String.format(this.PLACEMENT_META_DATA, String.valueOf(adspace.getId())), JSON.toJSONString(metaData), "NX", "EX", EXPIRATION_DATE);
+                    redisMaster.setex(String.format(this.PLACEMENT_META_DATA, String.valueOf(adspace.getId())), EXPIRATION_DATE, JSON.toJSONString(metaData));
                     redisMaster.sadd(this.ALL_PLACEMENT, String.valueOf(adspace.getId()));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -189,13 +189,13 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
         return video;
     }
     
-    public void plcmtMappingMedia() {
+    public void loadMediaMappingData() {
         try {
             LOGGER.debug("------------PlcmtTask------adspaceMappingDsp-----start--");
             this.redisMaster = rm.getJedisPoolMaster().getResource();
             List<MediaMappingMetaData> list = plcmtService.queryAdspaceMappingMedia();
             long begin = System.currentTimeMillis();
-            redisMaster.set(this.MEDIA_MAPPING_DATA, JSON.toJSONString(list), "NX", "EX", EXPIRATION_DATE);
+            redisMaster.setex(this.MEDIA_MAPPING_DATA, EXPIRATION_DATE, JSON.toJSONString(list));
             LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----adspaceMappingDsp------End--");
         } catch (Exception e) {
