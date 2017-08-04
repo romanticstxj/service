@@ -1059,9 +1059,12 @@
             "_summary": "",
             "parameters": {
                 "query": {
-                    "type": "<*||integer||comment:报表类型>",
-                	"dims": "<*||string||comment:可选的二级维度(1,2,4,8)>",
-                	"realTime": "<*||integer||comment:实时或离线>"
+                    "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、媒体、广告位四个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上)>",
+                	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,4:媒体,8:广告位>",
+                	"realtime": "<*||integer||comment:(单选)1 实时,0 离线>",
+                	"mediaId": "<*||integer||comment:媒体id(过滤)>",
+                	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
+                	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
                 }
             },
             "responses": {
@@ -1094,14 +1097,38 @@
             "_summary": "",
             "parameters": {
                 "query": {
-                    "type": "<*||integer||comment:报表类型>",
-                	"dims": "<*||string||comment:可选的二级维度(1,2,32)>",
-                	"realTime": "<*||integer||comment:实时或离线>"
+                    "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、需求方三个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上),32:媒体(同上)>",
+                	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,32:需求方>",
+                	"realTime": "<*||integer||comment:(单选)1 实时,0 离线>",
+                	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
+                	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
                 }
             },
             "responses": {
                 "200": {
-                    "body": null
+                    "body": {
+                    	"id": "<*||integer||comment:媒体报表ID>",
+	                	"dspId": "<integer||comment:DSP ID>",
+	                	"mediaId": "<*||string||comment:媒体ID>",
+	                	"carrier": "<integer||comment:运营商code>",
+	                	"conn": "<integer||comment:联网方式code>",
+	                	"device": "<integer||comment:设备类型code>",
+	                	"location": "<string||comment:地域code>",
+	                	"cityName": "<string||comment:地域的城市名称>",
+	                	"provinceName": "<string||comment:地域的省份名称>",
+	                	"date": "<date||comment:日期>",
+	                    "hour": "<integer||comment:小时>",
+	                    "reqs": "<*||integer||comment:请求数>",
+	                    "bids": "<*||integer||comment:填充数>",
+	                    "timeouts": "<*||integer||comment:超时数>",
+	                    "errs": "<*||integer||comment:错误数>",
+	                    "wins": "<*||integer||comment:赢得竞价数>",
+	                	"imps": "<*||integer||comment:展示数>",
+	                	"clks": "<*||integer||comment:点击数>",
+	                	"vimps": "<integer||comment:有效展示数>",
+	                	"vclks": "<integer||comment:有效点击数>",
+	                	"cost": "<*||integer||comment:DSP成本>"
+                    }
                 }
             }
         }
@@ -1111,14 +1138,40 @@
             "_summary": "",
             "parameters": {
                 "query": {
-                    "type": "<*||integer||comment:报表类型(1)>",
-                	"dims": "<*||string||comment:可选的二级维度(1,2,4,8,16,32)>",
-                	"realTime": "<*||integer||comment:实时或离线>"
+                    "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、策略、需求方四个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上),32:媒体(同上)>",
+                	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,16:策略,32:需求方>",
+                	"realTime": "<*||integer||comment:(单选)1 实时,0 离线>",
+                	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
+                	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
                 }
             },
             "responses": {
                 "200": {
-                    "body": null
+                    "body": {
+                    	"id": "<*||integer||comment:媒体报表ID>",
+	                	"policyId": "<integer||comment:策略ID>",
+	                	"dspId": "<integer||comment:DSP ID>",
+	                	"mediaId": "<*||string||comment:媒体ID>",
+	                	"carrier": "<integer||comment:运营商code>",
+	                	"conn": "<integer||comment:联网方式code>",
+	                	"device": "<integer||comment:设备类型code>",
+	                	"location": "<string||comment:地域code>",
+	                	"cityName": "<string||comment:地域的城市名称>",
+	                	"provinceName": "<string||comment:地域的省份名称>",
+	                	"date": "<date||comment:日期>",
+	                    "hour": "<integer||comment:小时>",
+	                    "reqs": "<*||integer||comment:请求数>",
+	                    "bids": "<*||integer||comment:填充数>",
+	                    "timeouts": "<*||integer||comment:超时数>",
+	                    "errs": "<*||integer||comment:错误数>",
+	                	"wins": "<*||integer||comment:赢得竞价数>",
+	                	"imps": "<*||integer||comment:展示数>",
+	                	"clks": "<*||integer||comment:点击数>",
+	                	"vimps": "<integer||comment:有效展示数>",
+	                	"vclks": "<integer||comment:有效点击数>",
+	                	"income": "<*||integer||comment:媒体收入>",
+	                	"cost": "<*||integer||comment:DSP成本>"
+                    }
                 }
             }
         }

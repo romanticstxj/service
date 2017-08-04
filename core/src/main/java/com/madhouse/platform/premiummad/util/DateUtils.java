@@ -65,4 +65,8 @@ public class DateUtils {
 		simpleDateFormat.setLenient(false);
 		return simpleDateFormat.format(date);
 	}
+	
+	public static Date getCurrentDate(){
+		return new Date();
+	}
 }

@@ -38,6 +38,11 @@ public class ReportRule extends BaseRule{
         
 		Date startDate = DateUtils.getFormatDateByPattern("yyyyMMdd", dto.getStartDate());
 		Date endDate = DateUtils.getFormatDateByPattern("yyyyMMdd", dto.getEndDate());
+		if(endDate.after(DateUtils.getCurrentDate())){ //结束日期不能在当天以后
+			throw new BusinessException(StatusCode.SC20506);
+		} else if(startDate.after(endDate)){ //开始日期不能在结束日期之后
+			throw new BusinessException(StatusCode.SC20505);
+		}
 		entity.setStartDate(startDate);
 		entity.setEndDate(endDate);
         
@@ -45,6 +50,10 @@ public class ReportRule extends BaseRule{
 		return entity;
 	}
 
+	/**
+	 * 报表查询的维度的勾选
+	 * @param entity
+	 */
 	private static void transformDimensions(ReportCriterion entity) {
 		Integer dims = entity.getDims();
 		String dimsStr = StringUtils.convertSingleChoiceToMultiChoice(dims);
