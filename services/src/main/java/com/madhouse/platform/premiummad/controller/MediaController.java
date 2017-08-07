@@ -22,6 +22,7 @@ import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
+import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -81,7 +82,7 @@ public class MediaController {
 	 * @return
 	 */
 	@RequestMapping("/create")
-    public ResponseDto<MediaDto> addMedia(@RequestBody MediaDto mediaDto) {
+    public ResponseDto<MediaDto> addMedia(@RequestBody @Validated(Insert.class) MediaDto mediaDto) {
 		String fieldName = BeanUtils.hasEmptyField(mediaDto);
         if (fieldName != null)
             return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
@@ -123,16 +124,16 @@ public class MediaController {
 	@RequestMapping("/update")
     public ResponseDto<MediaDto> updateMedia(@RequestBody @Validated(Update.class) MediaDto mediaDto,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
+		String fieldName = BeanUtils.hasEmptyField(mediaDto);
+        if (fieldName != null)
+            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
 		//权限check
 		Integer id = mediaDto.getId();
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
 		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
 			return ResponseUtils.response(StatusCode.SC20006, null);
 		}
-				
-		String fieldName = BeanUtils.hasEmptyField(mediaDto);
-        if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
+		
         Media media = mediaService.queryById(mediaDto.getId());
         if (media == null)
             return ResponseUtils.response(StatusCode.SC20002, null);

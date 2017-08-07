@@ -44,9 +44,13 @@ public interface SystemConstant {
 		
 		/* 策略验证信息 */
 		String ERROR_WEIGHT_FORMAT = "权重格式错误";
+		
+		String NOT_PAST = "日期必须大于等于今天";
 	}
 	
 	interface DB{
+		int DESC_LENGTH = 400;
+		
 		int DIM_DATE = 1;
 		int DIM_HOUR = 2;
 		int DIM_MEDIA = 4;

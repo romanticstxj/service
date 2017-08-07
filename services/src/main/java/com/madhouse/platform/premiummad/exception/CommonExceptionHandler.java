@@ -2,10 +2,12 @@ package com.madhouse.platform.premiummad.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONException;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
@@ -27,6 +29,10 @@ public class CommonExceptionHandler {
 		logger.error(LogUtils.getDetailException(ex));
 		if (ex instanceof BusinessException) {
 			return ResponseUtils.response(((BusinessException) ex).getStatusCode(), null, ex.getMessage());
+		} else if (ex instanceof JSONException) {
+			return ResponseUtils.response(StatusCode.SC31005, null, ex.getMessage());
+		} else if (ex instanceof MethodArgumentNotValidException) {
+			return ResponseUtils.response(StatusCode.SC31006, null, ex.getMessage());
 		} else {
 			return ResponseUtils.response(StatusCode.SC30001, null, ex.getMessage());
 		}

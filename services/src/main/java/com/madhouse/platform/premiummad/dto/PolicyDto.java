@@ -7,8 +7,11 @@ import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
+import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -22,13 +25,13 @@ public class PolicyDto implements Serializable{
 	private Integer dealId;
     @NotNullAndBlank
     private String name;
-    @NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_TYPE, groups={Update.class, UpdateStatus.class})
-    @NotNullAndBlank
+    @NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_TYPE, groups={Update.class, UpdateStatus.class, Insert.class})
     private Integer type; //策略类型(1: PDB, 2: PD, 4: PMP, 8: RTB)
     @NotNullAndBlank
-    @Min(message=SystemConstant.ErrorMessage.ERROR_WEIGHT_FORMAT, value=1)
+    @Min(message=SystemConstant.ErrorMessage.ERROR_WEIGHT_FORMAT, value=1, groups={Update.class, UpdateStatus.class})
     private Integer weight; //权重
     @NotNullAndBlank
+//    @NotPast(groups={Update.class, Insert.class})
     private Date startDate;
     @NotNullAndBlank
     private Integer isEndDate; //0:不限结束时间，1:限制结束时间
@@ -62,7 +65,7 @@ public class PolicyDto implements Serializable{
     private Integer bidFloor;
     @NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_STATUS, groups=UpdateStatus.class)
     private Byte status;
-
+    @Length(max=SystemConstant.DB.DESC_LENGTH, groups={Update.class, Insert.class})
     private String description;
     
     private List<PolicyAdspaceDto> policyAdspaces;

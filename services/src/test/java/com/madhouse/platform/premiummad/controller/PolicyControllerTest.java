@@ -22,7 +22,7 @@ public class PolicyControllerTest {
 		PolicyDto policyDto = new PolicyDto();
 		policyDto.setName("mypolicy2225");
 		policyDto.setWeight(10);
-		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-07-20"));
+		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-08-04"));
 		policyDto.setIsEndDate(0);
 		policyDto.setIsTimeTargeting(0);
 		policyDto.setIsLocationTargeting(0);
@@ -81,7 +81,7 @@ public class PolicyControllerTest {
 		PolicyDto policyDto = new PolicyDto();
 		policyDto.setId(500004);
 		policyDto.setType(2);
-		policyDto.setStatus((byte) 1); 
+//		policyDto.setStatus((byte) 1); 
 		
 		String link = "http://localhost:8080/services/policy/updateStatus";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(policyDto));
@@ -93,7 +93,7 @@ public class PolicyControllerTest {
 		policyDto.setId(500004);
 		policyDto.setName("mypolicy222");
 		policyDto.setWeight(10);
-		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-07-20"));
+		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-08-05"));
 		policyDto.setIsEndDate(0);
 		policyDto.setIsTimeTargeting(0);
 		policyDto.setIsLocationTargeting(0);

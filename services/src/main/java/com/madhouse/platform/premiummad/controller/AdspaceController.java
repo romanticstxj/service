@@ -29,6 +29,7 @@ import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
+import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -92,7 +93,7 @@ public class AdspaceController {
 	 * @return
 	 */
 	@RequestMapping("/create")
-    public ResponseDto<AdspaceDto> addAdspace(@RequestBody AdspaceDto adspaceDto, 
+    public ResponseDto<AdspaceDto> addAdspace(@RequestBody @Validated(Insert.class) AdspaceDto adspaceDto, 
     		@RequestHeader(value=SystemConstant.Request.XFROM, required=true) String xFrom) {
 		AdspaceRule.validateDto(adspaceDto);
         Adspace adspace = AdspaceRule.convertToModel(adspaceDto, new Adspace());

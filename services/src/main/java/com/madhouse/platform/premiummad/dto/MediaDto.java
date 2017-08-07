@@ -3,10 +3,14 @@ package com.madhouse.platform.premiummad.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
+import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -25,6 +29,7 @@ public class MediaDto implements Serializable{
 	private Integer category;
 	private String categoryName;
 	@NotNullAndBlank
+	@Digits(fraction = 0, integer = 1)
 	private Integer type;
 	@NotNullAndBlank
 	private Integer accessType;
@@ -36,9 +41,9 @@ public class MediaDto implements Serializable{
 	private Integer timeout;
 	
 	private Date createdTime;
-	
+	@Length(max=SystemConstant.DB.DESC_LENGTH, groups={Update.class, Insert.class})
 	private String description;
-
+	
 	private Integer apiType;
 	
 	public Integer getId() {
