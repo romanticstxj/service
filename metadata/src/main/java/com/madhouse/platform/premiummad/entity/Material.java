@@ -6,7 +6,7 @@ public class Material {
     
     private long dspId;
     
-    private String materialKey;
+    private String materialId;
     
     private String name;
     
@@ -88,12 +88,12 @@ public class Material {
         this.dspId = dspId;
     }
 
-    public String getMaterialKey() {
-        return materialKey;
+    public String getMaterialId() {
+        return materialId;
     }
 
-    public void setMaterialKey(String materialKey) {
-        this.materialKey = materialKey;
+    public void setMaterialId(String materialId) {
+        this.materialId = materialId;
     }
 
     public String getName() {

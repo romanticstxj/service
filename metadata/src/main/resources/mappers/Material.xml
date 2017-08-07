@@ -5,6 +5,7 @@
   	<id column="id" property="id" jdbcType="INTEGER" />
     <result column="dsp_id" property="dspId" jdbcType="INTEGER" />
     <result column="material_name" property="name" jdbcType="VARCHAR" />
+    <result column="material_key" property="materialId" jdbcType="VARCHAR" />
     <result column="layout" property="layout" jdbcType="SMALLINT" />
     <result column="deal_id" property="dealId" jdbcType="INTEGER" />
     <result column="start_date" property="startDate" jdbcType="VARCHAR" />
@@ -27,8 +28,8 @@
   </resultMap>
   
   <select id="queryAll" resultMap="baseResult">
-  	select id,DATE_FORMAT(start_date,'%Y-%m-%d')start_date , DATE_FORMAT(end_date,'%Y-%m-%d') end_date ,media_material_key,ad_materials,adspace_id,media_id, dsp_id,material_key,material_name,layout,media_id,deal_id,size,icon,title,description,cover,duration,lpg_url,active_type,imp_urls,clk_urls,sec_urls,audited_user,media_material_key end_date 
-  	from mad_sys_material  where `status` >0
+  	select id,DATE_FORMAT(start_date,'%Y-%m-%d')start_date , DATE_FORMAT(end_date,'%Y-%m-%d') end_date ,ad_materials,adspace_id,media_id, dsp_id,material_key,material_name,layout,media_id,deal_id,size,icon,title,description,cover,duration,lpg_url,active_type,imp_urls,clk_urls,sec_urls,audited_user,media_material_key 
+  	from mad_sys_material  where `status` =2
   </select>
   
 </mapper>
