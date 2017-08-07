@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.madhouse.platform.premiummad.dao.MaterialDao" >
+  <resultMap id="baseResult" type="com.madhouse.platform.premiummad.entity.Material">
+  	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="dsp_id" property="dspId" jdbcType="INTEGER" />
+    <result column="material_name" property="name" jdbcType="VARCHAR" />
+    <result column="layout" property="layout" jdbcType="SMALLINT" />
+    <result column="deal_id" property="dealId" jdbcType="INTEGER" />
+    <result column="start_date" property="startDate" jdbcType="VARCHAR" />
+    <result column="end_date" property="endDate" jdbcType="VARCHAR" />
+    <result column="size" property="size" jdbcType="VARCHAR" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="description" property="desc" jdbcType="VARCHAR" />
+    <result column="cover" property="cover" jdbcType="VARCHAR" />
+    <result column="duration" property="duration" jdbcType="INTEGER" />
+    <result column="lpg_url" property="lpgUrl" jdbcType="VARCHAR" />
+    <result column="active_type" property="actType" jdbcType="TINYINT" />
+    <result column="imp_urls" property="impUrls" jdbcType="VARCHAR" />
+    <result column="clk_urls" property="clkUrls" jdbcType="VARCHAR" />
+    <result column="sec_urls" property="secUrls" jdbcType="VARCHAR" />
+    <result column="adspace_id" property="adspaceId" jdbcType="INTEGER" />
+    <result column="media_id" property="mediaId" jdbcType="INTEGER" />
+  	<result column="ad_materials" property="adMaterials" jdbcType="VARCHAR" />
+  	<result column="media_material_key" property="mediaMaterialKey" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="queryAll" resultMap="baseResult">
+  	select id,DATE_FORMAT(start_date,'%Y-%m-%d')start_date , DATE_FORMAT(end_date,'%Y-%m-%d') end_date ,media_material_key,ad_materials,adspace_id,media_id, dsp_id,material_key,material_name,layout,media_id,deal_id,size,icon,title,description,cover,duration,lpg_url,active_type,imp_urls,clk_urls,sec_urls,audited_user,media_material_key end_date 
+  	from mad_sys_material  where `status` >0
+  </select>
+  
+</mapper>

@@ -20,7 +20,8 @@ redis.minIdle=5
 
 
 
-
+ALL_MATERIAL = set:all_material
+MATERIAL_META_DATA = str:%s:material_info
 
 ALL_MEDIA = set:all_media
 MEDIA_META_DATA = str:%s:media_info
