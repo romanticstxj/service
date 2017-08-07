@@ -161,5 +161,16 @@
         <!-- Letv
         <task:scheduled ref="letvUploadMaterialApiTask" method="uploadMaterial" cron="${cron.momoMaterialUploadApiTask}"/>
         <task:scheduled ref="letvStatusApiTask" method="getStatusResponse" cron="${cron.momoMaterialStatusApiTask}"/> -->
+	
+		<!-- TENCENT -->
+        <task:scheduled ref="adspaceSynchApiTask" method="synchToDB" cron="${cron.adspaceSynchApiTask}"/>
+        <task:scheduled ref="advertBatchStatusApiTask" method="advertBatchStatus" cron="${cron.advertBatchStatusApiTask}"/>
+        <task:scheduled ref="advertUploadApiTask" method="advertUpload" cron="${cron.advertUploadApiTask}"/>
+        <task:scheduled ref="customerPassApiTask" method="customerPassToDb" cron="${cron.customerPassApiTask}"/>
+        <task:scheduled ref="validResourceDealIdTask" method="getValidResourceDealId" cron="${cron.validResourceDealIdTask}"/>
+		
+		<!-- valuemaker -->
+        <task:scheduled ref="valueMakerUploadApiTask" method="uploadValueMakerMaterial" cron="${cron.valuemakerMaterialUploadApiTask}"/> 
+        <task:scheduled ref="valueMakerStatusApiTask" method="getValueMakerMaterialStatus" cron="${cron.valuemakerMaterialStatusApiTask}"/>
 	</task:scheduled-tasks>
 </beans>

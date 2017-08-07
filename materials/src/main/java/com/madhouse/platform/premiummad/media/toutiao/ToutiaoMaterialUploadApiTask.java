@@ -115,8 +115,8 @@ public class ToutiaoMaterialUploadApiTask {
 		// 获胜的 url
 		request.setNurl(IToutiaoConstant.NURL.getDescription().replace("{adspaceid}", getMediaNurl(material.getAdspaceId())));
 		request.setAdid(material.getId() + String.valueOf(material.getAdspaceId()) + 1);
-		request.setHeight(Integer.valueOf(material.getSize().split("x")[1]));
-		request.setWidth(Integer.valueOf(material.getSize().split("x")[0]));
+		request.setHeight(Integer.valueOf(material.getSize().split("*")[1]));
+		request.setWidth(Integer.valueOf(material.getSize().split("*")[0]));
 		// 素材的落地页，以审核时提交为准
 		request.setClick_through_url(material.getLpgUrl());
 		// 素材的标题

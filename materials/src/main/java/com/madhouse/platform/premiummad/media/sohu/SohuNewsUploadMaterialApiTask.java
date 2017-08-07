@@ -36,6 +36,12 @@ public class SohuNewsUploadMaterialApiTask {
 	
 	@Value("${sohu.material.delete}")
     private String materialDeleteUrl;
+	
+	/**
+	 * 为了发送给搜狐检查请求参数
+	 */
+	@Value("${sohu.test.apiauth}")
+	private String apiAuthUrl;
 
 	@Value("${imp.url}")
 	private String impUrl;

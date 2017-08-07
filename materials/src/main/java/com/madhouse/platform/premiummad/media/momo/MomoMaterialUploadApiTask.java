@@ -128,15 +128,15 @@ public class MomoMaterialUploadApiTask {
 		if (material.getLayout() > 100 && material.getLayout() < 200) {
 			// image
 			imageBean.setUrl(material.getAdMaterials());
-			imageBean.setHeight(Integer.valueOf(material.getSize().split("x")[1]));
-			imageBean.setWidth(Integer.valueOf(material.getSize().split("x")[0]));
+			imageBean.setHeight(Integer.valueOf(material.getSize().split("*")[1]));
+			imageBean.setWidth(Integer.valueOf(material.getSize().split("*")[0]));
 			creativeBean.setImage(Collections.singletonList(imageBean));
 			creativeBean.setNative_format("FEED_LANDING_PAGE_LARGE_IMG"); // 广告样式
 		} else if (material.getLayout() > 200 && material.getLayout() < 300) {
 			// video
 			imageBean.setUrl(material.getCover());
-			imageBean.setHeight(Integer.valueOf(material.getSize().split("x")[1]));
-			imageBean.setWidth(Integer.valueOf(material.getSize().split("x")[0]));
+			imageBean.setHeight(Integer.valueOf(material.getSize().split("*")[1]));
+			imageBean.setWidth(Integer.valueOf(material.getSize().split("*")[0]));
 			videoBean.setCover_img(imageBean);
 
 			videoBean.setUrl(material.getAdMaterials());
