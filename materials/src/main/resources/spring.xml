@@ -172,5 +172,9 @@
 		<!-- valuemaker -->
         <task:scheduled ref="valueMakerUploadApiTask" method="uploadValueMakerMaterial" cron="${cron.valuemakerMaterialUploadApiTask}"/> 
         <task:scheduled ref="valueMakerStatusApiTask" method="getValueMakerMaterialStatus" cron="${cron.valuemakerMaterialStatusApiTask}"/>
+	
+		<!-- funsion -->
+        <task:scheduled ref="funadxMaterialStatusApiTask" method="getStatus" cron="${cron.funadxMaterialStatusApiTask}"/>
+        <task:scheduled ref="funadxUploadMaterialApiTask" method="uploadMaterial" cron="${cron.funadxUploadMaterialApiTask}"/>
 	</task:scheduled-tasks>
 </beans>

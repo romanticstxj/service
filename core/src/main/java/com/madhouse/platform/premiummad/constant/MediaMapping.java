@@ -14,7 +14,8 @@ public enum MediaMapping {
 	LETV(100007, "乐视"),
 	MOMO(100008, "陌陌"),
 	TOUTIAO(100009, "今日头条"),
-	VALUEMAKER(100010, "万流客");
+	VALUEMAKER(100010, "万流客"),
+	FUNADX(100011, "风行");
 
 	int value;
 	String descrip;
