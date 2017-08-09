@@ -193,9 +193,11 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
         try {
             LOGGER.debug("------------PlcmtTask------adspaceMappingDsp-----start--");
             this.redisMaster = rm.getJedisPoolMaster().getResource();
-            List<MediaMappingMetaData> list = plcmtService.queryAdspaceMappingMedia();
+            List<MediaMappingMetaData> lists = plcmtService.queryAdspaceMappingMedia();
             long begin = System.currentTimeMillis();
-            redisMaster.setex(this.MEDIA_MAPPING_DATA, EXPIRATION_TIME, JSON.toJSONString(list));
+            for (MediaMappingMetaData mappingMetaData : lists) {
+                redisMaster.setex(String.format(this.MEDIA_MAPPING_DATA, String.valueOf(mappingMetaData.getAdspaceId())), EXPIRATION_TIME, JSON.toJSONString(mappingMetaData));
+            }
             LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----adspaceMappingDsp------End--");
         } catch (Exception e) {

@@ -21,25 +21,33 @@ redis.minIdle=5
 
 
 ALL_MATERIAL = set:all_material
+#素材ID
 MATERIAL_META_DATA = str:%s:material_info
 
 ALL_MEDIA = set:all_media
+#媒体ID
 MEDIA_META_DATA = str:%s:media_info
 
 ALL_PLACEMENT = set:all_plcmt
+#广告位ID
 PLACEMENT_META_DATA = str:%s:plcmt_info
 
 ALL_ADBLOCK = set:all_adblock
+#广告限制ID
 ADBLOCK_META_DATA = str:%s:adblock_info
 
 ALL_POLICY = set:all_policy
+#策略ID
 POLICY_META_DATA = str:%s:policy_info
 
 ALL_DSP = set:all_dsp
+#DSP ID
 DSP_META_DATA = str:%s:dsp_info
 
-MEDIA_MAPPING_DATA = str:media_mapping_data
-DSP_MAPPING_DATA = str:dsp_mapping_data
+#广告位ID
+MEDIA_MAPPING_DATA = str:%s:media_mapping_info
+#广告位ID、DSP ID
+DSP_MAPPING_DATA = str:%s:%s:dsp_mapping_info
 
 EXPIRATION_TIME = 180
 

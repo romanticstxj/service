@@ -65,7 +65,9 @@ public class DspTask {
             this.redisMaster = rm.getJedisPoolMaster().getResource();
             final List<DSPMappingMetaData> lists = service.queryAdspaceMappingDsp();
             long begin = System.currentTimeMillis();
-            redisMaster.setex(this.DSP_MAPPING_DATA, EXPIRATION_TIME ,JSON.toJSONString(lists));
+            for (DSPMappingMetaData mappingMetaData : lists) {
+                redisMaster.setex(String.format(this.DSP_MAPPING_DATA, String.valueOf(mappingMetaData.getAdspaceId()), String.valueOf(mappingMetaData.getDspId())), EXPIRATION_TIME, JSON.toJSONString(mappingMetaData));
+            }
             LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------DSPTask-----plcmtMappingDsp------End--");
         } catch (Exception e) {
