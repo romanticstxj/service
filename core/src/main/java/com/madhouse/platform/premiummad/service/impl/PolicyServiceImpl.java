@@ -95,6 +95,7 @@ public class PolicyServiceImpl implements IPolicyService {
 		policyAdspaceDao.deleteByPolicyId(policyId);
 		policyAdspaceDao.batchInsert(policyAdspaces);
 		
+		//只有rtb模式下才可以修改dsp
 		if(policy.getType().intValue() == SystemConstant.OtherConstant.POLICY_TYPE_RTB){
 			List<PolicyDsp> policyDsps = policy.getPolicyDsps();
 	        if(policyDsps != null){

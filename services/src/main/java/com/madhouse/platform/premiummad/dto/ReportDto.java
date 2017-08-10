@@ -1,5 +1,7 @@
 package com.madhouse.platform.premiummad.dto;
 
+import java.util.List;
+
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
 public class ReportDto {
@@ -17,7 +19,12 @@ public class ReportDto {
 	@NotNullAndBlank
 	private String endDate; //结束日期
 	
-	public ReportDto(Integer type, Integer dims, Integer realtime, Integer mediaId, String startDate, String endDate) {
+	private List<Integer> mediaIds;
+	
+	private List<Integer> policyIds;
+
+	public ReportDto(Integer type, Integer dims, Integer realtime, Integer mediaId, String startDate, String endDate,
+			List<Integer> mediaIds, List<Integer> policyIds) {
 		super();
 		this.type = type;
 		this.dims = dims;
@@ -25,6 +32,8 @@ public class ReportDto {
 		this.mediaId = mediaId;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.mediaIds = mediaIds;
+		this.policyIds = policyIds;
 	}
 
 	public Integer getType() {
@@ -73,6 +82,22 @@ public class ReportDto {
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+
+	public List<Integer> getMediaIds() {
+		return mediaIds;
+	}
+
+	public void setMediaIds(List<Integer> mediaIds) {
+		this.mediaIds = mediaIds;
+	}
+
+	public List<Integer> getPolicyIds() {
+		return policyIds;
+	}
+
+	public void setPolicyIds(List<Integer> policyIds) {
+		this.policyIds = policyIds;
 	}
 	
 }

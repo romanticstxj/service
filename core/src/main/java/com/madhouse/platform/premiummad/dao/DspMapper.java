@@ -78,9 +78,10 @@ public interface DspMapper {
 	int updateStatus(Dsp dsp);
 
 	/**
-	 * 查询dsp列表，可以含参ids
+	 * 查询dsp列表，可以含参ids,以及status和deliveryType的限制
 	 * @param idStrs
 	 * @return
 	 */
-	List<Dsp> queryAll(@Param("idStrs") String[] idStrs);
+	List<Dsp> queryAll(@Param("idStrs") String[] idStrs, @Param("dsp") Dsp dsp);
+
 }

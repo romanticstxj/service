@@ -1,6 +1,7 @@
 package com.madhouse.platform.premiummad.entity;
 
 import java.util.Date;
+import java.util.List;
 
 public class ReportCriterion extends BaseEntity{
 	
@@ -27,6 +28,10 @@ public class ReportCriterion extends BaseEntity{
 	private Boolean hasDsp;
 	
 	private Boolean hasPolicy;
+	
+	private List<Integer> mediaIds;
+	
+	private List<Integer> policyIds;
 
 	public Integer getType() {
 		return type;
@@ -122,5 +127,21 @@ public class ReportCriterion extends BaseEntity{
 
 	public void setHasPolicy(Boolean hasPolicy) {
 		this.hasPolicy = hasPolicy;
+	}
+
+	public List<Integer> getMediaIds() {
+		return mediaIds;
+	}
+
+	public void setMediaIds(List<Integer> mediaIds) {
+		this.mediaIds = mediaIds;
+	}
+
+	public List<Integer> getPolicyIds() {
+		return policyIds;
+	}
+
+	public void setPolicyIds(List<Integer> policyIds) {
+		this.policyIds = policyIds;
 	}
 }

@@ -20,10 +20,20 @@
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
   </resultMap>
+  
   <sql id="Base_Column_List">
     ${alias}.id, ${alias}.dsp_id, SUM(${alias}.reqs), SUM(${alias}.bids), SUM(${alias}.timeouts), 
     SUM(${alias}.errs), SUM(${alias}.wins), SUM(${alias}.imps), SUM(${alias}.clks), SUM(${alias}.vimps), 
     SUM(${alias}.vclks), SUM(${alias}.cost), ${alias}.created_time, ${alias}.updated_time
+  </sql>
+  
+  <sql id="mediaAuthCondition">
+  	<if test="mediaIds != null and mediaIds.size() > 0">
+    	AND rp.media_id IN 
+       	<foreach collection="mediaIds" item="id" index="index" open="(" close=")" separator=",">
+           	#{id,jdbcType=INTEGER}
+        </foreach>
+    </if>
   </sql>
   
   <select id="queryDspReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -47,6 +57,7 @@
     LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     LEFT JOIN mad_sys_media m ON rp.media_id = m.id
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <include refid="mediaAuthCondition"/>
     GROUP BY rp.dsp_id, rp.media_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY rp.dsp_id

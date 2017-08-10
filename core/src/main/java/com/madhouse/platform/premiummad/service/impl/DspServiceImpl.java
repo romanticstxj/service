@@ -107,13 +107,18 @@ public class DspServiceImpl implements IDspService {
 	}
 	
 	@Override
-	public List<Dsp> queryAll(String ids) {
+	public List<Dsp> queryAll(String ids, Dsp dsp) {
 		String[] idStrs = StringUtils.splitToStringArray(ids);
-		return dspDao.queryAll(idStrs);
+		return dspDao.queryAll(idStrs, dsp);
 	}
 
 	@Override
 	public int insert(Dsp t) {
 		return 0;
+	}
+
+	@Override
+	public List<Dsp> queryAll(String ids) {
+		return null;
 	}
 }

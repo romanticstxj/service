@@ -2,6 +2,8 @@ package com.madhouse.platform.premiummad.service.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,8 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 @Transactional(rollbackFor = RuntimeException.class)
 public class UserAuthServiceImpl implements IUserAuthService {
 	
+	private static final Logger logger = LoggerFactory.getLogger(UserAuthServiceImpl.class);
+	
 	@Autowired
 	private UserAuthDao userAuthDao;
 
@@ -25,8 +29,9 @@ public class UserAuthServiceImpl implements IUserAuthService {
 
 	@Override
 	public List<Integer> queryAdspaceIdList(Integer userId, String adspaceIds) {
+		int count = userAuthDao.checkAdminForMedia(userId);
 		String[] idStrs = StringUtils.splitToStringArray(adspaceIds);
-		return userAuthDao.queryAdspaceIdList(userId, idStrs);
+		return userAuthDao.queryAdspaceIdList(userId, idStrs, count);
 	}
 	
 	@Override

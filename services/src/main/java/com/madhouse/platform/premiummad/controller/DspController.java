@@ -30,8 +30,13 @@ public class DspController {
 	private IDspService dspService;
 	
 	@RequestMapping("/list")
-    public ResponseDto<DspDto> list(@RequestParam(value="ids", required=false) String ids) throws Exception {
-		List<Dsp> dsps = dspService.queryAll(ids);
+    public ResponseDto<DspDto> list(@RequestParam(value="ids", required=false) String ids,
+    		@RequestParam(value="status", required=false) Integer status,
+    		@RequestParam(value="deliveryType", required=false) Byte deliveryType) throws Exception {
+		Dsp dsp = new Dsp();
+		dsp.setDeliveryType(deliveryType);
+		dsp.setStatus(status);
+		List<Dsp> dsps = dspService.queryAll(ids, dsp);
 		List<DspDto> result = DspRule.convertToDtoList(dsps, new ArrayList<DspDto>());
         return ResponseUtils.response(StatusCode.SC20000, result);
     }

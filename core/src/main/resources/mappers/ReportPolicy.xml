@@ -26,10 +26,29 @@
     <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
     <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
   </resultMap>
+  
   <sql id="Base_Column_List" >
     ${alias}.id, ${alias}.policy_id, SUM(${alias}.reqs), SUM(${alias}.bids), SUM(${alias}.timeouts), 
     SUM(${alias}.errs), SUM(${alias}.wins), SUM(${alias}.imps), SUM(${alias}.clks), SUM(${alias}.vimps), 
     SUM(${alias}.vclks), SUM(${alias}.income), SUM(${alias}.cost), ${alias}.created_time, ${alias}.updated_time
+  </sql>
+  
+  <sql id="mediaAuthCondition">
+  	<if test="mediaIds != null and mediaIds.size() > 0">
+    	AND rp.media_id IN 
+       	<foreach collection="mediaIds" item="id" index="index" open="(" close=")" separator=",">
+           	#{id,jdbcType=INTEGER}
+        </foreach>
+    </if>
+  </sql>
+  
+  <sql id="policyAuthCondition">
+  	<if test="policyIds != null and policyIds.size() > 0">
+    	AND rp.policy_id IN 
+       	<foreach collection="policyIds" item="id" index="index" open="(" close=")" separator=",">
+           	#{id,jdbcType=INTEGER}
+        </foreach>
+    </if>
   </sql>
   
   <select id="queryPolicyReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -41,6 +60,7 @@
     LEFT JOIN mad_sys_policy p ON rp.policy_id = p.id
     <if test="hasDsp != null and hasDsp == true">LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id</if>
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <include refid="policyAuthCondition"/>
     GROUP BY rp.policy_id <if test="hasDsp != null and hasDsp == true">, rp.dsp_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -56,6 +76,7 @@
     LEFT JOIN mad_sys_policy p ON rp.policy_id = p.id
     <if test="hasDsp != null and hasDsp == true">LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id</if>
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <include refid="policyAuthCondition"/>
     GROUP BY rp.policy_id <if test="hasDsp != null and hasDsp == true">, rp.dsp_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -73,6 +94,8 @@
     LEFT JOIN mad_sys_media m ON rp.media_id = m.id
     <if test="hasDsp != null and hasDsp == true">LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id</if>
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <include refid="policyAuthCondition"/>
+    <include refid="mediaAuthCondition"/>
     GROUP BY rp.policy_id, rp.media_id <if test="hasDsp != null and hasDsp == true">, rp.dsp_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -93,6 +116,7 @@
     LEFT JOIN mad_dict_location lp ON l.parent_code = lp.code
     <if test="hasDsp != null and hasDsp == true">LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id</if>
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <include refid="policyAuthCondition"/>
     GROUP BY rp.policy_id, rp.location <if test="hasDsp != null and hasDsp == true">, rp.dsp_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>

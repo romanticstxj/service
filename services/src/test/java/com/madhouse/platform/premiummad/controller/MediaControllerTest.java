@@ -36,8 +36,8 @@ public class MediaControllerTest {
 	
 	@Test
 	public void list(){
-//		String link = "http://localhost:8080/services/media/list?ids=8000005,8000004";
-		String link = "http://172.16.25.31:8080/services/media/list";
+		String link = "http://localhost:8080/services/media/list";
+//		String link = "http://172.16.25.31:8080/services/media/list";
 //		String link = "http://172.16.25.48:8080/services/dict/list?type=1";
 		HttpUtilTest.httpGet(link);
 	} 

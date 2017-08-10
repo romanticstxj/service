@@ -1,5 +1,7 @@
 package com.madhouse.platform.premiummad.service;
 
+import java.util.List;
+
 import com.madhouse.platform.premiummad.entity.Dsp;
 
 public interface IDspService extends IBaseService<Dsp>{
@@ -17,5 +19,7 @@ public interface IDspService extends IBaseService<Dsp>{
      * @param Dsp dsp
      */
 	int insertWithParamsProcess(Dsp dsp, String xFrom);
+
+	List<Dsp> queryAll(String ids, Dsp dsp);
 
 }
