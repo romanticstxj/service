@@ -71,8 +71,14 @@
     
     <!-- 基于xml配置 -->
     <task:scheduled-tasks>
-        <!-- <task:scheduled ref="mediaTask" method="run" cron="${cron.mediaTask}"/> -->
-        <task:scheduled ref="dspTask" method="run" cron="${cron.dspTask}"/>
+    	<task:scheduled ref="plcmtTask" method="loadPlcmtMetaData" initial-delay="0" fixed-delay="60000"/>
+   		<task:scheduled ref="dspTask" method="loadDSPMetaData" initial-delay="0" fixed-delay="60000"/>
+        <task:scheduled ref="mediaTask" method="loadMediaMetaData" initial-delay="0" fixed-delay="60000"/>
+        
+        <task:scheduled ref="policyTask" method="loadPolicyMetaData" initial-delay="0" fixed-delay="60000"/>
+        <task:scheduled ref="dspTask" method="loadDSPMappingData" initial-delay="0" fixed-delay="60000"/>
+    	<task:scheduled ref="plcmtTask" method="loadMediaMappingData" initial-delay="0" fixed-delay="60000"/>
+    	<task:scheduled ref="materialTask" method="loadMaterialMetaData" initial-delay="0" fixed-delay="60000"/>
     </task:scheduled-tasks>
 
 

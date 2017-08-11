@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.service;
 
 import java.util.List;
 
+import com.madhouse.platform.premiummad.entity.DSPMappingMetaData;
 import com.madhouse.platform.premiummad.entity.DSPMetaData;
 
 public interface IDSPService {
@@ -11,5 +12,5 @@ public interface IDSPService {
      */
     List<DSPMetaData> queryAll();
 
-    
+    List<DSPMappingMetaData> queryAdspaceMappingDsp();
 }
