@@ -50,7 +50,9 @@ public class MediaTask {
         } catch (Exception e) {
             LOGGER.error("------------MediaTask-----------error:{}",e.toString());
         } finally {
-            redisMaster.close();
+            if(null != redisMaster){
+                redisMaster.close();
+            }
         }
     }
     

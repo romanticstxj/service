@@ -69,7 +69,9 @@ public class MaterialTask {
         } catch (Exception e) {
             LOGGER.error("------------MaterialTask-----loadMaterialMetaData------error:{}",e.toString());
         } finally {
-            redisMaster.close();
+            if(null != redisMaster){
+                redisMaster.close();
+            }
         }
     }
     

@@ -57,7 +57,9 @@ public class DspTask {
         } catch (Exception e) {
             LOGGER.error("------------DSPTask-----loadDSPMetaData------error:{}",e.toString());
         } finally {
-            redisMaster.close();
+            if(null != redisMaster){
+                redisMaster.close();
+            }
         }
     }
     public void loadDSPMappingData() {
@@ -74,7 +76,9 @@ public class DspTask {
         } catch (Exception e) {
             LOGGER.error("------------DSPTask-----plcmtMappingDsp------error:{}",e.toString());
         } finally {
-            redisMaster.close();
+            if(null != redisMaster){
+                redisMaster.close();
+            }
         }
     }
 }

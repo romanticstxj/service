@@ -27,9 +27,7 @@ import com.madhouse.platform.premiummad.util.ResourceManager;
 @Component
 public class PolicyTask {
 private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
-    
-    private Jedis redisMaster = null;
-    
+
     @Value("${ALL_POLICY}")
     private String ALL_POLICY;
     
@@ -46,9 +44,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     private ResourceManager rm;
     
     public void loadPolicyMetaData() {
+        Jedis redisMaster = rm.getJedisPoolMaster().getResource();
         try {
             LOGGER.debug("------------PolicyTask-----------start--");
-            this.redisMaster = rm.getJedisPoolMaster().getResource();
             final List<Policy> listPolicys = policyService.queryAll();
             long begin = System.currentTimeMillis();
             for (Policy  policy: listPolicys) {
@@ -102,7 +100,12 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("------------PolicyTask-----------error:{}",e.toString());
+        }finally{
+            if(null != redisMaster){
+                redisMaster.close();
+            }
         }
+        
     }
     
     public  List<Integer> splitIdsToInt(String ids) {

@@ -141,7 +141,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             e.printStackTrace();
             LOGGER.error("------------PlcmtTask-----------error:{}",e.toString());
         } finally {
-            redisMaster.close();
+            if(null != redisMaster){
+                redisMaster.close();
+            }
         }
     }
     public List<String> queryMimesByType(Integer type) {
@@ -203,7 +205,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
         } catch (Exception e) {
             LOGGER.error("------------PlcmtTask-----adspaceMappingDsp------error:{}",e.toString());
         } finally {
-            redisMaster.close();
+            if(null != redisMaster){
+                redisMaster.close();
+            }
         }
     }
     
