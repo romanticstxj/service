@@ -29,7 +29,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 //		LOGGER.debug("Request body: " + requestBody);
 		if(userId != null){ //userId非空的情况下判断是否数字
 			if(!StringUtils.isNumeric(userId)){
-				throw new BusinessException(StatusCode.SC20007);
+				throw new BusinessException(StatusCode.SC31007);
 			}
 		}
 		

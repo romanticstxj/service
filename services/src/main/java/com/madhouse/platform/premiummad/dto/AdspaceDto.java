@@ -5,8 +5,11 @@ import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
+import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -66,7 +69,7 @@ public class AdspaceDto implements Serializable{
 	private Integer videoMaxKbyte;
 	
 	private String videoDuration;
-	
+	@Length(max=SystemConstant.DB.DESC_LENGTH, groups={Update.class, Insert.class})
 	private String description;
 	
 	private Date createdTime;

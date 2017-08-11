@@ -95,7 +95,7 @@
         LEFT JOIN mad_sys_media m ON m.id = a.media_id
         LEFT JOIN mad_dict_layout l ON a.layout = l.code AND a.adtype = l.ad_type AND a.terminal_type = l.terminal_type
         WHERE 1=1
-        <if test="idStrs != null and idStrs.length > 0">
+        <if test="idStrs != null and idStrs.size() > 0">
         	AND m.id IN 
         	<foreach collection="idStrs" item="mediaId" index="index" open="(" close=")" separator=",">
             	#{mediaId,jdbcType=INTEGER}

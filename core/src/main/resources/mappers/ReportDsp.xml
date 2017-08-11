@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.madhouse.platform.premiummad.dao.ReportDspDao">
+  <resultMap id="BaseResultMap" type="com.madhouse.platform.premiummad.entity.ReportDsp">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="dsp_id" jdbcType="INTEGER" property="dspId" />
+    <result column="media_id" jdbcType="INTEGER" property="mediaId" />
+    <result column="date" jdbcType="DATE" property="date" />
+    <result column="hour" jdbcType="TINYINT" property="hour" />
+    <result column="reqs" jdbcType="BIGINT" property="reqs" />
+    <result column="bids" jdbcType="BIGINT" property="bids" />
+    <result column="timeouts" jdbcType="BIGINT" property="timeouts" />
+    <result column="errs" jdbcType="BIGINT" property="errs" />
+    <result column="wins" jdbcType="BIGINT" property="wins" />
+    <result column="imps" jdbcType="BIGINT" property="imps" />
+    <result column="clks" jdbcType="BIGINT" property="clks" />
+    <result column="vimps" jdbcType="BIGINT" property="vimps" />
+    <result column="vclks" jdbcType="BIGINT" property="vclks" />
+    <result column="cost" jdbcType="BIGINT" property="cost" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ${alias}.id, ${alias}.dsp_id, SUM(${alias}.reqs), SUM(${alias}.bids), SUM(${alias}.timeouts), 
+    SUM(${alias}.errs), SUM(${alias}.wins), SUM(${alias}.imps), SUM(${alias}.clks), SUM(${alias}.vimps), 
+    SUM(${alias}.vclks), SUM(${alias}.cost), ${alias}.created_time, ${alias}.updated_time
+  </sql>
+  
+  <sql id="mediaAuthCondition">
+  	<if test="mediaIds != null and mediaIds.size() > 0">
+    	AND rp.media_id IN 
+       	<foreach collection="mediaIds" item="id" index="index" open="(" close=")" separator=",">
+           	#{id,jdbcType=INTEGER}
+        </foreach>
+    </if>
+  </sql>
+  
+  <select id="queryDspReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
+    SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> ,d.name dspName
+    <if test="hasDate != null and hasDate == true"> ,rp.date </if>
+    <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
+    FROM mad_report_dsp rp
+    LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id
+    WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    GROUP BY rp.dsp_id <if test="hasDate != null and hasDate == true">, rp.date</if>
+    <if test="hasHour != null and hasHour == true">, rp.hour</if>
+    ORDER BY rp.dsp_id
+  </select>
+  
+  <select id="queryDspMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
+    SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> ,d.name dspName
+    , rp.media_id, m.name mediaName
+    <if test="hasDate != null and hasDate == true"> ,rp.date </if>
+    <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
+    FROM mad_report_dsp_media rp
+    LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id
+    LEFT JOIN mad_sys_media m ON rp.media_id = m.id
+    WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <include refid="mediaAuthCondition"/>
+    GROUP BY rp.dsp_id, rp.media_id <if test="hasDate != null and hasDate == true">, rp.date</if>
+    <if test="hasHour != null and hasHour == true">, rp.hour</if>
+    ORDER BY rp.dsp_id
+  </select>
+  
+  <select id="queryDspLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
+    SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include>,
+    d.name dspName, rp.location, 
+    IF(l.domestic=0, '其他', IF(l.code LIKE '%0000', l.name, l.name)) cityName,
+    IF(l.domestic=0, '其他', IF(l.code LIKE '%0000', l.name, lp.name)) provinceName
+    <if test="hasDate != null and hasDate == true"> ,rp.date </if>
+    <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
+    FROM mad_report_dsp_location rp
+    LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id
+    LEFT JOIN mad_dict_location l ON rp.location = l.code
+    LEFT JOIN mad_dict_location lp ON l.parent_code = lp.code
+    WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    GROUP BY rp.dsp_id, rp.location <if test="hasDate != null and hasDate == true">, rp.date</if>
+    <if test="hasHour != null and hasHour == true">, rp.hour</if>
+    ORDER BY rp.dsp_id
+  </select>
+  
+  <select id="queryRtDspReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
+    SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> ,d.name dspName
+    <if test="hasDate != null and hasDate == true"> ,rp.date </if>
+    <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
+    FROM mad_report_dsp_rt rp
+    LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id
+    WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    GROUP BY rp.dsp_id <if test="hasDate != null and hasDate == true">, rp.date</if>
+    <if test="hasHour != null and hasHour == true">, rp.hour</if>
+    ORDER BY rp.dsp_id
+  </select>
+  
+</mapper>

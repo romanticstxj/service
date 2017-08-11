@@ -66,6 +66,6 @@ public class AdspaceRule extends BaseRule{
 	public static void validateDto(AdspaceDto adspaceDto){
 		String fieldName = BeanUtils.hasEmptyField(adspaceDto);
         if (fieldName != null)
-        	throw new BusinessException(StatusCode.SC20001, fieldName + " cannot be null");
+        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
 	}
 }

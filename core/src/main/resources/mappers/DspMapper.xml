@@ -239,11 +239,18 @@
             <property name="alias" value="d" />
         </include>
         FROM mad_sys_dsp d
+        WHERE 1=1
         <if test="idStrs != null and idStrs.length > 0">
-        	WHERE d.id IN 
+        	AND d.id IN 
         	<foreach collection="idStrs" item="id" index="index" open="(" close=")" separator=",">
             	#{id,jdbcType=INTEGER}
             </foreach>
+        </if>
+        <if test="dsp.status != null">
+        	AND d.status = #{dsp.status,jdbcType=INTEGER}
+        </if>
+        <if test="dsp.deliveryType != null">
+        	AND d.delivery_type &amp; #{dsp.deliveryType,jdbcType=INTEGER} = #{dsp.deliveryType,jdbcType=INTEGER}
         </if>
         ORDER BY d.id DESC
 	</select>

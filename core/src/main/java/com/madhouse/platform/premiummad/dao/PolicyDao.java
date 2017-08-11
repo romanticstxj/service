@@ -61,7 +61,7 @@ public interface PolicyDao {
 
 	int update(Policy policy);
 	
-	List<Policy> queryAllByParams(@Param("idStrs") String[] idStrs, @Param("status") Integer status, 
+	List<Policy> queryAllByParams(@Param("idStrs") List<Integer> idStrs, @Param("status") Integer status, 
 			@Param("type") Integer type);
 
 	int updateStatus(Policy policy);

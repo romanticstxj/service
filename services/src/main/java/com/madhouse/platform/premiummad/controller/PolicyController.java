@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
-import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.PolicyDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Policy;
@@ -21,7 +20,7 @@ import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
-import com.madhouse.platform.premiummad.util.StringUtils;
+import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -49,19 +48,14 @@ public class PolicyController {
 		}
 		
 		List<Integer> policyIdList = userAuthService.queryPolicyIdList(userId, policyIds);
-		String returnedPolicyIds = StringUtils.getIdsStr(policyIdList);
-		return listByParams(returnedPolicyIds, status, type);
+		return listByParams(policyIdList, status, type);
     }
 	
-	private ResponseDto<PolicyDto> listByParams(String policyIds, Integer status, Integer type){
-		//无权限查看任何Policy
-		if(policyIds == null || policyIds.equals("")){
-	        return ResponseUtils.response(StatusCode.SC20006, null);
-		} else{ // admin权限，查询所有policy;非admin，有部分policy权限
-			if(policyIds.equals(SystemConstant.OtherConstant.SYSTEM_ADMIN_POLICY_ID)){ //如果是管理员
-				policyIds = null;
-			}
-			List<Policy> policies = policyService.queryAllByParams(policyIds, status, type);
+	private ResponseDto<PolicyDto> listByParams(List<Integer> policyIdList, Integer status, Integer type){
+		if(ObjectUtils.isEmpty(policyIdList)){ //无权限查看任何Policy
+	        return ResponseUtils.response(StatusCode.SC20001, null);
+		} else{ 
+			List<Policy> policies = policyService.queryAllByParams(policyIdList, status, type);
 			List<PolicyDto> result = PolicyRule.convertToDtoList(policies, new ArrayList<PolicyDto>());
 	        return ResponseUtils.response(StatusCode.SC20000, result);
 		}
@@ -73,7 +67,7 @@ public class PolicyController {
 	 * @return
 	 */
 	@RequestMapping("/create")
-    public ResponseDto<PolicyDto> addPolicy(@RequestBody PolicyDto policyDto) {
+    public ResponseDto<PolicyDto> addPolicy(@RequestBody @Validated(Insert.class) PolicyDto policyDto) {
 		PolicyRule.validateDto(policyDto);
         Policy policy = PolicyRule.convertToModel(policyDto, new Policy());
         policyService.insert(policy);
@@ -90,14 +84,9 @@ public class PolicyController {
     public ResponseDto<PolicyDto> getPolicy(@RequestParam(value="id", required=true) Integer id,
     		@RequestParam(value="type", required=true) Integer type,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
-		//权限check
-		if(userId == null){
-			return ResponseUtils.response(StatusCode.SC20006, null);
-		}
-		
 		List<Integer> policyIdList = userAuthService.queryPolicyIdList(userId, String.valueOf(id));
 		if(userId == null || ObjectUtils.isEmpty(policyIdList) || policyIdList.get(0).intValue() != id.intValue()){
-			return ResponseUtils.response(StatusCode.SC20006, null);
+			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
 		Policy policy = policyService.queryPolicyById(id, type);

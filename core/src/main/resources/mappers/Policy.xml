@@ -25,7 +25,7 @@
 	    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
 	    <result column="updated_user" jdbcType="INTEGER" property="updatedUser" />
 	    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-    	<association property="policyDsp" javaType="com.madhouse.platform.premiummad.entity.PolicyDsp" 
+    	<collection property="policyDsps" ofType="com.madhouse.platform.premiummad.entity.PolicyDsp" 
         	column="id" select="getPolicyDsp" />
   	</resultMap>
   
@@ -53,7 +53,7 @@
 	    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
 	    <result column="updated_user" jdbcType="INTEGER" property="updatedUser" />
 	    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-        <association property="policyDsp" javaType="com.madhouse.platform.premiummad.entity.PolicyDsp" 
+        <collection property="policyDsps" ofType="com.madhouse.platform.premiummad.entity.PolicyDsp" 
         	column="id" select="getPolicyDsp" />
 	    <collection property="policyAdspaces" ofType="com.madhouse.platform.premiummad.entity.PolicyAdspace" 
 	        column="id" select="getPolicyAdspace"/>  
@@ -442,7 +442,7 @@
         </include>
         FROM mad_sys_policy p
         WHERE 1=1
-        <if test="idStrs != null and idStrs.length > 0">
+        <if test="idStrs != null and idStrs.size() > 0">
         	AND p.id IN 
         	<foreach collection="idStrs" item="policyId" index="index" open="(" close=")" separator=",">
             	#{policyId,jdbcType=INTEGER}

@@ -84,7 +84,7 @@ public class DspServiceImpl implements IDspService {
 	public int update(Dsp dsp) {
 		Dsp queryResult = dspDao.selectByPrimaryKey(dsp.getId());
         if (queryResult == null)
-        	throw new BusinessException(StatusCode.SC20002);
+        	throw new BusinessException(StatusCode.SC20003);
         if (!queryResult.getName().equals(dsp.getName())) { //名称不相等,检查名称
             Integer count = dspDao.checkName(dsp.getName().trim());
             if (count > 0)
@@ -102,13 +102,24 @@ public class DspServiceImpl implements IDspService {
 	public int updateStatus(Dsp dsp) {
 		Dsp queryResult = dspDao.selectByPrimaryKey(dsp.getId());
         if (queryResult == null)
-        	throw new BusinessException(StatusCode.SC20002);
+        	throw new BusinessException(StatusCode.SC20003);
         return dspDao.updateStatus(dsp);
 	}
 	
 	@Override
-	public List<Dsp> queryAll(String ids) {
-		String[] idStrs = StringUtils.splitIds(ids);
-		return dspDao.queryAll(idStrs);
+	public List<Dsp> queryAll(String[] ids, Dsp dsp) {
+		return dspDao.queryAll(ids, dsp);
 	}
+
+	@Override
+	public int insert(Dsp t) {
+		return 0;
+	}
+
+	@Override
+	public List<Dsp> queryAll(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

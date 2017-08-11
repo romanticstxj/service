@@ -178,6 +178,11 @@
             <artifactId>commons-codec</artifactId>
             <version>${commons.codec.version}</version>
         </dependency>
+        <dependency>
+		   <groupId>org.hibernate</groupId>
+		   <artifactId>hibernate-validator</artifactId>
+		   <version>5.4.1.Final</version>
+		</dependency>
   </dependencies>
   
   <build>
@@ -193,22 +198,6 @@
                     <target>1.7</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <configuration>
-                    <attach>true</attach>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -265,24 +254,4 @@
         </plugins>
   </build>
     
-    <!-- 配置scm信息 -->
-	<scm>
-		<connection>scm:svn:http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-core</connection>
-		<developerConnection>scm:svn:http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-core</developerConnection>
-		<url>http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-core</url>
-	</scm>
-	
-	<!-- 配置将build生成的jar包上传到nexus仓库 -->
-	<distributionManagement>
-		<repository>
-			<id>nexus-releases</id>
-			<name>Nexus Releases Repository</name>
-			<url>http://172.16.25.49:8081/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>nexus-snapshots</id>
-			<name>Nexus Snapshots Repository</name>
-			<url>http://172.16.25.49:8081/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>
