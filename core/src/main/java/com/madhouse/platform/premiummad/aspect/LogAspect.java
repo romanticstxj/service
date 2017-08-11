@@ -64,10 +64,15 @@ public class LogAspect {
 		Object[] objects = joinPoint.getArgs();
 		StringBuffer sb = new StringBuffer("Begin Controller: ").append(joinPoint.toShortString())
 				.append(" with parameters of (");
-		for (Object obj : objects) {
-			if (!(ServletRequest.class.isAssignableFrom(obj.getClass()) || ServletResponse.class.isAssignableFrom(obj.getClass()) || MultipartFile.class.isAssignableFrom(obj.getClass()) || WebDataBinder.class.isAssignableFrom(obj.getClass()))) {
-				sb.append(JSON.toJSONString(obj)).append(" ");
+		if(objects != null){
+			for (Object obj : objects) {
+				if(obj != null){
+					if (!(ServletRequest.class.isAssignableFrom(obj.getClass()) || ServletResponse.class.isAssignableFrom(obj.getClass()) || MultipartFile.class.isAssignableFrom(obj.getClass()) || WebDataBinder.class.isAssignableFrom(obj.getClass()))) {
+						sb.append(JSON.toJSONString(obj)).append(" ");
+					}
+				}
 			}
+			
 		}
 		sb.append(")");
 		logger.debug(sb.toString());
