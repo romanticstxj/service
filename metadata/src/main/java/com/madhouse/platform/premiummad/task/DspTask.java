@@ -52,7 +52,7 @@ public class DspTask {
                 redisMaster.sadd(this.ALL_DSP, String.valueOf(metaData.getId()));
             }
             redisMaster.expire(this.ALL_DSP, EXPIRATION_TIME);
-            LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadDSPMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------DSPTask-----loadDSPMetaData------  End--");
         } catch (Exception e) {
             LOGGER.error("------------DSPTask-----loadDSPMetaData------error:{}",e.toString());
@@ -71,7 +71,7 @@ public class DspTask {
             for (DSPMappingMetaData mappingMetaData : lists) {
                 redisMaster.setex(String.format(this.DSP_MAPPING_DATA, String.valueOf(mappingMetaData.getAdspaceId()), String.valueOf(mappingMetaData.getDspId())), EXPIRATION_TIME, JSON.toJSONString(mappingMetaData));
             }
-            LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadDSPMappingData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------DSPTask-----plcmtMappingDsp------End--");
         } catch (Exception e) {
             LOGGER.error("------------DSPTask-----plcmtMappingDsp------error:{}",e.toString());

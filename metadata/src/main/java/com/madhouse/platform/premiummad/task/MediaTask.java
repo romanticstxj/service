@@ -45,7 +45,7 @@ public class MediaTask {
                 redisMaster.sadd(this.ALL_MEDIA, String.valueOf(media.getId()));
             }
             redisMaster.expire(this.ALL_MEDIA, EXPIRATION_TIME);
-            LOGGER.info("op media_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadMediaMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------MediaTask-----------  End--");
         } catch (Exception e) {
             LOGGER.error("------------MediaTask-----------error:{}",e.toString());
