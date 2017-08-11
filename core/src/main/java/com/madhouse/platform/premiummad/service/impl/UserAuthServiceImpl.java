@@ -2,8 +2,6 @@ package com.madhouse.platform.premiummad.service.impl;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,15 +14,14 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 @Transactional(rollbackFor = RuntimeException.class)
 public class UserAuthServiceImpl implements IUserAuthService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(UserAuthServiceImpl.class);
-	
 	@Autowired
 	private UserAuthDao userAuthDao;
 
 	@Override
 	public List<Integer> queryMediaIdList(Integer userId, String mediaIds) {
+		int count = userAuthDao.checkAdminForMedia(userId);
 		String[] idStrs = StringUtils.splitToStringArray(mediaIds);
-		return userAuthDao.queryMediaIdList(userId, idStrs);
+		return userAuthDao.queryMediaIdList(userId, idStrs, count);
 	}
 
 	@Override
@@ -36,8 +33,11 @@ public class UserAuthServiceImpl implements IUserAuthService {
 	
 	@Override
 	public List<Integer> queryPolicyIdList(Integer userId, String policyIds) {
+		//根据权限表里有无policy_id为-1的数据来判断此用户是否Admin
+		int count = userAuthDao.checkAdminForPolicy(userId);
 		String[] idStrs = StringUtils.splitToStringArray(policyIds);
-		return userAuthDao.queryPolicyIdList(userId, idStrs);
+		//通过Admin的标志来做全搜索或是过滤
+		return userAuthDao.queryPolicyIdList(userId, idStrs, count);
 	}
 
 }

@@ -11,7 +11,7 @@ public interface IAdspaceService extends IBaseService<Adspace>{
      * 查询所有广告位
      * @return List
      */
-    List<Adspace> queryAllByParams(String ids, Integer status);
+    List<Adspace> queryAllByParams(List<Integer> mediaIdList, Integer status);
 
     /**
      * 新建广告位
@@ -27,20 +27,6 @@ public interface IAdspaceService extends IBaseService<Adspace>{
 
 
 	AdspaceMapping queryAdspaceMappingById(Integer id);
-
-	/**
-	 * 添加广告位映射信息
-	 * @param adspaceMapping
-	 * @return
-	 */
-	StatusCode addAdspaceMapping(AdspaceMapping adspaceMapping);
-
-	/**
-	 * 更新广告位映射信息
-	 * @param adspaceMapping
-	 * @return
-	 */
-	StatusCode updateAdspaceMapping(AdspaceMapping adspaceMapping);
 
 	int createAndUpdateAdspaceMapping(AdspaceMapping adspaceMapping);
 

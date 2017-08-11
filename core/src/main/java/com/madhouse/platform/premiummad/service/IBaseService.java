@@ -12,7 +12,7 @@ public interface IBaseService<T> {
 	
 	T queryById(Integer id);
 	
-	List<T> queryAll(String ids);
+	List<T> queryAll(List<Integer> ids);
 	
 	int checkName(String mediaName);
 }

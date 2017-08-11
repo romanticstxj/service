@@ -42,7 +42,7 @@
         FROM mad_sys_media m 
         LEFT JOIN mad_sys_adspace a ON m.id = a.media_id
         LEFT JOIN mad_dict_media_category mc ON m.category = mc.code
-        <if test="idStrs != null and idStrs.length > 0">
+        <if test="idStrs != null and idStrs.size() > 0">
         	WHERE m.id IN 
         	<foreach collection="idStrs" item="mediaId" index="index" open="(" close=")" separator=",">
             	#{mediaId,jdbcType=INTEGER}

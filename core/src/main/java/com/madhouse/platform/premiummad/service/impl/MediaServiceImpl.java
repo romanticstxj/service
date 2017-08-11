@@ -19,9 +19,8 @@ public class MediaServiceImpl implements IMediaService {
 	private MediaDao mediaDao;
 
 	@Override
-	public List<Media> queryAll(String ids) {
-		String[] idStrs = StringUtils.splitToStringArray(ids);
-		return mediaDao.queryAll(idStrs);
+	public List<Media> queryAll(List<Integer> ids) {
+		return mediaDao.queryAll(ids);
 	}
 
 	@Override

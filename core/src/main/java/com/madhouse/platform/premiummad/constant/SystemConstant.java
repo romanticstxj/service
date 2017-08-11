@@ -10,6 +10,7 @@ public interface SystemConstant {
 	    String LOGGER_PREMIUMMAD = PREMIUMMAD;//日志中使用的
 	    String LOGGER_PREMIUMMAD_ERROR = "premiummadError";
 	    String AOP_SERVICE_IMPL_EXPR = "execution(* com.madhouse.platform.premiummad.service.impl.*.*(..))";
+	    String AOP_SERVICE_CNTR_EXPR = "execution(* com.madhouse.platform.premiummad.controller.*.*(..))";
 	}
 	
 	interface Request{

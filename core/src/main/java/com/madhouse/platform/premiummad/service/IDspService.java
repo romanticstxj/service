@@ -20,6 +20,6 @@ public interface IDspService extends IBaseService<Dsp>{
      */
 	int insertWithParamsProcess(Dsp dsp, String xFrom);
 
-	List<Dsp> queryAll(String ids, Dsp dsp);
+	List<Dsp> queryAll(String[] ids, Dsp dsp);
 
 }

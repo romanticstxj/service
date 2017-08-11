@@ -30,7 +30,7 @@ public class MediaControllerTest {
 	
 	@Test
 	public void detail(){
-		String link = "http://172.16.25.31:8080/services/media/detail?id=100000";
+		String link = "http://localhost:8080/services/media/detail?id=100001";
 		HttpUtilTest.httpGet(link);
 	}
 	

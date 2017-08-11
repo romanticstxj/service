@@ -47,7 +47,7 @@ public class ReportController {
     	List<Integer> mediaIds = dto.getMediaIds();
     	//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIds)){
-	        return ResponseUtils.response(StatusCode.SC20006, null);
+	        return ResponseUtils.response(StatusCode.SC20001, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			if(isAdmin(mediaIds)){ //如果是管理员
 				mediaIds.clear();
@@ -73,7 +73,7 @@ public class ReportController {
     	List<Integer> mediaIds = dto.getMediaIds();
     	//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIds)){
-	        return ResponseUtils.response(StatusCode.SC20006, null);
+	        return ResponseUtils.response(StatusCode.SC20001, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			if(isAdmin(mediaIds)){ //如果是管理员
 				mediaIds.clear();
@@ -101,7 +101,7 @@ public class ReportController {
     	List<Integer> policyIds = dto.getPolicyIds();
     	//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIds) || ObjectUtils.isEmpty(policyIds)){
-	        return ResponseUtils.response(StatusCode.SC20006, null);
+	        return ResponseUtils.response(StatusCode.SC20001, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			if(isAdmin(mediaIds)){ //如果是媒体管理员
 				mediaIds.clear();

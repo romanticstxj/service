@@ -20,11 +20,11 @@
 		SELECT * FROM (
 			SELECT um.media_id mediaId
 	        FROM mad_sys_user_media um
-	        WHERE um.user_id = #{userId}
+	        <if test="isAdmin != 1">WHERE um.user_id = #{userId}</if>
 	        UNION 
 	        SELECT m.id mediaId
 	        FROM mad_sys_media m
-	        WHERE m.created_user = #{userId}
+	        <if test="isAdmin != 1">WHERE m.created_user = #{userId}</if>
         ) t <if test="mediaIds != null and mediaIds.length > 0">
         	WHERE t.mediaId IN 
         	<foreach collection="mediaIds" item="mediaId" index="index" open="(" close=")" separator=",">
@@ -54,11 +54,11 @@
 		SELECT * FROM (
 			SELECT up.policy_id policyId
 	        FROM mad_sys_user_policy up
-	        WHERE up.user_id = #{userId}
+	        <if test="isAdmin != 1">WHERE up.user_id = #{userId}</if>
 	        UNION 
 	        SELECT p.id policyId
 	        FROM mad_sys_policy p
-	        WHERE p.created_user = #{userId}
+	        <if test="isAdmin != 1">WHERE p.created_user = #{userId}</if>
         ) t <if test="policyIds != null and policyIds.length > 0">
         	WHERE t.policyId IN 
         	<foreach collection="policyIds" item="policyId" index="index" open="(" close=")" separator=",">

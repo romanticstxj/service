@@ -17,7 +17,7 @@ public class ReportRule extends BaseRule{
 	public static void validateDto(ReportDto reportDto){
 		String fieldName = BeanUtils.hasEmptyField(reportDto);
         if (fieldName != null)
-        	throw new BusinessException(StatusCode.SC20001, fieldName + " cannot be null");
+        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
         
         if(reportDto.getType() < SystemConstant.DB.TYPE_MIN_VAL || reportDto.getType() > SystemConstant.DB.TYPE_MAX_VAL){
         	throw new BusinessException(StatusCode.SC20503);

@@ -23,7 +23,7 @@ public class HttpUtilTest {
 			HttpGet get = new HttpGet(link);
 
 			get.setHeader("X-From", "exchange.dev.onemad.com");
-			get.setHeader("X-User-Id", "19");
+			get.setHeader("X-User-Id", "53");
 
 			CloseableHttpResponse response = httpclient.execute(get);
 			// 打印ResponseBody

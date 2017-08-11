@@ -47,7 +47,7 @@ public class DspControllerTest {
 	
 	@Test
 	public void list(){
-		String url = "http://localhost:8080/services/dsp/list?status=1&deliveryType=8";
+		String url = "http://172.16.25.48:8080/services/dsp/list?status=1&deliveryType=8";
 		HttpUtilTest.httpGet(url);
 	}
 	

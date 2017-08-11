@@ -51,8 +51,8 @@ public class MediaController {
 			userId = userIdByGet;
 		}
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
-		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
-		return listByMediaIds(returnedMediaIds);
+//		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
+		return listByMediaIds(mediaIdList);
     }
 	
 	/**
@@ -60,15 +60,11 @@ public class MediaController {
      * @return ResponseDto
 	 * @throws Exception 
      */
-    private ResponseDto<MediaDto> listByMediaIds(String ids) throws Exception {
-		//无权限查看任何媒体
-		if(ids == null || ids.equals("")){
-	        return ResponseUtils.response(StatusCode.SC20006, null);
-		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
-			if(ids.equals(SystemConstant.OtherConstant.SYSTEM_ADMIN_MEDIA_ID)){ //如果是管理员
-				ids = null;
-			}
-			List<Media> medias = mediaService.queryAll(ids);
+    private ResponseDto<MediaDto> listByMediaIds(List<Integer> mediaIdList) throws Exception {
+		if(ObjectUtils.isEmpty(mediaIdList)){ //无权限查看任何媒体
+	        return ResponseUtils.response(StatusCode.SC20001, null);
+		} else{
+			List<Media> medias = mediaService.queryAll(mediaIdList);
 			List<MediaDto> mediaDtos = new ArrayList<>();
 	        BeanUtils.copyList(medias,mediaDtos,MediaDto.class);
 	        return ResponseUtils.response(StatusCode.SC20000,mediaDtos);
@@ -85,7 +81,7 @@ public class MediaController {
     public ResponseDto<MediaDto> addMedia(@RequestBody @Validated(Insert.class) MediaDto mediaDto) {
 		String fieldName = BeanUtils.hasEmptyField(mediaDto);
         if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
+            return ResponseUtils.response(StatusCode.SC20002, null, fieldName + " cannot be null");
         Integer count = mediaService.checkName(mediaDto.getName().trim());
         if (count > 0) //检查名称
             return ResponseUtils.response(StatusCode.SC20101,null);
@@ -108,7 +104,7 @@ public class MediaController {
     	//权限check
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
 		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
-			return ResponseUtils.response(StatusCode.SC20006, null);
+			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
         Media media = mediaService.queryById(id);
@@ -126,17 +122,17 @@ public class MediaController {
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
 		String fieldName = BeanUtils.hasEmptyField(mediaDto);
         if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
+            return ResponseUtils.response(StatusCode.SC20002, null, fieldName + " cannot be null");
 		//权限check
 		Integer id = mediaDto.getId();
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
 		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
-			return ResponseUtils.response(StatusCode.SC20006, null);
+			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
         Media media = mediaService.queryById(mediaDto.getId());
         if (media == null)
-            return ResponseUtils.response(StatusCode.SC20002, null);
+            return ResponseUtils.response(StatusCode.SC20003, null);
         if (!mediaDto.getName().equals(media.getName())) { //名称不相等,检查名称
             Integer count = mediaService.checkName(mediaDto.getName().trim());
             if (count > 0)
@@ -163,13 +159,13 @@ public class MediaController {
 		Integer id = mediaDto.getId();
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
 		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
-			return ResponseUtils.response(StatusCode.SC20006, null);
+			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 				
 		//更新媒体的状态
 		Media media = mediaService.queryById(mediaDto.getId());
         if (media == null)
-            return ResponseUtils.response(StatusCode.SC20002, null);
+            return ResponseUtils.response(StatusCode.SC20003, null);
         BeanUtils.copyProperties(mediaDto, media);
         BeanUtils.setUpdateParam(media);
         mediaService.updateStatus(media);

@@ -112,7 +112,7 @@ public class PolicyRule extends BaseRule{
 	public static void validateDto(PolicyDto policyDto){
 		String fieldName = BeanUtils.hasEmptyField(policyDto);
         if (fieldName != null)
-        	throw new BusinessException(StatusCode.SC20001, fieldName + " cannot be null");
+        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
         
         List<PolicyAdspaceDto> policyAdspaceDtos = policyDto.getPolicyAdspaces();
         if(policyAdspaceDtos == null || policyAdspaceDtos.size() == 0){
@@ -123,7 +123,7 @@ public class PolicyRule extends BaseRule{
         	double bidFloor = policyAdspaceDto.getBidFloor();
         	AdspaceDto adspaceDto = policyAdspaceDto.getAdspace();
         	if(adspaceDto == null){ //广告位底价信息未提供
-        		throw new BusinessException(StatusCode.SC20408);
+        		throw new BusinessException(StatusCode.SC31011);
         	}
         	double baseBidFloor = adspaceDto.getBidFloor();
         	if(bidFloor < baseBidFloor){ //广告位售卖单价不能低于其底价

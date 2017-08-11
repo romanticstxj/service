@@ -18,7 +18,7 @@ public interface AdspaceDao {
 
 	Integer updateStatus(Adspace adspace);
 
-	List<Adspace> queryAllByParams(@Param("idStrs") String[] idStrs, @Param("status") Integer status);
+	List<Adspace> queryAllByParams(@Param("idStrs") List<Integer> idStrs, @Param("status") Integer status);
 
 	Integer insertAdspaceMediaMapping(AdspaceMapping adspaceMapping);
 

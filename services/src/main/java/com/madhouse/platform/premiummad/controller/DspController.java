@@ -19,6 +19,7 @@ import com.madhouse.platform.premiummad.rule.DspRule;
 import com.madhouse.platform.premiummad.service.IDspService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
+import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -33,10 +34,9 @@ public class DspController {
     public ResponseDto<DspDto> list(@RequestParam(value="ids", required=false) String ids,
     		@RequestParam(value="status", required=false) Integer status,
     		@RequestParam(value="deliveryType", required=false) Byte deliveryType) throws Exception {
-		Dsp dsp = new Dsp();
-		dsp.setDeliveryType(deliveryType);
-		dsp.setStatus(status);
-		List<Dsp> dsps = dspService.queryAll(ids, dsp);
+		Dsp dsp = new Dsp(deliveryType, status);
+		String[] idStrs = StringUtils.splitToStringArray(ids);
+		List<Dsp> dsps = dspService.queryAll(idStrs, dsp);
 		List<DspDto> result = DspRule.convertToDtoList(dsps, new ArrayList<DspDto>());
         return ResponseUtils.response(StatusCode.SC20000, result);
     }
@@ -51,7 +51,7 @@ public class DspController {
     		@RequestHeader(value="X-FROM", required=false) String xFrom) {
 		String fieldName = BeanUtils.hasEmptyField(dspDto);
         if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
+            return ResponseUtils.response(StatusCode.SC20002, null, fieldName + " cannot be null");
         Integer count = dspService.checkName(dspDto.getName().trim());
         if (count > 0) //检查名称
             return ResponseUtils.response(StatusCode.SC20302,null);
@@ -82,7 +82,7 @@ public class DspController {
     public ResponseDto<DspDto> updateDsp(@RequestBody @Validated(Update.class) DspDto dspDto) {
 		String fieldName = BeanUtils.hasEmptyField(dspDto);
         if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20001, null, fieldName + " cannot be null");
+            return ResponseUtils.response(StatusCode.SC20002, null, fieldName + " cannot be null");
         Dsp dsp = DspRule.convertToModel(dspDto, new Dsp());
         dspService.update(dsp);
         List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());
