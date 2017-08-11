@@ -25,8 +25,6 @@ import com.madhouse.platform.premiummad.util.ResourceManager;
 public class MaterialTask {
  private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     
-    private Jedis redisMaster = null;
-    
     @Autowired
     private IMaterialService iMaterialService;
     
@@ -43,9 +41,9 @@ public class MaterialTask {
     private Integer EXPIRATION_TIME;
     
     public void loadMaterialMetaData() {
+        Jedis redisMaster = rm.getJedisPoolMaster().getResource();
         try {
             LOGGER.debug("------------MaterialTask-----loadMaterialMetaData------start--");
-            this.redisMaster = rm.getJedisPoolMaster().getResource();
             final List<Material> lists = iMaterialService.queryAll();
             long begin = System.currentTimeMillis();
             for (Material material : lists) {
@@ -69,8 +67,9 @@ public class MaterialTask {
             LOGGER.info("op material_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------MaterialTask-----loadMaterialMetaData------  End--");
         } catch (Exception e) {
-            e.printStackTrace();
             LOGGER.error("------------MaterialTask-----loadMaterialMetaData------error:{}",e.toString());
+        } finally {
+            redisMaster.close();
         }
     }
     

@@ -22,7 +22,6 @@ public class DspTask {
     
     private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     
-    private Jedis redisMaster = null;
     
     @Autowired
     private IDSPService service;
@@ -43,9 +42,9 @@ public class DspTask {
     private Integer EXPIRATION_TIME;
     
     public void loadDSPMetaData() {
+        Jedis redisMaster = rm.getJedisPoolMaster().getResource();
         try {
-            LOGGER.debug("------------DSPTask-----run------start--");
-            this.redisMaster = rm.getJedisPoolMaster().getResource();
+            LOGGER.debug("------------DSPTask-----loadDSPMetaData------start--");
             final List<DSPMetaData> lists = service.queryAll();
             long begin = System.currentTimeMillis();
             for (DSPMetaData metaData : lists) {
@@ -54,15 +53,17 @@ public class DspTask {
             }
             redisMaster.expire(this.ALL_DSP, EXPIRATION_TIME);
             LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
-            LOGGER.debug("------------DSPTask-----run------  End--");
+            LOGGER.debug("------------DSPTask-----loadDSPMetaData------  End--");
         } catch (Exception e) {
-            LOGGER.error("------------DSPTask-----run------error:{}",e.toString());
+            LOGGER.error("------------DSPTask-----loadDSPMetaData------error:{}",e.toString());
+        } finally {
+            redisMaster.close();
         }
     }
     public void loadDSPMappingData() {
+        Jedis redisMaster = rm.getJedisPoolMaster().getResource();
         try {
             LOGGER.debug("------------DSPTask------plcmtMappingDsp-----start--");
-            this.redisMaster = rm.getJedisPoolMaster().getResource();
             final List<DSPMappingMetaData> lists = service.queryAdspaceMappingDsp();
             long begin = System.currentTimeMillis();
             for (DSPMappingMetaData mappingMetaData : lists) {
@@ -72,6 +73,8 @@ public class DspTask {
             LOGGER.debug("------------DSPTask-----plcmtMappingDsp------End--");
         } catch (Exception e) {
             LOGGER.error("------------DSPTask-----plcmtMappingDsp------error:{}",e.toString());
+        } finally {
+            redisMaster.close();
         }
     }
 }

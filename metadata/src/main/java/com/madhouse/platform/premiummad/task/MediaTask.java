@@ -19,8 +19,6 @@ import com.madhouse.platform.premiummad.util.ResourceManager;
 public class MediaTask {
     private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     
-    private Jedis redisMaster = null;
-    
     @Value("${ALL_MEDIA}")
     private String ALL_MEDIA;
     
@@ -37,9 +35,9 @@ public class MediaTask {
     private ResourceManager rm;
     
     public void loadMediaMetaData() {
+        Jedis redisMaster = rm.getJedisPoolMaster().getResource();
         try {
             LOGGER.debug("------------MediaTask-----------start--");
-            this.redisMaster = rm.getJedisPoolMaster().getResource();
             final List<MediaMetaData> listMedias = mediaService.queryAll();
             long begin = System.currentTimeMillis();
             for (MediaMetaData media : listMedias) {
@@ -51,6 +49,8 @@ public class MediaTask {
             LOGGER.debug("------------MediaTask-----------  End--");
         } catch (Exception e) {
             LOGGER.error("------------MediaTask-----------error:{}",e.toString());
+        } finally {
+            redisMaster.close();
         }
     }
     

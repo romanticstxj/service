@@ -27,8 +27,6 @@ import com.madhouse.platform.premiummad.util.ResourceManager;
 public class PlcmtTask {
 private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     
-    private Jedis redisMaster = null;
-    
     @Value("${ALL_PLACEMENT}")
     private String ALL_PLACEMENT;
     
@@ -48,9 +46,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     private ResourceManager rm;
     
     public void loadPlcmtMetaData() {
+        Jedis redisMaster = rm.getJedisPoolMaster().getResource();
         try {
             LOGGER.debug("------------PlcmtTask-----------start--");
-            this.redisMaster = rm.getJedisPoolMaster().getResource();
             final List<Adspace> listAdspaces = plcmtService.queryAll();
             long begin = System.currentTimeMillis();
             for (Adspace adspace : listAdspaces) {
@@ -142,6 +140,8 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("------------PlcmtTask-----------error:{}",e.toString());
+        } finally {
+            redisMaster.close();
         }
     }
     public List<String> queryMimesByType(Integer type) {
@@ -190,9 +190,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     }
     
     public void loadMediaMappingData() {
+        Jedis redisMaster = rm.getJedisPoolMaster().getResource();
         try {
             LOGGER.debug("------------PlcmtTask------adspaceMappingDsp-----start--");
-            this.redisMaster = rm.getJedisPoolMaster().getResource();
             List<MediaMappingMetaData> lists = plcmtService.queryAdspaceMappingMedia();
             long begin = System.currentTimeMillis();
             for (MediaMappingMetaData mappingMetaData : lists) {
@@ -202,6 +202,8 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             LOGGER.debug("------------PlcmtTask-----adspaceMappingDsp------End--");
         } catch (Exception e) {
             LOGGER.error("------------PlcmtTask-----adspaceMappingDsp------error:{}",e.toString());
+        } finally {
+            redisMaster.close();
         }
     }
     
