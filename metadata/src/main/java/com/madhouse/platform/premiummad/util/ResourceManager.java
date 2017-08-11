@@ -41,9 +41,10 @@ public class ResourceManager {
                 GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
                 poolConfig.setMinIdle(minIdle);
                 poolConfig.setMaxIdle(maxIdle);
-                poolConfig.setMaxTotal(timeout);
+                poolConfig.setMaxTotal(maxActive);
+                poolConfig.setMaxWaitMillis(maxWait);
 
-                jedisPoolMaster = new JedisPool(poolConfig,redisHost, port);
+                jedisPoolMaster = new JedisPool(poolConfig,redisHost, port, timeout);
             }
         }
 
