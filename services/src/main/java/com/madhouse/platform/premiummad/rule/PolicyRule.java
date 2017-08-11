@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.AdspaceDto;
 import com.madhouse.platform.premiummad.dto.PolicyAdspaceDto;
 import com.madhouse.platform.premiummad.dto.PolicyDspDto;
@@ -29,10 +30,9 @@ public class PolicyRule extends BaseRule{
         entity.setPolicyAdspaces(policyAdspaces);
         
         //copy PolicyDspDto
-        PolicyDsp policyDsp = new PolicyDsp();
-        BeanUtils.copyProperties(dto.getPolicyDsp(), policyDsp);
-        BeanUtils.setCreateParam(policyDsp);
-        entity.setPolicyDsp(policyDsp);
+        List<PolicyDsp> policyDsps = new ArrayList<PolicyDsp>();
+        BeanUtils.copyList(dto.getPolicyDsps(), policyDsps, PolicyDsp.class);
+        entity.setPolicyDsps(policyDsps);
         
 //		//设置投放时段
 //		Integer isTimeTargeting = dto.getIsTimeTargeting();
@@ -42,14 +42,25 @@ public class PolicyRule extends BaseRule{
 //			}
 //		}
         
+        Integer policyId = entity.getId();
         List<PolicyAdspaceDto> policyAdspaceDtos = dto.getPolicyAdspaces();
         if(policyAdspaces != null){
         	for(int i=0; i< policyAdspaces.size(); i++){
+        		policyAdspaces.get(i).setPolicyId(policyId);
+        		
         		//转换广告售卖价格从单位元到分
         		Integer bidFloorUnitFen = StringUtils.convertCurrencyYuanToFen(policyAdspaceDtos.get(i).getBidFloor());
         		policyAdspaces.get(i).setBidFloor(bidFloorUnitFen);
         		//设置策略中广告位的日期和创建者信息
         		BeanUtils.setCreateParam(policyAdspaces.get(i));
+        	}
+        }
+        
+        if(policyDsps != null){
+        	for(int i=0; i< policyDsps.size(); i++){
+        		policyDsps.get(i).setPolicyId(policyId);
+        		//设置策略中dsp的日期和创建者信息
+        		BeanUtils.setCreateParam(policyDsps.get(i));
         	}
         }
         
@@ -72,9 +83,9 @@ public class PolicyRule extends BaseRule{
 		BeanUtils.copyList(policy.getPolicyAdspaces(), policyAdspaceDtos, PolicyAdspaceDto.class, "bidFloor");
 		policyDto.setPolicyAdspaces(policyAdspaceDtos);
 		
-		PolicyDspDto policyDspDto = new PolicyDspDto();
-		BeanUtils.copyProperties(policy.getPolicyDsp(), policyDspDto);
-		policyDto.setPolicyDsp(policyDspDto);
+		List<PolicyDspDto> policyDspDtos = new ArrayList<PolicyDspDto>();
+        BeanUtils.copyList(policy.getPolicyDsps(), policyDspDtos, PolicyDspDto.class);
+        policyDto.setPolicyDsps(policyDspDtos);
 		
 		//设置前端结束时间限制与否的开关
 		Integer isEndDate = policyDto.getEndDate() == null ? 0 : 1;
@@ -82,7 +93,7 @@ public class PolicyRule extends BaseRule{
 		
 		if(policyAdspaceDtos != null){
 			for(int i=0; i<policyAdspaceDtos.size(); i++){
-				//copy adspace
+				//设置policy广告位列表里的每个具体广告位信息
 				AdspaceDto adspaceDto = new AdspaceDto();
 				BeanUtils.copyProperties(policy.getPolicyAdspaces().get(i).getAdspace(), adspaceDto);
 				policyAdspaceDtos.get(i).setAdspace(adspaceDto);
@@ -101,17 +112,46 @@ public class PolicyRule extends BaseRule{
 	public static void validateDto(PolicyDto policyDto){
 		String fieldName = BeanUtils.hasEmptyField(policyDto);
         if (fieldName != null)
-        	throw new BusinessException(StatusCode.SC20001, fieldName + " cannot be null");
+        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
+        
+        List<PolicyAdspaceDto> policyAdspaceDtos = policyDto.getPolicyAdspaces();
+        if(policyAdspaceDtos == null || policyAdspaceDtos.size() == 0){
+        	throw new BusinessException(StatusCode.SC20404);
+        }
+        
+        for(PolicyAdspaceDto policyAdspaceDto: policyAdspaceDtos){
+        	double bidFloor = policyAdspaceDto.getBidFloor();
+        	AdspaceDto adspaceDto = policyAdspaceDto.getAdspace();
+        	if(adspaceDto == null){ //广告位底价信息未提供
+        		throw new BusinessException(StatusCode.SC31011);
+        	}
+        	double baseBidFloor = adspaceDto.getBidFloor();
+        	if(bidFloor < baseBidFloor){ //广告位售卖单价不能低于其底价
+        		throw new BusinessException(StatusCode.SC20407);
+        	}
+        }
+        
+        List<PolicyDspDto> policyDspDtos = policyDto.getPolicyDsps();
+        if(policyDspDtos == null || policyDspDtos.size() == 0){
+        	throw new BusinessException(StatusCode.SC20405);
+        } else{
+        	if(policyDto.getType().intValue() != SystemConstant.OtherConstant.POLICY_TYPE_RTB){
+        		//如果策略类型是pd或者pdb，则此策略的dsp数量只能是一个
+        		if(policyDspDtos.size() > 1){
+        			throw new BusinessException(StatusCode.SC20406);
+        		}
+        	}
+        }
 	}
 	
 	public static List<PolicyDto> convertToDtoList(List<Policy> policies, ArrayList<PolicyDto> policyDtos) {
         //copy entity to dto
 		BeanUtils.copyList(policies,policyDtos,PolicyDto.class);
         for(int i=0; i<policyDtos.size(); i++){
-        	PolicyDspDto policyDspDto = new PolicyDspDto();
-        	BeanUtils.copyProperties(policies.get(i).getPolicyDsp(), policyDspDto);
-        	policyDtos.get(i).setPolicyDsp(policyDspDto);
-        	
+        	List<PolicyDspDto> policyDspDtos = new ArrayList<PolicyDspDto>();
+            BeanUtils.copyList(policies.get(i).getPolicyDsps(), policyDspDtos, PolicyDspDto.class);
+            policyDtos.get(i).setPolicyDsps(policyDspDtos);
+            
         	//设置前端结束时间限制与否的开关
     		Integer isEndDate = policyDtos.get(i).getEndDate() == null ? 0 : 1;
     		policyDtos.get(i).setIsEndDate(isEndDate);

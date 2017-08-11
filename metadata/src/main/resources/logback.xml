@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<!-- local log
-	<property name="LOG_ROOT_HOME" value="/Users/zhujiajun/Work/logs/" /> -->
 
-	<property name="LOG_ROOT_HOME" value="F:/services/logs" />
+	<property name="LOG_ROOT_HOME" value="/services/logs" />
 	<property name="APP_NAME" value="metadata" />
 	<property name="LOG_HOME" value="${LOG_ROOT_HOME}/${APP_NAME}" />
 
@@ -15,17 +13,17 @@
 			<maxHistory>5</maxHistory>
 		</rollingPolicy>
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n </pattern>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{0} %L - %msg%xEx%n </pattern>
 		</encoder>
 	</appender>
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n </pattern>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{0} %L - %msg%xEx%n </pattern>
 		</encoder>
 	</appender>
 
-	<logger name="metadata" level="DEBUG" additivity="false">
+	<logger name="metadata" level="INFO" additivity="false">
 		<appender-ref ref="metadataAppender" />
 	</logger>
 

@@ -1,5 +1,7 @@
 package com.madhouse.platform.premiummad.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
@@ -7,9 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
-
+import org.apache.commons.lang3.CharEncoding;
 import org.springframework.util.Base64Utils;
-
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 
 public class StringUtils {
@@ -119,7 +120,7 @@ public class StringUtils {
 	 * @param ids
 	 * @return
 	 */
-	public static String[] splitIds(String ids) {
+	public static String[] splitToStringArray(String ids) {
 		return org.springframework.util.StringUtils.tokenizeToStringArray(ids, ",");
 	}
 
@@ -128,7 +129,7 @@ public class StringUtils {
 	 * @param ids
 	 * @return
 	 */
-	public static int[] splitIdsToInt(String ids) {
+	public static int[] splitToIntArray(String ids) {
 		if (ids == null) {
 			return null;
 		}
@@ -160,6 +161,23 @@ public class StringUtils {
 	}
 
 	/**
+	 * 以UTF-8 encode字符串
+	 * 
+	 * @param str
+	 *            字符串
+	 * @return encode str
+	 */
+	public static String encode(String str) {
+		String encodeStr = "";
+		try {
+			encodeStr = URLEncoder.encode(str, CharEncoding.UTF_8);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return encodeStr;
+	}
+
+	 /**
 	 * <p>
 	 * Checks if a CharSequence is whitespace, empty ("") or null.
 	 * </p>
@@ -290,7 +308,7 @@ public class StringUtils {
 	}
 	
 	public static int convertMultiChoiceToSingleChoice(String multiChoice) {
-        int[] splitedMultiChoices = StringUtils.splitIdsToInt(multiChoice);
+        int[] splitedMultiChoices = StringUtils.splitToIntArray(multiChoice);
         int singleChoice = StringUtils.multiValueToSingleValue(splitedMultiChoices);
         return singleChoice;
 	}
@@ -299,5 +317,4 @@ public class StringUtils {
         String multiChoice = StringUtils.singleValueToMultiValue(singleChoice);
         return multiChoice;
 	}
-
 }

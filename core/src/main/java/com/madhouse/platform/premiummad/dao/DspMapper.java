@@ -55,12 +55,13 @@ public interface DspMapper {
      */
     int updateByPrimaryKey(Dsp record);
     
-    /**
-     * 根据 id 和 token 查询
-     * @param record
-     * @return
-     */
-    Dsp selectByIdAndToken(Dsp record);
+	/**
+	 * 根据 id 和 token 查询
+	 * 
+	 * @param record
+	 * @return
+	 */
+	Dsp selectByIdAndToken(Dsp record);
     
     /**
      * 检查名字重复
@@ -77,9 +78,10 @@ public interface DspMapper {
 	int updateStatus(Dsp dsp);
 
 	/**
-	 * 查询dsp列表，可以含参ids
+	 * 查询dsp列表，可以含参ids,以及status和deliveryType的限制
 	 * @param idStrs
 	 * @return
 	 */
-	List<Dsp> queryAll(@Param("idStrs") String[] idStrs);
+	List<Dsp> queryAll(@Param("idStrs") String[] idStrs, @Param("dsp") Dsp dsp);
+
 }

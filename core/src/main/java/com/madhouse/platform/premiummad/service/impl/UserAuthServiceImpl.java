@@ -19,20 +19,25 @@ public class UserAuthServiceImpl implements IUserAuthService {
 
 	@Override
 	public List<Integer> queryMediaIdList(Integer userId, String mediaIds) {
-		String[] idStrs = StringUtils.splitIds(mediaIds);
-		return userAuthDao.queryMediaIdList(userId, idStrs);
+		int count = userAuthDao.checkAdminForMedia(userId);
+		String[] idStrs = StringUtils.splitToStringArray(mediaIds);
+		return userAuthDao.queryMediaIdList(userId, idStrs, count);
 	}
 
 	@Override
 	public List<Integer> queryAdspaceIdList(Integer userId, String adspaceIds) {
-		String[] idStrs = StringUtils.splitIds(adspaceIds);
-		return userAuthDao.queryAdspaceIdList(userId, idStrs);
+		int count = userAuthDao.checkAdminForMedia(userId);
+		String[] idStrs = StringUtils.splitToStringArray(adspaceIds);
+		return userAuthDao.queryAdspaceIdList(userId, idStrs, count);
 	}
 	
 	@Override
 	public List<Integer> queryPolicyIdList(Integer userId, String policyIds) {
-		String[] idStrs = StringUtils.splitIds(policyIds);
-		return userAuthDao.queryPolicyIdList(userId, idStrs);
+		//根据权限表里有无policy_id为-1的数据来判断此用户是否Admin
+		int count = userAuthDao.checkAdminForPolicy(userId);
+		String[] idStrs = StringUtils.splitToStringArray(policyIds);
+		//通过Admin的标志来做全搜索或是过滤
+		return userAuthDao.queryPolicyIdList(userId, idStrs, count);
 	}
 
 }

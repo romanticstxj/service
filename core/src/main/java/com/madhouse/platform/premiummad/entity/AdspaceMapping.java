@@ -19,7 +19,7 @@ public class AdspaceMapping extends BaseEntity{
 	}
 
 	public String getMediaAdspaceKey() {
-		return mediaAdspaceKey;
+		return this.mediaAdspaceKey = mediaAdspaceKey == null ? null : mediaAdspaceKey.trim();
 	}
 
 	public void setMediaAdspaceKey(String mediaAdspaceKey) {

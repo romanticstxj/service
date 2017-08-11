@@ -19,9 +19,10 @@ public class DspServiceImpl implements IDspService {
 
 	@Autowired
 	private DspMapper dspDao;
-	
+
 	/**
 	 * DSP 权限校验（在 mad_sys_dsp 存在且 已启用）
+	 * 
 	 * @param dspId
 	 * @param token
 	 * @return
@@ -32,17 +33,17 @@ public class DspServiceImpl implements IDspService {
 		if (StringUtils.isBlank(dspId) || !dspId.matches("[0-9]+") || StringUtils.isBlank(token)) {
 			throw new BusinessException(StatusCode.SC400, "dspId 或 token 未提供");
 		}
-		
+
 		// 查询dsp是否存在
 		Dsp param = new Dsp();
 		param.setId(Integer.valueOf(dspId));
 		param.setToken(token);
 		Dsp dsp = dspDao.selectByIdAndToken(param);
-		
+
 		if (dsp == null) {
 			throw new BusinessException(StatusCode.SC405, "该 DSP 无权限[dspId=" + dspId + ",token=" + token + "]");
 		}
-		
+
 		if (dsp.getStatus() < 1) {
 			throw new BusinessException(StatusCode.SC405, "该 DSP权限未启用");
 		}
@@ -83,7 +84,7 @@ public class DspServiceImpl implements IDspService {
 	public int update(Dsp dsp) {
 		Dsp queryResult = dspDao.selectByPrimaryKey(dsp.getId());
         if (queryResult == null)
-        	throw new BusinessException(StatusCode.SC20002);
+        	throw new BusinessException(StatusCode.SC20003);
         if (!queryResult.getName().equals(dsp.getName())) { //名称不相等,检查名称
             Integer count = dspDao.checkName(dsp.getName().trim());
             if (count > 0)
@@ -101,13 +102,24 @@ public class DspServiceImpl implements IDspService {
 	public int updateStatus(Dsp dsp) {
 		Dsp queryResult = dspDao.selectByPrimaryKey(dsp.getId());
         if (queryResult == null)
-        	throw new BusinessException(StatusCode.SC20002);
+        	throw new BusinessException(StatusCode.SC20003);
         return dspDao.updateStatus(dsp);
 	}
 	
 	@Override
-	public List<Dsp> queryAll(String ids) {
-		String[] idStrs = StringUtils.splitIds(ids);
-		return dspDao.queryAll(idStrs);
+	public List<Dsp> queryAll(String[] ids, Dsp dsp) {
+		return dspDao.queryAll(ids, dsp);
 	}
+
+	@Override
+	public int insert(Dsp t) {
+		return 0;
+	}
+
+	@Override
+	public List<Dsp> queryAll(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

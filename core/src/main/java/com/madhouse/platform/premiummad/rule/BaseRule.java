@@ -2,13 +2,12 @@ package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
-
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 
 public class BaseRule {	
+
 	/**
 	 * 解析以 , 分割的字符串
 	 * 

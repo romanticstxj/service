@@ -1,9 +1,7 @@
 package com.madhouse.platform.premiummad.dao;
 
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
-
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.DspMapping;
@@ -20,7 +18,7 @@ public interface AdspaceDao {
 
 	Integer updateStatus(Adspace adspace);
 
-	List<Adspace> queryAllByParams(@Param("idStrs") String[] idStrs, @Param("status") Integer status);
+	List<Adspace> queryAllByParams(@Param("idStrs") List<Integer> idStrs, @Param("status") Integer status);
 
 	Integer insertAdspaceMediaMapping(AdspaceMapping adspaceMapping);
 
@@ -30,7 +28,7 @@ public interface AdspaceDao {
 
 	int queryAdspaceDspMapping(Integer adspaceId);
 
-	AdspaceMapping queryAdspaceMappingById(Integer id);
+	List<AdspaceMapping> queryAdspaceMappingById(Integer id);
 
 	Integer removeAdspaceMediaMapping(@Param("adspaceId") Integer adspaceId);
 	

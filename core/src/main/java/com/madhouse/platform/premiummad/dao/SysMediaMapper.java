@@ -43,9 +43,10 @@ public interface SysMediaMapper {
 	 * @mbggenerated  Mon Jul 10 10:17:53 CST 2017
 	 */
 	int updateByPrimaryKey(SysMedia record);
-	
+
 	/**
 	 * 根据媒体ID查询
+	 * 
 	 * @param idStrs
 	 * @return
 	 */
