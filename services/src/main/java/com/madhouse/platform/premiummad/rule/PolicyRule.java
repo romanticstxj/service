@@ -119,17 +119,17 @@ public class PolicyRule extends BaseRule{
         	throw new BusinessException(StatusCode.SC20404);
         }
         
-        for(PolicyAdspaceDto policyAdspaceDto: policyAdspaceDtos){
-        	double bidFloor = policyAdspaceDto.getBidFloor();
-        	AdspaceDto adspaceDto = policyAdspaceDto.getAdspace();
-        	if(adspaceDto == null){ //广告位底价信息未提供
-        		throw new BusinessException(StatusCode.SC31011);
-        	}
-        	double baseBidFloor = adspaceDto.getBidFloor();
-        	if(bidFloor < baseBidFloor){ //广告位售卖单价不能低于其底价
-        		throw new BusinessException(StatusCode.SC20407);
-        	}
-        }
+//        for(PolicyAdspaceDto policyAdspaceDto: policyAdspaceDtos){
+//        	double bidFloor = policyAdspaceDto.getBidFloor();
+//        	AdspaceDto adspaceDto = policyAdspaceDto.getAdspace();
+//        	if(adspaceDto == null){ //广告位底价信息未提供
+//        		throw new BusinessException(StatusCode.SC31011);
+//        	}
+//        	double baseBidFloor = adspaceDto.getBidFloor();
+//        	if(bidFloor < baseBidFloor){ //广告位售卖单价不能低于其底价
+//        		throw new BusinessException(StatusCode.SC20407);
+//        	}
+//        }
         
         List<PolicyDspDto> policyDspDtos = policyDto.getPolicyDsps();
         if(policyDspDtos == null || policyDspDtos.size() == 0){

@@ -16,6 +16,7 @@ public interface SystemConstant {
 	interface Request{
 		String XFROM = "X-From";
 	    String USERID = "X-User-Id";
+	    String CONTENT_TYPE = "Content-Type";
 	}
 
 	interface OtherConstant{

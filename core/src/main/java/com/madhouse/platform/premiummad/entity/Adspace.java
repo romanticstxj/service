@@ -60,7 +60,7 @@ public class Adspace extends BaseEntity{
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name == null ? null : name.trim();
 	}
 
 	public String getAdspaceKey() {
@@ -68,7 +68,7 @@ public class Adspace extends BaseEntity{
 	}
 
 	public void setAdspaceKey(String adspaceKey) {
-		this.adspaceKey = adspaceKey;
+		this.adspaceKey = adspaceKey == null ? null : adspaceKey.trim();
 	}
 
 	public Integer getMediaId() {
@@ -164,7 +164,7 @@ public class Adspace extends BaseEntity{
 	}
 
 	public void setMaterialSize(String materialSize) {
-		this.materialSize = materialSize;
+		this.materialSize = materialSize == null ? null : materialSize.trim();
 	}
 
 	public Integer getMaterialMaxKbyte() {
@@ -188,7 +188,7 @@ public class Adspace extends BaseEntity{
 	}
 
 	public void setLogoSize(String logoSize) {
-		this.logoSize = logoSize;
+		this.logoSize = logoSize == null ? null : logoSize.trim();
 	}
 
 	public Integer getLogoMaxKbyte() {
@@ -236,7 +236,7 @@ public class Adspace extends BaseEntity{
 	}
 
 	public void setVideoSize(String videoSize) {
-		this.videoSize = videoSize;
+		this.videoSize = videoSize == null ? null : videoSize.trim();
 	}
 
 	public Integer getVideoMaxKbyte() {
@@ -260,7 +260,7 @@ public class Adspace extends BaseEntity{
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		this.videoDuration = videoDuration == null ? null : videoDuration.trim();
 	}
 
 	public Integer getUpdateType() {

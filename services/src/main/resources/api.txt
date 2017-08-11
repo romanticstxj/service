@@ -869,10 +869,10 @@
 		                	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
 		                	"bidFloor": "<double||comment:单价(页面以元为单位)>",
 		                	"description": "<string||comment:描述>",
-		                    "policyDsps": {
+		                    "policyDsps": [{
 		                		"dspId": "<*||integer||comment:dsp id>",
 		                		"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
-		                    }
+		                    }]
                         }
                     ]
                 }
@@ -917,10 +917,10 @@
                             }
                     	}
                     ],
-                    "policyDsps": {
+                    "policyDsps": [{
                 		"dspId": "<*||integer||comment:dsp id>",
                 		"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
-                    }
+                    }]
                 }
             },
             "responses": {
@@ -978,10 +978,10 @@
 		                            }
 		                    	}
 		                    ],
-		                    "policyDsps": {
+		                    "policyDsps": [{
 		                		"dspId": "<*||integer||comment:dsp id>",
 		                		"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
-		                    }
+		                    }]
                         }
                     ]
                 }
@@ -1027,10 +1027,10 @@
                             }
                     	}
                     ],
-                    "policyDsps": {
+                    "policyDsps": [{
                 		"dspId": "<*||integer||comment:dsp id>",
                 		"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
-                    }
+                    }]
                 }
             },
             "responses": {

@@ -76,7 +76,7 @@ public class AdspaceControllerTest {
 	public void createandupdateMapping(){
 		AdspaceMappingDto amd = new AdspaceMappingDto();
 		amd.setAdspaceId(3);
-		amd.setMediaAdspaceKey("   3333   ");
+		amd.setMediaAdspaceKey("   ");
 		List<DspMappingDto> dsps = new ArrayList<DspMappingDto>();
 		DspMappingDto dsp = new DspMappingDto();
 		dsp.setDspAdspaceKey("dspAdspaceKey1");
@@ -89,8 +89,8 @@ public class AdspaceControllerTest {
 		dsp.setDspId(500002);
 		dsps.add(dsp);
 		dsp = new DspMappingDto();
-		dsp.setDspAdspaceKey("dspAdspaceKey3");
-		dsp.setDspMediaId("aaa");
+		dsp.setDspAdspaceKey("  33  ");
+		dsp.setDspMediaId("");
 		dsp.setDspId(500005);
 		dsps.add(dsp);
 		amd.setDspMappings(dsps);

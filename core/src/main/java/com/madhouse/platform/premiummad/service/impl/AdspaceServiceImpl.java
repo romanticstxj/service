@@ -160,11 +160,9 @@ public class AdspaceServiceImpl implements IAdspaceService {
 			if(!result){ //DSP ID不可重复
 				throw new BusinessException(StatusCode.SC20202);
 			}
-		}
-		
-		if(dspMappings != null && dspMappings.size()>0){
 			adspaceDao.insertAdspaceDspMapping(dspMappings);
 		}
+		
 		return 0;
 	}
 

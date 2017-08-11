@@ -22,10 +22,11 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 		
 		String userId = request.getHeader(SystemConstant.Request.USERID);
 		String xForm = request.getHeader(SystemConstant.Request.XFROM);
+		String contentType = request.getHeader(SystemConstant.Request.CONTENT_TYPE);
 //		String requestBody = HttpUtils.getBodyString(request.getReader());
 //		MyRequestWrapper myRequestWrapper = new MyRequestWrapper((HttpServletRequest) request);
 //        String requestBody = myRequestWrapper.getBody();
-		LOGGER.debug("Request Header, userId:"+userId + ", xform:" + xForm);
+		LOGGER.debug("UserId:"+userId + ", xform:" + xForm + ", contentType" + contentType);
 //		LOGGER.debug("Request body: " + requestBody);
 		if(userId != null){ //userId非空的情况下判断是否数字
 			if(!StringUtils.isNumeric(userId)){

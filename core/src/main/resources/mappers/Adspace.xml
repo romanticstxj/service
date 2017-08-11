@@ -253,14 +253,14 @@
             INSERT INTO mad_sys_adspace_mapping_media
             <trim prefix="(" suffix=")" suffixOverrides=",">
               <if test="adspaceId != null">adspace_id,</if>
-              <if test="mediaAdspaceKey != null">media_adspace_key,</if>
+              <if test="mediaAdspaceKey != null and mediaAdspaceKey.trim() != ''">media_adspace_key,</if>
               <if test="createdTime != null">created_time,</if>
               status
             </trim>
             VALUES
             <trim prefix="(" suffix=")" suffixOverrides=",">
               <if test="adspaceId != null">#{adspaceId},</if>
-              <if test="mediaAdspaceKey != null">#{mediaAdspaceKey},</if>
+              <if test="mediaAdspaceKey != null and mediaAdspaceKey.trim() != ''">#{mediaAdspaceKey},</if>
               <if test="createdTime != null">#{createdTime},</if>
               1
             </trim>
@@ -273,14 +273,17 @@
            	INSERT INTO mad_sys_adspace_mapping_dsp (adspace_id, dsp_id, dsp_media_id, 
           		dsp_adspace_key,created_time, status) VALUES
 	          		<foreach collection="dspMappings" index="index" item="dspMapping" separator=",">
-	          			(
-	          				#{dspMapping.adspaceId},
-	          				#{dspMapping.dspId},
-	          				#{dspMapping.dspMediaId},
-	          				#{dspMapping.dspAdspaceKey},
-	          				#{dspMapping.createdTime},
-	          				1
-	          			)
+	          			<if test="(dspMapping.dspMediaId != null and dspMapping.dspMediaId.trim() != '')
+	          			 or (dspMapping.dspAdspaceKey != null and dspMapping.dspAdspaceKey.trim() != '')">
+		          			(
+		          				#{dspMapping.adspaceId},
+		          				#{dspMapping.dspId},
+		          				#{dspMapping.dspMediaId},
+		          				#{dspMapping.dspAdspaceKey},
+		          				#{dspMapping.createdTime},
+		          				1
+		          			)
+	          			 </if>
 	        		</foreach>
     </insert>
     
