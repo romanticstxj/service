@@ -33,24 +33,20 @@ public class ResourceManager {
     @Value("${redis.minIdle}")
     private Integer minIdle;
 
-    
     private JedisPool jedisPoolMaster;
-    
-//    private final ResourceManager resourceManager = new ResourceManager();
-    private ResourceManager(){};
-//    public ResourceManager getInstance() {
-//        return resourceManager;
-//    }
-    
-    public  JedisPool getJedisPoolMaster() {
-        GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
-        poolConfig.setMinIdle(minIdle);
-        poolConfig.setMaxIdle(maxIdle);
-        poolConfig.setMaxTotal(timeout);
 
-        {
-            jedisPoolMaster = new JedisPool(poolConfig,redisHost, port);
+    public  JedisPool getJedisPoolMaster() {
+        synchronized (this) {
+            if (jedisPoolMaster == null) {
+                GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
+                poolConfig.setMinIdle(minIdle);
+                poolConfig.setMaxIdle(maxIdle);
+                poolConfig.setMaxTotal(timeout);
+
+                jedisPoolMaster = new JedisPool(poolConfig,redisHost, port);
+            }
         }
+
         return jedisPoolMaster;
     }
     
