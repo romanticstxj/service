@@ -19,13 +19,14 @@ import com.madhouse.platform.premiummad.util.ResourceManager;
 public class MediaTask {
     private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     
-    private Jedis redisMaster = null;
-    
     @Value("${ALL_MEDIA}")
     private String ALL_MEDIA;
     
     @Value("${MEDIA_META_DATA}")
     private String MEDIA_META_DATA;
+    
+    @Value("${EXPIRATION_TIME}")
+    private Integer EXPIRATION_TIME;
     
     @Autowired
     private IMediaService mediaService;
@@ -33,20 +34,25 @@ public class MediaTask {
     @Autowired
     private ResourceManager rm;
     
-    public void run() {
+    public void loadMediaMetaData() {
+        Jedis redisMaster = rm.getJedisPoolMaster().getResource();
         try {
             LOGGER.debug("------------MediaTask-----------start--");
-            this.redisMaster = rm.getJedisPoolMaster().getResource();
             final List<MediaMetaData> listMedias = mediaService.queryAll();
             long begin = System.currentTimeMillis();
             for (MediaMetaData media : listMedias) {
-                redisMaster.set(String.format(this.MEDIA_META_DATA, String.valueOf(media.getId())), JSON.toJSONString(media), "NX", "EX", 500);
+                redisMaster.setex(String.format(this.MEDIA_META_DATA, String.valueOf(media.getId())), EXPIRATION_TIME,JSON.toJSONString(media));
                 redisMaster.sadd(this.ALL_MEDIA, String.valueOf(media.getId()));
             }
+            redisMaster.expire(this.ALL_MEDIA, EXPIRATION_TIME);
             LOGGER.info("op media_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------MediaTask-----------  End--");
         } catch (Exception e) {
             LOGGER.error("------------MediaTask-----------error:{}",e.toString());
+        } finally {
+            if(null != redisMaster){
+                redisMaster.close();
+            }
         }
     }
     

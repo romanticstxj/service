@@ -33,12 +33,14 @@ public class LogAspect {
 	}
 	
 	@Before("pointCutService()")
-	public void beforeService(JoinPoint joinPoint) throws NoSuchMethodException, SecurityException{
+	public void beforeService(JoinPoint joinPoint){
 		Object[] args = joinPoint.getArgs();
 		StringBuffer sb = new StringBuffer("Begin service: ")
 				.append(joinPoint.toShortString()).append(" with parameters of (");
-		for(Object arg: args){
-			sb.append(arg).append(" ");
+		if(args != null){
+			for(Object arg: args){
+				sb.append(arg).append(" ");
+			}
 		}
 		sb.append(")");
 		logger.debug(sb.toString());
@@ -51,7 +53,9 @@ public class LogAspect {
 
 	@AfterReturning(value="pointCutService()", returning="retVal", argNames="retVal")
 	public void afterReturnService(JoinPoint joinPoint, Object retVal){
-		logger.debug("Service result: " + retVal.toString());
+		if(retVal != null){
+			logger.debug("Service result: " + retVal.toString());
+		}
 	}
 	
 	@Pointcut(SystemConstant.Logging.AOP_SERVICE_CNTR_EXPR)
@@ -60,14 +64,19 @@ public class LogAspect {
 	}
 
 	@Before("pointCutController()")
-	public void beforeController(JoinPoint joinPoint) throws Throwable {
+	public void beforeController(JoinPoint joinPoint){
 		Object[] objects = joinPoint.getArgs();
 		StringBuffer sb = new StringBuffer("Begin Controller: ").append(joinPoint.toShortString())
 				.append(" with parameters of (");
-		for (Object obj : objects) {
-			if (!(ServletRequest.class.isAssignableFrom(obj.getClass()) || ServletResponse.class.isAssignableFrom(obj.getClass()) || MultipartFile.class.isAssignableFrom(obj.getClass()) || WebDataBinder.class.isAssignableFrom(obj.getClass()))) {
-				sb.append(JSON.toJSONString(obj)).append(" ");
+		if(objects != null){
+			for (Object obj : objects) {
+				if(obj != null){
+					if (!(ServletRequest.class.isAssignableFrom(obj.getClass()) || ServletResponse.class.isAssignableFrom(obj.getClass()) || MultipartFile.class.isAssignableFrom(obj.getClass()) || WebDataBinder.class.isAssignableFrom(obj.getClass()))) {
+						sb.append(JSON.toJSONString(obj)).append(" ");
+					}
+				}
 			}
+			
 		}
 		sb.append(")");
 		logger.debug(sb.toString());

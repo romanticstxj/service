@@ -33,8 +33,6 @@ public class ResourceManager {
     @Value("${redis.minIdle}")
     private Integer minIdle;
 
-    @Value("${redis.default.db}")
-    private Integer dbIndex;
     
     private JedisPool jedisPoolMaster;
     
