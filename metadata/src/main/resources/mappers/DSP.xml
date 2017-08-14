@@ -20,7 +20,7 @@
     </resultMap>
 	
     <select id="queryAll" resultMap="baseResult">
-		select id,bid_url,winnotice_url,token,api_type,status,api_type from mad_sys_dsp
+		select id,bid_url,winnotice_url,token,api_type,status,api_type from mad_sys_dsp where status >0
 	</select>
 	
 	<select id="queryAdspaceMappingDsp" resultMap="baseMappingResult">

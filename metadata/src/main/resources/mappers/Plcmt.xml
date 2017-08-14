@@ -37,7 +37,7 @@
     </resultMap>
     
     <select id="queryAll" resultMap="baseResult">
-		select * from mad_sys_adspace WHERE status >=0 
+		select * from mad_sys_adspace WHERE status >0 
 	</select>
 	<select id="queryMediaMappingMetaData" resultMap="mediaMappingResult">
 		select * from mad_sys_adspace_mapping_media WHERE status >0 
