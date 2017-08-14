@@ -95,7 +95,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                 }
             }
             redisMaster.expire(this.ALL_POLICY, EXPIRATION_TIME);
-            LOGGER.info("op policy_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadPolicyMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PolicyTask-----------  End--");
         } catch (Exception e) {
             e.printStackTrace();

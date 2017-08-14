@@ -135,7 +135,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                 }
             }
             redisMaster.expire(this.ALL_PLACEMENT, EXPIRATION_TIME);
-            LOGGER.info("op plcmt_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadPlcmtMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----------  End--");
         } catch (Exception e) {
             e.printStackTrace();
@@ -200,7 +200,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             for (MediaMappingMetaData mappingMetaData : lists) {
                 redisMaster.setex(String.format(this.MEDIA_MAPPING_DATA, String.valueOf(mappingMetaData.getAdspaceId())), EXPIRATION_TIME, JSON.toJSONString(mappingMetaData));
             }
-            LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadMediaMappingData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----adspaceMappingDsp------End--");
         } catch (Exception e) {
             LOGGER.error("------------PlcmtTask-----adspaceMappingDsp------error:{}",e.toString());
