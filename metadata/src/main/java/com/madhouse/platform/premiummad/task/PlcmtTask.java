@@ -100,14 +100,14 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                                 PlcmtMetaData.Native natives = metaData.new Native();
                                 if(adspace.getLayout().equals(Constant.Layout.NATIVE_311)){
                                     PlcmtMetaData.Image nativesImage = metaData.new Image();
-                                    String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getVideoSize(), "*");
+                                    String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
                                     nativesImage.setW(Integer.parseInt(videoSize[0]));
                                     nativesImage.setH(Integer.parseInt(videoSize[1]));
                                     nativesImage.setMimes(queryMimesByType(adspace.getMaterialType()));
                                     natives.setCover(nativesImage);
                                     natives.setVideo(getVideo(adspace, metaData));
                                 } else {
-                                    metaData.setLayout(adspace.getLayout()+adspace.getMainPicNumber());
+                                    metaData.setLayout(adspace.getLayout()+adspace.getMaterialCount());
                                     natives.setCover(getImage(adspace, metaData));
                                 }
                                 PlcmtMetaData.Image nativesIcon = metaData.new Image();
@@ -152,7 +152,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
         }
         List<Integer> result = new ArrayList<Integer>();
         Integer not = 1;
-        while(not < type){
+        while(not <= type){
             if((not & type) > 0){
                 result.add(not);
             }
@@ -176,17 +176,17 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     public PlcmtMetaData.Video getVideo(Adspace adspace ,PlcmtMetaData metaData) {
         PlcmtMetaData.Video video = metaData.new Video();
         if(!adspace.getLayout().equals(Constant.Layout.VIDEO_211)){
-            String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getVideoSize(), "*");
+            String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
             video.setW(Integer.parseInt(videoSize[0]));
             video.setH(Integer.parseInt(videoSize[1]));
             
             metaData.setW(Integer.parseInt(videoSize[0]));
             metaData.setH(Integer.parseInt(videoSize[1]));
             
-            String[] nativesdescription = StringUtils.tokenizeToStringArray(adspace.getVideoDuration(), ",");
+            String[] nativesdescription = StringUtils.tokenizeToStringArray(adspace.getMaterialDuration(), ",");
             video.setMinDuraion(Integer.parseInt(nativesdescription[0]));
             video.setMaxDuration(Integer.parseInt(nativesdescription[1]));
-            video.setMimes(queryMimesByType(adspace.getVideoType()));
+            video.setMimes(queryMimesByType(adspace.getMaterialType()));
         }
         return video;
     }
