@@ -101,7 +101,7 @@ public class PolicyControllerTest {
 		policyDto.setWeight(10);
 		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-08-05"));
 		policyDto.setIsEndDate(0);
-		policyDto.setIsTimeTargeting(0);
+		policyDto.setIsTimeTargeting(1);
 		policyDto.setIsLocationTargeting(0);
 		policyDto.setConnTargeting("1,2");
 		policyDto.setOsTargeting("1");

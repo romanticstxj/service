@@ -1,3 +1,34 @@
+/* 媒体数据权限表  */
+DROP TABLE IF EXISTS `mad_sys_user_media`;
+CREATE TABLE `mad_sys_user_media` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `media_id` int(10) NOT NULL DEFAULT '0',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态(0:删除,1:正常）',
+  `created_user` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建者',
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_user` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新者',
+  `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `user_status` (`user_id`,`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+/* 策略数据权限表  */
+DROP TABLE IF EXISTS `mad_sys_user_policy`;
+CREATE TABLE `mad_sys_user_policy` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `policy_id` int(10) NOT NULL,
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态(0:删除,1:正常）',
+  `created_user` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建者',
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_user` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新者',
+  `updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `user_status` (`user_id`,`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8
+
+
 /* 媒体表 */
 DROP TABLE IF EXISTS `mad_sys_media`;
 CREATE TABLE `mad_sys_media` (
@@ -11,7 +42,7 @@ CREATE TABLE `mad_sys_media` (
   `material_audit_mode` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '物料审核方式(0: 不审核, 1: 平台审核, 2: 媒体审核)',
   `timeout` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '超时时间',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '状态(0:停用,1:启用）',
-  `description` varchar(512) NOT NULL DEFAULT '' COMMENT '描述',
+  `description` varchar(400) DEFAULT NULL COMMENT '描述',
   `created_user` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建者',
   `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_user` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新者',
@@ -20,6 +51,7 @@ CREATE TABLE `mad_sys_media` (
   KEY `name` (`name`),
   KEY `status` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8;
+
 
 /* 广告位表 */
 DROP TABLE IF EXISTS `mad_sys_adspace`;
@@ -63,6 +95,37 @@ CREATE TABLE `mad_sys_adspace` (
   KEY `ad_mode_status_name` (`layout`,`status`,`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=200000 DEFAULT CHARSET=utf8;
 
+/* 广告位dsp映射表 */
+DROP TABLE IF EXISTS `mad_sys_adspace_mapping_dsp`;
+CREATE TABLE `mad_sys_adspace_mapping_dsp` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `adspace_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '广告位ID',
+  `dsp_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'DSP ID',
+  `dsp_media_id` varchar(255) DEFAULT NULL COMMENT 'DSP媒体ID',
+  `dsp_adspace_key` varchar(255) DEFAULT NULL COMMENT 'DSP广告位Key',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态(0: 删除，1: 正常)',
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建更新时间',
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  KEY `adspace_id` (`adspace_id`),
+  KEY `dsp_id` (`dsp_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='PremiumMAD与DSP广告位映射';
+
+/* 广告位媒体映射表 */
+DROP TABLE IF EXISTS `mad_sys_adspace_mapping_media`;
+CREATE TABLE `mad_sys_adspace_mapping_media` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `adspace_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '广告位ID',
+  `media_adspace_key` varchar(255) NOT NULL DEFAULT '' COMMENT '媒体方广告位ID(Key)',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态(0: 删除，1: 正常)',
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建更新时间',
+  PRIMARY KEY (`id`),
+  KEY `media_adspace_id` (`media_adspace_key`),
+  KEY `pmd_adspace_id` (`adspace_id`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='媒体方与PremiumMAD广告位映射'
+
+
 /* DSP表 */
 DROP TABLE IF EXISTS `mad_sys_dsp`;
 CREATE TABLE `mad_sys_dsp` (
@@ -72,6 +135,7 @@ CREATE TABLE `mad_sys_dsp` (
   `winnotice_url` varchar(255) DEFAULT '' COMMENT 'WINNOTICE URL',
   `delivery_type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)',
   `bid_percent` int(10) unsigned DEFAULT '0' COMMENT '加价百分比',
+  `api_type` tinyint(3) NOT NULL DEFAULT '1' COMMENT 'API类型',
   `token` char(32) NOT NULL DEFAULT '' COMMENT 'Token',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态(0: 停用, 1: 启用)',
   `max_qps` int(10) unsigned DEFAULT NULL COMMENT '最大QPS',
@@ -82,4 +146,4 @@ CREATE TABLE `mad_sys_dsp` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=600010 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=601040 DEFAULT CHARSET=utf8;

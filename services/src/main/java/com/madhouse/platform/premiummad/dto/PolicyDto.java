@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
+import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
@@ -113,7 +114,7 @@ public class PolicyDto implements Serializable{
 	}
 
 	public Integer getIsEndDate() {
-		return isEndDate;
+		return endDate == null ? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT;
 	}
 
 	public void setIsEndDate(Integer isEndDate) {
@@ -129,7 +130,7 @@ public class PolicyDto implements Serializable{
 	}
 
 	public Integer getIsTimeTargeting() {
-		return isTimeTargeting;
+		return StringUtils.isEmpty(timeTargeting) ? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT;
 	}
 
 	public void setIsTimeTargeting(Integer isTimeTargeting) {
@@ -145,7 +146,7 @@ public class PolicyDto implements Serializable{
 	}
 
 	public Integer getIsLocationTargeting() {
-		return isLocationTargeting;
+		return StringUtils.isEmpty(locationTargeting) ? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT;
 	}
 
 	public void setIsLocationTargeting(Integer isLocationTargeting) {
@@ -181,7 +182,9 @@ public class PolicyDto implements Serializable{
 	}
 
 	public void setLimitType(Byte limitType) {
-		this.limitType = limitType;
+		//如果不限投放量(isQuantityLimit为0),则设置0；反之，则为1或2(页面设置)
+		this.limitType = (!StringUtils.isEmpty(this.isQuantityLimit) && this.isQuantityLimit.intValue() == SystemConstant.DB.IS_NOT_LIMIT)
+				? 0 : limitType;
 	}
 
 	public Integer getLimitReqs() {
@@ -241,7 +244,9 @@ public class PolicyDto implements Serializable{
 	}
 
 	public Integer getIsQuantityLimit() {
-		return isQuantityLimit;
+		//如果limitType为0，则设置0；反之则设置1（限制投放量）
+		return (!StringUtils.isEmpty(limitType) && limitType.intValue() == 0) 
+			? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT;
 	}
 
 	public void setIsQuantityLimit(Integer isQuantityLimit) {

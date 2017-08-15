@@ -74,5 +74,8 @@ public interface SystemConstant {
 		int TYPE_MEDIA = 32;
 		int TYPE_MIN_VAL = TYPE_DEFAULT;
 		int TYPE_MAX_VAL = TYPE_DEFAULT + TYPE_CARRIER + TYPE_CONN + TYPE_DEVICE + TYPE_LOCATION + TYPE_MEDIA;
+		
+		int IS_LIMIT = 1;
+		int IS_NOT_LIMIT = 0;
 	}
 }

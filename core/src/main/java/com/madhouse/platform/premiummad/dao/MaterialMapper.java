@@ -108,4 +108,18 @@ public interface MaterialMapper {
 	 * @return
 	 */
 	int updateByMediaAndMediaMaterialKey(Material record);
+	
+	/**
+	 * 查询所有素材
+	 * 
+	 * @param list
+	 * @return
+	 */
+	List<Material> queryAll(@Param("mediaIds") List<Integer> mediaIds);
+
+	/**
+	 * 查询某个特定素材
+	 * @return
+	 */
+	Material queryById(Integer id);
 }

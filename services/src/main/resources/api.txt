@@ -686,13 +686,20 @@
                     "body": [
                         {
                             "id": "<*||integer||comment:物料ID>",
-		                	"materialId": "<string||comment:DSP定义的素材ID>",
+		                	"materialId": "<integer||comment:DSP定义的素材ID>",
 		                    "materialName": "<*||string||comment:DSP定义的素材名称>",
+		                    "materialLayout": "<*||integer||comment:物料类型(1:banner, 2:视频, 3:信息流)>",
 		            		"adMaterials": "<string||comment:广告素材URL(多个用竖线分隔)>",
-		            		"createdTime": "<string||comment:上传时间>",
-		            		"advertiserId": "<string||comment:广告主ID>",
-		            		"dspId": "<string||comment:需求方平台>",
-		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
+		            		"lpgUrl": "<string||comment:落地页URL>",
+		            		"dealId": "<integer||comment:PDB或PD投放方式下的DEAL ID>",
+		            		"createdTime": "<date||comment:上传时间>",
+		            		"advertiserId": "<integer||comment:广告主ID>",
+		            		"advertiserName": "<string||comment:广告主名称>",
+		            		"dspId": "<integer||comment:需求方ID>",
+		            		"dspName": "<string||comment:需求方名称>",
+		            		"mediaId": "<integer||comment:媒体ID>",
+		            		"mediaName": "<string||comment:媒体名称>",
+		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
 		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>"
                         }
                     ]
@@ -715,26 +722,29 @@
                             "id": "<*||integer||comment:物料ID>",
 		                	"materialId": "<string||comment:DSP定义的素材ID>",
 		                    "materialName": "<*||string||comment:DSP定义的素材名称>",
-		            		"adMaterials": "<string||comment:广告素材URL(多个用竖线分隔)>",
-		            		"createdTime": "<string||comment:上传时间>",
+		                    "materialLayout": "<*||integer||comment:物料类型(1:banner, 2:视频, 3:信息流)>",
 		            		"advertiserId": "<string||comment:广告主ID>",
-		            		"dspId": "<string||comment:需求方平台>",
-		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>",
-		            		"title": "<string||comment:物料标题>",
-		            		"description": "<string||comment:物料描述>",
-		            		"materialType": "<string||comment:素材格式>",
-		            		"materialSize": "<string||comment:素材尺寸>",
-		            		"materialMaxKbyte": "<string||comment:素材K数>",
-		            		"landing_page_url": "<string||comment:落地页地址>",
-		            		"impression_urls": "<string||comment:曝光监测(多个用竖线分隔)>",
-		            		"click_urls": "<string||comment:点击监测(多个用竖线分隔)>",
-		            		"dealId": "<string||comment:deal id>",
-		            		"icon": "<string||comment:Logo url>",
+		            		"advertiserName": "<string||comment:广告主名称>",
 		            		"brand": "<string||comment:品牌>",
-		            		"industry": "<string||comment:行业?>",
-		            		"audited_user": "<string||comment:审核者>",
-		            		"audited_time": "<string||comment:审核时间>"
+		            		"agency": "<string||comment:代理商名称>",
+		            		"dealId": "<string||comment:PDB或PD投放方式下的DEAL ID>",
+		            		"endDate": "<date||comment:失效日期>",
+		            		"dspId": "<string||comment:需求方平台>",
+		            		"dspName": "<string||comment:需求方名称>",
+		            		"createdTime": "<string||comment:上传时间>",
+		            		"adMaterials": "<string||comment:广告素材URL(多个用竖线分隔)>",
+		            		"size": "<string||comment:素材尺寸(长*宽)>",
+		            		"icon": "<string||comment:信息流Logo URL>",
+		            		"title": "<string||comment:信息流广告标题>",
+		            		"description": "<string||comment:信息流广告描述>",
+		            		"lpgUrl": "<string||comment:落地页地址>",
+		            		"impUrls": "<string||comment:曝光监测(多个用竖线分隔)>",
+		            		"clkUrls": "<string||comment:点击监测(多个用竖线分隔)>",
+		            		"secUrls": "<string||comment:品牌安全监测URL(多个用竖线分隔)>",
+		            		"mediaId": "<integer||comment:媒体ID>",
+		            		"mediaName": "<string||comment:媒体名称>",
+		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -747,7 +757,7 @@
             "parameters": {
                 "body": {
                 	"ids": "<*||string||comment:dsp素材ID，多个用逗号分隔>",
-                	"status": "<integer||comment:审核操作(-1:审核不通过, 2:审核通过)>"
+                	"status": "<*||integer||comment:审核操作(-1:审核不通过, 2:审核通过)>"
                 }
             },
             "responses": {

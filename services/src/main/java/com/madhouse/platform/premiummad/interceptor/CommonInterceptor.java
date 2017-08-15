@@ -15,7 +15,7 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class CommonInterceptor extends HandlerInterceptorAdapter{
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
+	private static final Logger logger = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -23,11 +23,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 		String userId = request.getHeader(SystemConstant.Request.USERID);
 		String xForm = request.getHeader(SystemConstant.Request.XFROM);
 		String contentType = request.getHeader(SystemConstant.Request.CONTENT_TYPE);
-//		String requestBody = HttpUtils.getBodyString(request.getReader());
-//		MyRequestWrapper myRequestWrapper = new MyRequestWrapper((HttpServletRequest) request);
-//        String requestBody = myRequestWrapper.getBody();
-		LOGGER.debug("UserId:"+userId + ", xform:" + xForm + ", contentType" + contentType);
-//		LOGGER.debug("Request body: " + requestBody);
+		logger.debug("UserId:"+userId + ", xform:" + xForm + ", contentType:" + contentType);
 		if(userId != null){ //userId非空的情况下判断是否数字
 			if(!StringUtils.isNumeric(userId)){
 				throw new BusinessException(StatusCode.SC31007);
