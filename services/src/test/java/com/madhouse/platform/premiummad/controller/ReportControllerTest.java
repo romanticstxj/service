@@ -20,7 +20,7 @@ public class ReportControllerTest {
 	
 	@Test
 	public void policyReport(){
-		String link = "http://localhost:8080/services/report/policy?type=32&dims=35&realtime=0&startDate=20170801"
+		String link = "http://localhost:8080/services/report/policy?type=1&dims=35&realtime=0&startDate=20170801"
 				+ "&endDate=20170803";
 		HttpUtilTest.httpGet(link);
 	}

@@ -20,6 +20,8 @@ public class Adspace extends BaseEntity{
 	private Integer materialType;
 	private String materialSize;
 	private Integer materialMaxKbyte;
+	private Integer materialCount;
+	private String materialDuration;
 	
 	private Integer logoType;
 	
@@ -31,15 +33,11 @@ public class Adspace extends BaseEntity{
 	
 	private Integer descMaxLength;
 	
-	private Integer mainPicNumber;
-
-	private Integer videoType;
+	private Integer coverType;
 	
-	private String videoSize;
+	private String coverSize;
 	
-	private Integer videoMaxKbyte;
-	
-	private String videoDuration;
+	private Integer coverMaxKbyte;
 	
 	private String description;
 	
@@ -60,7 +58,7 @@ public class Adspace extends BaseEntity{
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name == null ? null : name.trim();
 	}
 
 	public String getAdspaceKey() {
@@ -68,7 +66,7 @@ public class Adspace extends BaseEntity{
 	}
 
 	public void setAdspaceKey(String adspaceKey) {
-		this.adspaceKey = adspaceKey;
+		this.adspaceKey = adspaceKey == null ? null : adspaceKey.trim();
 	}
 
 	public Integer getMediaId() {
@@ -164,7 +162,7 @@ public class Adspace extends BaseEntity{
 	}
 
 	public void setMaterialSize(String materialSize) {
-		this.materialSize = materialSize;
+		this.materialSize = materialSize == null ? null : materialSize.trim();
 	}
 
 	public Integer getMaterialMaxKbyte() {
@@ -188,7 +186,7 @@ public class Adspace extends BaseEntity{
 	}
 
 	public void setLogoSize(String logoSize) {
-		this.logoSize = logoSize;
+		this.logoSize = logoSize == null ? null : logoSize.trim();
 	}
 
 	public Integer getLogoMaxKbyte() {
@@ -215,52 +213,12 @@ public class Adspace extends BaseEntity{
 		this.descMaxLength = descMaxLength;
 	}
 
-	public Integer getMainPicNumber() {
-		return mainPicNumber;
-	}
-
-	public void setMainPicNumber(Integer mainPicNumber) {
-		this.mainPicNumber = mainPicNumber;
-	}
-
-	public Integer getVideoType() {
-		return videoType;
-	}
-
-	public void setVideoType(Integer videoType) {
-		this.videoType = videoType;
-	}
-
-	public String getVideoSize() {
-		return videoSize;
-	}
-
-	public void setVideoSize(String videoSize) {
-		this.videoSize = videoSize;
-	}
-
-	public Integer getVideoMaxKbyte() {
-		return videoMaxKbyte;
-	}
-
-	public void setVideoMaxKbyte(Integer videoMaxKbyte) {
-		this.videoMaxKbyte = videoMaxKbyte;
-	}
-
-	public String getVideoDuration() {
-		return videoDuration;
-	}
-
-	public void setVideoDuration(String videoDuration) {
-		this.videoDuration = videoDuration;
-	}
-
 	public String getDescription() {
 		return description;
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		this.description = description == null ? null : description.trim();
 	}
 
 	public Integer getUpdateType() {
@@ -277,5 +235,45 @@ public class Adspace extends BaseEntity{
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Integer getMaterialCount() {
+		return materialCount;
+	}
+
+	public void setMaterialCount(Integer materialCount) {
+		this.materialCount = materialCount;
+	}
+
+	public String getMaterialDuration() {
+		return materialDuration;
+	}
+
+	public void setMaterialDuration(String materialDuration) {
+		this.materialDuration = materialDuration == null ? null : materialDuration.trim();
+	}
+
+	public Integer getCoverType() {
+		return coverType;
+	}
+
+	public void setCoverType(Integer coverType) {
+		this.coverType = coverType;
+	}
+
+	public String getCoverSize() {
+		return coverSize;
+	}
+
+	public void setCoverSize(String coverSize) {
+		this.coverSize = coverSize == null ? null : coverSize.trim();
+	}
+
+	public Integer getCoverMaxKbyte() {
+		return coverMaxKbyte;
+	}
+
+	public void setCoverMaxKbyte(Integer coverMaxKbyte) {
+		this.coverMaxKbyte = coverMaxKbyte;
 	}
 }

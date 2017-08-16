@@ -471,4 +471,15 @@ public class Policy extends BaseEntity{
 		this.dealId = dealId;
 	}
 
+	@Override
+	public String toString() {
+		return "Policy [dealId=" + dealId + ", name=" + name + ", type=" + type + ", weight=" + weight + ", startDate="
+				+ startDate + ", endDate=" + endDate + ", timeTargeting=" + timeTargeting + ", locationTargeting="
+				+ locationTargeting + ", osTargeting=" + osTargeting + ", connTargeting=" + connTargeting
+				+ ", limitType=" + limitType + ", limitReqs=" + limitReqs + ", limitQps=" + limitQps + ", limitSpeed="
+				+ limitSpeed + ", bidType=" + bidType + ", bidFloor=" + bidFloor + ", status=" + status
+				+ ", description=" + description + ", policyAdspaces=" + policyAdspaces + ", policyDsps=" + policyDsps
+				+ "]";
+	}
+
 }

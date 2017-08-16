@@ -51,7 +51,6 @@ public class MediaController {
 			userId = userIdByGet;
 		}
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
-//		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
 		return listByMediaIds(mediaIdList);
     }
 	

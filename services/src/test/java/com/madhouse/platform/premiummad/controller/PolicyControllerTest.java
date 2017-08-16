@@ -20,9 +20,9 @@ public class PolicyControllerTest {
 //		File file = new File("log");
 //		file.getAbsolutePath();
 		PolicyDto policyDto = new PolicyDto();
-		policyDto.setName("mypolicy444");
+		policyDto.setName("mypolicy44343");
 		policyDto.setWeight(10);
-		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-08-04"));
+		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyyMMdd", "20170804"));
 		policyDto.setIsEndDate(0);
 		policyDto.setIsTimeTargeting(0);
 		policyDto.setIsLocationTargeting(0);
@@ -59,14 +59,14 @@ public class PolicyControllerTest {
 		List<PolicyDspDto> policyDspDtos = new ArrayList<PolicyDspDto>();
 		PolicyDspDto policyDspDto = new PolicyDspDto();
 		policyDspDto.setDspId(222);
-		policyDspDto.setStatus((byte) 1);
+//		policyDspDto.setStatus((byte) 1);
 		policyDspDtos.add(policyDspDto);
 //		policyDspDto = new PolicyDspDto();
 //		policyDspDto.setDspId(600003);
 //		policyDspDto.setStatus((byte) 0);
 //		policyDspDtos.add(policyDspDto);
 		policyDto.setPolicyDsps(policyDspDtos);
-		String link = "http://localhost:8080/services/policy/create";
+		String link = "http://172.16.25.48:8080/services/policy/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(policyDto));
 	}
 	
@@ -101,7 +101,7 @@ public class PolicyControllerTest {
 		policyDto.setWeight(10);
 		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-08-05"));
 		policyDto.setIsEndDate(0);
-		policyDto.setIsTimeTargeting(0);
+		policyDto.setIsTimeTargeting(1);
 		policyDto.setIsLocationTargeting(0);
 		policyDto.setConnTargeting("1,2");
 		policyDto.setOsTargeting("1");

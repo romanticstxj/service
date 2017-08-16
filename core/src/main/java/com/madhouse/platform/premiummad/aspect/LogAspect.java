@@ -5,7 +5,6 @@ import javax.servlet.ServletResponse;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -26,6 +25,7 @@ import com.madhouse.platform.premiummad.constant.SystemConstant;
 public class LogAspect {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
+	private static final Logger logger1 = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
 
 	@Pointcut(SystemConstant.Logging.AOP_SERVICE_IMPL_EXPR)
 	public void pointCutService() {
@@ -51,13 +51,6 @@ public class LogAspect {
 		logger.debug("End service");
 	}
 
-	@AfterReturning(value="pointCutService()", returning="retVal", argNames="retVal")
-	public void afterReturnService(JoinPoint joinPoint, Object retVal){
-		if(retVal != null){
-			logger.debug("Service result: " + retVal.toString());
-		}
-	}
-	
 	@Pointcut(SystemConstant.Logging.AOP_SERVICE_CNTR_EXPR)
 	public void pointCutController() {
 
@@ -79,6 +72,6 @@ public class LogAspect {
 			
 		}
 		sb.append(")");
-		logger.debug(sb.toString());
+		logger1.debug(sb.toString());
 	}
 }

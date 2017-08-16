@@ -31,7 +31,7 @@ public class DspMapping extends BaseEntity{
 	}
 
 	public void setDspMediaId(String dspMediaId) {
-		this.dspMediaId = dspMediaId;
+		this.dspMediaId = dspMediaId == null ? null : dspMediaId.trim();
 	}
 
 	public String getDspAdspaceKey() {
@@ -39,7 +39,7 @@ public class DspMapping extends BaseEntity{
 	}
 
 	public void setDspAdspaceKey(String dspAdspaceKey) {
-		this.dspAdspaceKey = dspAdspaceKey;
+		this.dspAdspaceKey = dspAdspaceKey == null ? null : dspAdspaceKey.trim();
 	}
 
 }
