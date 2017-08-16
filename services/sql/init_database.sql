@@ -68,19 +68,19 @@ CREATE TABLE `mad_sys_adspace` (
   `bid_floor` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '底价(分)',
   `adtype` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '广告类型(1: 普通硬广, 2: 原生, 3: 视频)',
   `layout` smallint(3) NOT NULL DEFAULT '0' COMMENT '广告形式',
-  `material_type` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1: gif, 2: png, 4: jpg)',
-  `material_size` varchar(255) NOT NULL DEFAULT '' COMMENT '普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸',
-  `material_max_kbyte` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '普通硬广: 物料最大K数, 原生图文信息流:主图片最大K数, 原生视频信息流: 封面最大K数, 视频暂停: 物料最大K数',
+  `material_type` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)',
+  `material_size` varchar(255) NOT NULL DEFAULT '' COMMENT '主物料尺寸',
+  `material_max_kbyte` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '主物料最大K数',
+  `material_count` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '主物料个数',
+  `material_duration` varchar(255) NOT NULL DEFAULT '' COMMENT '主物料视频时长(半角逗号分隔)',
   `logo_type` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'logo格式(1: gif, 2: png, 4: jpg)',
   `logo_size` varchar(255) NOT NULL DEFAULT '' COMMENT 'logo尺寸(空: 不支持)',
   `logo_max_kbyte` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'logo最大K数',
+  `cover_type` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '视频格式(1: gif, 2: png, 4: jpg)',
+  `cover_size` varchar(255) NOT NULL DEFAULT '' COMMENT '视频尺寸',
+  `cover_max_kbyte` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '视频最大K数',
   `title_max_length` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '标题最大长度',
   `desc_max_length` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '描述最大长度',
-  `main_pic_number` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '原生图文信息流: 主图片张数',
-  `video_type` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '视频格式(8: mp4, 16: flv, 32: swf)',
-  `video_size` varchar(255) NOT NULL DEFAULT '' COMMENT '视频尺寸',
-  `video_max_kbyte` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '视频最大K数',
-  `video_duration` varchar(255) NOT NULL DEFAULT '' COMMENT '视频时长(半角逗号分隔)',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '状态(0:停用,1:启用)',
   `description` varchar(400) DEFAULT NULL COMMENT '描述',
   `created_user` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建者',
@@ -93,7 +93,7 @@ CREATE TABLE `mad_sys_adspace` (
   KEY `status` (`status`),
   KEY `name` (`name`),
   KEY `ad_mode_status_name` (`layout`,`status`,`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=200000 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=200053 DEFAULT CHARSET=utf8;
 
 /* 广告位dsp映射表 */
 DROP TABLE IF EXISTS `mad_sys_adspace_mapping_dsp`;
