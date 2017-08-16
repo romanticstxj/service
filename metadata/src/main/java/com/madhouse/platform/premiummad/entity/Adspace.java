@@ -11,7 +11,7 @@ public class Adspace {
 	private String mediaName;
 	private Integer terminalType; 
 	private Integer terminalOs;
-	private Integer enableHttps;
+	private Boolean enableHttps;
 	private Integer bidType;
 	private Integer bidFloor;
 	private Integer adType;	//广告类型
@@ -99,16 +99,15 @@ public class Adspace {
 	public void setTerminalOs(Integer terminalOs) {
 		this.terminalOs = terminalOs;
 	}
+	public Boolean getEnableHttps() {
+        return enableHttps;
+    }
 
-	public Integer getEnableHttps() {
-		return enableHttps;
-	}
+    public void setEnableHttps(Boolean enableHttps) {
+        this.enableHttps = enableHttps;
+    }
 
-	public void setEnableHttps(Integer enableHttps) {
-		this.enableHttps = enableHttps;
-	}
-
-	public Integer getBidType() {
+    public Integer getBidType() {
 		return bidType;
 	}
 

@@ -108,7 +108,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                                     natives.setVideo(getVideo(adspace, metaData));
                                 } else {
                                     metaData.setLayout(adspace.getLayout()+adspace.getMaterialCount());
-                                    natives.setCover(getImage(adspace, metaData));
+                                    natives.setImage(getImage(adspace, metaData));
                                 }
                                 PlcmtMetaData.Image nativesIcon = metaData.new Image();
                                 if(!org.apache.commons.lang3.StringUtils.isEmpty(adspace.getLogoSize())){
