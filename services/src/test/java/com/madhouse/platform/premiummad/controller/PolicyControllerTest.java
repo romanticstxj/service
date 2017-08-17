@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.controller;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -20,12 +21,15 @@ public class PolicyControllerTest {
 //		File file = new File("log");
 //		file.getAbsolutePath();
 		PolicyDto policyDto = new PolicyDto();
-		policyDto.setName("mypolicy44343");
+		policyDto.setName("mypolicy551");
 		policyDto.setWeight(10);
 		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyyMMdd", "20170804"));
-		policyDto.setIsEndDate(0);
-		policyDto.setIsTimeTargeting(0);
-		policyDto.setIsLocationTargeting(0);
+		policyDto.setIsEndDate(1);
+		policyDto.setEndDate(new Date());
+		policyDto.setIsTimeTargeting(1);
+		policyDto.setTimeTargeting("time limit");
+		policyDto.setIsLocationTargeting(1);
+		policyDto.setLocationTargeting("limit");
 		policyDto.setConnTargeting("1,2");
 		policyDto.setOsTargeting("1");
 		policyDto.setType(2);
@@ -72,7 +76,8 @@ public class PolicyControllerTest {
 	
 	@Test
 	public void detail(){
-		String link = "http://localhost:8080/services/policy/detail?id=500058&type=2";
+		String link = "http://172.16.25.48:8080/services/policy/detail?id=500015&type=2";
+//		String link = "http://localhost:8080/services/policy/detail?id=500058&type=2";
 		HttpUtilTest.httpGet(link);
 	}
 	
@@ -89,7 +94,7 @@ public class PolicyControllerTest {
 		policyDto.setType(2);
 		policyDto.setStatus((byte) 0); 
 		policyDto.setLocationTargeting("333");
-		
+		policyDto.setEndDate(new Date());
 		String link = "http://localhost:8080/services/policy/updateStatus";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(policyDto));
 	}
