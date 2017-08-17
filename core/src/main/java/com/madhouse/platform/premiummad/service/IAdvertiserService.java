@@ -3,6 +3,7 @@ package com.madhouse.platform.premiummad.service;
 import java.util.List;
 import java.util.Map;
 
+import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.model.AdvertiserModel;
@@ -50,4 +51,10 @@ public interface IAdvertiserService {
 	 * @param auditResults
 	 */
 	void updateStatusToMedia(List<AdvertiserAuditResultModel> auditResults);
+
+	List<Advertiser> queryAll(List<Integer> mediaIds);
+
+	Advertiser queryById(Integer id);
+
+	void auditAdvertiser(String[] ids, Integer status);
 }

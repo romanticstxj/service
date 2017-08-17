@@ -24,20 +24,7 @@ public class PolicyRule extends BaseRule{
 		BeanUtils.copyProperties(dto, entity, "policyAdspaces", "policyDsp");
         BeanUtils.setCreateParam(entity);
         
-        entity.setLocationTargeting((dto.getIsLocationTargeting() != null 
-        		&& dto.getIsLocationTargeting().intValue() == SystemConstant.DB.IS_LIMIT) 
-				? dto.getLocationTargeting(): null);
-        entity.setTimeTargeting((dto.getIsTimeTargeting() != null 
-        		&& dto.getIsTimeTargeting().intValue() == SystemConstant.DB.IS_LIMIT) 
-				? dto.getTimeTargeting(): null);
-        if(!StringUtils.isEmpty(dto.getIsQuantityLimit()) && dto.getIsQuantityLimit().intValue() == SystemConstant.DB.IS_NOT_LIMIT){
-        	entity.setLimitType((byte) 0);
-		} else{
-			entity.setLimitType(dto.getLimitType());
-		}
-        entity.setEndDate((dto.getIsEndDate() != null 
-        		&& dto.getIsEndDate().intValue() == SystemConstant.DB.IS_LIMIT) 
-				? dto.getEndDate(): null);
+        setFlagForStorage(dto, entity);
         
         //copy PolicyAdspaceDto
         List<PolicyAdspace> policyAdspaces = new ArrayList<PolicyAdspace>();
@@ -49,20 +36,11 @@ public class PolicyRule extends BaseRule{
         BeanUtils.copyList(dto.getPolicyDsps(), policyDsps, PolicyDsp.class);
         entity.setPolicyDsps(policyDsps);
         
-//		//设置投放时段
-//		Integer isTimeTargeting = dto.getIsTimeTargeting();
-//		if(isTimeTargeting != null){
-//			if(isTimeTargeting.intValue() == 1){ //指定时段
-//				entity.setTimeTargeting(timeTargeting);
-//			}
-//		}
-        
         Integer policyId = entity.getId();
         List<PolicyAdspaceDto> policyAdspaceDtos = dto.getPolicyAdspaces();
         if(policyAdspaces != null){
         	for(int i=0; i< policyAdspaces.size(); i++){
         		policyAdspaces.get(i).setPolicyId(policyId);
-        		
         		//转换广告售卖价格从单位元到分
         		Integer bidFloorUnitFen = StringUtils.convertCurrencyYuanToFen(policyAdspaceDtos.get(i).getBidFloor());
         		policyAdspaces.get(i).setBidFloor(bidFloorUnitFen);
@@ -79,14 +57,35 @@ public class PolicyRule extends BaseRule{
         	}
         }
         
-//        Integer isQuantityLimit = dto.getIsQuantityLimit();
-//        if(isQuantityLimit != null){
-//        	if(isQuantityLimit.intValue() == 1){ //有总量限制
-//        		
-//        	}
-//        }
-        
         return entity;
+	}
+
+	/**
+	 * 根据前端传的是否限制的标志，来决定是否存值到数据库
+	 * @param dto
+	 * @param entity
+	 */
+	private static void setFlagForStorage(PolicyDto dto, Policy entity) {
+		entity.setLocationTargeting((dto.getIsLocationTargeting() != null 
+        		&& dto.getIsLocationTargeting().intValue() == SystemConstant.DB.IS_LIMIT) 
+				? dto.getLocationTargeting(): null);
+        entity.setTimeTargeting((dto.getIsTimeTargeting() != null 
+        		&& dto.getIsTimeTargeting().intValue() == SystemConstant.DB.IS_LIMIT) 
+				? dto.getTimeTargeting(): null);
+        if(!StringUtils.isEmpty(dto.getIsQuantityLimit()) && dto.getIsQuantityLimit().intValue() == SystemConstant.DB.IS_NOT_LIMIT){
+        	entity.setLimitType((byte) 0);
+		} else{
+			entity.setLimitType(dto.getLimitType());
+		}
+        entity.setEndDate((dto.getIsEndDate() != null 
+        		&& dto.getIsEndDate().intValue() == SystemConstant.DB.IS_LIMIT) 
+				? dto.getEndDate(): null);
+        entity.setOsTargeting((dto.getIsOsTargeting() != null 
+        		&& dto.getIsOsTargeting().intValue() == SystemConstant.DB.IS_LIMIT)
+        		? dto.getOsTargeting() : null);
+        entity.setConnTargeting((dto.getIsConnTargeting() != null 
+        		&& dto.getIsConnTargeting().intValue() == SystemConstant.DB.IS_LIMIT)
+        		? dto.getConnTargeting() : null);
 	}
 
 	public static List<PolicyDto> convertToDto(Policy policy, PolicyDto policyDto) {
@@ -94,14 +93,7 @@ public class PolicyRule extends BaseRule{
 		//copy Policy
 		BeanUtils.copyProperties(policy, policyDto, "policyAdspaces", "policyDsp");
 		
-		policyDto.setIsLocationTargeting(StringUtils.isEmpty(policy.getLocationTargeting()) ? 
-				SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
-		policyDto.setIsTimeTargeting(StringUtils.isEmpty(policy.getTimeTargeting()) ? 
-				SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
-		policyDto.setIsQuantityLimit((!StringUtils.isEmpty(policy.getLimitType()) && policy.getLimitType().intValue() == 0) 
-				? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
-		policyDto.setIsEndDate((!StringUtils.isEmpty(policy.getEndDate()) && policy.getEndDate() == null) 
-				? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
+		setFlagForDisplay(policy, policyDto);
 		
 		List<PolicyAdspaceDto> policyAdspaceDtos = new ArrayList<PolicyAdspaceDto>();
 		BeanUtils.copyList(policy.getPolicyAdspaces(), policyAdspaceDtos, PolicyAdspaceDto.class, "bidFloor");
@@ -133,6 +125,26 @@ public class PolicyRule extends BaseRule{
 		return result;
 	}
 	
+	/**
+	 * 根据后端数据库里的实际值，来决定这个值所对应的标志复选框如何显示
+	 * @param policy
+	 * @param policyDto
+	 */
+	private static void setFlagForDisplay(Policy policy, PolicyDto policyDto) {
+		policyDto.setIsLocationTargeting(StringUtils.isEmpty(policy.getLocationTargeting()) ? 
+				SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
+		policyDto.setIsTimeTargeting(StringUtils.isEmpty(policy.getTimeTargeting()) ? 
+				SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
+		policyDto.setIsQuantityLimit((!StringUtils.isEmpty(policy.getLimitType()) && policy.getLimitType().intValue() == 0) 
+				? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
+		policyDto.setIsEndDate((!StringUtils.isEmpty(policy.getEndDate()) && policy.getEndDate() == null) 
+				? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
+		policyDto.setIsOsTargeting(StringUtils.isEmpty(policy.getOsTargeting()) ? 
+				SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
+		policyDto.setIsConnTargeting(StringUtils.isEmpty(policy.getConnTargeting()) ? 
+				SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
+	}
+
 	public static void validateDto(PolicyDto policyDto){
 		String fieldName = BeanUtils.hasEmptyField(policyDto);
         if (fieldName != null)
@@ -142,18 +154,6 @@ public class PolicyRule extends BaseRule{
         if(policyAdspaceDtos == null || policyAdspaceDtos.size() == 0){
         	throw new BusinessException(StatusCode.SC20404);
         }
-        
-//        for(PolicyAdspaceDto policyAdspaceDto: policyAdspaceDtos){
-//        	double bidFloor = policyAdspaceDto.getBidFloor();
-//        	AdspaceDto adspaceDto = policyAdspaceDto.getAdspace();
-//        	if(adspaceDto == null){ //广告位底价信息未提供
-//        		throw new BusinessException(StatusCode.SC31011);
-//        	}
-//        	double baseBidFloor = adspaceDto.getBidFloor();
-//        	if(bidFloor < baseBidFloor){ //广告位售卖单价不能低于其底价
-//        		throw new BusinessException(StatusCode.SC20407);
-//        	}
-//        }
         
         List<PolicyDspDto> policyDspDtos = policyDto.getPolicyDsps();
         if(policyDspDtos == null || policyDspDtos.size() == 0){

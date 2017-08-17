@@ -17,6 +17,7 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.SysMediaMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
+import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
@@ -283,5 +284,20 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 			}
 		}
 		return errorMsg.length() > 0 ? errorMsg.substring(1) : "";
+	}
+	
+	@Override
+	public List<Advertiser> queryAll(List<Integer> mediaIds) {
+		return advertiserDao.queryAll(mediaIds);
+	}
+
+	@Override
+	public Advertiser queryById(Integer id) {
+		return advertiserDao.queryById(id);
+	}
+
+	@Override
+	public void auditAdvertiser(String[] ids, Integer status) {
+		advertiserDao.auditAdvertiser(ids, status);
 	}
 }

@@ -104,4 +104,8 @@ public interface AdvertiserMapper {
 	List<Advertiser> selectMediaAdvertisers(@Param("mediaId")Integer mediaId, @Param("auditStatus")Integer auditStatus);
 	
 	List<Advertiser> queryAll(@Param("mediaIds") List<Integer> mediaIds);
+
+	Advertiser queryById(Integer id);
+
+	void auditAdvertiser(@Param("ids") String[] ids, @Param("status") Integer status);
 }
