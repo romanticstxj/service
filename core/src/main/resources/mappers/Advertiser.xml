@@ -232,6 +232,35 @@
 	  and ad.status = #{auditStatus,jdbcType=INTEGER}
   </select>
   
+  <select id="queryAll" resultMap="BaseResultMap" parameterType="string">
+    SELECT <include refid="baseColumns">
+    	<property name="alias" value="a" />
+    </include>, me.name mediaName, me.advertiser_audit_mode advertiserAuditMode, d.name dspName
+    , i.name industryName
+    FROM mad_sys_advertiser a
+    LEFT JOIN mad_sys_media me ON a.media_id = me.id 
+    LEFT JOIN mad_sys_dsp d ON a.dsp_id = d.id
+    LEFT JOIN mad_dict_industry i ON a.industry = i.code
+    <if test="mediaIds != null and mediaIds.size() > 0">
+	    WHERE me.id IN
+	    <foreach collection="mediaIds" item="item" index="index" open="(" close=")" separator=",">
+	        #{item,jdbcType=INTEGER}
+	    </foreach>
+    </if>
+  </select>
+  
+  <select id="queryById" resultMap="BaseResultMap" parameterType="integer">
+    SELECT <include refid="baseColumns">
+    	<property name="alias" value="a" />
+    </include>, me.name mediaName, me.advertiser_audit_mode advertiserAuditMode, d.name dspName
+    , i.name industryName
+    FROM mad_sys_advertiser a
+    LEFT JOIN mad_sys_media me ON a.media_id = me.id 
+    LEFT JOIN mad_sys_dsp d ON a.dsp_id = d.id
+    LEFT JOIN mad_dict_industry i ON a.industry = i.code
+    WHERE a.id = #{id,jdbcType=INTEGER}
+  </select>
+  
   <update id="auditAdvertiser" parameterType="string" >
       <if test="ids != null and ids.length > 0" >
   	  	UPDATE mad_sys_advertiser SET status = #{status}

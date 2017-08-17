@@ -21,7 +21,7 @@ public class PolicyControllerTest {
 //		File file = new File("log");
 //		file.getAbsolutePath();
 		PolicyDto policyDto = new PolicyDto();
-		policyDto.setName("mypolicy551");
+		policyDto.setName("mypolicy552");
 		policyDto.setWeight(10);
 		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyyMMdd", "20170804"));
 		policyDto.setIsEndDate(1);
@@ -76,8 +76,8 @@ public class PolicyControllerTest {
 	
 	@Test
 	public void detail(){
-		String link = "http://172.16.25.48:8080/services/policy/detail?id=500015&type=2";
-//		String link = "http://localhost:8080/services/policy/detail?id=500058&type=2";
+//		String link = "http://172.16.25.48:8080/services/policy/detail?id=500070&type=2";
+		String link = "http://localhost:8080/services/policy/detail?id=500070&type=2";
 		HttpUtilTest.httpGet(link);
 	}
 	
@@ -102,7 +102,7 @@ public class PolicyControllerTest {
 	@Test
 	public void update() throws ParseException{
 		PolicyDto policyDto = new PolicyDto();
-		policyDto.setId(500015);
+		policyDto.setId(500070);
 		policyDto.setName("mypolicy333");
 		policyDto.setWeight(10);
 		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-08-05"));

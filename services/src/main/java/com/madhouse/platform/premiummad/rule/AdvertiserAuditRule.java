@@ -4,29 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.madhouse.platform.premiummad.constant.SystemConstant;
-import com.madhouse.platform.premiummad.entity.Material;
+import com.madhouse.platform.premiummad.entity.Advertiser;
 
-public class MaterialAuditRule extends BaseRule{
+public class AdvertiserAuditRule extends BaseRule{
 	
-	public static List<Material> convertToDto(Material entity) {
-        List<Material> materials = new ArrayList<>();
-        materials.add(entity);
-        convertMaterialAuditMode(entity);
-		return materials;
+	public static List<Advertiser> convertToDto(Advertiser advertiser) {
+        List<Advertiser> advertisers = new ArrayList<Advertiser>();
+        advertisers.add(advertiser);
+        if(advertiser != null){
+        	convertAuditMode(advertiser);
+        }
+		return advertisers;
 	}
 	
-	public static void convertToDtoList(List<Material> materials) {
-		if(materials != null && materials.size() > 0){
-			for(int i=0; i< materials.size(); i++){
-				convertMaterialAuditMode(materials.get(i));
+	public static void convertToDtoList(List<Advertiser> advertisers) {
+		if(advertisers != null && advertisers.size() > 0){
+			for(int i=0; i< advertisers.size(); i++){
+				convertAuditMode(advertisers.get(i));
 			}
 		}
 	}
 	
-	private static void convertMaterialAuditMode(Material entity) {
-		int materialAuditMode = entity.getMaterialAuditMode();
+	private static void convertAuditMode(Advertiser entity) {
+		Integer advertiserAuditMode = entity.getAdvertiserAuditMode();
         //根据不同的审核方式，来设置返回给前端的审核状态
-        switch(materialAuditMode){
+        switch(advertiserAuditMode){
 	        case SystemConstant.DB.NO_AUDIT:
 	        	//若无需审核，则始终返回审核通过给前端
 	        	entity.setStatus((byte)SystemConstant.DB.AUDIT_PASS);

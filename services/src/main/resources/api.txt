@@ -698,7 +698,7 @@
 		            		"mediaId": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
 		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 待提交, 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -742,7 +742,7 @@
 		            		"mediaId": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
 		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 待提交, 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -785,7 +785,7 @@
 		            		"dspId": "<string||comment:所属DSP>",
 		            		"createdTime": "<string||comment:上传时间>",
 		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>",
 		            		"license": "<string||comment:资质文件>",
 		            		"contact": "<string||comment:联系人>",
 		            		"phone": "<string||comment:联系电话>",
@@ -814,7 +814,7 @@
 		            		"dspId": "<string||comment:所属DSP>",
 		            		"createdTime": "<string||comment:上传时间>",
 		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>",
 		            		"license": "<string||comment:资质文件>",
 		            		"contact": "<string||comment:联系人>",
 		            		"phone": "<string||comment:联系电话>",
@@ -896,13 +896,15 @@
                 	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>",
                 	"weight": "<*||integer||comment:优先级>",
                     "startDate": "<date||comment:开始日期>",
-                    "isEndDate": "<*||integer||comment:0:不限结束日期, 1:限制结束日期",
+                    "isEndDate": "<*||integer||comment:0:不限结束日期, 1:限制结束日期>",
                     "endDate": "<date||comment:结束日期(为零值不限结束日期)>",
-                    "isTimeTargeting": "<*||integer||comment:0:不限时段, 1:限制时段",
+                    "isTimeTargeting": "<*||integer||comment:0:不限时段, 1:限制时段>",
                 	"timeTargeting": "<string||comment:时间定向(格式:0:0,1,2,3&1:19,20,21,22,23)，注：0代表周日；如果选择不限，则此字段不传值>",
-                	"isLocationTargeting": "<*||integer||comment:0:不限地域, 1:限制地域",
+                	"isLocationTargeting": "<*||integer||comment:0:不限地域, 1:限制地域>",
                 	"locationTargeting": "<string||comment:地域定向(用半角逗号分隔所有的城市或省或国家，如果所有的城市被选上则传值省代码，若传空值则是不限的意思)>",
+                	"isOsTargeting": "<*||integer||comment:0:不限操作系统, 1:限制操作系统>",
                 	"osTargeting": "<*||integer||comment:OS定向(多个用半角逗号分隔, 0:未知, 1:Android, 2:iOS)>",
+                	"isConnTargeting": "<*||integer||comment:0:不限连网方式, 1:限制连网方式>",
                 	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
                     "isQuantityLimit": "<*||integer||comment:总量限制(0：不限投放量，1：限制投放量)>",
                     "limitType": "<integer||comment:总量控制(1: 每天, 2: 整单)>",
@@ -1010,7 +1012,7 @@
                     "endDate": "<date||comment:结束日期(为零值不限结束日期)>",
                     "isTimeTargeting": "<*||integer||comment:0:不限时段, 1:限制时段",
                 	"timeTargeting": "<string||comment:时间定向(格式:0:0,1,2,3&1:19,20,21,22,23)，注：0代表周日；如果选择不限，则此字段不传值>",
-                	"isLocationTargeting": "<*||integer||comment:0:不限地域, 1:限制地域",
+                	"isLocationTargeting": "<*||integer||comment:0:不限地域, 1:限制地域>",
                 	"locationTargeting": "<string||comment:地域定向(用半角逗号分隔所有的城市或省或国家，如果所有的城市被选上则传值省代码，若传空值则是不限的意思)>",
                 	"osTargeting": "<*||integer||comment:OS定向(多个用半角逗号分隔, 0:未知, 1:Android, 2:iOS)>",
                 	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",

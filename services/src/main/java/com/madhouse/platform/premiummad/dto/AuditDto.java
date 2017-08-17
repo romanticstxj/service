@@ -2,7 +2,7 @@ package com.madhouse.platform.premiummad.dto;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
-public class MaterialDto {
+public class AuditDto {
 	
 	@NotNullAndBlank
 	private String ids;
