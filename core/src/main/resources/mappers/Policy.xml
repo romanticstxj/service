@@ -75,39 +75,6 @@
         	column="adspace_id" select="getPolicyAdspaceAdspace" />
   	</resultMap>
   	
-  	<resultMap id="PolicyAdspaceAdspaceResultMap" type="com.madhouse.platform.premiummad.entity.Adspace">
-   		<id property="id" column="id" jdbcType="INTEGER" />
-        <result property="name" column="name" jdbcType="VARCHAR" />
-        <result property="adspaceKey" column="adspace_key" jdbcType="VARCHAR" />
-        <result property="mediaId" column="media_id" jdbcType="INTEGER" />
-        <result property="terminalType" column="terminal_type" jdbcType="INTEGER" />
-        <result property="terminalOs" column="terminal_os" jdbcType="INTEGER" />
-        <result property="supportHttps" column="support_https" jdbcType="INTEGER" />
-        <result property="bidType" column="bid_type" jdbcType="INTEGER" />
-        <result property="bidFloor" column="bid_floor" jdbcType="INTEGER" />
-        <result property="adType" column="adtype" jdbcType="INTEGER" />
-        <result property="layout" column="layout" jdbcType="INTEGER" />
-        <result property="materialType" column="material_type" jdbcType="INTEGER" />
-        <result property="materialSize" column="material_size" jdbcType="VARCHAR" />
-        <result property="materialMaxKbyte" column="material_max_kbyte" jdbcType="INTEGER" />
-        <result property="logoType" column="logo_type" jdbcType="INTEGER" />
-        <result property="logoSize" column="logo_size" jdbcType="VARCHAR" />
-        <result property="logoMaxKbyte" column="logo_max_kbyte" jdbcType="INTEGER" />
-        <result property="titleMaxLength" column="title_max_length" jdbcType="INTEGER" />
-        <result property="descMaxLength" column="desc_max_length" jdbcType="INTEGER" />
-        <result property="mainPicNumber" column="main_pic_number" jdbcType="INTEGER" />
-        <result property="videoType" column="video_type" jdbcType="INTEGER" />
-        <result property="videoSize" column="video_size" jdbcType="VARCHAR" />
-        <result property="videoMaxKbyte" column="video_max_kbyte" jdbcType="INTEGER" />
-        <result property="videoDuration" column="video_duration" jdbcType="VARCHAR" />
-        <result property="status" column="status" jdbcType="INTEGER" />
-        <result property="description" column="description" jdbcType="VARCHAR" />
-        <result property="createdUser" column="created_user" jdbcType="INTEGER" />
-        <result property="updatedUser" column="updated_user" jdbcType="INTEGER" />
-        <result property="createdTime" column="created_time" jdbcType="TIMESTAMP" />
-        <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP" />
-  	</resultMap>
-  
   	<resultMap id="PolicyDspResultMap" type="com.madhouse.platform.premiummad.entity.PolicyDsp" >
 	  	<id column="id" property="id" jdbcType="INTEGER" />
 	    <result column="policy_id" property="policyId" jdbcType="INTEGER" />
@@ -140,14 +107,6 @@
 	    ${alias}.created_time, ${alias}.updated_user, ${alias}.updated_time
   	</sql>
   	
-  	<sql id="Adspace_Column_List">
-		${alias}.`id`,${alias}.`name`,${alias}.`adspace_key`,${alias}.`media_id`,${alias}.`terminal_type`,${alias}.`terminal_os`,${alias}.`support_https`,
-		${alias}.`bid_type`,${alias}.`bid_floor`,${alias}.`adtype`,${alias}.`layout`,${alias}.`material_type`,${alias}.`material_size`,${alias}.`material_max_kbyte`,
-		${alias}.`logo_type`,${alias}.`logo_size`,${alias}.`logo_max_kbyte`,${alias}.`title_max_length`,${alias}.`desc_max_length`,${alias}.`main_pic_number`,
-		${alias}.`video_type`,${alias}.`video_size`,${alias}.`video_max_kbyte`,${alias}.`video_duration`,${alias}.`status`,${alias}.`description`,${alias}.`created_user`,
-		${alias}.`created_time`,${alias}.`updated_user`,${alias}.`updated_time`
-	</sql>
-  
   	<sql id="Policy_Dsp_Column_List" >
 	    ${alias}.id, ${alias}.policy_id, ${alias}.dsp_id, ${alias}.weight, ${alias}.status, ${alias}.created_user, 
 	    ${alias}.created_time, ${alias}.updated_user, ${alias}.updated_time
@@ -166,9 +125,9 @@
 	    where pa.policy_id = #{id,jdbcType=INTEGER}
   	</select>
   	
-  	<select id="getPolicyAdspaceAdspace" parameterType="java.lang.Integer" resultMap="PolicyAdspaceAdspaceResultMap">
+  	<select id="getPolicyAdspaceAdspace" parameterType="java.lang.Integer" resultMap="com.madhouse.platform.premiummad.dao.AdspaceDao.baseResult">
 	    SELECT 
-		<include refid="Adspace_Column_List">
+		<include refid="com.madhouse.platform.premiummad.dao.AdspaceDao.baseColumns">
             <property name="alias" value="a" />
         </include>, l.name layoutName, m.name mediaName
         FROM mad_sys_adspace a

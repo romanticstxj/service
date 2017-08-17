@@ -122,4 +122,11 @@ public interface MaterialMapper {
 	 * @return
 	 */
 	Material queryById(Integer id);
+
+	/**
+	 * 批量审核物料
+	 * @param ids
+	 * @param status
+	 */
+	void auditMaterial(@Param("ids") String[] ids, @Param("status") Integer status);
 }

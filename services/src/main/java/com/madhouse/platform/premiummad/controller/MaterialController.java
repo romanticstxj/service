@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,11 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
+import com.madhouse.platform.premiummad.dto.MaterialDto;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 @RestController
 @RequestMapping("/material")
@@ -53,5 +56,14 @@ public class MaterialController {
 		List<Material> result = new ArrayList<Material>();
 		result.add(material);
         return ResponseUtils.response(StatusCode.SC20000, result);
+    }
+	
+	@RequestMapping("/audit")
+    public ResponseDto<Material> audit(@RequestBody MaterialDto dto) throws Exception {
+		String idsStr = dto.getIds();
+		Integer status = dto.getStatus();
+		String[] ids = StringUtils.splitToStringArray(idsStr);
+		materialService.auditMaterial(ids, status);
+        return ResponseUtils.response(StatusCode.SC20000, null);
     }
 }

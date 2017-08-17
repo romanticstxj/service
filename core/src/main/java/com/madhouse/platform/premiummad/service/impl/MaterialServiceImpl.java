@@ -275,4 +275,9 @@ public class MaterialServiceImpl implements IMaterialService {
 	public Material queryById(Integer id) {
 		return materialDao.queryById(id);
 	}
+
+	@Override
+	public void auditMaterial(String[] ids, Integer status) {
+		materialDao.auditMaterial(ids, status);
+	}
 }
