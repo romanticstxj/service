@@ -24,7 +24,7 @@ public class Policy {
 
     private String connTargeting; //连网方式定向(多个用半角逗号分隔, 1:WIFI, 2:2G, 3:3G, 4:4G)
 
-    private Byte controlType; //总量控制(0: 不限, 1: 每天, 2: 整单)
+    private int controlType; //总量控制(0: 不限, 1: 每天, 2: 整单)
 
     private Integer maxCount;
     
@@ -116,11 +116,11 @@ public class Policy {
         this.connTargeting = connTargeting;
     }
 
-    public Byte getControlType() {
+    public int getControlType() {
         return controlType;
     }
 
-    public void setControlType(Byte controlType) {
+    public void setControlType(int controlType) {
         this.controlType = controlType;
     }
 
