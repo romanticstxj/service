@@ -11,7 +11,6 @@ import org.hibernate.validator.constraints.Length;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
-import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
@@ -81,6 +80,14 @@ public class PolicyDto implements Serializable{
 		this.id = id;
 	}
 
+	public Integer getDealId() {
+		return dealId;
+	}
+
+	public void setDealId(Integer dealId) {
+		this.dealId = dealId;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -114,7 +121,7 @@ public class PolicyDto implements Serializable{
 	}
 
 	public Integer getIsEndDate() {
-		return endDate == null ? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT;
+		return isEndDate;
 	}
 
 	public void setIsEndDate(Integer isEndDate) {
@@ -126,13 +133,11 @@ public class PolicyDto implements Serializable{
 	}
 
 	public void setEndDate(Date endDate) {
-		this.endDate = 
-				(isEndDate != null && isEndDate.intValue() == SystemConstant.DB.IS_LIMIT) 
-				? endDate: null;
+		this.endDate = endDate;
 	}
 
 	public Integer getIsTimeTargeting() {
-		return StringUtils.isEmpty(timeTargeting) ? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT;
+		return isTimeTargeting;
 	}
 
 	public void setIsTimeTargeting(Integer isTimeTargeting) {
@@ -144,13 +149,10 @@ public class PolicyDto implements Serializable{
 	}
 
 	public void setTimeTargeting(String timeTargeting) {
-		this.timeTargeting = 
-				(isTimeTargeting != null && isTimeTargeting.intValue() == SystemConstant.DB.IS_LIMIT) 
-				? timeTargeting: "";
+		this.timeTargeting = timeTargeting;
 	}
 
 	public Integer getIsLocationTargeting() {
-		//因为数据库里没isLocationTargeting这个值，所以会根据locationTargeting这个实际值来决定返回前端什么标志
 		return isLocationTargeting;
 	}
 
@@ -163,7 +165,6 @@ public class PolicyDto implements Serializable{
 	}
 
 	public void setLocationTargeting(String locationTargeting) {
-		//只有当check复选框做了限制，才设置此值；否则忽略页面输入的locationTargeting值
 		this.locationTargeting = locationTargeting;
 	}
 
@@ -182,11 +183,9 @@ public class PolicyDto implements Serializable{
 	public void setConnTargeting(String connTargeting) {
 		this.connTargeting = connTargeting;
 	}
-	
+
 	public Integer getIsQuantityLimit() {
-		//如果limitType为0，则设置0；反之则设置1（限制投放量）
-		return (!StringUtils.isEmpty(limitType) && limitType.intValue() == 0) 
-			? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT;
+		return isQuantityLimit;
 	}
 
 	public void setIsQuantityLimit(Integer isQuantityLimit) {
@@ -198,12 +197,7 @@ public class PolicyDto implements Serializable{
 	}
 
 	public void setLimitType(Byte limitType) {
-		//如果不限投放量(isQuantityLimit为0),则设置0；反之，则为1或2(页面设置)
-		if(!StringUtils.isEmpty(this.isQuantityLimit) && this.isQuantityLimit.intValue() == SystemConstant.DB.IS_NOT_LIMIT){
-			this.limitType = (byte) 0;
-		} else{
-			this.limitType = limitType;
-		}
+		this.limitType = limitType;
 	}
 
 	public Integer getLimitReqs() {
@@ -260,14 +254,6 @@ public class PolicyDto implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public Integer getDealId() {
-		return dealId;
-	}
-
-	public void setDealId(Integer dealId) {
-		this.dealId = dealId;
 	}
 
 	public List<PolicyAdspaceDto> getPolicyAdspaces() {

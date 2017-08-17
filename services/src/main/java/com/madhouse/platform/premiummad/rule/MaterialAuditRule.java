@@ -10,7 +10,7 @@ import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 
-public class MaterialRule extends BaseRule{
+public class MaterialAuditRule extends BaseRule{
 	
 	public static void validateDto(MaterialDto dto){
 		String fieldName = BeanUtils.hasEmptyField(dto);
