@@ -72,7 +72,7 @@ public class PolicyControllerTest {
 	
 	@Test
 	public void detail(){
-		String link = "http://localhost:8080/services/policy/detail?id=500015&type=2";
+		String link = "http://localhost:8080/services/policy/detail?id=500058&type=2";
 		HttpUtilTest.httpGet(link);
 	}
 	
@@ -88,6 +88,7 @@ public class PolicyControllerTest {
 		policyDto.setId(500015);
 		policyDto.setType(2);
 		policyDto.setStatus((byte) 0); 
+		policyDto.setLocationTargeting("333");
 		
 		String link = "http://localhost:8080/services/policy/updateStatus";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(policyDto));
@@ -140,7 +141,8 @@ public class PolicyControllerTest {
 		policyDspDtos.add(policyDspDto);
 		policyDto.setPolicyDsps(policyDspDtos);
 		
-		String link = "http://localhost:8080/services/policy/update";
+		String link = "http://172.16.25.48:8080/services/policy/update";
+//		String link = "http://localhost:8080/services/policy/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(policyDto));
 	}
 	

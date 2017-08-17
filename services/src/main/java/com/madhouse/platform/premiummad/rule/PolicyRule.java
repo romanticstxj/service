@@ -24,6 +24,18 @@ public class PolicyRule extends BaseRule{
 		BeanUtils.copyProperties(dto, entity, "policyAdspaces", "policyDsp");
         BeanUtils.setCreateParam(entity);
         
+        entity.setLocationTargeting((dto.getIsLocationTargeting() != null 
+        		&& dto.getIsLocationTargeting().intValue() == SystemConstant.DB.IS_LIMIT) 
+				? dto.getLocationTargeting(): "");
+        entity.setTimeTargeting((dto.getIsTimeTargeting() != null 
+        		&& dto.getIsTimeTargeting().intValue() == SystemConstant.DB.IS_LIMIT) 
+				? dto.getTimeTargeting(): "");
+        if(!StringUtils.isEmpty(dto.getIsQuantityLimit()) && dto.getIsQuantityLimit().intValue() == SystemConstant.DB.IS_NOT_LIMIT){
+        	entity.setLimitType((byte) 0);
+		} else{
+			entity.setLimitType(dto.getLimitType());
+		}
+        
         //copy PolicyAdspaceDto
         List<PolicyAdspace> policyAdspaces = new ArrayList<PolicyAdspace>();
         BeanUtils.copyList(dto.getPolicyAdspaces(), policyAdspaces, PolicyAdspace.class, "bidFloor");
@@ -78,6 +90,13 @@ public class PolicyRule extends BaseRule{
 		
 		//copy Policy
 		BeanUtils.copyProperties(policy, policyDto, "policyAdspaces", "policyDsp");
+		
+		policyDto.setIsLocationTargeting(StringUtils.isEmpty(policy.getLocationTargeting()) ? 
+				SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
+		policyDto.setIsTimeTargeting(StringUtils.isEmpty(policy.getTimeTargeting()) ? 
+				SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
+		policyDto.setIsQuantityLimit((!StringUtils.isEmpty(policy.getLimitType()) && policy.getLimitType().intValue() == 0) 
+				? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT);
 		
 		List<PolicyAdspaceDto> policyAdspaceDtos = new ArrayList<PolicyAdspaceDto>();
 		BeanUtils.copyList(policy.getPolicyAdspaces(), policyAdspaceDtos, PolicyAdspaceDto.class, "bidFloor");

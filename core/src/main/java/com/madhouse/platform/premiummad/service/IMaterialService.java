@@ -51,4 +51,6 @@ public interface IMaterialService {
 	List<Material> queryAll(List<Integer> mediaIds);
 
 	Material queryById(Integer id);
+
+	void auditMaterial(String[] ids, Integer status);
 }

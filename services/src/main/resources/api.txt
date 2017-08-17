@@ -698,7 +698,7 @@
 		            		"mediaId": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
 		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 待提交, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -742,7 +742,7 @@
 		            		"mediaId": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
 		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 待提交, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -1089,8 +1089,10 @@
                 "200": {
                     "body": {
                     	"id": "<*||integer||comment:媒体报表ID>",
-	                	"mediaId": "<*||string||comment:媒体ID>",
+	                	"mediaId": "<*||integer||comment:媒体ID>",
+	                	"mediaName": "<*||string||comment:媒体名称>",
 	                	"adspaceId": "<integer||comment:广告位ID>",
+	                	"adspaceName": "<*||string||comment:广告位名称>",
 	                	"carrier": "<integer||comment:运营商code>",
 	                	"conn": "<integer||comment:联网方式code>",
 	                	"device": "<integer||comment:设备类型code>",
@@ -1127,7 +1129,9 @@
                     "body": {
                     	"id": "<*||integer||comment:媒体报表ID>",
 	                	"dspId": "<integer||comment:DSP ID>",
+	                	"dspName": "<*||string||comment:DSP名称>",
 	                	"mediaId": "<*||string||comment:媒体ID>",
+	                	"mediaName": "<*||string||comment:媒体名称>",
 	                	"carrier": "<integer||comment:运营商code>",
 	                	"conn": "<integer||comment:联网方式code>",
 	                	"device": "<integer||comment:设备类型code>",
@@ -1168,8 +1172,11 @@
                     "body": {
                     	"id": "<*||integer||comment:媒体报表ID>",
 	                	"policyId": "<integer||comment:策略ID>",
+	                	"policyName": "<*||string||comment:策略名称>",
 	                	"dspId": "<integer||comment:DSP ID>",
+	                	"dspName": "<*||string||comment:DSP名称>",
 	                	"mediaId": "<*||string||comment:媒体ID>",
+	                	"mediaName": "<*||string||comment:媒体名称>",
 	                	"carrier": "<integer||comment:运营商code>",
 	                	"conn": "<integer||comment:联网方式code>",
 	                	"device": "<integer||comment:设备类型code>",

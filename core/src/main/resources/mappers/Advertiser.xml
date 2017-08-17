@@ -231,4 +231,14 @@
 	  and ad.media_id = #{mediaId,jdbcType=INTEGER}
 	  and ad.status = #{auditStatus,jdbcType=INTEGER}
   </select>
+  
+  <update id="auditAdvertiser" parameterType="string" >
+      <if test="ids != null and ids.length > 0" >
+  	  	UPDATE mad_sys_advertiser SET status = #{status}
+        WHERE id IN
+	    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+	        #{id,jdbcType=INTEGER}
+	    </foreach>
+      </if>
+  </update>
 </mapper>

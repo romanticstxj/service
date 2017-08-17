@@ -126,7 +126,9 @@ public class PolicyDto implements Serializable{
 	}
 
 	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+		this.endDate = 
+				(isEndDate != null && isEndDate.intValue() == SystemConstant.DB.IS_LIMIT) 
+				? endDate: null;
 	}
 
 	public Integer getIsTimeTargeting() {
@@ -142,11 +144,14 @@ public class PolicyDto implements Serializable{
 	}
 
 	public void setTimeTargeting(String timeTargeting) {
-		this.timeTargeting = timeTargeting;
+		this.timeTargeting = 
+				(isTimeTargeting != null && isTimeTargeting.intValue() == SystemConstant.DB.IS_LIMIT) 
+				? timeTargeting: "";
 	}
 
 	public Integer getIsLocationTargeting() {
-		return StringUtils.isEmpty(locationTargeting) ? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT;
+		//因为数据库里没isLocationTargeting这个值，所以会根据locationTargeting这个实际值来决定返回前端什么标志
+		return isLocationTargeting;
 	}
 
 	public void setIsLocationTargeting(Integer isLocationTargeting) {
@@ -158,6 +163,7 @@ public class PolicyDto implements Serializable{
 	}
 
 	public void setLocationTargeting(String locationTargeting) {
+		//只有当check复选框做了限制，才设置此值；否则忽略页面输入的locationTargeting值
 		this.locationTargeting = locationTargeting;
 	}
 
@@ -176,6 +182,16 @@ public class PolicyDto implements Serializable{
 	public void setConnTargeting(String connTargeting) {
 		this.connTargeting = connTargeting;
 	}
+	
+	public Integer getIsQuantityLimit() {
+		//如果limitType为0，则设置0；反之则设置1（限制投放量）
+		return (!StringUtils.isEmpty(limitType) && limitType.intValue() == 0) 
+			? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT;
+	}
+
+	public void setIsQuantityLimit(Integer isQuantityLimit) {
+		this.isQuantityLimit = isQuantityLimit;
+	}
 
 	public Byte getLimitType() {
 		return limitType;
@@ -183,8 +199,11 @@ public class PolicyDto implements Serializable{
 
 	public void setLimitType(Byte limitType) {
 		//如果不限投放量(isQuantityLimit为0),则设置0；反之，则为1或2(页面设置)
-		this.limitType = (!StringUtils.isEmpty(this.isQuantityLimit) && this.isQuantityLimit.intValue() == SystemConstant.DB.IS_NOT_LIMIT)
-				? 0 : limitType;
+		if(!StringUtils.isEmpty(this.isQuantityLimit) && this.isQuantityLimit.intValue() == SystemConstant.DB.IS_NOT_LIMIT){
+			this.limitType = (byte) 0;
+		} else{
+			this.limitType = limitType;
+		}
 	}
 
 	public Integer getLimitReqs() {
@@ -241,16 +260,6 @@ public class PolicyDto implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public Integer getIsQuantityLimit() {
-		//如果limitType为0，则设置0；反之则设置1（限制投放量）
-		return (!StringUtils.isEmpty(limitType) && limitType.intValue() == 0) 
-			? SystemConstant.DB.IS_NOT_LIMIT : SystemConstant.DB.IS_LIMIT;
-	}
-
-	public void setIsQuantityLimit(Integer isQuantityLimit) {
-		this.isQuantityLimit = isQuantityLimit;
 	}
 
 	public Integer getDealId() {
