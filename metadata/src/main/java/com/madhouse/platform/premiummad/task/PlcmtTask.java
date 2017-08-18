@@ -15,10 +15,8 @@ import redis.clients.jedis.Jedis;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.entity.Adspace;
-import com.madhouse.platform.premiummad.entity.DSPMappingMetaData;
 import com.madhouse.platform.premiummad.entity.MediaMappingMetaData;
 import com.madhouse.platform.premiummad.entity.PlcmtMetaData;
-import com.madhouse.platform.premiummad.entity.PlcmtMetaData.Image;
 import com.madhouse.platform.premiummad.service.IPlcmtService;
 import com.madhouse.platform.premiummad.util.Constant;
 import com.madhouse.platform.premiummad.util.ResourceManager;
@@ -51,6 +49,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             LOGGER.debug("------------PlcmtTask-----------start--");
             final List<Adspace> listAdspaces = plcmtService.queryAll();
             long begin = System.currentTimeMillis();
+            redisMaster.del(ALL_PLACEMENT);
             for (Adspace adspace : listAdspaces) {
                 PlcmtMetaData metaData = new PlcmtMetaData();
                 try {
@@ -197,6 +196,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             LOGGER.debug("------------PlcmtTask------adspaceMappingDsp-----start--");
             List<MediaMappingMetaData> lists = plcmtService.queryAdspaceMappingMedia();
             long begin = System.currentTimeMillis();
+            redisMaster.del(MEDIA_MAPPING_DATA);
             for (MediaMappingMetaData mappingMetaData : lists) {
                 redisMaster.setex(String.format(this.MEDIA_MAPPING_DATA, String.valueOf(mappingMetaData.getAdspaceId())), EXPIRATION_TIME, JSON.toJSONString(mappingMetaData));
             }

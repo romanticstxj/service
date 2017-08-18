@@ -46,6 +46,7 @@ public class MaterialTask {
             LOGGER.debug("------------MaterialTask-----loadMaterialMetaData------start--");
             final List<Material> lists = iMaterialService.queryAll();
             long begin = System.currentTimeMillis();
+            redisMaster.del(ALL_MATERIAL);
             for (Material material : lists) {
                 MaterialMetaData metaData = new MaterialMetaData();
                 if(null != material){

@@ -40,6 +40,7 @@ public class MediaTask {
             LOGGER.debug("------------MediaTask-----------start--");
             final List<MediaMetaData> listMedias = mediaService.queryAll();
             long begin = System.currentTimeMillis();
+            redisMaster.del(ALL_MEDIA);
             for (MediaMetaData media : listMedias) {
                 redisMaster.setex(String.format(this.MEDIA_META_DATA, String.valueOf(media.getId())), EXPIRATION_TIME,JSON.toJSONString(media));
                 redisMaster.sadd(this.ALL_MEDIA, String.valueOf(media.getId()));

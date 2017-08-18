@@ -1,7 +1,10 @@
 package com.madhouse.platform.premiummad.task;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +50,7 @@ public class DspTask {
             LOGGER.debug("------------DSPTask-----loadDSPMetaData------start--");
             final List<DSPMetaData> lists = service.queryAll();
             long begin = System.currentTimeMillis();
+            redisMaster.del(ALL_DSP);
             for (DSPMetaData metaData : lists) {
                 redisMaster.setex(String.format(this.DSP_META_DATA, String.valueOf(metaData.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
                 redisMaster.sadd(this.ALL_DSP, String.valueOf(metaData.getId()));
