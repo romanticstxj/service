@@ -273,54 +273,22 @@
   <update id="update" parameterType="com.madhouse.platform.premiummad.entity.Policy">
     update mad_sys_policy
     <set>
-      <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="weight != null">
         weight = #{weight,jdbcType=INTEGER},
-      </if>
-      <if test="startDate != null">
         start_date = #{startDate,jdbcType=DATE},
-      </if>
-      <if test="endDate != null">
         end_date = #{endDate,jdbcType=DATE},
-      </if>
-      <if test="timeTargeting != null">
         time_targeting = #{timeTargeting,jdbcType=VARCHAR},
-      </if>
-      <if test="locationTargeting != null">
         location_targeting = #{locationTargeting,jdbcType=VARCHAR},
-      </if>
-      <if test="osTargeting != null">
         os_targeting = #{osTargeting,jdbcType=VARCHAR},
-      </if>
-      <if test="connTargeting != null">
         conn_targeting = #{connTargeting,jdbcType=VARCHAR},
-      </if>
-      <if test="limitType != null">
         limit_type = #{limitType,jdbcType=TINYINT},
-      </if>
-      <if test="limitReqs != null">
         limit_reqs = #{limitReqs,jdbcType=INTEGER},
-      </if>
-      <if test="limitSpeed != null">
         limit_speed = #{limitSpeed,jdbcType=BIT},
-      </if>
-      <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="createdUser != null">
         created_user = #{createdUser,jdbcType=INTEGER},
-      </if>
-      <if test="createdTime != null">
         created_time = #{createdTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedUser != null">
         updated_user = #{updatedUser,jdbcType=INTEGER},
-      </if>
-      <if test="updatedTime != null">
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
-      </if>
     </set>
     where id = #{id,jdbcType=INTEGER} AND type = #{type,jdbcType=INTEGER}
   </update>

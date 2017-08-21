@@ -4,7 +4,8 @@
             "_summary": "媒体列表",
             "parameters": {
                 "query": {
-            		"ids" : "<||string||comment:1）若无ids参数，则查询当前用户下所有权限的媒体 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分媒体数据，但查询出的也都是当前用户的权限下的媒体>"
+            		"ids" : "<string||comment:1）若无ids参数，则查询当前用户下所有权限的媒体 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分媒体数据，但查询出的也都是当前用户的权限下的媒体>",
+            		"userId" : "<integer||comment:查询某个userId权限下的所有媒体>"
             	}
             },
             "responses": {
@@ -1199,6 +1200,27 @@
 	                	"income": "<*||integer||comment:媒体收入>",
 	                	"cost": "<*||integer||comment:DSP成本>"
                     }
+                }
+            }
+        }
+    },
+    "/userauth/media/update": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "userId": "<*||integer||comment:userId>",
+                	"isAdmin": "<*||integer||comment:1-管理员,0-非管理员>",
+                    "mediaIds": ["<string||comment:选择的媒体权限>"]
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
                 }
             }
         }

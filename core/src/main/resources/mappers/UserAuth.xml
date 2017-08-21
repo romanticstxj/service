@@ -66,4 +66,40 @@
             </foreach>
         </if>
 	</select>
+	
+	<delete id="removeUserMediaAuth" parameterType="integer">
+		DELETE FROM mad_sys_user_media
+		WHERE user_id = #{userId}
+	</delete>
+	
+	<update id="updateUserMediaAuth" parameterType="com.madhouse.platform.premiummad.entity.Adspace">
+        UPDATE mad_sys_adspace
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="updatedUser != null">updated_user = #{updatedUser},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    
+    <insert id="insertAdspaceDspMapping" parameterType="java.util.List">
+   		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
+	        SELECT LAST_INSERT_ID()  
+	    </selectKey>  
+           	INSERT INTO mad_sys_adspace_mapping_dsp (adspace_id, dsp_id, dsp_media_id, 
+          		dsp_adspace_key,created_time, status) VALUES
+	          		<foreach collection="dspMappings" index="index" item="dspMapping" separator=",">
+	          			<if test="(dspMapping.dspMediaId != null and dspMapping.dspMediaId.trim() != '')
+	          			 or (dspMapping.dspAdspaceKey != null and dspMapping.dspAdspaceKey.trim() != '')">
+		          			(
+		          				#{dspMapping.adspaceId},
+		          				#{dspMapping.dspId},
+		          				#{dspMapping.dspMediaId},
+		          				#{dspMapping.dspAdspaceKey},
+		          				#{dspMapping.createdTime},
+		          				1
+		          			)
+	          			 </if>
+	        		</foreach>
+    </insert>
 </mapper>
