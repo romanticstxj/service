@@ -98,24 +98,26 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                             case Constant.PlcmtType.NATIVE:
                                 PlcmtMetaData.Native natives = metaData.new Native();
                                 if(adspace.getLayout().equals(Constant.Layout.NATIVE_311)){
-                                    PlcmtMetaData.Image nativesImage = metaData.new Image();
-                                    String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
-                                    nativesImage.setW(Integer.parseInt(videoSize[0]));
-                                    nativesImage.setH(Integer.parseInt(videoSize[1]));
-                                    nativesImage.setMimes(queryMimesByType(adspace.getMaterialType()));
-                                    natives.setCover(nativesImage);
+                                    if (adspace.getCoverType() > 0 && !StringUtils.isEmpty(adspace.getCoverSize())) {
+                                        PlcmtMetaData.Image nativesImage = metaData.new Image();
+                                        String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getCoverSize(), "*");
+                                        nativesImage.setW(Integer.parseInt(videoSize[0]));
+                                        nativesImage.setH(Integer.parseInt(videoSize[1]));
+                                        nativesImage.setMimes(queryMimesByType(adspace.getCoverType()));
+                                        natives.setCover(nativesImage);
+                                    }
                                     natives.setVideo(getVideo(adspace, metaData));
                                 } else {
                                     metaData.setLayout(adspace.getLayout()+adspace.getMaterialCount());
                                     natives.setImage(getImage(adspace, metaData));
                                 }
                                 PlcmtMetaData.Image nativesIcon = metaData.new Image();
-                                if(!org.apache.commons.lang3.StringUtils.isEmpty(adspace.getLogoSize())){
+                                if(adspace.getLogoType() > 0 && !StringUtils.isEmpty(adspace.getLogoSize())){
                                     String[] nativesIconSize = StringUtils.tokenizeToStringArray(adspace.getLogoSize(), "*");
                                     nativesIcon.setW(Integer.parseInt(nativesIconSize[0]));
                                     nativesIcon.setH(Integer.parseInt(nativesIconSize[1]));
                                 }
-                                if(!org.apache.commons.lang3.StringUtils.isEmpty(adspace.getLogoType()+"")){
+                                if(!StringUtils.isEmpty(adspace.getLogoType()+"")){
                                     nativesIcon.setMimes(queryMimesByType(adspace.getLogoType()));
                                 }
                                 natives.setIcon(nativesIcon);
