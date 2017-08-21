@@ -104,4 +104,16 @@ public class PolicyServiceImpl implements IPolicyService {
 		return policyDao.updateStatus(policy);
 	}
 
+	@Override
+	public String getMediaDealId(Integer dealId, Integer mediaId) {
+		if (dealId == null || mediaId == null) {
+			return null;
+		}
+		List<PolicyAdspace> policyAdspaces = policyAdspaceDao.selectByPolicyIdAndMediaId(dealId, mediaId);
+		if (policyAdspaces == null || policyAdspaces.isEmpty()) {
+			return null;
+		}
+		
+		return policyAdspaces.get(0).getMediaDealId();
+	}
 }

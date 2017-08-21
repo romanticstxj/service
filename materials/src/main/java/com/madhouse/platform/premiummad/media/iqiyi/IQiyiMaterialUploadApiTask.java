@@ -37,8 +37,8 @@ public class IQiyiMaterialUploadApiTask {
 	@Value("${iqiyi.material.create}")
 	private String materialCreateUrl;
 
-	@Value("${file.material.root:/mnt/vda}")
-	private String materialFileRoot;
+	//@Value("${file.material.root:/mnt/vda}")
+	private String materialFileRoot = "";
 
 	@Autowired
 	private IQiYiHttpUtils iQiYiHttpUtils;
@@ -59,9 +59,9 @@ public class IQiyiMaterialUploadApiTask {
 		LOGGER.info("++++++++++iqiyi upload material begin+++++++++++");
 
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.SOHUNEWS.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.IQYI.getValue(), MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info("搜狐没有未上传的广告主");
+			LOGGER.info("爱奇艺没有未上传的广告主");
 			LOGGER.info("++++++++++iqiyi upload material end+++++++++++");
 			return;
 		}
@@ -123,13 +123,13 @@ public class IQiyiMaterialUploadApiTask {
 		request.setVideo_id(String.valueOf(material.getId()));
 		// 文件名称,名称必须带有效后缀
 		String fileName = material.getMaterialName();
-		if (material.getAdMaterials().endsWith("/.jpg")) {
+		if (material.getAdMaterials().endsWith("\\.jpg")) {
 			fileName = fileName + ".jpg";
-		} else if (material.getAdMaterials().endsWith("/.png")) {
+		} else if (material.getAdMaterials().endsWith("\\.png")) {
 			fileName = fileName + ".png";
-		} else if (material.getAdMaterials().endsWith("/.mp4")) {
+		} else if (material.getAdMaterials().endsWith("\\.mp4")) {
 			fileName = fileName + ".mp4";
-		} else if (material.getAdMaterials().endsWith("/.flv")) {
+		} else if (material.getAdMaterials().endsWith("\\.flv")) {
 			fileName = fileName + ".flv";
 		}
 		request.setFile_name(fileName);

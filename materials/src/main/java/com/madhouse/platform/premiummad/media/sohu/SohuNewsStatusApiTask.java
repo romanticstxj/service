@@ -60,6 +60,7 @@ public class SohuNewsStatusApiTask {
 			return;
 		}
 		
+		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 		for (Material item : unAuditMaterials) {
 			// 获取该素材的广告主,若广告主不存在不做处理
 			String[] advertiserKeys = { item.getAdvertiserKey() };
@@ -94,11 +95,16 @@ public class SohuNewsStatusApiTask {
 					if (sohuResponse.isStatus() && (sohuResponse.getContent() != null && !sohuResponse.getContent().equals(""))) {
 						SohuContentMaterialResponse contentResponse = JSONObject.parseObject(sohuResponse.getContent().toString(), SohuContentMaterialResponse.class);
 						if (contentResponse != null && contentResponse.getItems() != null) {
-							handleResults(item, contentResponse.getItems());
+							handleResults(item, contentResponse.getItems(), auditResults);
 						}
 					}
 				}
 			}
+		}
+		
+		// 更新我方数据库
+		if (!auditResults.isEmpty()) {
+			materialService.updateStatusToMedia(auditResults);
 		}
 	}
 	
@@ -108,14 +114,13 @@ public class SohuNewsStatusApiTask {
 	 * @param auditMaterial
 	 * @param list
 	 */
-	private void handleResults(Material auditMaterial, List<SohuStatusDetailResponse> list) {
+	private void handleResults(Material auditMaterial, List<SohuStatusDetailResponse> list, List<MaterialAuditResultModel> auditResults) {
 		if (list == null || list.size() != 1) {
 			LOGGER.info("返回结果有误");
 			return;
 		}
 
 		// 返回结果处理     
-		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 		SohuStatusDetailResponse statusDetail = list.get(0);
 		if (statusDetail.getFile_source().equals(auditMaterial.getMediaMaterialKey())) {
 			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
@@ -137,10 +142,6 @@ public class SohuNewsStatusApiTask {
 			}
 		} else {
 			LOGGER.info("返回结果与请求不匹配");
-		}
-
-		if (!auditResults.isEmpty()) {
-			materialService.updateStatusToMedia(auditResults);
 		}
 	}
 }

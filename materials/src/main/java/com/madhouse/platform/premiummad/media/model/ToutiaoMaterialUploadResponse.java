@@ -3,6 +3,7 @@ package com.madhouse.platform.premiummad.media.model;
 public class ToutiaoMaterialUploadResponse {
 	private String adid;
 	private String status;
+	private String msg;
 
 	public String getAdid() {
 		return adid;
@@ -20,4 +21,11 @@ public class ToutiaoMaterialUploadResponse {
 		this.status = status;
 	}
 
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
 }

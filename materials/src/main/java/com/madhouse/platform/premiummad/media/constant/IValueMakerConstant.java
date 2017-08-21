@@ -45,6 +45,16 @@ public enum IValueMakerConstant {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public static String getDescription(int value) {
+		for (IValueMakerConstant item : IValueMakerConstant.values()) {
+			if (item.getValue() == value) {
+				return item.getDescription();
+			}
+		}
+		return "";
+	}
+	
 	//返回状态代码
 	public static String getErrorMessage(int key){
 		switch (key) {
@@ -100,7 +110,7 @@ public enum IValueMakerConstant {
 			return "移动创意元素类型错误";
 			
 		default:
-			return "未知错误信息，错误编码："+key;
+			return null;
 		}
 	}
 }

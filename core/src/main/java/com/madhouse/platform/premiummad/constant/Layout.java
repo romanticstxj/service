@@ -18,9 +18,9 @@ public enum Layout {
 	LO20005(221, "Video-开机视频"), 
 	LO20006(222, "Video-关机视频"), 
 	LO20007(231, "Video-开屏视频"), 
-	LO30001(301, "Native-图文信息流"), 
-	LO30002(302, "Native-图文信息流"),
-	LO30003(303, "Native-图文信息流"),
+	LO30001(301, "Native-图文信息流1图"), 
+	LO30002(302, "Native-图文信息流2图"),
+	LO30003(303, "Native-图文信息流3图"),
 	LO30004(311, "Native-视频信息流");
 	
 	int value;

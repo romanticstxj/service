@@ -65,7 +65,7 @@ public class LetvStatusApiTask {
 		if (!StringUtils.isEmpty(responseJson)) {
 			LetvResponse letvResponse = JSON.parseObject(responseJson, LetvResponse.class);
 			Integer result = letvResponse.getResult();
-			Map<Object, Object> message = letvResponse.getMessage();// key为：total，records
+			Map<String, String> message = letvResponse.getMessage();// key为：total，records
 			if (result.equals(LetvConstant.RESPONSE_SUCCESS.getValue())) {// 成功,更新物料任务表状态
 				Object object = message.get("records");
 				List<LetvStatusDetailResponse> letvStatusDetailResponse = JSONArray.parseArray(object.toString(), LetvStatusDetailResponse.class);
@@ -103,7 +103,9 @@ public class LetvStatusApiTask {
 	private LetvStatusRequest buildStatusRequest(List<Material> unAuditMaterials) {
 		LetvStatusRequest letvStatusRequest = new LetvStatusRequest();
 		List<String> adUrl = new ArrayList<String>();
-		// TODO
+		for (Material item : unAuditMaterials) {
+			adUrl.add(item.getMediaMaterialKey());
+		}
 		letvStatusRequest.setAdurl(adUrl);
     	letvStatusRequest.setDspid(tokenRequest.getDspid());
     	letvStatusRequest.setToken(tokenRequest.getToken());

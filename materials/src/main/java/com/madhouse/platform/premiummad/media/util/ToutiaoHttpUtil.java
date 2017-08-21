@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -18,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.media.model.ToutiaoMaterialUploadRequest;
 
@@ -118,8 +122,6 @@ public class ToutiaoHttpUtil {
 
 			httpClient = HttpClients.createDefault();
 			LOGGER.info("request:{}", EntityUtils.toString(httpPost.getEntity(), Consts.UTF_8));
-			// System.out.println(EntityUtils.toString(httpPost.getEntity(),
-			// Consts.UTF_8));
 
 			response = httpClient.execute(httpPost);
 			HttpEntity responseEntity = response.getEntity();
@@ -148,4 +150,14 @@ public class ToutiaoHttpUtil {
 		return result;
 	}
 
+	public static String unicodeToString(String str) {
+		Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
+		Matcher matcher = pattern.matcher(str);
+		char ch;
+		while (matcher.find()) {
+			ch = (char) Integer.parseInt(matcher.group(2), 16);
+			str = str.replace(matcher.group(1), ch + "");
+		}
+		return str;
+	}
 }

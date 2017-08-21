@@ -20,14 +20,22 @@ public enum LetvConstant {
     RESPONSE_PARAM_CHECK_FAIL(2,"请求参数校验错误"),
    
     //广告类型
-    AD_TYPE_PAGE(0,"页面"),//页面
-    AD_TYPE_DRAW_CURTAIN(1,"拉幕"),//拉幕
-    AD_TYPE_PREVIOUS_POST(2,"前贴"),//前贴
-    AD_TYPE_STANDARD_PLATE(3,"标版"),//标版
-    AD_TYPE_IN_POST(4,"中贴"),//中贴
-    AD_TYPE_POST(5,"后贴"),//后贴
-    AD_TYPE_SUSPEND(6,"暂停"),//暂停
-    AD_TYPE_FLOAT(7,"浮层");//浮层
+    AD_TYPE_PAGE(0, "页面"),
+    AD_TYPE_DRAW_CURTAIN(1, "拉幕"),
+    AD_TYPE_PREVIOUS_POST(2, "前贴"),
+    AD_TYPE_STANDARD_PLATE(3, "标版"),
+    AD_TYPE_IN_POST(4, "中贴"),
+    AD_TYPE_POST(5, "后贴"),
+    AD_TYPE_SUSPEND(6, "暂停"),
+    AD_TYPE_FLOAT(7, "浮层"),
+    AD_TYPE_SCREEN_SAVER(8, "屏保"),
+    AD_TYPE_STARTING_UP(9, "开机"),
+    AD_TYPE_SHUTDOWN(10, "关机"),
+    AD_TYPE_BANNER(12, "横幅"),
+    AD_TYPE_ILLUSTRATION(13, "插屏"),
+    AD_TYPE_FOCUSMAP(14, "焦点图"),
+    AD_TYPE_APPLICATION_STARTUP_DIAGRAM(16, "应用启动图"),
+    AD_TYPE_STREAM(17, "信息流");
 
     int value;
     String description;

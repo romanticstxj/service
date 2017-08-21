@@ -21,9 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * auth : Jay 
- * date : 2016/5/29 
- * desc : Momo发送请求http
+ * Momo发送请求http
  */
 @Component
 public class MomoHttpUtils {

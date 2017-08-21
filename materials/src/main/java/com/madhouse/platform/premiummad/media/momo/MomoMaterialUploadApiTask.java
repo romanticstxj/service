@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.media.momo;
 
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -20,10 +21,12 @@ import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
+import com.madhouse.platform.premiummad.media.constant.MomoIndustryMapping;
 import com.madhouse.platform.premiummad.media.model.MomoUploadRequest;
 import com.madhouse.platform.premiummad.media.model.MomoUploadRequest.NativeCreativeBean.ImageBean;
 import com.madhouse.platform.premiummad.media.model.MomoUploadResponse;
 import com.madhouse.platform.premiummad.media.util.MomoHttpUtils;
+import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -60,7 +63,7 @@ public class MomoMaterialUploadApiTask {
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.MOMO.getValue(), MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.MOMO.getDescrip() + "没有未上传的广告主");
+			LOGGER.info(MediaMapping.MOMO.getDescrip() + "没有未上传的素材");
 			LOGGER.info("++++++++++Momo upload material end+++++++++++");
 			return;
 		}
@@ -68,9 +71,23 @@ public class MomoMaterialUploadApiTask {
 		// 上传到媒体
 		LOGGER.info("MomoMaterialUploadApiTask-Momo", unSubmitMaterials.size());
 
+		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
 		for (Material material : unSubmitMaterials) {
-			MomoUploadRequest request = buildUploadMaterialRequest(material);
+			MomoUploadRequest request = new MomoUploadRequest();
+			String errorMsg = buildUploadMaterialRequest(material, request);
+			if (!StringUtils.isBlank(errorMsg)) {
+				// 广告主不存在自动驳回
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
+				rejuseItem.setErrorMessage(errorMsg);
+				rejusedMaterials.add(rejuseItem);
+				continue;
+			}
+			
+			// 向媒体发请求
 			Map<String, String> paramMap = new HashMap<String, String>();
 			paramMap.put("data", JSON.toJSONString(request));
 			String responseJson = momoHttpUtil.post(uploadMaterialUrl, paramMap);
@@ -80,6 +97,13 @@ public class MomoMaterialUploadApiTask {
 				if (response.getEc() == 200) {
 					materialIdKeys.put(material.getId(), material.getMediaMaterialKey());
 				} else {
+					// 自动驳回
+					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+					rejuseItem.setId(String.valueOf(material.getId()));
+					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+					rejuseItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
+					rejuseItem.setErrorMessage(response.getEm());
+					rejusedMaterials.add(rejuseItem);
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + response.getEm());
 				}
 			} else {
@@ -91,6 +115,11 @@ public class MomoMaterialUploadApiTask {
 		if (!materialIdKeys.isEmpty()) {
 			materialService.updateStatusAfterUpload(materialIdKeys);
 		}
+		
+		// 处理失败的结果，自动驳回 - 通过素材id更新
+		if (!rejusedMaterials.isEmpty()) {
+			materialService.updateStatusToMediaByMaterialId(rejusedMaterials);
+		}
 
 		LOGGER.info("++++++++++Momo upload material end+++++++++++");
 	}
@@ -98,11 +127,18 @@ public class MomoMaterialUploadApiTask {
 	/**
 	 * 构建请求参数
 	 * 
-	 * @return
+	 * @return errorMsg
 	 * @throws Exception
 	 */
-	private MomoUploadRequest buildUploadMaterialRequest(Material material) {
-		MomoUploadRequest request = new MomoUploadRequest();
+	private String buildUploadMaterialRequest(Material material, MomoUploadRequest request) {
+		// 获取广告主
+		String[] advertiserKeys = { material.getAdvertiserKey() };
+		List<Advertiser> advertisers = advertiserDao.selectByAdvertiserKeysAndDspId(advertiserKeys, String.valueOf(material.getDspId()), material.getMediaId());
+		if (advertisers == null || advertisers.isEmpty()) {
+			LOGGER.error("广告主不存在[advertiserKey=" + material.getAdvertiserKey() + "dspId=" + material.getDspId() + "]");
+			return "广告主不存在[advertiserKey=" + material.getAdvertiserKey() + "]";
+		}
+
 		String crid = StringUtils.getMD5(material.getId().toString());
 		material.setMediaMaterialKey(crid);
 		request.setDspid(dspId);
@@ -110,33 +146,30 @@ public class MomoMaterialUploadApiTask {
 		request.setAdid(crid); // 广告ID
 		request.setCrid(crid);// 物料ID
 
-		// 获取广告主
-		String[] advertiserKeys = { material.getAdvertiserKey() };
-		List<Advertiser> advertisers = advertiserDao.selectByAdvertiserKeysAndDspId(advertiserKeys, String.valueOf(material.getDspId()), material.getMediaId());
-		if (advertisers != null && advertisers.size() > 0) {
-			request.setAdvertiser_id(advertisers.get(0).getId().toString()); // 广告主ID
-			request.setAdvertiser_name(advertisers.get(0).getAdvertiserName()); // 广告主名称
-		}
+		request.setAdvertiser_id(advertisers.get(0).getId().toString()); // 广告主ID
+		request.setAdvertiser_name(advertisers.get(0).getAdvertiserName()); // 广告主名称
 		request.setQuality_level(1);
-		request.setCat(null); // 行业类目TODO
+		List<String> cats = new ArrayList<String>();
+		cats.add(String.valueOf(MomoIndustryMapping.getMediaIndustryId(advertisers.get(0).getIndustry())));
+		request.setCat(cats); // 行业类目 
 
 		MomoUploadRequest.NativeCreativeBean creativeBean = new MomoUploadRequest.NativeCreativeBean();
 		MomoUploadRequest.NativeCreativeBean.ImageBean imageBean = new MomoUploadRequest.NativeCreativeBean.ImageBean();
 		MomoUploadRequest.NativeCreativeBean.LogoBean logoBean = new MomoUploadRequest.NativeCreativeBean.LogoBean();
 		MomoUploadRequest.NativeCreativeBean.VideoBean videoBean = new MomoUploadRequest.NativeCreativeBean.VideoBean();
-		// 判断是图片还是视频
-		if (material.getLayout() > 100 && material.getLayout() < 200) {
+		// 根据后缀判断是图片还是视频
+		if (!material.getAdMaterials().endsWith("mp4")) {
 			// image
 			imageBean.setUrl(material.getAdMaterials());
-			imageBean.setHeight(Integer.valueOf(material.getSize().split("*")[1]));
-			imageBean.setWidth(Integer.valueOf(material.getSize().split("*")[0]));
+			imageBean.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
+			imageBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 			creativeBean.setImage(Collections.singletonList(imageBean));
 			creativeBean.setNative_format("FEED_LANDING_PAGE_LARGE_IMG"); // 广告样式
-		} else if (material.getLayout() > 200 && material.getLayout() < 300) {
+		} else {
 			// video
 			imageBean.setUrl(material.getCover());
-			imageBean.setHeight(Integer.valueOf(material.getSize().split("*")[1]));
-			imageBean.setWidth(Integer.valueOf(material.getSize().split("*")[0]));
+			imageBean.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
+			imageBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 			videoBean.setCover_img(imageBean);
 
 			videoBean.setUrl(material.getAdMaterials());
@@ -169,7 +202,8 @@ public class MomoMaterialUploadApiTask {
 		} catch (Exception e) {
 			LOGGER.info("上传素材时出现异常[materailId=" + material.getId() + "-" + e.getMessage());
 		}
-		return request;
+		
+		return "";
 	}
 
 	/**

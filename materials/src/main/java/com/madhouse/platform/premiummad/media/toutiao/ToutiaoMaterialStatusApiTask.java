@@ -2,8 +2,10 @@ package com.madhouse.platform.premiummad.media.toutiao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +56,14 @@ public class ToutiaoMaterialStatusApiTask {
 			return;
 		}
 
+		Set<String> mediaMaterialKeySet = new HashSet<String>();
 		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 		for (Material item : unAuditMaterials) {
+			// 两个广告位对应媒体一个只要请求一次
+			if (mediaMaterialKeySet.contains(item.getMediaMaterialKey())) {
+				continue;
+			}
+
 			Map<String, String> paramMap = new HashMap<String, String>();
 			paramMap.put("adid", item.getMediaMaterialKey());
 			paramMap.put("dspid", dspid);
@@ -83,6 +91,8 @@ public class ToutiaoMaterialStatusApiTask {
 				} else {
 					LOGGER.info(MediaMapping.TOUTIAO.getDescrip() + "获取状态失败");
 				}
+				
+				mediaMaterialKeySet.add(String.valueOf(response.getAdid()));
 			}
 		}
 

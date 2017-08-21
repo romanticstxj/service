@@ -2,8 +2,10 @@ package com.madhouse.platform.premiummad.media.moji;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +68,15 @@ public class MojiMaterialStatusApiTask {
 		}
 
 		// 向媒体获取审核状态
+		Set<String> mediaMaterialKeySet = new HashSet<String>();
+		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 		for (Material item : unauditMaterials) {
+			// 两个广告位对应媒体一个只要请求一次
+			if (mediaMaterialKeySet.contains(item.getMediaMaterialKey())) {
+				continue;
+			}
+			
+			mediaMaterialKeySet.add(item.getMediaMaterialKey());
 			Map<String, String> paramMap = new HashMap<String, String>();
 			paramMap.put("source", source);
 			paramMap.put("time_stamp", System.currentTimeMillis() / 1000 + "");
@@ -78,8 +88,13 @@ public class MojiMaterialStatusApiTask {
 
 			if (!StringUtils.isEmpty(getResult)) {
 				MojiMaterialStatusResponse response = JSON.parseObject(getResult, MojiMaterialStatusResponse.class);
-				processResult(response, item);
+				processResult(response, item, auditResults);
 			}
+		}
+
+		// 更新数据库
+		if (!auditResults.isEmpty()) {
+			materialService.updateStatusToMedia(auditResults);
 		}
 
 		LOGGER.info("++++++++++moji get material status end+++++++++++");
@@ -91,10 +106,9 @@ public class MojiMaterialStatusApiTask {
 	 * @param response
 	 * @param item
 	 */
-	private void processResult(MojiMaterialStatusResponse response, Material item) {
+	private void processResult(MojiMaterialStatusResponse response, Material item, List<MaterialAuditResultModel> auditResults) {
 		String code = response.getCode();
 
-		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 		MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 		auditItem.setMediaMaterialKey(String.valueOf(response.getData().getPosition_id()));
 		auditItem.setMediaId(String.valueOf(MediaMapping.DIANPING.getValue()));
@@ -110,11 +124,6 @@ public class MojiMaterialStatusApiTask {
 			LOGGER.info("墨迹MaterialStatusTask-response:物料未审核,id为{}" + item.getId());
 		} else {
 			LOGGER.info(response.getMessage() + "id为{}" + item.getId());
-		}
-
-		// 更新数据库
-		if (!auditResults.isEmpty()) {
-			materialService.updateStatusToMedia(auditResults);
 		}
 	}
 }

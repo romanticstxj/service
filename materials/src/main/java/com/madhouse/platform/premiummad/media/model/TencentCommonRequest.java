@@ -1,17 +1,15 @@
 package com.madhouse.platform.premiummad.media.model;
 
-import java.util.List;
-
 /**
- * 广告位上传请求,对应的字段名称data,对应的是json格式
+ * 素材状态查询请求,对应的字段名称data,对应的是json格式
  */
-public class AdvertUploadRequest {
+public class TencentCommonRequest<T> {
 
 	private String token;
 	private String dsp_id;
 	private String time;
 	private String sig;
-	private List<AdvertUploadData> data;
+	private T data;
 
 	public String getToken() {
 		return token;
@@ -45,11 +43,11 @@ public class AdvertUploadRequest {
 		this.sig = sig;
 	}
 
-	public List<AdvertUploadData> getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(List<AdvertUploadData> data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 }

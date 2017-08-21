@@ -5,7 +5,7 @@ import java.util.Map;
 public class LetvResponse {
 
 	private Integer result;
-	private Map<Object, Object> message;
+	private Map<String, String> message;
 
 	public Integer getResult() {
 		return result;
@@ -15,11 +15,11 @@ public class LetvResponse {
 		this.result = result;
 	}
 
-	public Map<Object, Object> getMessage() {
+	public Map<String, String> getMessage() {
 		return message;
 	}
 
-	public void setMessage(Map<Object, Object> message) {
+	public void setMessage(Map<String, String> message) {
 		this.message = message;
 	}
 

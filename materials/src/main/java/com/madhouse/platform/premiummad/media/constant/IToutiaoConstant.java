@@ -8,6 +8,7 @@ public enum IToutiaoConstant {
 	M_STATUS_REFUSED(2, "refused"), // 审核未通过
 	M_STATUS_ERROR(3, "error"), // 审核错误
 	M_STATUS_SUCCESS(4, "success"), // 上传成功
+	M_STATUS_FAIL(5, "fail"), // 上传失败
 
 	// 头条广告位类型
 	TOUTIAO_FEED_LP_LARGE(1, "690 * 286"), OUTIAO_FEED_LP_SMALL(2, "228 * 150"),

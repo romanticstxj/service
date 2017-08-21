@@ -34,7 +34,7 @@ public class SohuNewsCustomerListApiTask {
 
 	@Autowired
 	private AdvertiserMapper advertiserDao;
-	
+
 	@Autowired
 	private IAdvertiserService advertiserService;
 
@@ -43,15 +43,16 @@ public class SohuNewsCustomerListApiTask {
 	 */
 	public void list() {
 		LOGGER.info("++++++++++Sohu News get advertiser list begin+++++++++++");
-		
+
 		// 获取我方媒体待审核的广告主
 		List<Advertiser> unAuditAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.SOHUNEWS.getValue(), AdvertiserStatusCode.ASC10003.getValue());
-		
+
 		if (unAuditAdvertisers == null || unAuditAdvertisers.isEmpty()) {
 			LOGGER.info("++++++++++Sohu News no advertisers need to audit+++++++++++");
 			return;
 		}
-		
+
+		List<AdvertiserAuditResultModel> auditResults = new ArrayList<AdvertiserAuditResultModel>();
 		for (Advertiser item : unAuditAdvertisers) {
 			Map<String, Object> paramMap = new HashMap<>();
 			paramMap.put("customer_key", item.getMediaAdvertiserKey());
@@ -70,9 +71,14 @@ public class SohuNewsCustomerListApiTask {
 				if (sohutvResponse.isStatus()) {
 					SohuCustomerListResponse sohuCustomerListResponse = JSONObject.parseObject(sohutvResponse.getContent().toString(), SohuCustomerListResponse.class);
 					List<SohuCustomerListDetail> sohuCustomerListDetails = sohuCustomerListResponse.getItems();
-					handleResults(item, sohuCustomerListDetails);
+					handleResults(item, sohuCustomerListDetails, auditResults);
 				}
 			}
+		}
+
+		// 更新数据库
+		if (!auditResults.isEmpty()) {
+			advertiserService.updateStatusToMedia(auditResults);
 		}
 	}
 
@@ -82,13 +88,12 @@ public class SohuNewsCustomerListApiTask {
 	 * @param unauditAdvertiser
 	 * @param sohuCustomerListDetails
 	 */
-	private void handleResults(Advertiser unauditAdvertiser, List<SohuCustomerListDetail> sohuCustomerListDetails) {
+	private void handleResults(Advertiser unauditAdvertiser, List<SohuCustomerListDetail> sohuCustomerListDetails, List<AdvertiserAuditResultModel> auditResults) {
 		if (sohuCustomerListDetails == null || sohuCustomerListDetails.size() != 1) {
 			return;
 		}
 
 		// 根据返回状态处理我方数据
-		List<AdvertiserAuditResultModel> auditResults = new ArrayList<AdvertiserAuditResultModel>();
 		String customerKeyNet = sohuCustomerListDetails.get(0).getCustomer_key();
 		SohuCustomerListDetail sohuCustomerDetail = sohuCustomerListDetails.get(0);
 		// 获取搜狐新闻的审核状态
@@ -119,11 +124,6 @@ public class SohuNewsCustomerListApiTask {
 			}
 		} else {
 			LOGGER.info("返回结果与请求不匹配");
-		}
-
-		// 更新数据库
-		if (!auditResults.isEmpty()) {
-			advertiserService.updateStatusToMedia(auditResults);
 		}
 	}
 }

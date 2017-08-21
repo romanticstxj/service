@@ -68,6 +68,7 @@ public class ValueMakerStatusApiTask {
 					auditResults.add(auditItem);
 				} else if (status == IValueMakerConstant.M_STATUS_REFUSED.getValue()) {// 审核未通过
 					auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+					// 驳回原因接口不提供，媒体方确认 当前只能查到审核不通过，具体原因需要由运营单独提供
 					auditItem.setErrorMessage("");
 					auditResults.add(auditItem);
 				}

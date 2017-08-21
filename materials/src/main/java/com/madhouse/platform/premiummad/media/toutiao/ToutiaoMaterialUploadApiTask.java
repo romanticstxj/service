@@ -21,6 +21,7 @@ import com.madhouse.platform.premiummad.media.constant.IToutiaoConstant;
 import com.madhouse.platform.premiummad.media.model.ToutiaoMaterialUploadRequest;
 import com.madhouse.platform.premiummad.media.model.ToutiaoMaterialUploadResponse;
 import com.madhouse.platform.premiummad.media.util.ToutiaoHttpUtil;
+import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -55,6 +56,12 @@ public class ToutiaoMaterialUploadApiTask {
 	@Autowired
 	private IMaterialService materialService;
 	
+	/***
+	 * 我方两个广告位对应媒体一个广告类型
+	 * <mediaAdType|materialKey, mediaMaterialKey>
+	 */
+	private Map<String, String> mediaAdTypeMap = new HashMap<String, String>();
+	
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Toutiao upload material begin+++++++++++");
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
@@ -68,10 +75,20 @@ public class ToutiaoMaterialUploadApiTask {
 		// 上传到媒体
 		LOGGER.info("ToutiaoMaterialUploadApiTask-Toutiao", unSubmitMaterials.size());
 		
+	    List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
 		for (Material material : unSubmitMaterials) {
+			int mediaAdType = getMediaAdType(material.getAdspaceId());
+			// 如果某个素材该广告位已上传一次，则另一个广告位用已上传的作为媒体返回的key
+			String key = String.valueOf(mediaAdType) + "|" + material.getMaterialKey();
+			if (mediaAdTypeMap.containsKey(key)) {
+				materialIdKeys.put(material.getId(), mediaAdTypeMap.get(key));
+				continue;
+			}
+			
 			List<ToutiaoMaterialUploadRequest> list = buildMaterialRequest(material);
-			String postResult =toutiaoHttpUtil.post(uploadMaterialUrl,list);
+			String postResult = toutiaoHttpUtil.post(uploadMaterialUrl, list);
+			LOGGER.info("response:" + postResult);
 			if (!StringUtils.isEmpty(postResult)) {
 				LOGGER.info("头条response{}",postResult);
 				Object object = JSON.parse(postResult);
@@ -79,14 +96,26 @@ public class ToutiaoMaterialUploadApiTask {
 				if (null != jsonObject.get("error")) {
 					// 失败
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + (String) jsonObject.get("error"));
-				}else if(null !=jsonObject.get("success_ad_ids")){
-					 List<ToutiaoMaterialUploadResponse> responseList = JSON.parseArray(jsonObject.get("success_ad_ids").toString(), ToutiaoMaterialUploadResponse.class);
-					 ToutiaoMaterialUploadResponse response = responseList.get(0);
-					 if(response.getAdid() != null && response.getStatus().equals(IToutiaoConstant.M_STATUS_SUCCESS.getDescription())){
-       					LOGGER.info("头条物料上传成功");
-       					// TODO
-       					materialIdKeys.put(material.getId(), response.getAdid());
-					 }
+				} else if (null != jsonObject.get("success_ad_ids")) {
+					List<ToutiaoMaterialUploadResponse> responseList = JSON.parseArray(jsonObject.get("success_ad_ids").toString(), ToutiaoMaterialUploadResponse.class);
+					ToutiaoMaterialUploadResponse response = responseList.get(0);
+					if (response.getAdid() != null && response.getStatus().equals(IToutiaoConstant.M_STATUS_SUCCESS.getDescription())) {
+						LOGGER.info("头条物料上传成功");
+						materialIdKeys.put(material.getId(), response.getAdid());
+						mediaAdTypeMap.put(key, response.getAdid());
+					} else if (response.getAdid() != null && response.getStatus().equals(IToutiaoConstant.M_STATUS_FAIL.getDescription())) {
+						LOGGER.info("头条物料上传失败-" + ToutiaoHttpUtil.unicodeToString(response.getMsg()));
+						if (!StringUtils.isBlank(response.getMsg())) {
+							MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+							rejuseItem.setId(String.valueOf(material.getId()));
+							rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+							rejuseItem.setMediaId(String.valueOf(MediaMapping.TOUTIAO.getValue()));
+							rejuseItem.setErrorMessage(ToutiaoHttpUtil.unicodeToString(response.getMsg()));
+							rejusedMaterials.add(rejuseItem);
+						}
+					} else {
+						LOGGER.error("头条物料上传失败-" + postResult);
+					}
 				}
 			}
 		}
@@ -94,6 +123,11 @@ public class ToutiaoMaterialUploadApiTask {
 		// 更新我方素材信息
 		if (!materialIdKeys.isEmpty()) {
 			materialService.updateStatusAfterUpload(materialIdKeys);
+		}
+		
+		// 处理失败的结果，自动驳回 - 通过素材id更新
+		if (!rejusedMaterials.isEmpty()) {
+			materialService.updateStatusToMediaByMaterialId(rejusedMaterials);
 		}
 
 		LOGGER.info("++++++++++Toutiao upload material end+++++++++++");
@@ -115,8 +149,8 @@ public class ToutiaoMaterialUploadApiTask {
 		// 获胜的 url
 		request.setNurl(IToutiaoConstant.NURL.getDescription().replace("{adspaceid}", getMediaNurl(material.getAdspaceId())));
 		request.setAdid(material.getId() + String.valueOf(material.getAdspaceId()) + 1);
-		request.setHeight(Integer.valueOf(material.getSize().split("*")[1]));
-		request.setWidth(Integer.valueOf(material.getSize().split("*")[0]));
+		request.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
+		request.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 		// 素材的落地页，以审核时提交为准
 		request.setClick_through_url(material.getLpgUrl());
 		// 素材的标题
@@ -124,18 +158,39 @@ public class ToutiaoMaterialUploadApiTask {
 		// 素材的来源
 		request.setSource(material.getDescription());
 		request.setIs_inapp(1);
-		request.setClick_url(null); // TODO
-		// 展示监测 ur
-		List<String> show_url = new ArrayList<String>();
-		show_url.add(IToutiaoConstant.IMP_MONITOR_PM.getDescription());// 展示
-		request.setShow_url(show_url);
+		// 点击监测 url
+		if (material.getImpUrls() != null && !material.getImpUrls().isEmpty()) {
+			List<String> clickUrls = new ArrayList<String>();
+			for (String url : material.getClkUrls().split("\\|")) {
+				clickUrls.add(url);
+			}
+			request.setClick_url(clickUrls);
+		}
+		// 展示监测 url
+		List<String> showUrls = new ArrayList<String>();
+		if (material.getImpUrls() != null && !material.getImpUrls().isEmpty()) {
+			// 素材表里以 |分割
+			String[] impTrackUrlArray = material.getImpUrls().split("\\|");
+			if (impTrackUrlArray != null) {
+				for (int i = 0; i < impTrackUrlArray.length; i++) {
+					// 时间
+					if (impTrackUrlArray[i].matches("^-?\\d+$")) {
+						continue;
+					}
+					showUrls.add(impTrackUrlArray[i]);
+				}
+			}
+		}
+		showUrls.add(IToutiaoConstant.IMP_MONITOR_PM.getDescription());
+		request.setShow_url(showUrls);
+
 		list.add(request);
 		return list;
 	}
 	
 	/**
 	 * 与媒体方获胜的 url
-	 * 一个物料对应madhouse2个广告位，对应头条一个广告位,一个物料只审核一次
+	 * 一个物料对应madhouse2个广告位，对应头条一个广告位,一个物料只审核一次 
 	 * 
 	 * @param dbAdspaceId
 	 * @return
