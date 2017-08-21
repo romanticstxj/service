@@ -60,9 +60,24 @@ public class DateUtils {
 	 * @param date 日期
 	 * @return String 日期
 	 */
-	public static String getFormatStringByPattern(String pattern,Date date) {
+	public static String getFormatStringByPattern(String pattern, Date date) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		simpleDateFormat.setLenient(false);
 		return simpleDateFormat.format(date);
+	}
+	
+	public static Date getFormatDateByPattern(String pattern, Date date) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		simpleDateFormat.setLenient(false);
+		return date;
+	}
+	
+	public static Date getCurrentDate(){
+		return new Date();
+	}
+	
+	public static Date getFormattedCurrentDate(){
+		Date date = getFormatDateByPattern("yyyyMMdd", new Date());
+		return date;
 	}
 }

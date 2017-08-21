@@ -25,12 +25,13 @@ public class ResponseUtils {
 		ResponseDto<T> responseDto = new ResponseDto<>();
 
 		int size = data != null ? data.size() : 0;
-		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}" + ", with data(" + size + "):" + data);
+		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}" + ", with data(" + size + ")");
 
 		responseDto.setData(data);
 		responseDto.setSize(size);
 		responseDto.setCode(sc.getValue());
-		responseDto.setMessage(message != null ? message : sc.getDescrip());
+//		responseDto.setMessage(message != null ? message : sc.getDescrip());
+		responseDto.setMessage(sc.getDescrip() + ": " + (message != null ? message : ""));
 
 		return responseDto;
 

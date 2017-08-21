@@ -24,10 +24,10 @@ public class AdspaceRule extends BaseRule{
         //把页面上的部分多选项转化为数据库的单值
         int materialType = StringUtils.convertMultiChoiceToSingleChoice(adspaceDto.getMaterialType());
         int logoType = StringUtils.convertMultiChoiceToSingleChoice(adspaceDto.getLogoType());
-        int videoType = StringUtils.convertMultiChoiceToSingleChoice(adspaceDto.getVideoType());
+        int coverType = StringUtils.convertMultiChoiceToSingleChoice(adspaceDto.getCoverType());
         adspace.setMaterialType(materialType);
         adspace.setLogoType(logoType);
-        adspace.setVideoType(videoType);
+        adspace.setCoverType(coverType);
 		
 		return adspace;
 	}
@@ -57,15 +57,15 @@ public class AdspaceRule extends BaseRule{
         
         String materialType = StringUtils.convertSingleChoiceToMultiChoice(adspace.getMaterialType());
         String logoType = StringUtils.convertSingleChoiceToMultiChoice(adspace.getLogoType());
-        String videoType = StringUtils.convertSingleChoiceToMultiChoice(adspace.getVideoType());
+        String coverType = StringUtils.convertSingleChoiceToMultiChoice(adspace.getCoverType());
         adspaceDto.setMaterialType(materialType);
         adspaceDto.setLogoType(logoType);
-        adspaceDto.setVideoType(videoType);
+        adspaceDto.setCoverType(coverType);
 	}
 
 	public static void validateDto(AdspaceDto adspaceDto){
 		String fieldName = BeanUtils.hasEmptyField(adspaceDto);
         if (fieldName != null)
-        	throw new BusinessException(StatusCode.SC20001, fieldName + " cannot be null");
+        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
 	}
 }

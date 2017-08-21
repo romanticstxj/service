@@ -4,7 +4,8 @@
             "_summary": "媒体列表",
             "parameters": {
                 "query": {
-            		"ids" : "<||string||comment:1）若无ids参数，则查询当前用户下所有权限的媒体 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分媒体数据，但查询出的也都是当前用户的权限下的媒体>"
+            		"ids" : "<string||comment:1）若无ids参数，则查询当前用户下所有权限的媒体 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分媒体数据，但查询出的也都是当前用户的权限下的媒体>",
+            		"userId" : "<integer||comment:查询某个userId权限下的所有媒体>"
             	}
             },
             "responses": {
@@ -141,8 +142,8 @@
                 "200": {
                     "body": [
                         {
-                            "code": "",
-                            "name": ""
+                            "code": "<integer||comment:常量代码>",
+                            "name": "<integer||comment:常量名>"
                         }
                     ]
                 }
@@ -159,8 +160,12 @@
                 "200": {
                     "body": [
                         {
-                            "code": "",
-                            "name": ""
+                            "id": "<integer||comment:id>",
+                            "level": "<integer||comment:0:全球, 1:国家级, 2:省级, 3:市级>",
+                            "code": "<integer||comment:地域代码>",
+                            "parentCode": "<integer||comment:父级code>",
+                            "domestic": "<integer||comment:是否国内>",
+                            "name": "<integer||comment:地域名>"
                         }
                     ]
                 }
@@ -212,19 +217,19 @@
                     "bidFloor": "<*||double||comment:底价>",
                     "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
                     "layout": "<*||integer||comment:广告形式(列表)>",
-                    "materialType": "<string||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1: gif, 2: png, 4: jpg)，用逗号分隔显示>",
-                    "materialSize": "<string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
-                    "materialMaxKbyte": "<integer||comment:普通硬广: 物料最大K数, 原生图文信息流:主图片最大K数, 原生视频信息流: 封面最大K数, 视频暂停: 物料最大K数>",
+                    "materialType": "<string||comment:主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)>",
+                    "materialSize": "<string||comment:主物料尺寸(格式：width*height)>",
+                    "materialMaxKbyte": "<integer||comment:主物料最大K数>",
+                    "materialCount": "<integer||comment:主物料个数>",
+                    "materialDuration": "<string||comment:主物料视频时长(半角逗号分隔)>",
                     "logoType": "<string||comment:logo格式(1: gif, 2: png, 4: jpg)>",
                     "logoSize": "<string||comment:logo尺寸(格式：width*height)>",
                     "logoMaxKbyte": "<integer||comment:logo最大K数>",
                     "titleMaxLength": "<integer||comment:标题最大长度>",
                     "descMaxLength": "<integer||comment:描述最大长度>",
-                    "mainPicNumber": "<integer||comment:原生图文信息流: 主图片张数>",
-                    "videoType": "<string||comment:原生视频信息流: 视频格式, 视频: 视频格式(8: mp4, 16: flv, 32: swf)>",
-                    "videoSize": "<string||comment:原生视频信息流: 视频尺寸, 视频: 视频尺寸(格式：width*height)>",
-                    "videoMaxKbyte": "<integer||comment:原生视频信息流: 视频最大K数, 视频: 视频最大K数>",
-                    "videoDuration": "<string||comment:视频时长(半角逗号分隔)>",
+                    "coverType": "<string||comment:封面格式(1: gif, 2: png, 4: jpg)>",
+                    "coverSize": "<string||comment:封面尺寸>",
+                    "coverMaxKbyte": "<integer||comment:封面最大K数>",
                     "description": "<string||comment:描述>"
                 }
             },
@@ -256,7 +261,6 @@
                             "name": "<*||string||comment:广告位名称>",
 		                	"adspaceKey": "<string||comment:广告位Key>",
 		                    "mediaId": "<*||integer||comment:所属的媒体id>",
-		                    "mediaName": "<*||string||comment:所属的媒体名称>",
 		                    "adblockId": "<*||integer||comment:广告限制id>",
 		                    "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
 		                    "terminalOs": "<*||integer||comment:平台类型(1: Android, 2: iOS)>",
@@ -265,20 +269,19 @@
 		                    "bidFloor": "<*||double||comment:底价>",
 		                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
 		                    "layout": "<*||integer||comment:广告形式(列表)>",
-		                    "layoutName": "<*||integer||comment:广告形式名称>",
-		                    "materialType": "<string||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1: gif, 2: png, 4: jpg)，用逗号分隔显示>",
-		                    "materialSize": "<string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
-		                    "materialMaxKbyte": "<integer||comment:普通硬广: 物料最大K数, 原生图文信息流:主图片最大K数, 原生视频信息流: 封面最大K数, 视频暂停: 物料最大K数>",
+		                    "materialType": "<string||comment:主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)>",
+		                    "materialSize": "<string||comment:主物料尺寸(格式：width*height)>",
+		                    "materialMaxKbyte": "<integer||comment:主物料最大K数>",
+		                    "materialCount": "<integer||comment:主物料个数>",
+		                    "materialDuration": "<string||comment:主物料视频时长(半角逗号分隔)>",
 		                    "logoType": "<string||comment:logo格式(1: gif, 2: png, 4: jpg)>",
 		                    "logoSize": "<string||comment:logo尺寸(格式：width*height)>",
 		                    "logoMaxKbyte": "<integer||comment:logo最大K数>",
 		                    "titleMaxLength": "<integer||comment:标题最大长度>",
 		                    "descMaxLength": "<integer||comment:描述最大长度>",
-		                    "mainPicNumber": "<integer||comment:原生图文信息流: 主图片张数>",
-		                    "videoType": "<string||comment:原生视频信息流: 视频格式, 视频: 视频格式(8: mp4, 16: flv, 32: swf)>",
-		                    "videoSize": "<string||comment:原生视频信息流: 视频尺寸, 视频: 视频尺寸(格式：width*height)>",
-		                    "videoMaxKbyte": "<integer||comment:原生视频信息流: 视频最大K数, 视频: 视频最大K数>",
-		                    "videoDuration": "<string||comment:视频时长(半角逗号分隔)>",
+		                    "coverType": "<string||comment:封面格式(1: gif, 2: png, 4: jpg)>",
+		                    "coverSize": "<string||comment:封面尺寸>",
+		                    "coverMaxKbyte": "<integer||comment:封面最大K数>",
 		                    "description": "<string||comment:描述>"
                         }
                     ]
@@ -303,19 +306,19 @@
                     "bidFloor": "<*||double||comment:底价>",
                     "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
                     "layout": "<*||integer||comment:广告形式(列表)>",
-                    "materialType": "<string||comment:普通硬广: 物料格式, 原生图文信息流: 主图片格式, 原生视频信息流: 封面格式, 视频暂停: 物料格式(1: gif, 2: png, 4: jpg)，用逗号分隔显示>",
-                    "materialSize": "<string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
-                    "materialMaxKbyte": "<integer||comment:普通硬广: 物料最大K数, 原生图文信息流:主图片最大K数, 原生视频信息流: 封面最大K数, 视频暂停: 物料最大K数>",
+                    "materialType": "<string||comment:主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)>",
+                    "materialSize": "<string||comment:主物料尺寸(格式：width*height)>",
+                    "materialMaxKbyte": "<integer||comment:主物料最大K数>",
+                    "materialCount": "<integer||comment:主物料个数>",
+                    "materialDuration": "<string||comment:主物料视频时长(半角逗号分隔)>",
                     "logoType": "<string||comment:logo格式(1: gif, 2: png, 4: jpg)>",
                     "logoSize": "<string||comment:logo尺寸(格式：width*height)>",
                     "logoMaxKbyte": "<integer||comment:logo最大K数>",
                     "titleMaxLength": "<integer||comment:标题最大长度>",
                     "descMaxLength": "<integer||comment:描述最大长度>",
-                    "mainPicNumber": "<integer||comment:原生图文信息流: 主图片张数>",
-                    "videoType": "<string||comment:原生视频信息流: 视频格式, 视频: 视频格式(8: mp4, 16: flv, 32: swf)>",
-                    "videoSize": "<string||comment:原生视频信息流: 视频尺寸, 视频: 视频尺寸(格式：width*height)>",
-                    "videoMaxKbyte": "<integer||comment:原生视频信息流: 视频最大K数, 视频: 视频最大K数>",
-                    "videoDuration": "<string||comment:视频时长(半角逗号分隔)>",
+                    "coverType": "<string||comment:封面格式(1: gif, 2: png, 4: jpg)>",
+                    "coverSize": "<string||comment:封面尺寸>",
+                    "coverMaxKbyte": "<integer||comment:封面最大K数>",
                     "description": "<string||comment:描述>"
                 }
             },
@@ -465,7 +468,9 @@
             "_summary": "需求方平台列表",
             "parameters": {
             	"query": {
-                	"ids" : "<||string||comment:1）查询所有dsp，则没有ids参数；2）查询部分dsp，则提供ids参数，idlist是用逗号分隔的dsp id组>"
+                	"ids" : "<string||comment:1）查询所有dsp，则没有ids参数；2）查询部分dsp，则提供ids参数，idlist是用逗号分隔的dsp id组>",
+                	"deliveryType": "<integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+                	"status": "<integer||comment:状态(0: 停用, 1: 启用)>"
                 }
             },
             "responses": {
@@ -680,14 +685,21 @@
                     "body": [
                         {
                             "id": "<*||integer||comment:物料ID>",
-		                	"materialId": "<string||comment:DSP定义的素材ID>",
+		                	"materialId": "<integer||comment:DSP定义的素材ID>",
 		                    "materialName": "<*||string||comment:DSP定义的素材名称>",
+		                    "materialLayout": "<*||integer||comment:物料类型(1:banner, 2:视频, 3:信息流)>",
 		            		"adMaterials": "<string||comment:广告素材URL(多个用竖线分隔)>",
-		            		"createdTime": "<string||comment:上传时间>",
-		            		"advertiserId": "<string||comment:广告主ID>",
-		            		"dspId": "<string||comment:需求方平台>",
-		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>"
+		            		"lpgUrl": "<string||comment:落地页URL>",
+		            		"dealId": "<integer||comment:PDB或PD投放方式下的DEAL ID>",
+		            		"createdTime": "<date||comment:上传时间>",
+		            		"advertiserId": "<integer||comment:广告主ID>",
+		            		"advertiserName": "<string||comment:广告主名称>",
+		            		"dspId": "<integer||comment:需求方ID>",
+		            		"dspName": "<string||comment:需求方名称>",
+		            		"mediaId": "<integer||comment:媒体ID>",
+		            		"mediaName": "<string||comment:媒体名称>",
+		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -709,26 +721,29 @@
                             "id": "<*||integer||comment:物料ID>",
 		                	"materialId": "<string||comment:DSP定义的素材ID>",
 		                    "materialName": "<*||string||comment:DSP定义的素材名称>",
-		            		"adMaterials": "<string||comment:广告素材URL(多个用竖线分隔)>",
-		            		"createdTime": "<string||comment:上传时间>",
+		                    "materialLayout": "<*||integer||comment:物料类型(1:banner, 2:视频, 3:信息流)>",
 		            		"advertiserId": "<string||comment:广告主ID>",
-		            		"dspId": "<string||comment:需求方平台>",
-		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>",
-		            		"title": "<string||comment:物料标题>",
-		            		"description": "<string||comment:物料描述>",
-		            		"materialType": "<string||comment:素材格式>",
-		            		"materialSize": "<string||comment:素材尺寸>",
-		            		"materialMaxKbyte": "<string||comment:素材K数>",
-		            		"landing_page_url": "<string||comment:落地页地址>",
-		            		"impression_urls": "<string||comment:曝光监测(多个用竖线分隔)>",
-		            		"click_urls": "<string||comment:点击监测(多个用竖线分隔)>",
-		            		"dealId": "<string||comment:deal id>",
-		            		"icon": "<string||comment:Logo url>",
+		            		"advertiserName": "<string||comment:广告主名称>",
 		            		"brand": "<string||comment:品牌>",
-		            		"industry": "<string||comment:行业?>",
-		            		"audited_user": "<string||comment:审核者>",
-		            		"audited_time": "<string||comment:审核时间>"
+		            		"agency": "<string||comment:代理商名称>",
+		            		"dealId": "<string||comment:PDB或PD投放方式下的DEAL ID>",
+		            		"endDate": "<date||comment:失效日期>",
+		            		"dspId": "<string||comment:需求方平台>",
+		            		"dspName": "<string||comment:需求方名称>",
+		            		"createdTime": "<string||comment:上传时间>",
+		            		"adMaterials": "<string||comment:广告素材URL(多个用竖线分隔)>",
+		            		"size": "<string||comment:素材尺寸(长*宽)>",
+		            		"icon": "<string||comment:信息流Logo URL>",
+		            		"title": "<string||comment:信息流广告标题>",
+		            		"description": "<string||comment:信息流广告描述>",
+		            		"lpgUrl": "<string||comment:落地页地址>",
+		            		"impUrls": "<string||comment:曝光监测(多个用竖线分隔)>",
+		            		"clkUrls": "<string||comment:点击监测(多个用竖线分隔)>",
+		            		"secUrls": "<string||comment:品牌安全监测URL(多个用竖线分隔)>",
+		            		"mediaId": "<integer||comment:媒体ID>",
+		            		"mediaName": "<string||comment:媒体名称>",
+		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -741,7 +756,7 @@
             "parameters": {
                 "body": {
                 	"ids": "<*||string||comment:dsp素材ID，多个用逗号分隔>",
-                	"status": "<integer||comment:审核操作(-1:审核不通过, 2:审核通过)>"
+                	"status": "<*||integer||comment:审核操作(-1:审核不通过, 2:审核通过)>"
                 }
             },
             "responses": {
@@ -771,7 +786,7 @@
 		            		"dspId": "<string||comment:所属DSP>",
 		            		"createdTime": "<string||comment:上传时间>",
 		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>",
 		            		"license": "<string||comment:资质文件>",
 		            		"contact": "<string||comment:联系人>",
 		            		"phone": "<string||comment:联系电话>",
@@ -800,7 +815,7 @@
 		            		"dspId": "<string||comment:所属DSP>",
 		            		"createdTime": "<string||comment:上传时间>",
 		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待审核, 1: 审核中, 2: 通过审核)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>",
 		            		"license": "<string||comment:资质文件>",
 		            		"contact": "<string||comment:联系人>",
 		            		"phone": "<string||comment:联系电话>",
@@ -845,14 +860,28 @@
                 "200": {
                     "body": [
                         {
-                        	"id": "<*||integer||comment:策略ID>",
-                        	"name": "<*||string||comment:策略名称>",
-		                	"dspNames": "<*||string||comment:需求方平台(用逗号分隔)>",
+                        	"id": "<*||integer||comment:策略ID(对于PDB和PD，此id就是策略的dealID)>",
+		                	"status": "<integer||comment:状态>",
+		                	"createdTime": "<date||comment:策略的创建时间>",
+                            "name": "<*||string||comment:策略名称>",
+		                	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>",
 		                	"priority": "<*||integer||comment:优先级>",
 		                    "startDate": "<*||date||comment:开始日期>",
 		                    "endDate": "<*||date||comment:结束日期(为零值不限结束日期)>",
-		                	"status": "<integer||comment:状态>",
-		                	"createdTime": "<date||comment:策略的创建时间>"
+		                	"timeTargeting": "<string||comment:时间定向(格式:0:0,1,2,3&1:19,20,21,22,23)，注：0代表周日；如果不指定时间段，则此字段不传值>",
+		                	"locationTargeting": "<string||comment:地域定向(用半角逗号分隔所有的城市或省或国家，如果所有的城市被选上则传值省代码，若传空值则是不限的意思)>",
+		                	"osTargeting": "<integer||comment:OS定向(多个用半角逗号分隔, 0:未知, 1:Android, 2:iOS)>",
+		                	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
+		                    "limitType": "<*||integer||comment:总量控制(0: 不限, 1: 每天, 2: 整单)>",
+		                    "limitReqs": "<integer||comment:请求量控制>",
+		                	"limitQPS": "<integer||comment:QPS控制>",
+		                	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
+		                	"bidFloor": "<double||comment:单价(页面以元为单位)>",
+		                	"description": "<string||comment:描述>",
+		                    "policyDsps": [{
+		                		"dspId": "<*||integer||comment:dsp id>",
+		                		"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
+		                    }]
                         }
                     ]
                 }
@@ -868,13 +897,15 @@
                 	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>",
                 	"weight": "<*||integer||comment:优先级>",
                     "startDate": "<date||comment:开始日期>",
-                    "isEndDate": "<*||integer||comment:0:不限结束日期, 1:限制结束日期",
+                    "isEndDate": "<*||integer||comment:0:不限结束日期, 1:限制结束日期>",
                     "endDate": "<date||comment:结束日期(为零值不限结束日期)>",
-                    "isTimeTargeting": "<*||integer||comment:0:不限时段, 1:限制时段",
+                    "isTimeTargeting": "<*||integer||comment:0:不限时段, 1:限制时段>",
                 	"timeTargeting": "<string||comment:时间定向(格式:0:0,1,2,3&1:19,20,21,22,23)，注：0代表周日；如果选择不限，则此字段不传值>",
-                	"isLocationTargeting": "<*||integer||comment:0:不限地域, 1:限制地域",
+                	"isLocationTargeting": "<*||integer||comment:0:不限地域, 1:限制地域>",
                 	"locationTargeting": "<string||comment:地域定向(用半角逗号分隔所有的城市或省或国家，如果所有的城市被选上则传值省代码，若传空值则是不限的意思)>",
+                	"isOsTargeting": "<*||integer||comment:0:不限操作系统, 1:限制操作系统>",
                 	"osTargeting": "<*||integer||comment:OS定向(多个用半角逗号分隔, 0:未知, 1:Android, 2:iOS)>",
+                	"isConnTargeting": "<*||integer||comment:0:不限连网方式, 1:限制连网方式>",
                 	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
                     "isQuantityLimit": "<*||integer||comment:总量限制(0：不限投放量，1：限制投放量)>",
                     "limitType": "<integer||comment:总量控制(1: 每天, 2: 整单)>",
@@ -884,21 +915,23 @@
                 	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
                 	"bidFloor": "<double||comment:单价(页面以元为单位)>",
                 	"description": "<string||comment:描述>",
-                    "policyAdspaceDtos": [
+                    "policyAdspaces": [
                     	{
                             "adspaceId": "<*||integer||comment:广告位id>",
-                            "adspaceDto": {
-	                            "bidType": "<*||integer||comment:售卖方式(1:CPM,2:CPC)>",
-			                	"bidFloor": "<*||double||comment:售卖单价(页面以元为单位)>",
-			                	"mediaDealId": "<string||comment:媒体dealId>",
-			                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
+                            "bidType": "<*||integer||comment:售卖方式(1:CPM,2:CPC)>",
+		                	"bidFloor": "<*||double||comment:售卖单价(页面以元为单位)>",
+		                	"mediaDealId": "<string||comment:媒体dealId>",
+		                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>",
+                            "adspace": {
+                            	"adspaceId": "<*||integer||comment:广告位id>",
+			                	"bidFloor": "<*||double||comment:广告位底价>"
                             }
                     	}
                     ],
-                    "policyDspDto": {
+                    "policyDsps": [{
                 		"dspId": "<*||integer||comment:dsp id>",
                 		"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
-                    }
+                    }]
                 }
             },
             "responses": {
@@ -943,26 +976,23 @@
 		                	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
 		                	"bidFloor": "<double||comment:单价(页面以元为单位)>",
 		                	"description": "<string||comment:描述>",
-		                    "adspaceDtos": [
+		                    "policyAdspaces": [
 		                    	{
-		                            "id": "<||integer||comment:广告位id>",
-		                            "name": "<*||string||comment:广告位名称>",
-		                            "mediaId": "<*||integer||comment:所属的媒体id>",
-		                            "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
-		                            "layout": "<*||integer||comment:广告形式(列表)>",
-		                            "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
-		                            "bidFloor": "<*||double||comment:底价>",
-		                            "createdTime": "<||date||comment:创建时间>",
-		                            "status": "<integer||comment:状态(0:停用,1:启用)>"
+		                            "adspaceId": "<*||integer||comment:广告位id>",
+		                            "bidType": "<*||integer||comment:售卖方式(1:CPM,2:CPC)>",
+				                	"bidFloor": "<*||double||comment:售卖单价(页面以元为单位)>",
+				                	"mediaDealId": "<string||comment:媒体dealId>",
+				                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>",
+		                            "adspace": {
+		                            	"adspaceId": "<*||integer||comment:广告位id>",
+					                	"bidFloor": "<*||double||comment:广告位底价>"
+		                            }
 		                    	}
 		                    ],
-		                    "dspDtos": [
-		                    	{
-		                    		"id": "<*||integer||comment:dsp id>",
-		                    		"name": "<string||comment:dsp名>",
-		                    		"weight": "<integer||comment:权重>"
-		                    	}
-		                    ]
+		                    "policyDsps": [{
+		                		"dspId": "<*||integer||comment:dsp id>",
+		                		"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
+		                    }]
                         }
                     ]
                 }
@@ -983,7 +1013,7 @@
                     "endDate": "<date||comment:结束日期(为零值不限结束日期)>",
                     "isTimeTargeting": "<*||integer||comment:0:不限时段, 1:限制时段",
                 	"timeTargeting": "<string||comment:时间定向(格式:0:0,1,2,3&1:19,20,21,22,23)，注：0代表周日；如果选择不限，则此字段不传值>",
-                	"isLocationTargeting": "<*||integer||comment:0:不限地域, 1:限制地域",
+                	"isLocationTargeting": "<*||integer||comment:0:不限地域, 1:限制地域>",
                 	"locationTargeting": "<string||comment:地域定向(用半角逗号分隔所有的城市或省或国家，如果所有的城市被选上则传值省代码，若传空值则是不限的意思)>",
                 	"osTargeting": "<*||integer||comment:OS定向(多个用半角逗号分隔, 0:未知, 1:Android, 2:iOS)>",
                 	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
@@ -995,19 +1025,23 @@
                 	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
                 	"bidFloor": "<double||comment:单价(页面以元为单位)>",
                 	"description": "<string||comment:描述>",
-                    "adspaceDtos": [
+                    "policyAdspaces": [
                     	{
-                            "id": "<*||integer||comment:广告位id>"
+                            "adspaceId": "<*||integer||comment:广告位id>",
+                            "bidType": "<*||integer||comment:售卖方式(1:CPM,2:CPC)>",
+		                	"bidFloor": "<*||double||comment:售卖单价(页面以元为单位)>",
+		                	"mediaDealId": "<string||comment:媒体dealId>",
+		                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>",
+                            "adspace": {
+                            	"adspaceId": "<*||integer||comment:广告位id>",
+			                	"bidFloor": "<*||double||comment:广告位底价>"
+                            }
                     	}
                     ],
-                    "dspDtos": [
-                    	{
-                    		"id": "<*||integer||comment:dsp id>",
-                    		"weight": "<integer||comment:权重>"
-                    	}
-                    ],
-                    "status": "<integer||comment:状态(0:停用,1:启用)>",
-                    "updateType": "<*||integer||comment:更新类型(1:更新策略，2:更新策略状态)>"
+                    "policyDsps": [{
+                		"dspId": "<*||integer||comment:dsp id>",
+                		"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
+                    }]
                 }
             },
             "responses": {
@@ -1021,35 +1055,22 @@
             }
         }
     },
-    "/report/instruction": {
-        "get": {
-            "_summary": "report参数的说明",
+    "/policy/updateStatus": {
+        "post": {
+            "_summary": "更新policy状态",
             "parameters": {
-                "query": null
+                "body": {
+                	"id": "<*||integer||comment:policy id>",
+                    "status": "<*||integer||comment:状态(0:停用,1:启用）>"
+                }
             },
             "responses": {
                 "200": {
-                    "body": {
-                    	"type": {
-                    		"default": "1:默认(可选的二级维度有:日期、时间、媒体、广告位)",
-                    		"carrier": "2:运营商(一定包含运营商这个维度，可选的二级维度有:日期、时间、媒体、广告位)",
-                    		"device": "4:设备类型(一定包含设备类型这个维度,可选的二级维度有:日期、时间、媒体、广告位)",
-                    		"conn": "8:联网方式(一定包含联网方式这个维度,可选的二级维度有:日期、时间、媒体、广告位)",
-                    		"location": "16:地域(一定包含地域这个维度,可选的二级维度有:日期、时间、媒体、广告位)"
-                    	},
-                    	"dims": {
-                    		"date": "1:日期",
-                    		"hour": "2:时间",
-                    		"media": "4:媒体",
-                    		"adspace": "8:广告位",
-                    		"policy": "16:策略",
-                    		"dsp": "32:需求方"
-                    	},
-                    	"realTime": {
-                    		"实时": "1",
-                    		"离线": "0"
-                    	}
-                    }
+                    "body": [
+                        {
+                            "id": "<*||integer||comment:policy id>"
+                        }
+                    ]
                 }
             }
         }
@@ -1059,14 +1080,37 @@
             "_summary": "",
             "parameters": {
                 "query": {
-                    "type": "<*||integer||comment:报表类型>",
-                	"dims": "<*||string||comment:可选的二级维度(1,2,4,8)>",
-                	"realTime": "<*||integer||comment:实时或离线>"
+                    "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、媒体、广告位四个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上)>",
+                	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,4:媒体,8:广告位>",
+                	"realtime": "<*||integer||comment:(单选)1 实时,0 离线>",
+                	"mediaId": "<integer||comment:媒体id(过滤)>",
+                	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
+                	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
                 }
             },
             "responses": {
                 "200": {
-                    "body": null
+                    "body": {
+                    	"id": "<*||integer||comment:媒体报表ID>",
+	                	"mediaId": "<*||integer||comment:媒体ID>",
+	                	"mediaName": "<*||string||comment:媒体名称>",
+	                	"adspaceId": "<integer||comment:广告位ID>",
+	                	"adspaceName": "<*||string||comment:广告位名称>",
+	                	"carrier": "<integer||comment:运营商code>",
+	                	"conn": "<integer||comment:联网方式code>",
+	                	"device": "<integer||comment:设备类型code>",
+	                	"location": "<string||comment:地域code>",
+	                	"date": "<date||comment:日期>",
+	                    "hour": "<integer||comment:小时>",
+	                    "reqs": "<*||integer||comment:请求数>",
+	                    "bids": "<*||integer||comment:填充数>",
+	                    "errs": "<*||integer||comment:错误数>",
+	                	"imps": "<*||integer||comment:展示数>",
+	                	"clks": "<*||integer||comment:点击数>",
+	                	"vimps": "<integer||comment:有效展示数>",
+	                	"vclks": "<integer||comment:有效点击数>",
+	                	"income": "<*||integer||comment:媒体收入>"
+                    }
                 }
             }
         }
@@ -1076,14 +1120,40 @@
             "_summary": "",
             "parameters": {
                 "query": {
-                    "type": "<*||integer||comment:报表类型>",
-                	"dims": "<*||string||comment:可选的二级维度(1,2,32)>",
-                	"realTime": "<*||integer||comment:实时或离线>"
+                    "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、需求方三个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上),32:媒体(同上)>",
+                	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,32:需求方>",
+                	"realTime": "<*||integer||comment:(单选)1 实时,0 离线>",
+                	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
+                	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
                 }
             },
             "responses": {
                 "200": {
-                    "body": null
+                    "body": {
+                    	"id": "<*||integer||comment:媒体报表ID>",
+	                	"dspId": "<integer||comment:DSP ID>",
+	                	"dspName": "<*||string||comment:DSP名称>",
+	                	"mediaId": "<*||string||comment:媒体ID>",
+	                	"mediaName": "<*||string||comment:媒体名称>",
+	                	"carrier": "<integer||comment:运营商code>",
+	                	"conn": "<integer||comment:联网方式code>",
+	                	"device": "<integer||comment:设备类型code>",
+	                	"location": "<string||comment:地域code>",
+	                	"cityName": "<string||comment:地域的城市名称>",
+	                	"provinceName": "<string||comment:地域的省份名称>",
+	                	"date": "<date||comment:日期>",
+	                    "hour": "<integer||comment:小时>",
+	                    "reqs": "<*||integer||comment:请求数>",
+	                    "bids": "<*||integer||comment:填充数>",
+	                    "timeouts": "<*||integer||comment:超时数>",
+	                    "errs": "<*||integer||comment:错误数>",
+	                    "wins": "<*||integer||comment:赢得竞价数>",
+	                	"imps": "<*||integer||comment:展示数>",
+	                	"clks": "<*||integer||comment:点击数>",
+	                	"vimps": "<integer||comment:有效展示数>",
+	                	"vclks": "<integer||comment:有效点击数>",
+	                	"cost": "<*||integer||comment:DSP成本>"
+                    }
                 }
             }
         }
@@ -1093,14 +1163,64 @@
             "_summary": "",
             "parameters": {
                 "query": {
-                    "type": "<*||integer||comment:报表类型(1)>",
-                	"dims": "<*||string||comment:可选的二级维度(1,2,4,8,16,32)>",
-                	"realTime": "<*||integer||comment:实时或离线>"
+                    "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、策略、需求方四个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上),32:媒体(同上)>",
+                	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,16:策略,32:需求方>",
+                	"realTime": "<*||integer||comment:(单选)1 实时,0 离线>",
+                	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
+                	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
                 }
             },
             "responses": {
                 "200": {
-                    "body": null
+                    "body": {
+                    	"id": "<*||integer||comment:媒体报表ID>",
+	                	"policyId": "<integer||comment:策略ID>",
+	                	"policyName": "<*||string||comment:策略名称>",
+	                	"dspId": "<integer||comment:DSP ID>",
+	                	"dspName": "<*||string||comment:DSP名称>",
+	                	"mediaId": "<*||string||comment:媒体ID>",
+	                	"mediaName": "<*||string||comment:媒体名称>",
+	                	"carrier": "<integer||comment:运营商code>",
+	                	"conn": "<integer||comment:联网方式code>",
+	                	"device": "<integer||comment:设备类型code>",
+	                	"location": "<string||comment:地域code>",
+	                	"cityName": "<string||comment:地域的城市名称>",
+	                	"provinceName": "<string||comment:地域的省份名称>",
+	                	"date": "<date||comment:日期>",
+	                    "hour": "<integer||comment:小时>",
+	                    "reqs": "<*||integer||comment:请求数>",
+	                    "bids": "<*||integer||comment:填充数>",
+	                    "timeouts": "<*||integer||comment:超时数>",
+	                    "errs": "<*||integer||comment:错误数>",
+	                	"wins": "<*||integer||comment:赢得竞价数>",
+	                	"imps": "<*||integer||comment:展示数>",
+	                	"clks": "<*||integer||comment:点击数>",
+	                	"vimps": "<integer||comment:有效展示数>",
+	                	"vclks": "<integer||comment:有效点击数>",
+	                	"income": "<*||integer||comment:媒体收入>",
+	                	"cost": "<*||integer||comment:DSP成本>"
+                    }
+                }
+            }
+        }
+    },
+    "/userauth/media/update": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "userId": "<*||integer||comment:userId>",
+                	"isAdmin": "<*||integer||comment:1-管理员,0-非管理员>",
+                    "mediaIds": ["<string||comment:选择的媒体权限>"]
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
                 }
             }
         }

@@ -7,8 +7,11 @@ import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
+import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
@@ -22,13 +25,13 @@ public class PolicyDto implements Serializable{
 	private Integer dealId;
     @NotNullAndBlank
     private String name;
-    @NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_TYPE, groups={Update.class, UpdateStatus.class})
-    @NotNullAndBlank
+    @NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_TYPE, groups={Update.class, UpdateStatus.class, Insert.class})
     private Integer type; //策略类型(1: PDB, 2: PD, 4: PMP, 8: RTB)
     @NotNullAndBlank
-    @Min(message=SystemConstant.ErrorMessage.ERROR_WEIGHT_FORMAT, value=1)
+    @Min(message=SystemConstant.ErrorMessage.ERROR_WEIGHT_FORMAT, value=1, groups={Update.class, UpdateStatus.class})
     private Integer weight; //权重
     @NotNullAndBlank
+//    @NotPast(groups={Update.class, Insert.class})
     private Date startDate;
     @NotNullAndBlank
     private Integer isEndDate; //0:不限结束时间，1:限制结束时间
@@ -42,8 +45,12 @@ public class PolicyDto implements Serializable{
     private Integer isLocationTargeting; //0:不限地域，1:指定地域
 
     private String locationTargeting; //地域定向
+    
+    private Integer isOsTargeting;
     @NotNullAndBlank
     private String osTargeting; //OS定向(多个用半角逗号分隔, 1:Android, 2:iOS, 3: 其它)
+    
+    private Integer isConnTargeting;
     @NotNullAndBlank
     private String connTargeting; //连网方式定向(多个用半角逗号分隔, 1:WIFI, 2:2G, 3:3G, 4:4G)
     @NotNullAndBlank
@@ -53,21 +60,16 @@ public class PolicyDto implements Serializable{
 
     private Integer limitReqs;
 
-    private Integer limitQps;
-    
     private Byte limitSpeed; //投放速度(1:加速投放, 2:匀速投放)
 
-    private Integer bidType;
-
-    private Integer bidFloor;
     @NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_STATUS, groups=UpdateStatus.class)
     private Byte status;
-
+    @Length(max=SystemConstant.DB.DESC_LENGTH, groups={Update.class, Insert.class})
     private String description;
     
     private List<PolicyAdspaceDto> policyAdspaces;
     
-    private PolicyDspDto policyDsp;
+    private List<PolicyDspDto> policyDsps;
 
 	public Integer getId() {
 		return id;
@@ -75,6 +77,14 @@ public class PolicyDto implements Serializable{
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Integer getDealId() {
+		return dealId;
+	}
+
+	public void setDealId(Integer dealId) {
+		this.dealId = dealId;
 	}
 
 	public String getName() {
@@ -173,6 +183,14 @@ public class PolicyDto implements Serializable{
 		this.connTargeting = connTargeting;
 	}
 
+	public Integer getIsQuantityLimit() {
+		return isQuantityLimit;
+	}
+
+	public void setIsQuantityLimit(Integer isQuantityLimit) {
+		this.isQuantityLimit = isQuantityLimit;
+	}
+
 	public Byte getLimitType() {
 		return limitType;
 	}
@@ -189,36 +207,12 @@ public class PolicyDto implements Serializable{
 		this.limitReqs = limitReqs;
 	}
 
-	public Integer getLimitQps() {
-		return limitQps;
-	}
-
-	public void setLimitQps(Integer limitQps) {
-		this.limitQps = limitQps;
-	}
-
 	public Byte getLimitSpeed() {
 		return limitSpeed;
 	}
 
 	public void setLimitSpeed(Byte limitSpeed) {
 		this.limitSpeed = limitSpeed;
-	}
-
-	public Integer getBidType() {
-		return bidType;
-	}
-
-	public void setBidType(Integer bidType) {
-		this.bidType = bidType;
-	}
-
-	public Integer getBidFloor() {
-		return bidFloor;
-	}
-
-	public void setBidFloor(Integer bidFloor) {
-		this.bidFloor = bidFloor;
 	}
 
 	public Byte getStatus() {
@@ -237,22 +231,6 @@ public class PolicyDto implements Serializable{
 		this.description = description;
 	}
 
-	public Integer getIsQuantityLimit() {
-		return isQuantityLimit;
-	}
-
-	public void setIsQuantityLimit(Integer isQuantityLimit) {
-		this.isQuantityLimit = isQuantityLimit;
-	}
-
-	public Integer getDealId() {
-		return dealId;
-	}
-
-	public void setDealId(Integer dealId) {
-		this.dealId = dealId;
-	}
-
 	public List<PolicyAdspaceDto> getPolicyAdspaces() {
 		return policyAdspaces;
 	}
@@ -261,12 +239,28 @@ public class PolicyDto implements Serializable{
 		this.policyAdspaces = policyAdspaces;
 	}
 
-	public PolicyDspDto getPolicyDsp() {
-		return policyDsp;
+	public List<PolicyDspDto> getPolicyDsps() {
+		return policyDsps;
 	}
 
-	public void setPolicyDsp(PolicyDspDto policyDsp) {
-		this.policyDsp = policyDsp;
+	public void setPolicyDsps(List<PolicyDspDto> policyDsps) {
+		this.policyDsps = policyDsps;
+	}
+
+	public Integer getIsOsTargeting() {
+		return isOsTargeting;
+	}
+
+	public void setIsOsTargeting(Integer isOsTargeting) {
+		this.isOsTargeting = isOsTargeting;
+	}
+
+	public Integer getIsConnTargeting() {
+		return isConnTargeting;
+	}
+
+	public void setIsConnTargeting(Integer isConnTargeting) {
+		this.isConnTargeting = isConnTargeting;
 	}
 
 }

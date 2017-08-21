@@ -30,14 +30,14 @@ public class MediaControllerTest {
 	
 	@Test
 	public void detail(){
-		String link = "http://172.16.25.31:8080/services/media/detail?id=100000";
+		String link = "http://localhost:8080/services/media/detail?id=100001";
 		HttpUtilTest.httpGet(link);
 	}
 	
 	@Test
 	public void list(){
-//		String link = "http://localhost:8080/services/media/list?ids=8000005,8000004";
-		String link = "http://172.16.25.31:8080/services/media/list";
+		String link = "http://localhost:8080/services/media/list";
+//		String link = "http://172.16.25.31:8080/services/media/list";
 //		String link = "http://172.16.25.48:8080/services/dict/list?type=1";
 		HttpUtilTest.httpGet(link);
 	} 
@@ -76,13 +76,19 @@ public class MediaControllerTest {
 	
 	@Test
 	public void test(){
-		String[] ss = StringUtils.splitIds("33333,444,62");
-		System.out.println(ss);
-		List<Integer> list = new ArrayList<Integer>();
-		list.add(2);
-		list.add(3);
-		String s = StringUtils.getIdsStr(list);
-		System.out.println(s);
+//		String[] ss = StringUtils.splitToStringArray("33333,444,62");
+//		System.out.println(ss);
+//		List<Integer> list = new ArrayList<Integer>();
+//		list.add(2);
+//		list.add(3);
+//		String s = StringUtils.getIdsStr(list);
+//		System.out.println(s);
+		
+		List list = null;
+		for(Object i : list){
+			System.out.println(i);
+		}
+		
 	}
 	
 }

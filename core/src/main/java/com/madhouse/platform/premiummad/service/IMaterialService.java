@@ -3,6 +3,7 @@ package com.madhouse.platform.premiummad.service;
 import java.util.List;
 import java.util.Map;
 
+import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.model.MaterialModel;
 
@@ -46,4 +47,10 @@ public interface IMaterialService {
 	 * @param auditResults
 	 */
 	void updateStatusToMediaByMaterialId(List<MaterialAuditResultModel> auditResults);
+	
+	List<Material> queryAll(List<Integer> mediaIds);
+
+	Material queryById(Integer id);
+
+	void auditMaterial(String[] ids, Integer status);
 }

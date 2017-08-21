@@ -266,4 +266,19 @@ public class MaterialServiceImpl implements IMaterialService {
 			}
 		}
 	}
+
+	@Override
+	public List<Material> queryAll(List<Integer> mediaIds) {
+		return materialDao.queryAll(mediaIds);
+	}
+
+	@Override
+	public Material queryById(Integer id) {
+		return materialDao.queryById(id);
+	}
+
+	@Override
+	public void auditMaterial(String[] ids, Integer status) {
+		materialDao.auditMaterial(ids, status);
+	}
 }

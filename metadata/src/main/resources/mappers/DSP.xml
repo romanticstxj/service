@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.madhouse.platform.premiummad.dao.DSPDao">
+	<resultMap id="baseResult" type="com.madhouse.platform.premiummad.entity.DSPMetaData">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="bid_url" jdbcType="VARCHAR" property="bidUrl" />
+		<result column="winnoticeUrl" jdbcType="VARCHAR" property="wnUrl" />
+		<result column="token" jdbcType="CHAR" property="token" />
+		<result column="status" jdbcType="BIT" property="status" />
+		<result column="max_qps" jdbcType="INTEGER" property="maxQPS" />
+		<result  column="api_type" jdbcType="INTEGER" property="apiType"/>
+	</resultMap>
+	
+	<resultMap id="baseMappingResult" type="com.madhouse.platform.premiummad.entity.DSPMappingMetaData">
+        <result property="adspaceId" column="adspace_id" jdbcType="INTEGER" />
+        <result property="mappingKey" column="media_adspace_key" jdbcType="VARCHAR" />
+        <result property="dspId" column="dsp_id" jdbcType="INTEGER" />
+        <result property="dspMediaId" column="dsp_media_id" jdbcType="INTEGER" />
+    </resultMap>
+	
+    <select id="queryAll" resultMap="baseResult">
+		select id,bid_url,winnotice_url,token,api_type,status,api_type,max_qps from mad_sys_dsp where status >0
+	</select>
+	
+	<select id="queryAdspaceMappingDsp" resultMap="baseMappingResult">
+  		select  * from mad_sys_adspace_mapping_dsp where `status`>0
+	</select>
+
+</mapper>

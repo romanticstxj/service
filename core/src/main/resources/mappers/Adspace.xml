@@ -17,16 +17,16 @@
         <result property="materialType" column="material_type" jdbcType="INTEGER" />
         <result property="materialSize" column="material_size" jdbcType="VARCHAR" />
         <result property="materialMaxKbyte" column="material_max_kbyte" jdbcType="INTEGER" />
+        <result property="materialCount" column="material_count" jdbcType="INTEGER" />
+        <result property="materialDuration" column="material_duration" jdbcType="VARCHAR" />
         <result property="logoType" column="logo_type" jdbcType="INTEGER" />
         <result property="logoSize" column="logo_size" jdbcType="VARCHAR" />
         <result property="logoMaxKbyte" column="logo_max_kbyte" jdbcType="INTEGER" />
         <result property="titleMaxLength" column="title_max_length" jdbcType="INTEGER" />
         <result property="descMaxLength" column="desc_max_length" jdbcType="INTEGER" />
-        <result property="mainPicNumber" column="main_pic_number" jdbcType="INTEGER" />
-        <result property="videoType" column="video_type" jdbcType="INTEGER" />
-        <result property="videoSize" column="video_size" jdbcType="VARCHAR" />
-        <result property="videoMaxKbyte" column="video_max_kbyte" jdbcType="INTEGER" />
-        <result property="videoDuration" column="video_duration" jdbcType="VARCHAR" />
+        <result property="coverType" column="cover_type" jdbcType="INTEGER" />
+        <result property="coverSize" column="cover_size" jdbcType="VARCHAR" />
+        <result property="coverMaxKbyte" column="cover_max_kbyte" jdbcType="INTEGER" />
         <result property="status" column="status" jdbcType="INTEGER" />
         <result property="description" column="description" jdbcType="VARCHAR" />
         <result property="createdUser" column="created_user" jdbcType="INTEGER" />
@@ -72,8 +72,8 @@
     <sql id="baseColumns">
 		${alias}.`id`,${alias}.`name`,${alias}.`adspace_key`,${alias}.`media_id`,${alias}.`terminal_type`,${alias}.`terminal_os`,${alias}.`support_https`,
 		${alias}.`bid_type`,${alias}.`bid_floor`,${alias}.`adtype`,${alias}.`layout`,${alias}.`material_type`,${alias}.`material_size`,${alias}.`material_max_kbyte`,
-		${alias}.`logo_type`,${alias}.`logo_size`,${alias}.`logo_max_kbyte`,${alias}.`title_max_length`,${alias}.`desc_max_length`,${alias}.`main_pic_number`,
-		${alias}.`video_type`,${alias}.`video_size`,${alias}.`video_max_kbyte`,${alias}.`video_duration`,${alias}.`status`,${alias}.`description`,${alias}.`created_user`,
+		${alias}.`logo_type`,${alias}.`logo_size`,${alias}.`logo_max_kbyte`,${alias}.`title_max_length`,${alias}.`desc_max_length`,${alias}.`material_count`,
+		${alias}.`cover_type`,${alias}.`cover_size`,${alias}.`cover_max_kbyte`,${alias}.`material_duration`,${alias}.`status`,${alias}.`description`,${alias}.`created_user`,
 		${alias}.`created_time`,${alias}.`updated_user`,${alias}.`updated_time`
 	</sql>
 	
@@ -95,7 +95,7 @@
         LEFT JOIN mad_sys_media m ON m.id = a.media_id
         LEFT JOIN mad_dict_layout l ON a.layout = l.code AND a.adtype = l.ad_type AND a.terminal_type = l.terminal_type
         WHERE 1=1
-        <if test="idStrs != null and idStrs.length > 0">
+        <if test="idStrs != null and idStrs.size() > 0">
         	AND m.id IN 
         	<foreach collection="idStrs" item="mediaId" index="index" open="(" close=")" separator=",">
             	#{mediaId,jdbcType=INTEGER}
@@ -132,11 +132,11 @@
               <if test="logoMaxKbyte != null">logo_max_kbyte,</if>
               <if test="titleMaxLength != null">title_max_length,</if>
               <if test="descMaxLength != null">desc_max_length,</if>
-              <if test="mainPicNumber != null">main_pic_number,</if>
-              <if test="videoType != null">video_type,</if>
-              <if test="videoSize != null">video_size,</if>
-              <if test="videoMaxKbyte != null">video_max_kbyte,</if>
-              <if test="videoDuration != null">video_duration,</if>
+              <if test="materialCount != null">material_count,</if>
+              <if test="coverType != null">cover_type,</if>
+              <if test="coverSize != null">cover_size,</if>
+              <if test="coverMaxKbyte != null">cover_max_kbyte,</if>
+              <if test="materialDuration != null">material_duration,</if>
               <if test="description != null">description,</if>
               <if test="createdUser != null">created_user,</if>
               <if test="updatedUser != null">updated_user,</if>
@@ -164,11 +164,11 @@
               <if test="logoMaxKbyte != null">#{logoMaxKbyte},</if>
               <if test="titleMaxLength != null">#{titleMaxLength},</if>
               <if test="descMaxLength != null">#{descMaxLength},</if>
-              <if test="mainPicNumber != null">#{mainPicNumber},</if>
-              <if test="videoType != null">#{videoType},</if>
-              <if test="videoSize != null">#{videoSize},</if>
-              <if test="videoMaxKbyte != null">#{videoMaxKbyte},</if>
-              <if test="videoDuration != null">#{videoDuration},</if>
+              <if test="materialCount != null">#{materialCount},</if>
+              <if test="coverType != null">#{coverType},</if>
+              <if test="coverSize != null">#{coverSize},</if>
+              <if test="coverMaxKbyte != null">#{coverMaxKbyte},</if>
+              <if test="materialDuration != null">#{materialDuration},</if>
               <if test="description != null">#{description},</if>
               <if test="createdUser != null">#{createdUser},</if>
               <if test="updatedUser != null">#{updatedUser},</if>
@@ -198,11 +198,11 @@
               <if test="logoMaxKbyte != null">logo_max_kbyte = #{logoMaxKbyte},</if>
               <if test="titleMaxLength != null">title_max_length = #{titleMaxLength},</if>
               <if test="descMaxLength != null">desc_max_length = #{descMaxLength},</if>
-              <if test="mainPicNumber != null">main_pic_number = #{mainPicNumber},</if>
-              <if test="videoType != null">video_type = #{videoType},</if>
-              <if test="videoSize != null">video_size = #{videoSize},</if>
-              <if test="videoMaxKbyte != null">video_max_kbyte = #{videoMaxKbyte},</if>
-              <if test="videoDuration != null">video_duration = #{videoDuration},</if>
+              <if test="materialCount != null">material_count = #{materialCount},</if>
+              <if test="coverType != null">cover_type = #{coverType},</if>
+              <if test="coverSize != null">cover_size = #{coverSize},</if>
+              <if test="coverMaxKbyte != null">cover_max_kbyte = #{coverMaxKbyte},</if>
+              <if test="materialDuration != null">material_duration = #{materialDuration},</if>
               <if test="description != null">description = #{description},</if>
               <if test="createdUser != null">created_user = #{createdUser},</if>
               <if test="updatedUser != null">updated_user = #{updatedUser},</if>
@@ -253,14 +253,14 @@
             INSERT INTO mad_sys_adspace_mapping_media
             <trim prefix="(" suffix=")" suffixOverrides=",">
               <if test="adspaceId != null">adspace_id,</if>
-              <if test="mediaAdspaceKey != null">media_adspace_key,</if>
+              <if test="mediaAdspaceKey != null and mediaAdspaceKey.trim() != ''">media_adspace_key,</if>
               <if test="createdTime != null">created_time,</if>
               status
             </trim>
             VALUES
             <trim prefix="(" suffix=")" suffixOverrides=",">
               <if test="adspaceId != null">#{adspaceId},</if>
-              <if test="mediaAdspaceKey != null">#{mediaAdspaceKey},</if>
+              <if test="mediaAdspaceKey != null and mediaAdspaceKey.trim() != ''">#{mediaAdspaceKey},</if>
               <if test="createdTime != null">#{createdTime},</if>
               1
             </trim>
@@ -273,14 +273,17 @@
            	INSERT INTO mad_sys_adspace_mapping_dsp (adspace_id, dsp_id, dsp_media_id, 
           		dsp_adspace_key,created_time, status) VALUES
 	          		<foreach collection="dspMappings" index="index" item="dspMapping" separator=",">
-	          			(
-	          				#{dspMapping.adspaceId},
-	          				#{dspMapping.dspId},
-	          				#{dspMapping.dspMediaId},
-	          				#{dspMapping.dspAdspaceKey},
-	          				#{dspMapping.createdTime},
-	          				1
-	          			)
+	          			<if test="(dspMapping.dspMediaId != null and dspMapping.dspMediaId.trim() != '')
+	          			 or (dspMapping.dspAdspaceKey != null and dspMapping.dspAdspaceKey.trim() != '')">
+		          			(
+		          				#{dspMapping.adspaceId},
+		          				#{dspMapping.dspId},
+		          				#{dspMapping.dspMediaId},
+		          				#{dspMapping.dspAdspaceKey},
+		          				#{dspMapping.createdTime},
+		          				1
+		          			)
+	          			 </if>
 	        		</foreach>
     </insert>
     
@@ -308,6 +311,5 @@
 		DELETE FROM mad_sys_adspace_mapping_dsp
 		WHERE adspace_id = #{adspaceId}
 	</delete>
-	
 	
 </mapper>

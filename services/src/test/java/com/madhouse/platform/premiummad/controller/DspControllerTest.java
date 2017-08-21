@@ -9,10 +9,11 @@ public class DspControllerTest {
 	@Test
 	public void add(){
 		DspDto dsp = new DspDto();
-		dsp.setName("dspName22");
+		dsp.setName("dspName221");
 		dsp.setDeliveryType("1,2,8");
 		dsp.setBidUrl("http://baidu.com");
-		String url = "http://localhost:8080/services/dsp/create";
+//		String url = "http://localhost:8080/services/dsp/create";
+		String url = "http://172.16.25.48:8080/services/dsp/create";
 		String dspStr = JSON.toJSONString(dsp);
 		HttpUtilTest.httpPost(url, dspStr);
 	}
@@ -46,7 +47,7 @@ public class DspControllerTest {
 	
 	@Test
 	public void list(){
-		String url = "http://localhost:8080/services/dsp/list";
+		String url = "http://172.16.25.48:8080/services/dsp/list?status=1&deliveryType=8";
 		HttpUtilTest.httpGet(url);
 	}
 	

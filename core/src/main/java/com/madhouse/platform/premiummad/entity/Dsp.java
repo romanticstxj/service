@@ -272,4 +272,14 @@ public class Dsp extends BaseEntity{
 	public void setMaxQPS(Integer maxQPS) {
 		this.maxQPS = maxQPS;
 	}
+
+	public Dsp(Byte deliveryType, Integer status) {
+		super();
+		this.deliveryType = deliveryType;
+		this.status = status;
+	}
+	
+	public Dsp() {
+		super();
+	}
 }

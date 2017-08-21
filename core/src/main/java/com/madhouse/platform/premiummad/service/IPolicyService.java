@@ -4,15 +4,11 @@ import java.util.List;
 
 import com.madhouse.platform.premiummad.entity.Policy;
 
-public interface IPolicyService {
+public interface IPolicyService extends IBaseService<Policy>{
 	
-	int insert(Policy policy);
-
 	Policy queryPolicyById(Integer id, Integer type);
 
 	int update(Policy policy);
-
-	List<Policy> queryAllByParams(String policyIds, Integer status, Integer type);
 
 	int updateStatus(Policy policy);
 	
@@ -24,4 +20,6 @@ public interface IPolicyService {
 	 * @return 
 	 */
 	String getMediaDealId(Integer dealId, Integer mediaId);
+
+	List<Policy> queryAllByParams(List<Integer> policyIdList, Integer status, Integer type);
 }
