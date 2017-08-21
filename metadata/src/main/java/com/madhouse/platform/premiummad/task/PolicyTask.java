@@ -23,6 +23,7 @@ import com.madhouse.platform.premiummad.entity.PolicyMetaData.AdspaceInfo;
 import com.madhouse.platform.premiummad.entity.PolicyMetaData.DSPInfo;
 import com.madhouse.platform.premiummad.entity.PolicyMetaData.WeekdayHours;
 import com.madhouse.platform.premiummad.service.IPolicyService;
+import com.madhouse.platform.premiummad.util.Constant;
 import com.madhouse.platform.premiummad.util.ResourceManager;
 
 @Component
@@ -57,6 +58,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                     try {
                         if(null != policy){
                             BeanUtils.copyProperties(policy, metaData);
+                            if(Constant.DeliveryType.RTB == metaData.getDeliveryType()){
+                                metaData.setDealId("");
+                            }
                             List<PolicyMetaData.WeekdayHours> weekdayHoursList =new ArrayList<PolicyMetaData.WeekdayHours>();
                             String[] weekDay= StringUtils.tokenizeToStringArray(policy.getTimeTargeting(), ";");
                             if(!StringUtils.isEmpty(weekDay)){
