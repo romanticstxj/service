@@ -1,7 +1,10 @@
 package com.madhouse.platform.premiummad.task;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +50,13 @@ public class DspTask {
             LOGGER.debug("------------DSPTask-----loadDSPMetaData------start--");
             final List<DSPMetaData> lists = service.queryAll();
             long begin = System.currentTimeMillis();
+            redisMaster.del(ALL_DSP);
             for (DSPMetaData metaData : lists) {
                 redisMaster.setex(String.format(this.DSP_META_DATA, String.valueOf(metaData.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
                 redisMaster.sadd(this.ALL_DSP, String.valueOf(metaData.getId()));
             }
             redisMaster.expire(this.ALL_DSP, EXPIRATION_TIME);
-            LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadDSPMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------DSPTask-----loadDSPMetaData------  End--");
         } catch (Exception e) {
             LOGGER.error("------------DSPTask-----loadDSPMetaData------error:{}",e.toString());
@@ -71,7 +75,7 @@ public class DspTask {
             for (DSPMappingMetaData mappingMetaData : lists) {
                 redisMaster.setex(String.format(this.DSP_MAPPING_DATA, String.valueOf(mappingMetaData.getAdspaceId()), String.valueOf(mappingMetaData.getDspId())), EXPIRATION_TIME, JSON.toJSONString(mappingMetaData));
             }
-            LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadDSPMappingData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------DSPTask-----plcmtMappingDsp------End--");
         } catch (Exception e) {
             LOGGER.error("------------DSPTask-----plcmtMappingDsp------error:{}",e.toString());

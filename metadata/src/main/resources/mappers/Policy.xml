@@ -15,7 +15,7 @@
 	    <result column="os_targeting" jdbcType="VARCHAR" property="osTargeting" />
 	    <result column="conn_targeting" jdbcType="VARCHAR" property="connTargeting" />
 	    <result column="limit_type" jdbcType="TINYINT" property="controlType" />
-	    <result column="limit_qps" jdbcType="INTEGER" property="maxCount" />
+	    <result column="limit_reqs" jdbcType="INTEGER" property="maxCount" />
 	    <result column="limit_speed" jdbcType="INTEGER" property="controlMethod" />
 	    <result column="status" jdbcType="INTEGER" property="status" />
 	    
@@ -41,20 +41,24 @@
   	</resultMap>
   	
     <select id="queryAll" resultMap="baseResult">
-		select DATE_FORMAT(start_date,'%Y-%m-%d')start_date , DATE_FORMAT(end_date,'%Y-%m-%d') end_date,
-			id,type,weight,time_targeting,location_targeting,os_targeting,conn_targeting ,limit_type,limit_reqs,limit_speed,status
-   		from mad_sys_policy  WHERE status >0
+    	<![CDATA[  
+			select DATE_FORMAT(start_date,'%Y-%m-%d')start_date , DATE_FORMAT(end_date,'%Y-%m-%d') end_date,
+				id,id deal_id,type,weight,time_targeting,location_targeting,os_targeting,conn_targeting ,limit_type,limit_reqs,limit_speed,status
+	   		from mad_sys_policy  WHERE status >0   AND start_date <= SYSDATE() AND ( end_date IS NULL OR end_date >= SYSDATE())
+		 ]]>  
 	</select>
 	
 	<select id="getPolicyDsp" parameterType="java.lang.Integer" resultMap="PolicyDspResultMap">
 	   select * from mad_sys_policy_dsp pd
 	    LEFT JOIN mad_sys_dsp p ON pd.dsp_id = p.id
-	    where policy_id = #{id,jdbcType=INTEGER}
+	    where policy_id = #{id,jdbcType=INTEGER} and pd.`status`>0 and p.`status`>0
   	</select>
   	
   	<select id="getPolicyAdspace" parameterType="java.lang.Integer" resultMap="PolicyAdspaceResultMap">
 	    select * from mad_sys_policy_adspace pa
-	    where pa.policy_id = #{id,jdbcType=INTEGER}
+	     LEFT JOIN  mad_sys_adspace a ON pa.adspace_id=a.id
+	     LEFT JOIN mad_sys_media m on a.media_Id = m.id 
+	    where pa.policy_id = #{id,jdbcType=INTEGER} and pa.`status`>0 and a.`status`>0 and m.`status`>0
   	</select>
 	
 

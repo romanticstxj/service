@@ -18,7 +18,7 @@
     
 	
     <select id="queryAll" resultMap="baseResult">
-		select id,name,type,category,api_type,advertiser_audit_mode,material_audit_mode,timeout,status from mad_sys_media
+		select id,name,type,category,api_type,advertiser_audit_mode,material_audit_mode,timeout,status from mad_sys_media where status >0
 	</select>
 	
 	

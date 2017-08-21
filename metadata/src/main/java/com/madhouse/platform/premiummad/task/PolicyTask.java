@@ -21,7 +21,9 @@ import com.madhouse.platform.premiummad.entity.Policy;
 import com.madhouse.platform.premiummad.entity.PolicyMetaData;
 import com.madhouse.platform.premiummad.entity.PolicyMetaData.AdspaceInfo;
 import com.madhouse.platform.premiummad.entity.PolicyMetaData.DSPInfo;
+import com.madhouse.platform.premiummad.entity.PolicyMetaData.WeekdayHours;
 import com.madhouse.platform.premiummad.service.IPolicyService;
+import com.madhouse.platform.premiummad.util.Constant;
 import com.madhouse.platform.premiummad.util.ResourceManager;
 
 @Component
@@ -49,42 +51,52 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             LOGGER.debug("------------PolicyTask-----------start--");
             final List<Policy> listPolicys = policyService.queryAll();
             long begin = System.currentTimeMillis();
+            redisMaster.del(ALL_POLICY);
             for (Policy  policy: listPolicys) {
                 if(policy.getPolicyAdspaces().size()>0 && policy.getPolicyDsp().size()>0){
                     PolicyMetaData metaData = new PolicyMetaData();
                     try {
                         if(null != policy){
                             BeanUtils.copyProperties(policy, metaData);
-                            Map<Integer, List<Integer>> weekDayHours = new HashMap<Integer, List<Integer>>();
-                            String[] weekDay= StringUtils.tokenizeToStringArray(policy.getTimeTargeting(), "&");
+                            if(Constant.DeliveryType.RTB == metaData.getDeliveryType()){
+                                metaData.setDealId("");
+                            }
+                            List<PolicyMetaData.WeekdayHours> weekdayHoursList =new ArrayList<PolicyMetaData.WeekdayHours>();
+                            String[] weekDay= StringUtils.tokenizeToStringArray(policy.getTimeTargeting(), ";");
                             if(!StringUtils.isEmpty(weekDay)){
                                 for (String days : weekDay) {
                                     //0:0,1,2,3&1:19,20,21,22,23
+                                    PolicyMetaData.WeekdayHours weekdayHours  = metaData.new WeekdayHours();
                                     String[] day = StringUtils.tokenizeToStringArray(days, ":");
                                     if(!StringUtils.isEmpty(day[0])){
-                                        weekDayHours.put(Integer.parseInt(day[0]),splitIdsToInt(day[1]));
+                                        weekdayHours.setWeekDay(Integer.parseInt(day[0]));
+                                        weekdayHours.setHours(splitIdsToInt(day[1]));
+                                        weekdayHoursList.add(weekdayHours);
                                     }
                                 }
                             }
-                            metaData.setWeekDayHours(weekDayHours);
+                            
+                            metaData.setWeekdayHoursList(weekdayHoursList);
                             String [] location = StringUtils.tokenizeToStringArray(policy.getLocationTargeting(), ",");
                             metaData.setLocation(!StringUtils.isEmpty(location) ? Arrays.asList(location) : null);
                             metaData.setOs(splitIdsToInt(policy.getOsTargeting()));
                             metaData.setConnectionType(splitIdsToInt(policy.getConnTargeting()));
-                            Map<Long, DSPInfo> dspInfo=new HashMap<Long, PolicyMetaData.DSPInfo>();
+                            
+                            List<DSPInfo> dspInfo=new ArrayList<PolicyMetaData.DSPInfo>();
                             for (com.madhouse.platform.premiummad.entity.DSPInfo dsp : policy.getPolicyDsp()) {
                                 PolicyMetaData.DSPInfo info= metaData.new DSPInfo();
                                 BeanUtils.copyProperties(dsp, info);
-                                dspInfo.put(dsp.getId(),info);
+                                dspInfo.add(info);
                             }
-                            metaData.setDspInfoMap(dspInfo);
-                            Map<Long, AdspaceInfo> adspaceInfo=new HashMap<Long, PolicyMetaData.AdspaceInfo>();
+                            metaData.setDspInfoList(dspInfo);
+                            
+                            List<AdspaceInfo> adspaceInfo=new ArrayList<PolicyMetaData.AdspaceInfo>();
                             for (com.madhouse.platform.premiummad.entity.AdspaceInfo dsp : policy.getPolicyAdspaces()) {
                                 PolicyMetaData.AdspaceInfo info= metaData.new AdspaceInfo();
                                 BeanUtils.copyProperties(dsp, info);
-                                adspaceInfo.put(dsp.getId(),info);
+                                adspaceInfo.add(info);
                             }
-                            metaData.setAdspaceInfoMap(adspaceInfo);
+                            metaData.setAdspaceInfoList(adspaceInfo);
                         }
                         redisMaster.setex(String.format(this.POLICY_META_DATA, String.valueOf(policy.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
                         redisMaster.sadd(this.ALL_POLICY, String.valueOf(policy.getId()));
@@ -95,7 +107,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                 }
             }
             redisMaster.expire(this.ALL_POLICY, EXPIRATION_TIME);
-            LOGGER.info("op policy_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadPolicyMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PolicyTask-----------  End--");
         } catch (Exception e) {
             e.printStackTrace();

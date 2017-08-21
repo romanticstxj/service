@@ -46,6 +46,7 @@ public class MaterialTask {
             LOGGER.debug("------------MaterialTask-----loadMaterialMetaData------start--");
             final List<Material> lists = iMaterialService.queryAll();
             long begin = System.currentTimeMillis();
+            redisMaster.del(ALL_MATERIAL);
             for (Material material : lists) {
                 MaterialMetaData metaData = new MaterialMetaData();
                 if(null != material){
@@ -64,7 +65,7 @@ public class MaterialTask {
                     redisMaster.expire(this.ALL_MATERIAL, EXPIRATION_TIME);
                 }
             }
-            LOGGER.info("op material_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadMaterialMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------MaterialTask-----loadMaterialMetaData------  End--");
         } catch (Exception e) {
             LOGGER.error("------------MaterialTask-----loadMaterialMetaData------error:{}",e.toString());

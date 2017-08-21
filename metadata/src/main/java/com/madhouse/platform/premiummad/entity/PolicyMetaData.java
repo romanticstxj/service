@@ -2,8 +2,6 @@ package com.madhouse.platform.premiummad.entity;
 
 
 import java.util.List;
-import java.util.Map;
-
 
 public class PolicyMetaData {
     private long id;
@@ -15,19 +13,40 @@ public class PolicyMetaData {
     private String endDate;
 
     //targeting info
-    private Map<Integer, List<Integer>> weekDayHours;
+    private List<WeekdayHours> weekdayHoursList;
     private List<String> location;
     private List<Integer> os;
     private List<Integer> connectionType;
 
-    private Map<Long, DSPInfo> dspInfoMap;
-    private Map<Long, AdspaceInfo> adspaceInfoMap;
+    private List<DSPInfo> dspInfoList;
+    private List<AdspaceInfo> adspaceInfoList;
 
-    private int controlType;//总量控制(0: 不限, 1: 每天, 2: 整单)
-    private Integer maxCount;
-    private int controlMethod;//投放速度(1:加速投放, 2:匀速投放)
+    private int controlType;
+    private int maxCount;
+    private int controlMethod;
 
     private int status;
+
+    public class WeekdayHours {
+        private int weekDay;
+        private List<Integer> hours;
+
+        public int getWeekDay() {
+            return weekDay;
+        }
+
+        public void setWeekDay(int weekDay) {
+            this.weekDay = weekDay;
+        }
+
+        public List<Integer> getHours() {
+            return hours;
+        }
+
+        public void setHours(List<Integer> hours) {
+            this.hours = hours;
+        }
+    }
 
     public class AdspaceInfo {
         private long id;
@@ -75,7 +94,6 @@ public class PolicyMetaData {
         public void setDealId(String dealId) {
             this.dealId = dealId;
         }
-        
     }
 
     public class DSPInfo {
@@ -98,7 +116,6 @@ public class PolicyMetaData {
             this.status = status;
         }
     }
-
 
     public long getId() {
         return id;
@@ -148,12 +165,12 @@ public class PolicyMetaData {
         this.endDate = endDate;
     }
 
-    public Map<Integer, List<Integer>> getWeekDayHours() {
-        return weekDayHours;
+    public List<WeekdayHours> getWeekdayHoursList() {
+        return weekdayHoursList;
     }
 
-    public void setWeekDayHours(Map<Integer, List<Integer>> weekDayHours) {
-        this.weekDayHours = weekDayHours;
+    public void setWeekdayHoursList(List<WeekdayHours> weekdayHoursList) {
+        this.weekdayHoursList = weekdayHoursList;
     }
 
     public List<String> getLocation() {
@@ -180,6 +197,22 @@ public class PolicyMetaData {
         this.connectionType = connectionType;
     }
 
+    public List<DSPInfo> getDspInfoList() {
+        return dspInfoList;
+    }
+
+    public void setDspInfoList(List<DSPInfo> dspInfoList) {
+        this.dspInfoList = dspInfoList;
+    }
+
+    public List<AdspaceInfo> getAdspaceInfoList() {
+        return adspaceInfoList;
+    }
+
+    public void setAdspaceInfoList(List<AdspaceInfo> adspaceInfoList) {
+        this.adspaceInfoList = adspaceInfoList;
+    }
+
     public int getControlType() {
         return controlType;
     }
@@ -188,20 +221,20 @@ public class PolicyMetaData {
         this.controlType = controlType;
     }
 
-    public Integer getMaxCount() {
+    public int getMaxCount() {
         return maxCount;
     }
 
-    public void setMaxCount(Integer maxCount) {
+    public void setMaxCount(int maxCount) {
         this.maxCount = maxCount;
     }
 
-    public Map<Long, DSPInfo> getDspInfoMap() {
-        return dspInfoMap;
+    public int getControlMethod() {
+        return controlMethod;
     }
 
-    public void setDspInfoMap(Map<Long, DSPInfo> dspInfoMap) {
-        this.dspInfoMap = dspInfoMap;
+    public void setControlMethod(int controlMethod) {
+        this.controlMethod = controlMethod;
     }
 
     public int getStatus() {
@@ -212,19 +245,5 @@ public class PolicyMetaData {
         this.status = status;
     }
 
-    public Map<Long, AdspaceInfo> getAdspaceInfoMap() {
-        return adspaceInfoMap;
-    }
 
-    public void setAdspaceInfoMap(Map<Long, AdspaceInfo> adspaceInfoMap) {
-        this.adspaceInfoMap = adspaceInfoMap;
-    }
-
-    public int getControlMethod() {
-        return controlMethod;
-    }
-
-    public void setControlMethod(int controlMethod) {
-        this.controlMethod = controlMethod;
-    }
 }

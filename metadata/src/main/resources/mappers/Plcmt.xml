@@ -22,11 +22,11 @@
         <result property="logoMaxKbyte" column="logo_max_kbyte" jdbcType="INTEGER" />
         <result property="titleMaxLength" column="title_max_length" jdbcType="INTEGER" />
         <result property="descMaxLength" column="desc_max_length" jdbcType="INTEGER" />
-        <result property="mainPicNumber" column="main_pic_number" jdbcType="INTEGER" />
-        <result property="videoType" column="video_type" jdbcType="INTEGER" />
-        <result property="videoSize" column="video_size" jdbcType="VARCHAR" />
-        <result property="videoMaxKbyte" column="video_max_kbyte" jdbcType="INTEGER" />
-        <result property="videoDuration" column="video_duration" jdbcType="VARCHAR" />
+        <result property="materialCount" column="material_count" jdbcType="INTEGER" />
+        <result property="coverType" column="cover_type" jdbcType="INTEGER" />
+        <result property="coverSize" column="cover_size" jdbcType="VARCHAR" />
+        <result property="coverMaxKbyte" column="cover_max_kbyte" jdbcType="INTEGER" />
+        <result property="materialDuration" column="material_duration" jdbcType="VARCHAR" />
         <result property="status" column="status" jdbcType="INTEGER" />
         <result property="description" column="description" jdbcType="VARCHAR" />
 	</resultMap>
@@ -34,13 +34,19 @@
 	<resultMap id="mediaMappingResult" type="com.madhouse.platform.premiummad.entity.MediaMappingMetaData">
         <result property="adspaceId" column="adspace_id" jdbcType="INTEGER" />
         <result property="mappingKey" column="media_adspace_key" jdbcType="VARCHAR" />
+        <result property="adspaceKey" column="adspace_key" jdbcType="VARCHAR" />
     </resultMap>
     
     <select id="queryAll" resultMap="baseResult">
-		select * from mad_sys_adspace WHERE status >=0 
+		select * from mad_sys_adspace WHERE status >0 
 	</select>
 	<select id="queryMediaMappingMetaData" resultMap="mediaMappingResult">
-		select * from mad_sys_adspace_mapping_media WHERE status >0 
+		SELECT sam.adspace_id, sam.media_adspace_key, sa.adspace_key 
+			FROM mad_sys_adspace_mapping_media sam
+			LEFT JOIN mad_sys_adspace sa ON sam.adspace_id = sa.id
+		WHERE
+			sam. STATUS > 0
+			AND sa. STATUS > 0
 	</select>
 	
 
