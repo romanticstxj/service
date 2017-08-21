@@ -58,7 +58,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                         if(null != policy){
                             BeanUtils.copyProperties(policy, metaData);
                             List<PolicyMetaData.WeekdayHours> weekdayHoursList =new ArrayList<PolicyMetaData.WeekdayHours>();
-                            String[] weekDay= StringUtils.tokenizeToStringArray(policy.getTimeTargeting(), "&");
+                            String[] weekDay= StringUtils.tokenizeToStringArray(policy.getTimeTargeting(), ";");
                             if(!StringUtils.isEmpty(weekDay)){
                                 for (String days : weekDay) {
                                     //0:0,1,2,3&1:19,20,21,22,23
