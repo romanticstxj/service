@@ -53,7 +53,7 @@ public class PolicyController {
 	
 	private ResponseDto<PolicyDto> listByParams(List<Integer> policyIdList, Integer status, Integer type){
 		if(ObjectUtils.isEmpty(policyIdList)){ //无权限查看任何Policy
-	        return ResponseUtils.response(StatusCode.SC20000, null);
+	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<PolicyDto>());
 		} else{ 
 			List<Policy> policies = policyService.queryAllByParams(policyIdList, status, type);
 			List<PolicyDto> result = PolicyRule.convertToDtoList(policies, new ArrayList<PolicyDto>());
