@@ -72,7 +72,7 @@ public class AdspaceController {
 	private ResponseDto<AdspaceDto> listByParams(List<Integer> mediaIdList, Integer status){
 		//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIdList)){
-	        return ResponseUtils.response(StatusCode.SC20001, null);
+	        return ResponseUtils.response(StatusCode.SC20000, null);
 		} else{ 
 			List<Adspace> adspaces = adspaceService.queryAllByParams(mediaIdList, status);
 			List<AdspaceDto> result = AdspaceRule.convertToDtoList(adspaces, new ArrayList<AdspaceDto>());
