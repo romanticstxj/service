@@ -102,12 +102,12 @@ public class PolicyControllerTest {
 	@Test
 	public void update() throws ParseException{
 		PolicyDto policyDto = new PolicyDto();
-		policyDto.setId(500070);
-		policyDto.setName("mypolicy333");
+		policyDto.setId(500076);
+		policyDto.setName("mypolicy34334");
 		policyDto.setWeight(10);
 		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyy-MM-dd", "2017-08-05"));
 		policyDto.setIsEndDate(0);
-		policyDto.setIsTimeTargeting(1);
+		policyDto.setIsTimeTargeting(0);
 		policyDto.setIsLocationTargeting(0);
 		policyDto.setConnTargeting("1,2");
 		policyDto.setOsTargeting("1");
@@ -146,8 +146,8 @@ public class PolicyControllerTest {
 		policyDspDtos.add(policyDspDto);
 		policyDto.setPolicyDsps(policyDspDtos);
 		
-		String link = "http://172.16.25.48:8080/services/policy/update";
-//		String link = "http://localhost:8080/services/policy/update";
+//		String link = "http://172.16.25.48:8080/services/policy/update";
+		String link = "http://localhost:8080/services/policy/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(policyDto));
 	}
 	

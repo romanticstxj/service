@@ -1,7 +1,10 @@
-package com.madhouse.platform.premiummad.entity;
+package com.madhouse.platform.premiummad.dto;
 
-public class UserAuth extends BaseEntity{
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
+
+public class UserAuthDto {
 	
+	@NotNullAndBlank
 	private Integer userId;
 	
 	private Integer[] mediaIds;
@@ -41,6 +44,4 @@ public class UserAuth extends BaseEntity{
 	public void setIsAdmin(Integer isAdmin) {
 		this.isAdmin = isAdmin;
 	}
-	
-	
 }
