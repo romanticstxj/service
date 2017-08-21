@@ -61,7 +61,7 @@ public class MediaController {
      */
     private ResponseDto<MediaDto> listByMediaIds(List<Integer> mediaIdList) throws Exception {
 		if(ObjectUtils.isEmpty(mediaIdList)){ //无权限查看任何媒体
-	        return ResponseUtils.response(StatusCode.SC20001, null);
+	        return ResponseUtils.response(StatusCode.SC20000, null);
 		} else{
 			List<Media> medias = mediaService.queryAll(mediaIdList);
 			List<MediaDto> mediaDtos = new ArrayList<>();
