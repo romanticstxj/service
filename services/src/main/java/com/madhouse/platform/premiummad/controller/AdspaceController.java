@@ -3,8 +3,6 @@ package com.madhouse.platform.premiummad.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,7 +72,7 @@ public class AdspaceController {
 	private ResponseDto<AdspaceDto> listByParams(List<Integer> mediaIdList, Integer status){
 		//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIdList)){
-	        return ResponseUtils.response(StatusCode.SC20001, null);
+	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<AdspaceDto>());
 		} else{ 
 			List<Adspace> adspaces = adspaceService.queryAllByParams(mediaIdList, status);
 			List<AdspaceDto> result = AdspaceRule.convertToDtoList(adspaces, new ArrayList<AdspaceDto>());

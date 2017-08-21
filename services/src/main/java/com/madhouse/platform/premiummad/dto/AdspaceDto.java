@@ -50,6 +50,10 @@ public class AdspaceDto implements Serializable{
 	
 	private Integer materialMaxKbyte;
 	
+	private Integer materialCount;
+	
+	private String materialDuration;
+	
 	private String logoType;
 	
 	private String logoSize;
@@ -59,16 +63,13 @@ public class AdspaceDto implements Serializable{
 	private Integer titleMaxLength;
 	
 	private Integer descMaxLength;
-	
-	private Integer mainPicNumber;
 
-	private String videoType;
+	private String coverType;
 	
-	private String videoSize;
+	private String coverSize;
 	
-	private Integer videoMaxKbyte;
+	private Integer coverMaxKbyte;
 	
-	private String videoDuration;
 	@Length(max=SystemConstant.DB.DESC_LENGTH, groups={Update.class, Insert.class})
 	private String description;
 	
@@ -226,37 +227,6 @@ public class AdspaceDto implements Serializable{
 		this.descMaxLength = descMaxLength;
 	}
 
-	public Integer getMainPicNumber() {
-		return mainPicNumber;
-	}
-
-	public void setMainPicNumber(Integer mainPicNumber) {
-		this.mainPicNumber = mainPicNumber;
-	}
-
-	public String getVideoSize() {
-		return videoSize;
-	}
-
-	public void setVideoSize(String videoSize) {
-		this.videoSize = videoSize;
-	}
-
-	public Integer getVideoMaxKbyte() {
-		return videoMaxKbyte;
-	}
-
-	public void setVideoMaxKbyte(Integer videoMaxKbyte) {
-		this.videoMaxKbyte = videoMaxKbyte;
-	}
-
-	public String getVideoDuration() {
-		return videoDuration;
-	}
-
-	public void setVideoDuration(String videoDuration) {
-		this.videoDuration = videoDuration;
-	}
 
 	public String getDescription() {
 		return description;
@@ -298,12 +268,44 @@ public class AdspaceDto implements Serializable{
 		this.logoType = logoType;
 	}
 
-	public String getVideoType() {
-		return videoType;
+	public Integer getMaterialCount() {
+		return materialCount;
 	}
 
-	public void setVideoType(String videoType) {
-		this.videoType = videoType;
+	public void setMaterialCount(Integer materialCount) {
+		this.materialCount = materialCount;
+	}
+
+	public String getMaterialDuration() {
+		return materialDuration;
+	}
+
+	public void setMaterialDuration(String materialDuration) {
+		this.materialDuration = materialDuration;
+	}
+
+	public String getCoverType() {
+		return coverType;
+	}
+
+	public void setCoverType(String coverType) {
+		this.coverType = coverType;
+	}
+
+	public String getCoverSize() {
+		return coverSize;
+	}
+
+	public void setCoverSize(String coverSize) {
+		this.coverSize = coverSize;
+	}
+
+	public Integer getCoverMaxKbyte() {
+		return coverMaxKbyte;
+	}
+
+	public void setCoverMaxKbyte(Integer coverMaxKbyte) {
+		this.coverMaxKbyte = coverMaxKbyte;
 	}
 
 	@Override
@@ -313,10 +315,11 @@ public class AdspaceDto implements Serializable{
 				+ ", terminalOs=" + terminalOs + ", supportHttps=" + supportHttps + ", bidType=" + bidType
 				+ ", bidFloor=" + bidFloor + ", adType=" + adType + ", layout=" + layout + ", layoutName=" + layoutName
 				+ ", materialType=" + materialType + ", materialSize=" + materialSize + ", materialMaxKbyte="
-				+ materialMaxKbyte + ", logoType=" + logoType + ", logoSize=" + logoSize + ", logoMaxKbyte="
-				+ logoMaxKbyte + ", titleMaxLength=" + titleMaxLength + ", descMaxLength=" + descMaxLength
-				+ ", mainPicNumber=" + mainPicNumber + ", videoType=" + videoType + ", videoSize=" + videoSize
-				+ ", videoMaxKbyte=" + videoMaxKbyte + ", videoDuration=" + videoDuration + ", description="
-				+ description + ", createdTime=" + createdTime + "]";
+				+ materialMaxKbyte + ", materialCount=" + materialCount + ", materialDuration=" + materialDuration
+				+ ", logoType=" + logoType + ", logoSize=" + logoSize + ", logoMaxKbyte=" + logoMaxKbyte
+				+ ", titleMaxLength=" + titleMaxLength + ", descMaxLength=" + descMaxLength + ", coverType=" + coverType
+				+ ", coverSize=" + coverSize + ", coverMaxKbyte=" + coverMaxKbyte + ", description=" + description
+				+ ", createdTime=" + createdTime + "]";
 	}
+
 }

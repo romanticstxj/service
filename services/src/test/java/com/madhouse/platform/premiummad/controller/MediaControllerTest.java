@@ -76,13 +76,19 @@ public class MediaControllerTest {
 	
 	@Test
 	public void test(){
-		String[] ss = StringUtils.splitToStringArray("33333,444,62");
-		System.out.println(ss);
-		List<Integer> list = new ArrayList<Integer>();
-		list.add(2);
-		list.add(3);
-		String s = StringUtils.getIdsStr(list);
-		System.out.println(s);
+//		String[] ss = StringUtils.splitToStringArray("33333,444,62");
+//		System.out.println(ss);
+//		List<Integer> list = new ArrayList<Integer>();
+//		list.add(2);
+//		list.add(3);
+//		String s = StringUtils.getIdsStr(list);
+//		System.out.println(s);
+		
+		List list = null;
+		for(Object i : list){
+			System.out.println(i);
+		}
+		
 	}
 	
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.madhouse.platform.premiummad.entity.UserAuth;
+
 public interface UserAuthDao {
 
 	List<Integer> queryMediaIdList(@Param("userId") Integer userId, @Param("mediaIds") String[] mediaIds,
@@ -18,4 +20,8 @@ public interface UserAuthDao {
 	int checkAdminForMedia(Integer userId);
 
 	int checkAdminForPolicy(Integer userId);
+
+	void addUserMediaAuth(UserAuth userAuth);
+
+	void removeUserMediaAuth(Integer userId);
 }

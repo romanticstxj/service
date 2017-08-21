@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
-import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.MediaDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Media;
@@ -21,7 +20,6 @@ import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
-import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
@@ -51,7 +49,6 @@ public class MediaController {
 			userId = userIdByGet;
 		}
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
-//		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
 		return listByMediaIds(mediaIdList);
     }
 	
@@ -62,7 +59,7 @@ public class MediaController {
      */
     private ResponseDto<MediaDto> listByMediaIds(List<Integer> mediaIdList) throws Exception {
 		if(ObjectUtils.isEmpty(mediaIdList)){ //无权限查看任何媒体
-	        return ResponseUtils.response(StatusCode.SC20001, null);
+	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<MediaDto>());
 		} else{
 			List<Media> medias = mediaService.queryAll(mediaIdList);
 			List<MediaDto> mediaDtos = new ArrayList<>();

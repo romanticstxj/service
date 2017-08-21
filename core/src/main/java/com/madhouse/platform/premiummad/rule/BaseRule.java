@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.exception.BusinessException;
+import com.madhouse.platform.premiummad.util.BeanUtils;
 
 public class BaseRule {	
 
@@ -61,5 +62,11 @@ public class BaseRule {
 				throw new BusinessException(StatusCode.SC20008);
 			}
 		}
+	}
+	
+	public static void validateDto(Object dto){
+		String fieldName = BeanUtils.hasEmptyField(dto);
+        if (fieldName != null)
+        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
 	}
 }

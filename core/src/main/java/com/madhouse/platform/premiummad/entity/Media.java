@@ -59,7 +59,7 @@ public class Media extends BaseEntity{
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name == null ? null : name.trim();
 	}
 
 	public Integer getCategory() {
@@ -123,7 +123,7 @@ public class Media extends BaseEntity{
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		this.description = description == null ? null : description.trim();
 	}
 
 	public Integer getUpdateType() {
