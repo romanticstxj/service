@@ -8,11 +8,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
@@ -207,12 +209,13 @@ public class AdvertUploadApiTask {
 	 *            task数据集合
 	 */
 	private void handleSuccessResult(List<Material> unSubmitMaterials, Set<String> successfulMaterialIds) {
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 
 		// 媒体方唯一标识是我方媒体id
 		for (Material material : unSubmitMaterials) {
 			if (successfulMaterialIds.contains(String.valueOf(material.getId()))) {
-				materialIdKeys.put(material.getId(), String.valueOf(material.getId()));
+				String[] mediaMaterialIdKeys = {String.valueOf(material.getId())};
+				materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
 			}
 		}
 

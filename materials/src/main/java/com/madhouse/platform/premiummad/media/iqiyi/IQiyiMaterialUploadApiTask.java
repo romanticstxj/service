@@ -71,7 +71,7 @@ public class IQiyiMaterialUploadApiTask {
 		// 上传到媒体
 		LOGGER.info("IQiyiMaterialUploadApiTask-iqiyi", unSubmitMaterials.size());
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
 			String postResult = handleMaterialRequest(material);
 			if (!StringUtils.isEmpty(postResult)) {
@@ -81,7 +81,8 @@ public class IQiyiMaterialUploadApiTask {
 					LOGGER.info("IQiYiUploadMaterial-code:" + code);
 					// 上传物料成功
 					if (code.equals(String.valueOf(IQiYiConstant.RESPONSE_SUCCESS.getValue()))) {
-						materialIdKeys.put(material.getId(), iqiyiUploadMaterialResponse.getM_id());
+						String[] mediaMaterialIdKeys = {iqiyiUploadMaterialResponse.getM_id(), iqiyiUploadMaterialResponse.getM_id()};
+						materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
 						LOGGER.info("IQiYiUploadMaterial-Add-thirdResponse: Success,materialId：" + material.getId());
 					} else {
 						MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();

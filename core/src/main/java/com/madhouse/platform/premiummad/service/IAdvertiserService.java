@@ -46,12 +46,19 @@ public interface IAdvertiserService {
 	void updateStatusAfterUpload(Map<Integer, String> advertiserIdKeys);
 	
 	/**
-	 * 根据媒体返回的结果更新状态
+	 * 根据媒体返回的结果更新状态-根据媒体key更新
 	 * 
 	 * @param auditResults
 	 */
 	void updateStatusToMedia(List<AdvertiserAuditResultModel> auditResults);
 
+	/**
+	 * 根据媒体返回的结果更新状态-根据广告位ID更新
+	 * 
+	 * @param auditResults
+	 */
+	void updateStatusToMediaByAdvertiserId(List<AdvertiserAuditResultModel> auditResults);
+	
 	List<Advertiser> queryAll(List<Integer> mediaIds);
 
 	Advertiser queryById(Integer id);

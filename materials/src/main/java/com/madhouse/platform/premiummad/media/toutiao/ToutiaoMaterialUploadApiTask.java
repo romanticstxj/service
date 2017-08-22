@@ -70,10 +70,10 @@ public class ToutiaoMaterialUploadApiTask {
 		LOGGER.info("ToutiaoMaterialUploadApiTask-Toutiao", unSubmitMaterials.size());
 		
 		// 我方两个广告位对应媒体一个广告类型 <mediaAdType|materialKey, mediaMaterialKey>
-		Map<String, String> mediaAdTypeMap = new HashMap<String, String>();
+		Map<String, String[]> mediaAdTypeMap = new HashMap<String, String[]>();
 		
 	    List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
 			int mediaAdType = getMediaAdType(material.getAdspaceId());
 			// 如果某个素材该广告位已上传一次，则另一个广告位用已上传的作为媒体返回的key
@@ -98,8 +98,9 @@ public class ToutiaoMaterialUploadApiTask {
 					ToutiaoMaterialUploadResponse response = responseList.get(0);
 					if (response.getAdid() != null && response.getStatus().equals(IToutiaoConstant.M_STATUS_SUCCESS.getDescription())) {
 						LOGGER.info("头条物料上传成功");
-						materialIdKeys.put(material.getId(), response.getAdid());
-						mediaAdTypeMap.put(key, response.getAdid());
+						String[] mediaMaterialIdKeys = {response.getAdid(), response.getAdid()};
+						materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
+						mediaAdTypeMap.put(key, mediaMaterialIdKeys);
 					} else if (response.getAdid() != null && response.getStatus().equals(IToutiaoConstant.M_STATUS_FAIL.getDescription())) {
 						LOGGER.info("头条物料上传失败-" + ToutiaoHttpUtil.unicodeToString(response.getMsg()));
 						if (!StringUtils.isBlank(response.getMsg())) {

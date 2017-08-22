@@ -9,11 +9,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
@@ -72,7 +74,7 @@ public class MomoMaterialUploadApiTask {
 		LOGGER.info("MomoMaterialUploadApiTask-Momo", unSubmitMaterials.size());
 
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
 			MomoUploadRequest request = new MomoUploadRequest();
 			String errorMsg = buildUploadMaterialRequest(material, request);
@@ -95,7 +97,8 @@ public class MomoMaterialUploadApiTask {
 				MomoUploadResponse response = JSON.parseObject(responseJson, MomoUploadResponse.class);
 				// 200：成功
 				if (response.getEc() == 200) {
-					materialIdKeys.put(material.getId(), material.getMediaMaterialKey());
+					String[] mediaMaterialIdKeys = {material.getMediaMaterialKey()};
+					materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
 				} else {
 					// 自动驳回
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();

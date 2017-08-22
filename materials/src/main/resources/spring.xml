@@ -125,10 +125,10 @@
 	<!-- 基于XML配置任务调度 -->
     <task:scheduled-tasks>
     	<!-- sohu News -->
-        <!-- <task:scheduled ref="sohuNewsCustomerCreateApiTask" method="create" cron="${cron.sohuNewsCustomerCreateApiTask}"/>
+        <task:scheduled ref="sohuNewsCustomerCreateApiTask" method="create" cron="${cron.sohuNewsCustomerCreateApiTask}"/>
     	<task:scheduled ref="sohuNewsCustomerListApiTask" method="list" cron="${cron.sohuNewsCustomerListApiTask}"/>
         <task:scheduled ref="sohuNewsUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohuNewsUploadMaterialApiTask}"/>
-        <task:scheduled ref="sohuNewsStatusApiTask" method="getStatusDetail" cron="${cron.sohuNewsStatusApiTask}"/> -->
+        <task:scheduled ref="sohuNewsStatusApiTask" method="getStatusDetail" cron="${cron.sohuNewsStatusApiTask}"/>
 		
 		<!-- sohu TV -->
         <task:scheduled ref="sohuTvCustomerCreateApiTask" method="create" cron="${cron.sohuTvCustomerCreateApiTask}"/>
@@ -144,11 +144,11 @@
         <task:scheduled ref="mojiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.mojiMaterialUploadApiTask}"/>
         <task:scheduled ref="mojiMaterialStatusApiTask" method="getStatusResponse" cron="${cron.mojiMaterialStatusApiTask}"/>-->
         
-        <!-- iqiyi 测试地址是正式环境 SSP 流量还未接入
+        <!-- iqiyi 测试地址是正式环境 SSP 流量还未接入 -->
         <task:scheduled ref="iQiyiCustomerCreateOrUpdateApiTask" method="createOrUpadate" cron="${cron.iqiyiCustomerCreateApiTask}"/>
         <task:scheduled ref="iQiyiCustomerStatusApiTask" method="batchStatus" cron="${cron.iqiyiCustomerListApiTask}"/>
         <task:scheduled ref="iQiyiMaterialStatusApiTask" method="getStatusDetail" cron="${cron.iqiyiMaterialStatusApiTask}"/>
-        <task:scheduled ref="iQiyiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.iqiyiMaterialUploadApiTask}"/> -->
+        <task:scheduled ref="iQiyiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.iqiyiMaterialUploadApiTask}"/>
         
         <!-- toutiao 测试地址是正式环境 -->
         <task:scheduled ref="toutiaoMaterialUploadApiTask" method="uploadMaterial" cron="${cron.toutiaoMaterialUploadApiTask}"/>

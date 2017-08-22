@@ -92,10 +92,10 @@ public class MojiMaterialUploadApiTask {
 		LOGGER.info("MojiMaterialUploadApiTask-moji", unSubmitMaterials.size());
 
 		// 处理我方两个广告位对应媒体一个广告位 <mediaAdspaceId|materialKey, mediaMaterialKey>
-		Map<String, String> mediaAdspace = new HashMap<String, String>();
+		Map<String, String[]> mediaAdspace = new HashMap<String, String[]>();
 		
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
 			String mediaAdspaceId = getMediaAdspaceId(material.getAdspaceId());
 			String key = mediaAdspaceId + "|" + material.getMaterialKey();
@@ -111,8 +111,9 @@ public class MojiMaterialUploadApiTask {
 				MojiMaterialUploadResponse response = JSON.parseObject(postResult, MojiMaterialUploadResponse.class);
 				// 上传成功，返回200
 				if (response.getCode().equals(IMojiConstant.M_STATUS_SUCCESS.getValue() + "")) {
-					materialIdKeys.put(material.getId(), response.getData().getId());
-					mediaAdspace.put(key, response.getData().getId());
+					String[] mediaMaterialIdKeys = { response.getData().getId(),  response.getData().getId()};
+					materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
+					mediaAdspace.put(key, mediaMaterialIdKeys);
 				} else {
 					// 发生错误自动驳回
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();

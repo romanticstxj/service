@@ -118,8 +118,8 @@ public class IQiyiMaterialStatusApiTask {
 			// COMPLETE-通过
 			if ("COMPLETE".equals(item.getStatus())) {
 				auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
-				// 爱奇艺奇谱 id，只有 status 为 COMPLETE 时才返回该项。tv_id 作为后续广告竞价的 crid 参数值
-				auditItem.setMediaMaterialKey(item.getTv_id());
+				// 爱奇艺奇 id，只有 status 为 COMPLETE 时才返回该项。tv_id 作为后续广告竞价的 crid 参数值
+				auditItem.setMediaMaterialId(item.getTv_id());
 				auditResults.add(auditItem);
 				continue;
 			}

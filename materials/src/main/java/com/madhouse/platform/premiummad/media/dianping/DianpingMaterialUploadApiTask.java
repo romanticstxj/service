@@ -84,7 +84,7 @@ public class DianpingMaterialUploadApiTask {
 		// 上传到媒体
 		LOGGER.info("DianpingMaterialUploadApiTask-Dianping", unSubmitMaterials.size());
 
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
 			Map<String, String> paramMap = buildMaterialRequest(material);
 			String brandType = "001";// TODO
@@ -94,7 +94,8 @@ public class DianpingMaterialUploadApiTask {
 				// 0：成功
 				if (dianpingGetStatusResponse.getRet() == 0) {
 					LOGGER.info("DianpingUploadMaterial--SUCCESS");
-					materialIdKeys.put(material.getId(), dianpingGetStatusResponse.getData().getCreativeId());
+					String[] mediaMaterialIdKeys = {dianpingGetStatusResponse.getData().getCreativeId(), dianpingGetStatusResponse.getData().getCreativeId()};
+					materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
 				} else {
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + dianpingGetStatusResponse.getRet() + " " + dianpingGetStatusResponse.getMsg());
 				}

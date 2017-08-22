@@ -85,7 +85,7 @@ public class LetvUploadMaterialApiTask {
 		String responseJson = HttpUtils.post(uploadMaterialApiUrl, requestJson);
 		LOGGER.info("LetvUpload response info " + responseJson);
 
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<String, String> rejusedMsgMap = new HashMap<String, String>();
 		if (!StringUtils.isEmpty(responseJson)) {
@@ -95,7 +95,8 @@ public class LetvUploadMaterialApiTask {
 			if (result.equals(LetvConstant.RESPONSE_SUCCESS.getValue()) && message.size() == 0) {
 				// 成功,更新物料任务表状态,媒体无自生成的key,故此处媒体用我方id标志
 				for (Material material : unSubmitMaterials) {
-					materialIdKeys.put(material.getId(), material.getMediaMaterialKey());
+					String[] mediaMaterialIdKeys = {material.getMediaMaterialKey()};
+					materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
 				}
 			} else if (result.equals(LetvConstant.RESPONSE_PARAM_CHECK_FAIL.getValue()) && message.size() > 0) {
 				Iterator<Entry<String, String>> iterator = message.entrySet().iterator();

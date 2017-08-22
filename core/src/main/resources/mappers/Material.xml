@@ -7,7 +7,7 @@
 	${alias}.agency, ${alias}.deal_id, ${alias}.start_date, ${alias}.end_date,  ${alias}.size, ${alias}.icon, 
 	${alias}.title, ${alias}.description, ${alias}.cover, ${alias}.ad_materials, ${alias}.duration, 
 	${alias}.lpg_url, ${alias}.active_type, ${alias}.imp_urls, ${alias}.clk_urls, ${alias}.sec_urls, 
-    ${alias}.audited_user, ${alias}.status, ${alias}.reason, ${alias}.media_material_key, 
+    ${alias}.audited_user, ${alias}.status, ${alias}.reason, ${alias}.media_material_key, ${alias}.media_material_id, 
     ${alias}.created_time, ${alias}.updated_time
   </sql>
   <select id="selectByMaterialKeyAndMediaIds" resultMap="BaseResultMap" parameterType="com.madhouse.platform.premiummad.model.MaterialModel">
@@ -29,6 +29,7 @@
       lpg_url, active_type, imp_urls, 
       clk_urls, sec_urls, audited_user, 
       status, reason, media_material_key, 
+      media_material_id,
       created_time, updated_time)
     values
     <foreach collection="list" item="item" index="index" separator=",">
@@ -42,6 +43,7 @@
 	      #{item.lpgUrl,jdbcType=VARCHAR}, #{item.activeType,jdbcType=TINYINT}, #{item.impUrls,jdbcType=VARCHAR}, 
 	      #{item.clkUrls,jdbcType=VARCHAR}, #{item.secUrls,jdbcType=VARCHAR}, #{item.auditedUser,jdbcType=INTEGER}, 
 	      #{item.status,jdbcType=TINYINT}, #{item.reason,jdbcType=VARCHAR}, #{item.mediaMaterialKey,jdbcType=VARCHAR}, 
+	      #{item.mediaMaterialId,jdbcType=VARCHAR},
 	      #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedTime,jdbcType=TIMESTAMP})
 	</foreach>
   </insert>
@@ -138,6 +140,9 @@
       </if>
       <if test="mediaMaterialKey != null" >
         media_material_key,
+      </if>
+      <if test="mediaMaterialId != null" >
+        media_material_id,
       </if>
       <if test="createdTime != null" >
         created_time,
@@ -237,6 +242,9 @@
       <if test="mediaMaterialKey != null" >
         #{mediaMaterialKey,jdbcType=VARCHAR},
       </if>
+      <if test="mediaMaterialId != null" >
+        #{mediaMaterialId,jdbcType=VARCHAR},
+      </if>
       <if test="createdTime != null" >
         #{createdTime,jdbcType=TIMESTAMP},
       </if>
@@ -335,6 +343,9 @@
 	      </if>
 	      <if test="item.mediaMaterialKey != null" >
 	        media_material_key = #{item.mediaMaterialKey,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.mediaMaterialId != null" >
+	        media_material_id = #{item.mediaMaterialId,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.createdTime != null" >
 	        created_time = #{item.createdTime,jdbcType=TIMESTAMP},
@@ -461,6 +472,9 @@
       </if>
       <if test="reason != null" >
         reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="mediaMaterialId != null" >
+        media_material_id = #{mediaMaterialId,jdbcType=VARCHAR},
       </if>
       <if test="updatedTime != null" >
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},

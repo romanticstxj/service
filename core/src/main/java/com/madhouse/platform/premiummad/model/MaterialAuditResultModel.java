@@ -22,9 +22,14 @@ public class MaterialAuditResultModel {
 	private String errorMessage;
 
 	/**
-	 * 媒体方key
+	 * 媒体方查询key
 	 */
 	private String mediaMaterialKey;
+	
+	/**
+	 * 媒体分配的id
+	 */
+	private String mediaMaterialId;
 
 	public String getId() {
 		return id;
@@ -64,5 +69,13 @@ public class MaterialAuditResultModel {
 
 	public void setMediaMaterialKey(String mediaMaterialKey) {
 		this.mediaMaterialKey = mediaMaterialKey;
+	}
+
+	public String getMediaMaterialId() {
+		return mediaMaterialId;
+	}
+
+	public void setMediaMaterialId(String mediaMaterialId) {
+		this.mediaMaterialId = mediaMaterialId;
 	}
 }

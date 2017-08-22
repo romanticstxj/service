@@ -85,7 +85,7 @@ public class SohuNewsUploadMaterialApiTask {
 		// 上传到媒体
 		LOGGER.info("SohuNewsUploadMaterialApiTask-sohuNews", unSubmitMaterials.size());
 
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		for (Material material : unSubmitMaterials) {
 			// 如果素材上传过，重新上传需要先删除该素材
@@ -112,7 +112,8 @@ public class SohuNewsUploadMaterialApiTask {
 					if (status) {// 上传物料，成功，更新物料task表status为2
 						String content = (String)sohutvResponse.getContent();// 直接字符串
 						if (content != null && !content.equals("")) {
-							materialIdKeys.put(material.getId(), content);
+							String[] mediaMaterialIdKeys = {content, content};
+							materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
 						} else {
 							LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + result);
 						}

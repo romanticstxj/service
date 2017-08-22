@@ -128,6 +128,11 @@ public class MaterialModel implements Serializable {
 	 * 广告监测信息
 	 */
 	private MonitorModel monitor;
+	
+	/**
+	 * 媒体分配的id
+	 */
+	private String mediaMaterialId;
 
 	public String getId() {
 		return id;
@@ -319,6 +324,18 @@ public class MaterialModel implements Serializable {
 
 	public void setDspId(String dspId) {
 		this.dspId = dspId;
+	}
+
+	public String getMediaMaterialId() {
+		return mediaMaterialId;
+	}
+
+	public void setMediaMaterialId(String mediaMaterialId) {
+		this.mediaMaterialId = mediaMaterialId;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 }
 

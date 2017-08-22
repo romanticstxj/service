@@ -82,7 +82,7 @@ public class ValueMakerUploadApiTask {
 		// 上传到媒体
 		LOGGER.info("ValueMakerUploadApiTask-ValueMaker", unSubmitMaterials.size());
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
 			// 上传过媒体，更新
 			String url = uploadMaterialUrl;
@@ -109,7 +109,8 @@ public class ValueMakerUploadApiTask {
 			// 处理结果
 			int responseStatus = responseMap.get("responseStatus").equals("") ? 0 : Integer.parseInt(responseMap.get("responseStatus"));
 			if (responseStatus == IValueMakerConstant.RESPONSE_STATUS_200.getValue()) {// 上传成功
-				materialIdKeys.put(material.getId(), material.getMediaMaterialKey());
+				String[] mediaMaterialIdKeys = {material.getMediaMaterialKey()};
+				materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
 			} else if (IValueMakerConstant.RESPONSE_STATUS_422.getValue() == responseStatus) {
 				// 业务异常
 				String result = responseMap.get("result");

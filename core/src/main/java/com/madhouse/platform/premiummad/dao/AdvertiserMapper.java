@@ -108,4 +108,12 @@ public interface AdvertiserMapper {
 	Advertiser queryById(Integer id);
 
 	void auditAdvertiser(@Param("ids") String[] ids, @Param("status") Integer status);
+	
+	/**
+	 * 根据媒体id 和 媒体方素材key更新
+	 * 
+	 * @param record
+	 * @return
+	 */
+	int updateByMediaAndMediaAdKey(Advertiser record);
 }
