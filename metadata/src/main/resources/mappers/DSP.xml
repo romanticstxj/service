@@ -15,7 +15,7 @@
 	
 	<resultMap id="baseMappingResult" type="com.madhouse.platform.premiummad.entity.DSPMappingMetaData">
         <result property="adspaceId" column="adspace_id" jdbcType="INTEGER" />
-        <result property="mappingKey" column="media_adspace_key" jdbcType="VARCHAR" />
+        <result property="mappingKey" column="dsp_adspace_key" jdbcType="VARCHAR" />
         <result property="dspId" column="dsp_id" jdbcType="INTEGER" />
         <result property="dspMediaId" column="dsp_media_id" jdbcType="INTEGER" />
     </resultMap>
