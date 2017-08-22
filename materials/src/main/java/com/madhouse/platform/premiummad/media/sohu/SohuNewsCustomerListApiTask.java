@@ -118,8 +118,10 @@ public class SohuNewsCustomerListApiTask {
 			if (changedStatusNet != null && unauditAdvertiser.getStatus().intValue() != changedStatusNet.intValue()) {
 				AdvertiserAuditResultModel auditItem = new AdvertiserAuditResultModel();
 				auditItem.setId(String.valueOf(unauditAdvertiser.getId()));
+				auditItem.setMediaAdvertiserKey(unauditAdvertiser.getMediaAdvertiserKey());
 				auditItem.setStatus(changedStatusNet);
 				auditItem.setErrorMessage(sohuCustomerDetail.getAudit_info());
+				auditItem.setMediaId(String.valueOf(MediaMapping.SOHUNEWS.getValue()));
 				auditResults.add(auditItem);
 			}
 		} else {

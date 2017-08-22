@@ -1,5 +1,6 @@
 package com.madhouse.platform.premiummad.media.sohu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
+import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.model.SohuResponse;
+import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -57,6 +60,7 @@ public class SohuNewsCustomerCreateApiTask {
 		// 上传到媒体
 		LOGGER.info("SohuNewsCustomerCreateApiTask-sohuNews", unSubmitAdvertisers.size());
 		Map<Integer, String> advertiserIdKeys = new HashMap<Integer, String>();
+		List<AdvertiserAuditResultModel> rejusedAdvertisers = new ArrayList<AdvertiserAuditResultModel>();
 		for (Advertiser advertiser : unSubmitAdvertisers) {
 			Map<String, Object> paramMap = buildCreatePara(advertiser);
 			// 第一次上传用新增接口，已驳回的再次上传用 更新接口
@@ -71,8 +75,16 @@ public class SohuNewsCustomerCreateApiTask {
 					String customKey = sohutvResponse.getContent().toString();
 					advertiserIdKeys.put(advertiser.getId(), customKey);
 				} else {
-					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败-" + sohutvResponse.getMessage());
+					AdvertiserAuditResultModel rejuseItem = new AdvertiserAuditResultModel();
+					rejuseItem.setId(String.valueOf(advertiser.getId()));
+					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+					rejuseItem.setMediaId(String.valueOf(MediaMapping.SOHUNEWS.getValue()));
+					rejuseItem.setErrorMessage(sohutvResponse.getMessage());
+					rejusedAdvertisers.add(rejuseItem);
+					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败-" + result);
 				}
+			} else {
+				LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败");
 			}
 		}
 
@@ -81,6 +93,11 @@ public class SohuNewsCustomerCreateApiTask {
 			advertiserService.updateStatusAfterUpload(advertiserIdKeys);
 		}
 
+		// 处理失败的结果，自动驳回 - 通过广告位id更新
+		if (!rejusedAdvertisers.isEmpty()) {
+			advertiserService.updateStatusToMediaByAdvertiserId(rejusedAdvertisers);
+		}
+				
 		LOGGER.info("++++++++++Sohu News upload advertiser end+++++++++++");
 	}
 

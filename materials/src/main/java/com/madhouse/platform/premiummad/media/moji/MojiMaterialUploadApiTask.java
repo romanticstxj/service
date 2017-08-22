@@ -77,12 +77,6 @@ public class MojiMaterialUploadApiTask {
 	
 	@Autowired
 	private IPolicyService policyService;
-
-	/**
-	 * 处理我方两个广告位对应媒体一个广告位
-	 * <mediaAdspaceId|materialKey, mediaMaterialKey>
-	 * */
-	private Map<String, String> mediaAdspace = new HashMap<String, String>();
 	
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++moji get material status begin+++++++++++");
@@ -97,6 +91,9 @@ public class MojiMaterialUploadApiTask {
 		// 上传到媒体
 		LOGGER.info("MojiMaterialUploadApiTask-moji", unSubmitMaterials.size());
 
+		// 处理我方两个广告位对应媒体一个广告位 <mediaAdspaceId|materialKey, mediaMaterialKey>
+		Map<String, String> mediaAdspace = new HashMap<String, String>();
+		
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
 		for (Material material : unSubmitMaterials) {

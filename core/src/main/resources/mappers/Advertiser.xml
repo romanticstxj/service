@@ -270,4 +270,51 @@
 	    </foreach>
       </if>
   </update>
+  
+  <update id="updateByMediaAndMediaAdKey" parameterType="com.madhouse.platform.premiummad.entity.Advertiser" >
+    update mad_sys_advertiser
+    <set >
+      <if test="dspId != null" >
+        dsp_id = #{dspId,jdbcType=INTEGER},
+      </if>
+      <if test="advertiserKey != null" >
+        advertiser_key = #{advertiserKey,jdbcType=VARCHAR},
+      </if>
+      <if test="advertiserName != null" >
+        advertiser_name = #{advertiserName,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null" >
+        industry = #{industry,jdbcType=SMALLINT},
+      </if>
+      <if test="website != null" >
+        website = #{website,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="license != null" >
+        license = #{license,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="reason != null" >
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="auditedUser != null" >
+        audited_user = #{auditedUser,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null" >
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where media_id = #{mediaId,jdbcType=INTEGER}
+      and media_advertiser_key = #{mediaAdvertiserKey,jdbcType=VARCHAR}
+  </update>
 </mapper>

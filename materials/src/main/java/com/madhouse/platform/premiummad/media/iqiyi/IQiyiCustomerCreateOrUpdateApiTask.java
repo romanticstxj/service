@@ -1,5 +1,6 @@
 package com.madhouse.platform.premiummad.media.iqiyi;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,25 +13,27 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
+import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.constant.IQiYiConstant;
 import com.madhouse.platform.premiummad.media.model.IQiyiCustomerResponse;
 import com.madhouse.platform.premiummad.media.util.IQiYiHttpUtils;
+import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 
 @Component("iQiyiCustomerCreateOrUpdateApiTask")
 public class IQiyiCustomerCreateOrUpdateApiTask {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(IQiyiCustomerCreateOrUpdateApiTask.class);
-	
+
 	@Value("${iqiyi.customer.createOrUpdate}")
 	private String createOrUpdateUrl;
-	
+
 	@Autowired
 	private IQiYiHttpUtils iQiYiHttpUtils;
-	
+
 	@Autowired
 	private AdvertiserMapper advertiserDao;
 
@@ -39,7 +42,7 @@ public class IQiyiCustomerCreateOrUpdateApiTask {
 
 	public void createOrUpadate() {
 		LOGGER.info("++++++++++iqiyi upload customer begin+++++++++++");
-		
+
 		// 查询所有待审核且媒体的广告主的审核状态是媒体审核的
 		List<Advertiser> unSubmitAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.IQYI.getValue(), AdvertiserStatusCode.ASC10002.getValue());
 		if (unSubmitAdvertisers == null || unSubmitAdvertisers.isEmpty()) {
@@ -47,10 +50,11 @@ public class IQiyiCustomerCreateOrUpdateApiTask {
 			LOGGER.info("++++++++++iqiyi upload advertiser end+++++++++++");
 			return;
 		}
-		
+
 		// 上传到媒体
 		LOGGER.info("IQiyiCustomerCreateOrUpdateApiTask-Iqiyi", unSubmitAdvertisers.size());
 		Map<Integer, String> advertiserIdKeys = new HashMap<Integer, String>();
+		List<AdvertiserAuditResultModel> rejusedAdvertisers = new ArrayList<AdvertiserAuditResultModel>();
 		for (Advertiser advertiser : unSubmitAdvertisers) {
 			Map<String, String> paramMap = new HashMap<>();
 			paramMap.put("ad_id", advertiser.getId().toString());
@@ -67,16 +71,27 @@ public class IQiyiCustomerCreateOrUpdateApiTask {
 					// 媒体方的广告主ID和我方一致
 					advertiserIdKeys.put(advertiser.getId(), String.valueOf(advertiser.getId()));
 				} else {
-					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败-" + iQiyiCustomerResponse.getDesc());
+					AdvertiserAuditResultModel rejuseItem = new AdvertiserAuditResultModel();
+					rejuseItem.setId(String.valueOf(advertiser.getId()));
+					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+					rejuseItem.setMediaId(String.valueOf(MediaMapping.IQYI.getValue()));
+					rejuseItem.setErrorMessage(iQiyiCustomerResponse.getDesc());
+					rejusedAdvertisers.add(rejuseItem);
+					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败-" + result);
 				}
 			} else {
 				LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败");
 			}
 		}
-		
+
 		// 更新我方系统状态为审核中
 		if (!advertiserIdKeys.isEmpty()) {
 			advertiserService.updateStatusAfterUpload(advertiserIdKeys);
+		}
+
+		// 处理失败的结果，自动驳回 - 通过广告位id更新
+		if (!rejusedAdvertisers.isEmpty()) {
+			advertiserService.updateStatusToMediaByAdvertiserId(rejusedAdvertisers);
 		}
 
 		LOGGER.info("++++++++++iqiyi upload customer end+++++++++++");

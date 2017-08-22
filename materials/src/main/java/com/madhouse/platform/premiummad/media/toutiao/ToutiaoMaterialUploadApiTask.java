@@ -54,13 +54,7 @@ public class ToutiaoMaterialUploadApiTask {
 	private MaterialMapper materialDao;
 	
 	@Autowired
-	private IMaterialService materialService;
-	
-	/***
-	 * 我方两个广告位对应媒体一个广告类型
-	 * <mediaAdType|materialKey, mediaMaterialKey>
-	 */
-	private Map<String, String> mediaAdTypeMap = new HashMap<String, String>();
+	private IMaterialService materialService;	
 	
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Toutiao upload material begin+++++++++++");
@@ -74,6 +68,9 @@ public class ToutiaoMaterialUploadApiTask {
 		
 		// 上传到媒体
 		LOGGER.info("ToutiaoMaterialUploadApiTask-Toutiao", unSubmitMaterials.size());
+		
+		// 我方两个广告位对应媒体一个广告类型 <mediaAdType|materialKey, mediaMaterialKey>
+		Map<String, String> mediaAdTypeMap = new HashMap<String, String>();
 		
 	    List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();

@@ -130,11 +130,11 @@
         <task:scheduled ref="sohuNewsUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohuNewsUploadMaterialApiTask}"/>
         <task:scheduled ref="sohuNewsStatusApiTask" method="getStatusDetail" cron="${cron.sohuNewsStatusApiTask}"/> -->
 		
-		<!-- sohu TV 
+		<!-- sohu TV -->
         <task:scheduled ref="sohuTvCustomerCreateApiTask" method="create" cron="${cron.sohuTvCustomerCreateApiTask}"/>
         <task:scheduled ref="sohuTvCustomerListApiTask" method="list" cron="${cron.sohuTvCustomerListApiTask}"/>
         <task:scheduled ref="sohutvStatusApiTask" method="getStatusDetail" cron="${cron.sohutvStatusApiTask}"/>
-        <task:scheduled ref="sohutvUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>-->
+        <task:scheduled ref="sohutvUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>
 		
 		<!-- Dianping 产品确认不再投此家
  		<task:scheduled ref="dianpingMaterialUploadApiTask" method="uploadMaterial" cron="${cron.dianpingMaterialUploadApiTask}"/>
@@ -144,7 +144,7 @@
         <task:scheduled ref="mojiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.mojiMaterialUploadApiTask}"/>
         <task:scheduled ref="mojiMaterialStatusApiTask" method="getStatusResponse" cron="${cron.mojiMaterialStatusApiTask}"/>-->
         
-        <!-- iqiyi SSP 流量还未接入
+        <!-- iqiyi 测试地址是正式环境 SSP 流量还未接入
         <task:scheduled ref="iQiyiCustomerCreateOrUpdateApiTask" method="createOrUpadate" cron="${cron.iqiyiCustomerCreateApiTask}"/>
         <task:scheduled ref="iQiyiCustomerStatusApiTask" method="batchStatus" cron="${cron.iqiyiCustomerListApiTask}"/>
         <task:scheduled ref="iQiyiMaterialStatusApiTask" method="getStatusDetail" cron="${cron.iqiyiMaterialStatusApiTask}"/>
@@ -158,7 +158,7 @@
         <task:scheduled ref="momoMaterialUploadApiTask" method="uploadMaterial" cron="${cron.momoMaterialUploadApiTask}"/>
         <task:scheduled ref="momoGetStatusApiTask" method="getStatusResponse" cron="${cron.momoMaterialStatusApiTask}"/>
         
-        <!-- Letv -->
+        <!-- Letv 有测试地址，但是测试时媒体审核在生成环境进行 - 媒体要求-->
         <task:scheduled ref="letvUploadMaterialApiTask" method="uploadMaterial" cron="${cron.letvUploadMaterialApiTask}"/>
         <task:scheduled ref="letvStatusApiTask" method="getStatusDetail" cron="${cron.letvStatusApiTask}"/>
 	

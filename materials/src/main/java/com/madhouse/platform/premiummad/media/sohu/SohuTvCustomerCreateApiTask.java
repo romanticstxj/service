@@ -1,19 +1,24 @@
 package com.madhouse.platform.premiummad.media.sohu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
+import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.model.SohuResponse;
+import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 
@@ -48,6 +53,7 @@ public class SohuTvCustomerCreateApiTask {
 		// 上传到媒体
 		LOGGER.info("SohuTvCustomerCreateApiTask-sohuNews", unSubmitAdvertisers.size());
 		Map<Integer, String> advertiserIdKeys = new HashMap<Integer, String>();
+		List<AdvertiserAuditResultModel> rejusedAdvertisers = new ArrayList<AdvertiserAuditResultModel>();
 		for (Advertiser advertiser : unSubmitAdvertisers) {
 			Map<String, Object> paramMap = buildCreatePara(advertiser);
 			String request = sohuAuth.setHttpMethod("POST").setApiUrl(customerCreateUrl).setParamMap(paramMap).buildRequest();
@@ -60,14 +66,27 @@ public class SohuTvCustomerCreateApiTask {
 					String customKey = sohutvResponse.getContent().toString();
 					advertiserIdKeys.put(advertiser.getId(), customKey);
 				} else {
-					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败");
+					AdvertiserAuditResultModel rejuseItem = new AdvertiserAuditResultModel();
+					rejuseItem.setId(String.valueOf(advertiser.getId()));
+					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+					rejuseItem.setMediaId(String.valueOf(MediaMapping.SOHUTV.getValue()));
+					rejuseItem.setErrorMessage(sohutvResponse.getMessage());
+					rejusedAdvertisers.add(rejuseItem);
+					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败-" + result);
 				}
+			} else {
+				LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败");
 			}
 		}
 
 		// 更新我方系统状态为审核中
 		if (!advertiserIdKeys.isEmpty()) {
 			advertiserService.updateStatusAfterUpload(advertiserIdKeys);
+		}
+		
+		// 处理失败的结果，自动驳回 - 通过广告位id更新
+		if (!rejusedAdvertisers.isEmpty()) {
+			advertiserService.updateStatusToMediaByAdvertiserId(rejusedAdvertisers);
 		}
 
 		LOGGER.info("++++++++++Sohu TV upload advertiser end+++++++++++");

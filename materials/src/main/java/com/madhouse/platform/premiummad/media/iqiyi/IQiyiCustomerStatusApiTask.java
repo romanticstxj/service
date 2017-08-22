@@ -102,7 +102,8 @@ public class IQiyiCustomerStatusApiTask {
 		List<AdvertiserAuditResultModel> auditResults = new ArrayList<AdvertiserAuditResultModel>();
 		for (IQiyiCustomerStatusDetail iQiyiCustomerStatusDetail : iQiyiCustomerStatusDetails) {
 			AdvertiserAuditResultModel auditItem = new AdvertiserAuditResultModel();
-			auditItem.setId(String.valueOf(iQiyiCustomerStatusDetail.getAd_id()));
+			auditItem.setMediaAdvertiserKey(String.valueOf(iQiyiCustomerStatusDetail.getAd_id()));
+			auditItem.setMediaId(String.valueOf(MediaMapping.IQYI.getValue()));
 			// 审核通过
 			if ("PASS".equals(iQiyiCustomerStatusDetail.getStatus())) {
 				auditItem.setStatus(AdvertiserStatusCode.ASC10004.getValue());

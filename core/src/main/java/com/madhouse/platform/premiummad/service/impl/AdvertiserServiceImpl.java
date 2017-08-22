@@ -17,7 +17,6 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.SysMediaMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
-import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
@@ -39,7 +38,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 	private AdvertiserMapper advertiserDao;
 
 	/**
-	 * 根据媒体返回的结果更新状态
+	 * 根据媒体返回的结果更新状态-通过媒体key更新
 	 * 
 	 * @param auditResults
 	 */
@@ -74,16 +73,62 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 			Advertiser updateItem = new Advertiser();
 			updateItem.setStatus(Byte.valueOf(item.getStatus().toString()));
 			updateItem.setUpdatedTime(new Date());
+			updateItem.setMediaAdvertiserKey(item.getMediaAdvertiserKey());
+			updateItem.setMediaId(Integer.valueOf(item.getMediaId()));
 			updateItem.setReason(item.getErrorMessage());
-			updateItem.setId(Integer.valueOf(item.getId()));
-			
-			int effortRows = advertiserDao.updateByPrimaryKeySelective(updateItem);
+
+			int effortRows = advertiserDao.updateByMediaAndMediaAdKey(updateItem);
 			if (effortRows != 1) {
 				LOGGER.info("获取媒体状态后，广告主状态更新失败[advertiserId=" + updateItem.getId() + ",status=" + updateItem.getStatus() + "]");
 			}
 		}
+	}
+	
+	/**
+	 * 根据媒体返回的结果更新状态-通过广告位ID更新
+	 * 
+	 * @param auditResults
+	 */
+	@Transactional
+	@Override
+	public void updateStatusToMediaByAdvertiserId(List<AdvertiserAuditResultModel> auditResults) {
+		// 参数校验
+		if (auditResults == null || auditResults.isEmpty()) {
+			return;
+		}
 
-		
+		// 获取广告主ID列表
+		List<Integer> advertiserIds = new ArrayList<Integer>();
+		for (AdvertiserAuditResultModel item : auditResults) {
+			advertiserIds.add(Integer.valueOf(item.getId()));
+		}
+
+		// 校验我方系统是否存在
+		List<Advertiser> advertisers = advertiserDao.selectByIds(advertiserIds);
+		if (advertisers == null || advertisers.size() != advertiserIds.size()) {
+			throw new BusinessException(StatusCode.SC500, "存在无效的广告主ID");
+		}
+
+		// 已驳回或已通过的记录更新状态
+		for (AdvertiserAuditResultModel item : auditResults) {
+			// 审核中的广告主不处理
+			if (item.getStatus() == null || AdvertiserStatusCode.ASC10003.getValue() == item.getStatus().intValue()) {
+				continue;
+			}
+
+			// 更新审核状态
+			Advertiser updateItem = new Advertiser();
+			updateItem.setStatus(Byte.valueOf(item.getStatus().toString()));
+			updateItem.setUpdatedTime(new Date());
+			updateItem.setMediaAdvertiserKey(item.getMediaAdvertiserKey());
+			updateItem.setReason(item.getErrorMessage());
+			updateItem.setId(Integer.valueOf(item.getId()));
+
+			int effortRows = advertiserDao.updateByPrimaryKeySelective(updateItem);
+			if (effortRows != 1) {
+				LOGGER.info("广告主状态更新失败[advertiserId=" + updateItem.getId() + ",status=" + updateItem.getStatus() + "]");
+			}
+		}
 	}
 
 	/**

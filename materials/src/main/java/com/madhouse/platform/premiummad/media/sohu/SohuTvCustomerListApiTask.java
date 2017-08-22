@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
@@ -118,8 +120,10 @@ public class SohuTvCustomerListApiTask {
 			if (changedStatusNet != null && unauditAdvertiser.getStatus().intValue() != changedStatusNet.intValue()) {
 				AdvertiserAuditResultModel auditItem = new AdvertiserAuditResultModel();
 				auditItem.setId(String.valueOf(unauditAdvertiser.getId()));
+				auditItem.setMediaAdvertiserKey(unauditAdvertiser.getMediaAdvertiserKey());
 				auditItem.setStatus(changedStatusNet);
 				auditItem.setErrorMessage(sohuCustomerDetail.getAudit_info());
+				auditItem.setMediaId(String.valueOf(MediaMapping.SOHUTV.getValue()));
 				auditResults.add(auditItem);
 			}
 		} else {

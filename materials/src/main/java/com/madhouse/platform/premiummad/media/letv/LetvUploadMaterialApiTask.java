@@ -48,16 +48,16 @@ public class LetvUploadMaterialApiTask {
 
 	@Value("${letv.isDebug}")
 	private Boolean isDebug;
-	
+
 	@Autowired
-    private LetvTokenRequest tokenRequest;
+	private LetvTokenRequest tokenRequest;
 
 	@Autowired
 	private MaterialMapper materialDao;
 
 	@Autowired
 	private IMaterialService materialService;
-	
+
 	@Autowired
 	private AdvertiserMapper advertiserDao;
 
@@ -70,7 +70,7 @@ public class LetvUploadMaterialApiTask {
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.LETV.getValue(), MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.LETV.getDescrip() + "没有未上传的广告主");
+			LOGGER.info(MediaMapping.LETV.getDescrip() + "没有未上传的素材");
 			LOGGER.info("++++++++++Letv upload material end+++++++++++");
 			return;
 		}
@@ -84,19 +84,21 @@ public class LetvUploadMaterialApiTask {
 		LOGGER.info("LetvUpload request info " + requestJson);
 		String responseJson = HttpUtils.post(uploadMaterialApiUrl, requestJson);
 		LOGGER.info("LetvUpload response info " + responseJson);
+
+		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
+		Map<String, String> rejusedMsgMap = new HashMap<String, String>();
 		if (!StringUtils.isEmpty(responseJson)) {
 			LetvResponse letvResponse = JSON.parseObject(responseJson, LetvResponse.class);
 			Integer result = letvResponse.getResult();
 			Map<String, String> message = letvResponse.getMessage();
 			if (result.equals(LetvConstant.RESPONSE_SUCCESS.getValue()) && message.size() == 0) {
 				// 成功,更新物料任务表状态,媒体无自生成的key,故此处媒体用我方id标志
-				Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
 				for (Material material : unSubmitMaterials) {
 					materialIdKeys.put(material.getId(), material.getMediaMaterialKey());
 				}
 			} else if (result.equals(LetvConstant.RESPONSE_PARAM_CHECK_FAIL.getValue()) && message.size() > 0) {
 				Iterator<Entry<String, String>> iterator = message.entrySet().iterator();
-				Map<String, String> rejusedMsgMap = new HashMap<String, String>();
 				while (iterator.hasNext()) {
 					Entry<String, String> entry = iterator.next();
 					int errorCode = Integer.parseInt((String) entry.getKey());
@@ -114,9 +116,8 @@ public class LetvUploadMaterialApiTask {
 						}
 					}
 				}
-				
+
 				// 业务数据错误，自动驳回
-				List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 				if (!rejusedMsgMap.isEmpty()) {
 					Iterator<Entry<String, String>> iterator1 = rejusedMsgMap.entrySet().iterator();
 					while (iterator1.hasNext()) {
@@ -130,14 +131,20 @@ public class LetvUploadMaterialApiTask {
 						LOGGER.error("素材[materialKey=" + materialKeyIdMap.get(next.getKey()) + "]上传失败-" + next.getValue().substring(1));
 					}
 				}
-				
-				// 处理失败的结果，自动驳回 - 通过素材id更新
-				if (!rejusedMaterials.isEmpty()) {
-					materialService.updateStatusToMediaByMaterialId(rejusedMaterials);
-				}
+
 			} else {
 				LOGGER.error("素材[materialId=" + Arrays.toString(getMaterialIds(unSubmitMaterials).toArray()) + "]上传失败" + "-系统认证失败");
 			}
+		}
+
+		// 更新我方素材信息
+		if (!materialIdKeys.isEmpty()) {
+			materialService.updateStatusAfterUpload(materialIdKeys);
+		}
+
+		// 处理失败的结果，自动驳回 - 通过素材id更新
+		if (!rejusedMaterials.isEmpty()) {
+			materialService.updateStatusToMediaByMaterialId(rejusedMaterials);
 		}
 
 		LOGGER.info("++++++++++Letv upload material end+++++++++++");
@@ -150,7 +157,7 @@ public class LetvUploadMaterialApiTask {
 	 * @param materialKeyIdMap
 	 * @return
 	 */
-	private LetvUploadMaterialRequest buildMaterialRequest(List<Material> unSubmitMaterials, Map<String, String> materialKeyIdMap) {		
+	private LetvUploadMaterialRequest buildMaterialRequest(List<Material> unSubmitMaterials, Map<String, String> materialKeyIdMap) {
 		LetvUploadMaterialRequest materialRequest = new LetvUploadMaterialRequest();
 		List<LetvUploadMaterialDetailRequest> uploadMaterialRequests = new LinkedList<LetvUploadMaterialDetailRequest>();
 
@@ -169,7 +176,7 @@ public class LetvUploadMaterialApiTask {
 			material.setMediaMaterialKey(uploadMaterialRequest.getUrl());
 			// 为了推送失败驳回时使用
 			materialKeyIdMap.put(material.getMediaMaterialKey(), String.valueOf(material.getId()));
-			
+
 			uploadMaterialRequest.setLandingpage(Collections.singletonList(material.getLpgUrl()));
 			uploadMaterialRequest.setAdvertiser(advertisers.get(0).getAdvertiserName());
 			uploadMaterialRequest.setStartdate(DateUtils.getFormatStringByPattern("YYYY-MM-dd", material.getStartDate()));
@@ -177,7 +184,7 @@ public class LetvUploadMaterialApiTask {
 			// eg. jpg
 			int lastPotIndex = uploadMaterialRequest.getUrl().lastIndexOf(".");
 			uploadMaterialRequest.setType((lastPotIndex >= 0 && uploadMaterialRequest.getUrl().length() > (lastPotIndex + 1)) ? uploadMaterialRequest.getUrl().substring(lastPotIndex + 1) : "");
-			uploadMaterialRequest.setIndustry(String.valueOf(LetvIndustryMapping.getMediaIndustryId(advertisers.get(0).getIndustry())));// 添加物料行业 
+			uploadMaterialRequest.setIndustry(String.valueOf(LetvIndustryMapping.getMediaIndustryId(advertisers.get(0).getIndustry())));// 添加物料行业
 
 			// 广告位类型
 			List<Integer> display = new ArrayList<Integer>();
@@ -193,7 +200,7 @@ public class LetvUploadMaterialApiTask {
 		materialRequest.setAd(uploadMaterialRequests);
 		return materialRequest;
 	}
-	
+
 	/**
 	 * 根据我方的广告形式获取媒体方的广告位类型
 	 * 
@@ -219,7 +226,7 @@ public class LetvUploadMaterialApiTask {
 		} else if (layout == Layout.LO10007.getValue()) { // 关机
 			return LetvConstant.AD_TYPE_SHUTDOWN.getValue();
 		} else if (layout == Layout.LO30001.getValue() || layout == Layout.LO30002.getValue() || layout == Layout.LO30003.getValue()) { // 信息流
-			return LetvConstant.AD_TYPE_STREAM.getValue(); 
+			return LetvConstant.AD_TYPE_STREAM.getValue();
 		}
 		return 0;
 	}

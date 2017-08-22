@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.media.iqiyi;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import com.madhouse.platform.premiummad.media.constant.IQiYiConstant;
 import com.madhouse.platform.premiummad.media.model.IQiyiUploadMaterialRequest;
 import com.madhouse.platform.premiummad.media.model.IQiyiUploadMaterialResponse;
 import com.madhouse.platform.premiummad.media.util.IQiYiHttpUtils;
+import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.DateUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -68,6 +70,7 @@ public class IQiyiMaterialUploadApiTask {
 
 		// 上传到媒体
 		LOGGER.info("IQiyiMaterialUploadApiTask-iqiyi", unSubmitMaterials.size());
+		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
 		for (Material material : unSubmitMaterials) {
 			String postResult = handleMaterialRequest(material);
@@ -81,7 +84,13 @@ public class IQiyiMaterialUploadApiTask {
 						materialIdKeys.put(material.getId(), iqiyiUploadMaterialResponse.getM_id());
 						LOGGER.info("IQiYiUploadMaterial-Add-thirdResponse: Success,materialId：" + material.getId());
 					} else {
-						LOGGER.error("素材[materialId=" + material.getId() + "]上传失败");
+						MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+						rejuseItem.setId(String.valueOf(material.getId()));
+						rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+						rejuseItem.setMediaId(String.valueOf(MediaMapping.IQYI.getValue()));
+						rejuseItem.setErrorMessage(iqiyiUploadMaterialResponse.getDesc());
+						rejusedMaterials.add(rejuseItem);
+						LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + iqiyiUploadMaterialResponse.getDesc());
 					}
 				} else {
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败");
@@ -96,6 +105,11 @@ public class IQiyiMaterialUploadApiTask {
 			materialService.updateStatusAfterUpload(materialIdKeys);
 		}
 
+		// 处理失败的结果，自动驳回 - 通过素材id更新
+		if (!rejusedMaterials.isEmpty()) {
+			materialService.updateStatusToMediaByMaterialId(rejusedMaterials);
+		}
+		
 		LOGGER.info("++++++++++iqiyi upload material end+++++++++++");
 	}
 

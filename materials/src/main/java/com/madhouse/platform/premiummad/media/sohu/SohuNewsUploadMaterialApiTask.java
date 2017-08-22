@@ -23,6 +23,7 @@ import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.model.SohuSlave;
 import com.madhouse.platform.premiummad.media.model.SohuUploadMaterialRequest;
 import com.madhouse.platform.premiummad.media.model.SohuResponse;
+import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.util.DateUtils;
@@ -85,6 +86,7 @@ public class SohuNewsUploadMaterialApiTask {
 		LOGGER.info("SohuNewsUploadMaterialApiTask-sohuNews", unSubmitMaterials.size());
 
 		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		for (Material material : unSubmitMaterials) {
 			// 如果素材上传过，重新上传需要先删除该素材
 //			if (!StringUtils.isBlank(material.getMediaMaterialKey())) {
@@ -112,10 +114,16 @@ public class SohuNewsUploadMaterialApiTask {
 						if (content != null && !content.equals("")) {
 							materialIdKeys.put(material.getId(), content);
 						} else {
-							LOGGER.error("素材[materialId=" + material.getId() + "]上传失败");
+							LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + result);
 						}
 					} else {
-						LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + sohutvResponse.getMessage());
+						MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+						rejuseItem.setId(String.valueOf(material.getId()));
+						rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+						rejuseItem.setMediaId(String.valueOf(MediaMapping.SOHUNEWS.getValue()));
+						rejuseItem.setErrorMessage(sohutvResponse.getMessage());
+						rejusedMaterials.add(rejuseItem);
+						LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + result);
 					}
 				} else {
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败");
@@ -126,6 +134,11 @@ public class SohuNewsUploadMaterialApiTask {
 		// 更新我方素材信息
 		if (!materialIdKeys.isEmpty()) {
 			materialService.updateStatusAfterUpload(materialIdKeys);
+		}
+
+		// 处理失败的结果，自动驳回 - 通过素材id更新
+		if (!rejusedMaterials.isEmpty()) {
+			materialService.updateStatusToMediaByMaterialId(rejusedMaterials);
 		}
 
 		LOGGER.info("++++++++++Sohu News upload material end+++++++++++");

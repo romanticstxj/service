@@ -91,9 +91,9 @@ public class LetvStatusApiTask {
 				}
 			} else if (result.equals(LetvConstant.RESPONSE_PARAM_CHECK_FAIL.getValue())) {
 				// 失败,纪录错误信息
-				LOGGER.error("素材[materialId=" + getMaterialIds(unAuditMaterials) + "]上传失败");
+				LOGGER.error("素材[materialId=" + getMaterialIds(unAuditMaterials) + "]获取状态失败");
 			} else {
-				LOGGER.error("素材[materialId=" + getMaterialIds(unAuditMaterials) + "]上传失败");
+				LOGGER.error("素材[materialId=" + getMaterialIds(unAuditMaterials) + "]获取状态失败");
 			}
 		}
 
