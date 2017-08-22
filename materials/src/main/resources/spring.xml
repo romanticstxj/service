@@ -173,5 +173,11 @@
 		<!-- funsion 产品确认接的是MadMax， 和 PremiumMad 没关系
         <task:scheduled ref="funadxMaterialStatusApiTask" method="getStatus" cron="${cron.funadxMaterialStatusApiTask}"/>
         <task:scheduled ref="funadxUploadMaterialApiTask" method="uploadMaterial" cron="${cron.funadxUploadMaterialApiTask}"/>-->
+	
+		<!-- sina -->
+		<task:scheduled ref="WeiboMaterialUploadApiTask" method="uploadMaterial" cron="${cron.weiboMaterialUploadApiTask}"/>
+        <task:scheduled ref="WeiboMaterialStatusApiTask" method="getStatus" cron="${cron.weiboMaterialStatusApiTask}"/>
+        <task:scheduled ref="WeiboClientUploadApiTask" method="uploadClient" cron="${cron.weiboClientUploadApiTask}"/>
+        <task:scheduled ref="WeiboClientStatusApiTask" method="getStatus" cron="${cron.weiboClientStatusApiTask}"/>
 	</task:scheduled-tasks>
 </beans>

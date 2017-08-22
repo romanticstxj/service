@@ -15,7 +15,8 @@ public enum MediaNeedAdspace {
 	MOMO(100008, false),
 	TOUTIAO(100009, true),
 	VALUEMAKER(100010, true),
-	FUNADX(100011, false);
+	FUNADX(100011, false),
+	WEIBO(100012, false);
 
 	int key;
 	boolean value;
