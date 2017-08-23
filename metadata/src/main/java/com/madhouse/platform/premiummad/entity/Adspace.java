@@ -11,7 +11,7 @@ public class Adspace {
 	private String mediaName;
 	private Integer terminalType; 
 	private Integer terminalOs;
-	private boolean enableHttps;
+	private Boolean enableHttps;
 	private Integer bidType;
 	private Integer bidFloor;
 	private Integer adType;	//广告类型
@@ -20,7 +20,8 @@ public class Adspace {
 	private Integer materialType;
 	private String materialSize;
 	private Integer materialMaxKbyte;
-	
+	private String materialDuration;
+
 	private Integer logoType;
 	
 	private String logoSize;
@@ -31,16 +32,12 @@ public class Adspace {
 	
 	private Integer descMaxLength;
 	
-	private Integer mainPicNumber;
+	private Integer materialCount;
 
-	private Integer videoType;
-	
-	private String videoSize;
-	
-	private Integer videoMaxKbyte;
-	
-	private String videoDuration;
-	
+	private Integer coverType;
+	private String coverSize;
+	private Integer coverMaxKbyte;
+
 	private String description;
 	
 	private Integer updateType;
@@ -102,16 +99,15 @@ public class Adspace {
 	public void setTerminalOs(Integer terminalOs) {
 		this.terminalOs = terminalOs;
 	}
-
-	public boolean getEnableHttps() {
+	public Boolean getEnableHttps() {
         return enableHttps;
     }
 
-    public void setEnableHttps(boolean enableHttps) {
+    public void setEnableHttps(Boolean enableHttps) {
         this.enableHttps = enableHttps;
     }
-    
-	public Integer getBidType() {
+
+    public Integer getBidType() {
 		return bidType;
 	}
 
@@ -215,46 +211,6 @@ public class Adspace {
 		this.descMaxLength = descMaxLength;
 	}
 
-	public Integer getMainPicNumber() {
-		return mainPicNumber;
-	}
-
-	public void setMainPicNumber(Integer mainPicNumber) {
-		this.mainPicNumber = mainPicNumber;
-	}
-
-	public Integer getVideoType() {
-		return videoType;
-	}
-
-	public void setVideoType(Integer videoType) {
-		this.videoType = videoType;
-	}
-
-	public String getVideoSize() {
-		return videoSize;
-	}
-
-	public void setVideoSize(String videoSize) {
-		this.videoSize = videoSize;
-	}
-
-	public Integer getVideoMaxKbyte() {
-		return videoMaxKbyte;
-	}
-
-	public void setVideoMaxKbyte(Integer videoMaxKbyte) {
-		this.videoMaxKbyte = videoMaxKbyte;
-	}
-
-	public String getVideoDuration() {
-		return videoDuration;
-	}
-
-	public void setVideoDuration(String videoDuration) {
-		this.videoDuration = videoDuration;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -277,5 +233,45 @@ public class Adspace {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getMaterialDuration() {
+		return materialDuration;
+	}
+
+	public void setMaterialDuration(String materialDuration) {
+		this.materialDuration = materialDuration;
+	}
+
+	public Integer getMaterialCount() {
+		return materialCount;
+	}
+
+	public void setMaterialCount(Integer materialCount) {
+		this.materialCount = materialCount;
+	}
+
+	public Integer getCoverType() {
+		return coverType;
+	}
+
+	public void setCoverType(Integer coverType) {
+		this.coverType = coverType;
+	}
+
+	public String getCoverSize() {
+		return coverSize;
+	}
+
+	public void setCoverSize(String coverSize) {
+		this.coverSize = coverSize;
+	}
+
+	public Integer getCoverMaxKbyte() {
+		return coverMaxKbyte;
+	}
+
+	public void setCoverMaxKbyte(Integer coverMaxKbyte) {
+		this.coverMaxKbyte = coverMaxKbyte;
 	}
 }

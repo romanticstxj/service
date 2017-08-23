@@ -15,10 +15,8 @@ import redis.clients.jedis.Jedis;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.entity.Adspace;
-import com.madhouse.platform.premiummad.entity.DSPMappingMetaData;
 import com.madhouse.platform.premiummad.entity.MediaMappingMetaData;
 import com.madhouse.platform.premiummad.entity.PlcmtMetaData;
-import com.madhouse.platform.premiummad.entity.PlcmtMetaData.Image;
 import com.madhouse.platform.premiummad.service.IPlcmtService;
 import com.madhouse.platform.premiummad.util.Constant;
 import com.madhouse.platform.premiummad.util.ResourceManager;
@@ -51,6 +49,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             LOGGER.debug("------------PlcmtTask-----------start--");
             final List<Adspace> listAdspaces = plcmtService.queryAll();
             long begin = System.currentTimeMillis();
+            redisMaster.del(ALL_PLACEMENT);
             for (Adspace adspace : listAdspaces) {
                 PlcmtMetaData metaData = new PlcmtMetaData();
                 try {
@@ -99,24 +98,26 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                             case Constant.PlcmtType.NATIVE:
                                 PlcmtMetaData.Native natives = metaData.new Native();
                                 if(adspace.getLayout().equals(Constant.Layout.NATIVE_311)){
-                                    PlcmtMetaData.Image nativesImage = metaData.new Image();
-                                    String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getVideoSize(), "*");
-                                    nativesImage.setW(Integer.parseInt(videoSize[0]));
-                                    nativesImage.setH(Integer.parseInt(videoSize[1]));
-                                    nativesImage.setMimes(queryMimesByType(adspace.getMaterialType()));
-                                    natives.setCover(nativesImage);
+                                    if (adspace.getCoverType() > 0 && !StringUtils.isEmpty(adspace.getCoverSize())) {
+                                        PlcmtMetaData.Image nativesImage = metaData.new Image();
+                                        String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getCoverSize(), "*");
+                                        nativesImage.setW(Integer.parseInt(videoSize[0]));
+                                        nativesImage.setH(Integer.parseInt(videoSize[1]));
+                                        nativesImage.setMimes(queryMimesByType(adspace.getCoverType()));
+                                        natives.setCover(nativesImage);
+                                    }
                                     natives.setVideo(getVideo(adspace, metaData));
                                 } else {
-                                    metaData.setLayout(adspace.getLayout()+adspace.getMainPicNumber());
-                                    natives.setCover(getImage(adspace, metaData));
+                                    metaData.setLayout(adspace.getLayout()+adspace.getMaterialCount());
+                                    natives.setImage(getImage(adspace, metaData));
                                 }
                                 PlcmtMetaData.Image nativesIcon = metaData.new Image();
-                                if(!org.apache.commons.lang3.StringUtils.isEmpty(adspace.getLogoSize())){
+                                if(adspace.getLogoType() > 0 && !StringUtils.isEmpty(adspace.getLogoSize())){
                                     String[] nativesIconSize = StringUtils.tokenizeToStringArray(adspace.getLogoSize(), "*");
                                     nativesIcon.setW(Integer.parseInt(nativesIconSize[0]));
                                     nativesIcon.setH(Integer.parseInt(nativesIconSize[1]));
                                 }
-                                if(!org.apache.commons.lang3.StringUtils.isEmpty(adspace.getLogoType()+"")){
+                                if(!StringUtils.isEmpty(adspace.getLogoType()+"")){
                                     nativesIcon.setMimes(queryMimesByType(adspace.getLogoType()));
                                 }
                                 natives.setIcon(nativesIcon);
@@ -135,7 +136,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                 }
             }
             redisMaster.expire(this.ALL_PLACEMENT, EXPIRATION_TIME);
-            LOGGER.info("op plcmt_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadPlcmtMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----------  End--");
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,7 +153,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
         }
         List<Integer> result = new ArrayList<Integer>();
         Integer not = 1;
-        while(not < type){
+        while(not <= type){
             if((not & type) > 0){
                 result.add(not);
             }
@@ -176,17 +177,17 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     public PlcmtMetaData.Video getVideo(Adspace adspace ,PlcmtMetaData metaData) {
         PlcmtMetaData.Video video = metaData.new Video();
         if(!adspace.getLayout().equals(Constant.Layout.VIDEO_211)){
-            String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getVideoSize(), "*");
+            String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
             video.setW(Integer.parseInt(videoSize[0]));
             video.setH(Integer.parseInt(videoSize[1]));
             
             metaData.setW(Integer.parseInt(videoSize[0]));
             metaData.setH(Integer.parseInt(videoSize[1]));
             
-            String[] nativesdescription = StringUtils.tokenizeToStringArray(adspace.getVideoDuration(), ",");
+            String[] nativesdescription = StringUtils.tokenizeToStringArray(adspace.getMaterialDuration(), ",");
             video.setMinDuraion(Integer.parseInt(nativesdescription[0]));
             video.setMaxDuration(Integer.parseInt(nativesdescription[1]));
-            video.setMimes(queryMimesByType(adspace.getVideoType()));
+            video.setMimes(queryMimesByType(adspace.getMaterialType()));
         }
         return video;
     }
@@ -197,10 +198,11 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             LOGGER.debug("------------PlcmtTask------adspaceMappingDsp-----start--");
             List<MediaMappingMetaData> lists = plcmtService.queryAdspaceMappingMedia();
             long begin = System.currentTimeMillis();
+            redisMaster.del(MEDIA_MAPPING_DATA);
             for (MediaMappingMetaData mappingMetaData : lists) {
                 redisMaster.setex(String.format(this.MEDIA_MAPPING_DATA, String.valueOf(mappingMetaData.getAdspaceId())), EXPIRATION_TIME, JSON.toJSONString(mappingMetaData));
             }
-            LOGGER.info("op dsp_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadMediaMappingData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----adspaceMappingDsp------End--");
         } catch (Exception e) {
             LOGGER.error("------------PlcmtTask-----adspaceMappingDsp------error:{}",e.toString());

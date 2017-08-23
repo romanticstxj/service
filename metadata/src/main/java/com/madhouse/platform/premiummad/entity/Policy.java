@@ -8,9 +8,9 @@ public class Policy {
 	
 	private String dealId;
     
-    private Integer deliveryType; //策略类型(1: PDB, 2: PD, 4: PMP, 8: RTB)
+    private int deliveryType; //策略类型(1: PDB, 2: PD, 4: PMP, 8: RTB)
     
-    private Integer weight; //权重
+    private int weight; //权重
     
     private String startDate;
     
@@ -24,13 +24,13 @@ public class Policy {
 
     private String connTargeting; //连网方式定向(多个用半角逗号分隔, 1:WIFI, 2:2G, 3:3G, 4:4G)
 
-    private Byte controlType; //总量控制(0: 不限, 1: 每天, 2: 整单)
+    private int controlType; //总量控制(0: 不限, 1: 每天, 2: 整单)
 
-    private Integer maxCount;
+    private int maxCount;
     
-    private Integer controlMethod; //投放速度(1:加速投放, 2:匀速投放)
+    private int controlMethod; //投放速度(1:加速投放, 2:匀速投放)
 
-    private Integer status;
+    private int status;
 
     private List<AdspaceInfo> policyAdspaces;
     
@@ -52,19 +52,19 @@ public class Policy {
         this.dealId = dealId;
     }
 
-    public Integer getDeliveryType() {
+    public int getDeliveryType() {
         return deliveryType;
     }
 
-    public void setDeliveryType(Integer deliveryType) {
+    public void setDeliveryType(int deliveryType) {
         this.deliveryType = deliveryType;
     }
 
-    public Integer getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public void setWeight(Integer weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
 
@@ -116,35 +116,35 @@ public class Policy {
         this.connTargeting = connTargeting;
     }
 
-    public Byte getControlType() {
+    public int getControlType() {
         return controlType;
     }
 
-    public void setControlType(Byte controlType) {
+    public void setControlType(int controlType) {
         this.controlType = controlType;
     }
 
-    public Integer getMaxCount() {
+    public int getMaxCount() {
         return maxCount;
     }
 
-    public void setMaxCount(Integer maxCount) {
+    public void setMaxCount(int maxCount) {
         this.maxCount = maxCount;
     }
 
-    public Integer getControlMethod() {
+    public int getControlMethod() {
         return controlMethod;
     }
 
-    public void setControlMethod(Integer controlMethod) {
+    public void setControlMethod(int controlMethod) {
         this.controlMethod = controlMethod;
     }
 
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -164,7 +164,4 @@ public class Policy {
         this.policyDsp = policyDsp;
     }
 
-    
-
-    
 }

@@ -40,12 +40,13 @@ public class MediaTask {
             LOGGER.debug("------------MediaTask-----------start--");
             final List<MediaMetaData> listMedias = mediaService.queryAll();
             long begin = System.currentTimeMillis();
+            redisMaster.del(ALL_MEDIA);
             for (MediaMetaData media : listMedias) {
                 redisMaster.setex(String.format(this.MEDIA_META_DATA, String.valueOf(media.getId())), EXPIRATION_TIME,JSON.toJSONString(media));
                 redisMaster.sadd(this.ALL_MEDIA, String.valueOf(media.getId()));
             }
             redisMaster.expire(this.ALL_MEDIA, EXPIRATION_TIME);
-            LOGGER.info("op media_task_info :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
+            LOGGER.info("op loadMediaMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------MediaTask-----------  End--");
         } catch (Exception e) {
             LOGGER.error("------------MediaTask-----------error:{}",e.toString());

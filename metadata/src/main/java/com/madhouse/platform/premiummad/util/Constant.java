@@ -70,5 +70,11 @@ public final class Constant {
     public static final class NativeDescType {
         public static final int DESC = 1;
     }
-
+    
+    public static final class DeliveryType {
+        public static final int PDB = 1;
+        public static final int PD = 2;
+        public static final int PMP = 4;
+        public static final int RTB = 8;
+    }
 }

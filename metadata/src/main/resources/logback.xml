@@ -3,7 +3,7 @@
 
 
 	<property name="LOG_ROOT_HOME" value="/services/logs" />
-	<property name="APP_NAME" value="metadata" />
+	<property name="APP_NAME" value="service-metadata" />
 	<property name="LOG_HOME" value="${LOG_ROOT_HOME}/${APP_NAME}" />
 
 	<appender name="metadataAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
