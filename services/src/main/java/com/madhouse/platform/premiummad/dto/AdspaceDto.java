@@ -28,6 +28,7 @@ public class AdspaceDto implements Serializable{
 	@NotNullAndBlank
 	private Integer mediaId;
 	private String mediaName;
+	private Integer mediaStatus;
 	@NotNullAndBlank
 	private Integer terminalType; 
 	@NotNullAndBlank
@@ -308,18 +309,26 @@ public class AdspaceDto implements Serializable{
 		this.coverMaxKbyte = coverMaxKbyte;
 	}
 
+	public Integer getMediaStatus() {
+		return mediaStatus;
+	}
+
+	public void setMediaStatus(Integer mediaStatus) {
+		this.mediaStatus = mediaStatus;
+	}
+
 	@Override
 	public String toString() {
 		return "AdspaceDto [id=" + id + ", status=" + status + ", name=" + name + ", adspaceKey=" + adspaceKey
-				+ ", mediaId=" + mediaId + ", mediaName=" + mediaName + ", terminalType=" + terminalType
-				+ ", terminalOs=" + terminalOs + ", supportHttps=" + supportHttps + ", bidType=" + bidType
-				+ ", bidFloor=" + bidFloor + ", adType=" + adType + ", layout=" + layout + ", layoutName=" + layoutName
-				+ ", materialType=" + materialType + ", materialSize=" + materialSize + ", materialMaxKbyte="
-				+ materialMaxKbyte + ", materialCount=" + materialCount + ", materialDuration=" + materialDuration
-				+ ", logoType=" + logoType + ", logoSize=" + logoSize + ", logoMaxKbyte=" + logoMaxKbyte
-				+ ", titleMaxLength=" + titleMaxLength + ", descMaxLength=" + descMaxLength + ", coverType=" + coverType
-				+ ", coverSize=" + coverSize + ", coverMaxKbyte=" + coverMaxKbyte + ", description=" + description
-				+ ", createdTime=" + createdTime + "]";
+				+ ", mediaId=" + mediaId + ", mediaName=" + mediaName + ", mediaStatus=" + mediaStatus
+				+ ", terminalType=" + terminalType + ", terminalOs=" + terminalOs + ", supportHttps=" + supportHttps
+				+ ", bidType=" + bidType + ", bidFloor=" + bidFloor + ", adType=" + adType + ", layout=" + layout
+				+ ", layoutName=" + layoutName + ", materialType=" + materialType + ", materialSize=" + materialSize
+				+ ", materialMaxKbyte=" + materialMaxKbyte + ", materialCount=" + materialCount + ", materialDuration="
+				+ materialDuration + ", logoType=" + logoType + ", logoSize=" + logoSize + ", logoMaxKbyte="
+				+ logoMaxKbyte + ", titleMaxLength=" + titleMaxLength + ", descMaxLength=" + descMaxLength
+				+ ", coverType=" + coverType + ", coverSize=" + coverSize + ", coverMaxKbyte=" + coverMaxKbyte
+				+ ", description=" + description + ", createdTime=" + createdTime + "]";
 	}
 
 }
