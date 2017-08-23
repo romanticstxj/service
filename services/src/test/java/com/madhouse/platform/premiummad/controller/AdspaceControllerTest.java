@@ -18,7 +18,7 @@ public class AdspaceControllerTest {
 	@Test
 	public void add(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-		adspaceDto.setName("adspace57");
+		adspaceDto.setName("adspace57335");
 		adspaceDto.setMediaId(100004);
 		adspaceDto.setTerminalType(1);
 		adspaceDto.setTerminalOs(1);
@@ -39,8 +39,8 @@ public class AdspaceControllerTest {
 		adspaceDto.setCoverSize("36*72");
 		adspaceDto.setCoverMaxKbyte(100);
 		adspaceDto.setDescription("desc");
-		String link = "http://172.16.25.48:8080/services/adspace/create";
-//		String link = "http://localhost:8080/services/adspace/create";
+//		String link = "http://172.16.25.48:8080/services/adspace/create";
+		String link = "http://localhost:8080/services/adspace/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(adspaceDto));
 	}
 	
@@ -92,7 +92,7 @@ public class AdspaceControllerTest {
 		dsp = new DspMappingDto();
 		dsp.setDspAdspaceKey("dspAdspaceKey2");
 		dsp.setDspMediaId("f");
-		dsp.setDspId(500002);
+//		dsp.setDspId(500002);
 		dsps.add(dsp);
 		dsp = new DspMappingDto();
 		dsp.setDspAdspaceKey("  33  ");

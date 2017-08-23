@@ -104,16 +104,16 @@
     <update id="update" parameterType="com.madhouse.platform.premiummad.entity.Media">
         UPDATE mad_sys_media
         <set>
-            <if test="name != null">name = #{name},</if>
-            <if test="category != null">category = #{category},</if>
-            <if test="type != null">type = #{type},</if>
-            <if test="accessType != null">access_type = #{accessType},</if>
-            <if test="advertiserAuditMode != null">advertiser_audit_mode = #{advertiserAuditMode},</if>
-            <if test="materialAuditMode != null">material_audit_mode = #{materialAuditMode},</if>
-            <if test="timeout != null">timeout = #{timeout},</if>
-            <if test="description != null">description = #{description},</if>
-            <if test="updatedUser != null">updated_user = #{updatedUser},</if>
-            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+            name = #{name},
+            category = #{category},
+            type = #{type},
+            access_type = #{accessType},
+            advertiser_audit_mode = #{advertiserAuditMode},
+            material_audit_mode = #{materialAuditMode},
+            timeout = #{timeout},
+            description = #{description},
+            updated_user = #{updatedUser},
+            updated_time = #{updatedTime}
         </set>
         WHERE id = #{id}
     </update>
