@@ -22,11 +22,11 @@ import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.IValueMakerConstant;
-import com.madhouse.platform.premiummad.media.constant.ValuekerIndustryMapping;
-import com.madhouse.platform.premiummad.media.model.ValueMakerMaterialUploadRequest;
-import com.madhouse.platform.premiummad.media.model.ValuekerResponse;
-import com.madhouse.platform.premiummad.media.util.ValueMakerHttpUtil;
+import com.madhouse.platform.premiummad.media.valuemaker.constant.ValueMakerConstant;
+import com.madhouse.platform.premiummad.media.valuemaker.constant.ValuekerIndustryMapping;
+import com.madhouse.platform.premiummad.media.valuemaker.request.ValueMakerMaterialUploadRequest;
+import com.madhouse.platform.premiummad.media.valuemaker.response.ValuekerResponse;
+import com.madhouse.platform.premiummad.media.valuemaker.util.ValueMakerHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -108,27 +108,27 @@ public class ValueMakerUploadApiTask {
 
 			// 处理结果
 			int responseStatus = responseMap.get("responseStatus").equals("") ? 0 : Integer.parseInt(responseMap.get("responseStatus"));
-			if (responseStatus == IValueMakerConstant.RESPONSE_STATUS_200.getValue()) {// 上传成功
+			if (responseStatus == ValueMakerConstant.RESPONSE_STATUS_200.getValue()) {// 上传成功
 				String[] mediaMaterialIdKeys = {material.getMediaMaterialKey()};
 				materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
-			} else if (IValueMakerConstant.RESPONSE_STATUS_422.getValue() == responseStatus) {
+			} else if (ValueMakerConstant.RESPONSE_STATUS_422.getValue() == responseStatus) {
 				// 业务异常
 				String result = responseMap.get("result");
 				if (!StringUtils.isBlank(result)) {
 					ValuekerResponse resposne = JSONObject.parseObject(result, ValuekerResponse.class);
 					// 已知业务异常直接驳回
-					if (resposne != null && !StringUtils.isBlank(IValueMakerConstant.getErrorMessage(resposne.getStatus()))) {
+					if (resposne != null && !StringUtils.isBlank(ValueMakerConstant.getErrorMessage(resposne.getStatus()))) {
 						MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 						rejuseItem.setId(String.valueOf(material.getId()));
 						rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
 						rejuseItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
-						rejuseItem.setErrorMessage(IValueMakerConstant.getErrorMessage(resposne.getStatus()));
+						rejuseItem.setErrorMessage(ValueMakerConstant.getErrorMessage(resposne.getStatus()));
 						rejusedMaterials.add(rejuseItem);
 					}
 				}
 			} else { 
 				// 非业务异常
-				LOGGER.info("valueMaker上传物料请求出错，错误编码：" + responseStatus + "-" + IValueMakerConstant.getDescription(responseStatus));
+				LOGGER.info("valueMaker上传物料请求出错，错误编码：" + responseStatus + "-" + ValueMakerConstant.getDescription(responseStatus));
 			}
 		}
 
@@ -196,7 +196,7 @@ public class ValueMakerUploadApiTask {
 			request.setText(material.getDescription());
 		}
 
-		request.setFormat(IValueMakerConstant.VALUEMAKER_FROMAT_STATIC.getValue());
+		request.setFormat(ValueMakerConstant.VALUEMAKER_FROMAT_STATIC.getValue());
 
 		// 万流客用于审核落地页域名  - 用 广告主 web 主页 
 		List<String> adomainlist = new ArrayList<>();
@@ -235,13 +235,13 @@ public class ValueMakerUploadApiTask {
 	private int getAdType(String adspaceId) {
 		int adtype = 0;
 		if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_1) != null) {
-			adtype = IValueMakerConstant.VALUEMAKER_AD_TYPE_BANNER.getValue();
+			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_BANNER.getValue();
 		} else if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_2) != null) {
-			adtype = IValueMakerConstant.VALUEMAKER_AD_TYPE_OPENSCREEN.getValue();
+			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_OPENSCREEN.getValue();
 		} else if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_3) != null) {
-			adtype = IValueMakerConstant.VALUEMAKER_AD_TYPE_TABLEPLAQUE.getValue();
+			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_TABLEPLAQUE.getValue();
 		} else if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_4) != null) {
-			adtype = IValueMakerConstant.VALUEMAKER_AD_TYPE_INFORMATIONFLOW.getValue();
+			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_INFORMATIONFLOW.getValue();
 		}
 		return adtype;
 	}

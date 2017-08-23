@@ -4,22 +4,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
-import com.madhouse.platform.premiummad.constant.AdevertiserIndustry;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
-import com.madhouse.platform.premiummad.media.constant.IWeiboConstant;
-import com.madhouse.platform.premiummad.media.model.WeiboClientUploadRequest;
-import com.madhouse.platform.premiummad.media.model.WeiboClientUploadResponse;
-import com.madhouse.platform.premiummad.media.model.WeiboQualificationFile;
+import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
+import com.madhouse.platform.premiummad.media.weibo.constant.WeiboIndustryMapping;
+import com.madhouse.platform.premiummad.media.weibo.request.WeiboClientUploadRequest;
+import com.madhouse.platform.premiummad.media.weibo.request.WeiboQualificationFile;
+import com.madhouse.platform.premiummad.media.weibo.response.WeiboClientUploadResponse;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
@@ -72,7 +74,7 @@ public class WeiboClientUploadApiTask {
 			if (!StringUtils.isEmpty(requestJson)) {
 				WeiboClientUploadResponse weiboClientUploadResponse = JSON.parseObject(responseJson, WeiboClientUploadResponse.class);
 				Integer retCode = weiboClientUploadResponse.getRet_code();
-				if (IWeiboConstant.RESPONSE_SUCCESS.getValue() == retCode) {
+				if (WeiboConstant.RESPONSE_SUCCESS.getValue() == retCode) {
 					advertiserIdKeys.put(advertiser.getId(), String.valueOf(advertiser.getId()));
 				} else {
 					AdvertiserAuditResultModel rejuseItem = new AdvertiserAuditResultModel();
@@ -110,12 +112,12 @@ public class WeiboClientUploadApiTask {
 	private WeiboClientUploadRequest buildRequest(Advertiser advertiser) {
 		WeiboClientUploadRequest request = new WeiboClientUploadRequest();
 		
-		//DSP定义的客户代码 TODO advertiserKey?
+		// 客户代码 
 		request.setClient_id(String.valueOf(advertiser.getId()));
 		// 客户名称取自广告主的名称
 		request.setClient_name(advertiser.getAdvertiserName());
 		// 客户行业
-		request.setContent_category(AdevertiserIndustry.getDescrip(advertiser.getIndustry()));
+		request.setContent_category(String.valueOf(WeiboIndustryMapping.getMediaIndustryId(advertiser.getIndustry())));
 		
 		// 客户URL
 		request.setUrl(advertiser.getWebsite());
@@ -127,7 +129,7 @@ public class WeiboClientUploadApiTask {
 			for (String licence : licences) {
 				WeiboQualificationFile item = new WeiboQualificationFile();
 				item.setFile_url(licence);
-				// file name TODO
+				item.setFile_name("资质文件"); // 默认写死
 				qualificationFiles.add(item);
 			}
 			request.setQualification_files(qualificationFiles);

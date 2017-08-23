@@ -2,22 +2,24 @@ package com.madhouse.platform.premiummad.media.funadx;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.IFunadxConstant;
-import com.madhouse.platform.premiummad.media.model.FunadxDetailResponse;
-import com.madhouse.platform.premiummad.media.model.FunadxStatusRequest;
-import com.madhouse.platform.premiummad.media.model.FunadxStatusResponse;
-import com.madhouse.platform.premiummad.media.model.FunadxStatusSuccessDetailResponse;
-import com.madhouse.platform.premiummad.media.model.FunadxStatusSuccessResponse;
+import com.madhouse.platform.premiummad.media.funadx.constant.IFunadxConstant;
+import com.madhouse.platform.premiummad.media.funadx.request.FunadxStatusRequest;
+import com.madhouse.platform.premiummad.media.funadx.response.FunadxDetailResponse;
+import com.madhouse.platform.premiummad.media.funadx.response.FunadxStatusResponse;
+import com.madhouse.platform.premiummad.media.funadx.response.FunadxStatusSuccessDetailResponse;
+import com.madhouse.platform.premiummad.media.funadx.response.FunadxStatusSuccessResponse;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.HttpUtils;

@@ -16,10 +16,10 @@ import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
-import com.madhouse.platform.premiummad.media.constant.IQiYiConstant;
-import com.madhouse.platform.premiummad.media.model.IQiyiCustomerStatusDetail;
-import com.madhouse.platform.premiummad.media.model.IQiyiCustomerStatusResponse;
-import com.madhouse.platform.premiummad.media.util.IQiYiHttpUtils;
+import com.madhouse.platform.premiummad.media.iqiyi.constant.IQiYiConstant;
+import com.madhouse.platform.premiummad.media.iqiyi.response.IQiyiCustomerStatusDetail;
+import com.madhouse.platform.premiummad.media.iqiyi.response.IQiyiCustomerStatusResponse;
+import com.madhouse.platform.premiummad.media.iqiyi.util.IQiYiHttpUtils;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 

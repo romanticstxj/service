@@ -18,9 +18,9 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.IToutiaoConstant;
-import com.madhouse.platform.premiummad.media.model.ToutiaoMaterialStatusDetailResponse;
-import com.madhouse.platform.premiummad.media.util.ToutiaoHttpUtil;
+import com.madhouse.platform.premiummad.media.toutiao.constant.ToutiaoConstant;
+import com.madhouse.platform.premiummad.media.toutiao.response.ToutiaoMaterialStatusDetailResponse;
+import com.madhouse.platform.premiummad.media.toutiao.util.ToutiaoHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 
@@ -77,12 +77,12 @@ public class ToutiaoMaterialStatusApiTask {
 				auditItem.setMediaId(String.valueOf(MediaMapping.TOUTIAO.getValue()));
 				String status = response.getStatus();
 				String error = response.getError();
-				if (status != null && status.equals(IToutiaoConstant.M_STATUS_UNAUDITED.getDescription())) {// 未审核
+				if (status != null && status.equals(ToutiaoConstant.M_STATUS_UNAUDITED.getDescription())) {// 未审核
 					LOGGER.info("ToutiaoMaterialStatus:materialID=" + item.getId() + " " + status);
-				} else if (status != null && status.equals(IToutiaoConstant.M_STATUS_APPROVED.getDescription())) {// 审核通过
+				} else if (status != null && status.equals(ToutiaoConstant.M_STATUS_APPROVED.getDescription())) {// 审核通过
 					auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
 					auditResults.add(auditItem);
-				} else if (status != null && status.equals(IToutiaoConstant.M_STATUS_REFUSED.getDescription())) {// 审核未通过
+				} else if (status != null && status.equals(ToutiaoConstant.M_STATUS_REFUSED.getDescription())) {// 审核未通过
 					auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
 					auditItem.setErrorMessage(response.getReason());
 					auditResults.add(auditItem);

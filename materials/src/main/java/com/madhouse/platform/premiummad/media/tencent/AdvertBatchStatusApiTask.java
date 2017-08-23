@@ -15,12 +15,12 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.TencentAduitStatus;
-import com.madhouse.platform.premiummad.media.model.AdvertBachStatusData;
-import com.madhouse.platform.premiummad.media.model.AdvertBatchStatusResponse;
-import com.madhouse.platform.premiummad.media.model.RetMsg;
-import com.madhouse.platform.premiummad.media.model.TencentCommonRequest;
-import com.madhouse.platform.premiummad.media.util.TencentHttpUtil;
+import com.madhouse.platform.premiummad.media.tencent.constant.TencentAduitStatus;
+import com.madhouse.platform.premiummad.media.tencent.request.AdvertBachStatusData;
+import com.madhouse.platform.premiummad.media.tencent.request.TencentCommonRequest;
+import com.madhouse.platform.premiummad.media.tencent.response.AdvertBatchStatusResponse;
+import com.madhouse.platform.premiummad.media.tencent.response.RetMsg;
+import com.madhouse.platform.premiummad.media.tencent.util.TencentHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 

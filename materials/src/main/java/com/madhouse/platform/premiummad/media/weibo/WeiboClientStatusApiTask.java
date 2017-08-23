@@ -2,21 +2,23 @@ package com.madhouse.platform.premiummad.media.weibo;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
-import com.madhouse.platform.premiummad.media.constant.IWeiboConstant;
-import com.madhouse.platform.premiummad.media.model.WeiboClientStatusDetail;
-import com.madhouse.platform.premiummad.media.model.WeiboClientStatusRequest;
-import com.madhouse.platform.premiummad.media.model.WeiboClientStatusResponse;
+import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
+import com.madhouse.platform.premiummad.media.weibo.request.WeiboClientStatusRequest;
+import com.madhouse.platform.premiummad.media.weibo.response.WeiboClientStatusDetail;
+import com.madhouse.platform.premiummad.media.weibo.response.WeiboClientStatusResponse;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
@@ -73,7 +75,7 @@ public class WeiboClientStatusApiTask {
 		if (!StringUtils.isEmpty(requestJson)) {
 			WeiboClientStatusResponse weiboClientStatusResponse = JSON.parseObject(responseJson, WeiboClientStatusResponse.class);
 			Integer retCode = weiboClientStatusResponse.getRet_code();
-			if (IWeiboConstant.RESPONSE_SUCCESS.getValue() == retCode) {
+			if (WeiboConstant.RESPONSE_SUCCESS.getValue() == retCode) {
 				List<AdvertiserAuditResultModel> auditResults = new ArrayList<AdvertiserAuditResultModel>();
 				List<WeiboClientStatusDetail> weiboClientStatusDetails = weiboClientStatusResponse.getRet_msg();
 
@@ -84,12 +86,12 @@ public class WeiboClientStatusApiTask {
 					auditItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
 
 					String status = weiboClientStatusDetail.getVerify_status();
-					if (IWeiboConstant.C_STATUS_APPROVED.getDescription().equals(status)) { // 审核通过
+					if (WeiboConstant.C_STATUS_APPROVED.getDescription().equals(status)) { // 审核通过
 						auditItem.setStatus(AdvertiserStatusCode.ASC10004.getValue());
 						auditResults.add(auditItem);
-					} else if (IWeiboConstant.C_STATUS_UNAUDITED.getDescription().equals(status)) { // 未审核
+					} else if (WeiboConstant.C_STATUS_UNAUDITED.getDescription().equals(status)) { // 未审核
 						LOGGER.info("广告主尚未审核[meidaAdvertiserKey=" + weiboClientStatusDetail.getClient_id() + "]");
-					} else if (IWeiboConstant.C_STATUS_REFUSED.getDescription().equals(status)) { // 驳回
+					} else if (WeiboConstant.C_STATUS_REFUSED.getDescription().equals(status)) { // 驳回
 						auditItem.setStatus(AdvertiserStatusCode.ASC10001.getValue());
 						auditItem.setErrorMessage(weiboClientStatusDetail.getVerify_info());
 						auditResults.add(auditItem);

@@ -16,11 +16,11 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.IMojiConstant;
-import com.madhouse.platform.premiummad.media.model.MojiMaterialUploadRequest;
-import com.madhouse.platform.premiummad.media.model.MojiMaterialUploadResponse;
-import com.madhouse.platform.premiummad.media.util.MojiHttpUtil;
-import com.madhouse.platform.premiummad.media.util.Sha1;
+import com.madhouse.platform.premiummad.media.moji.constant.MojiConstant;
+import com.madhouse.platform.premiummad.media.moji.request.MojiMaterialUploadRequest;
+import com.madhouse.platform.premiummad.media.moji.response.MojiMaterialUploadResponse;
+import com.madhouse.platform.premiummad.media.moji.util.MojiHttpUtil;
+import com.madhouse.platform.premiummad.media.sohu.util.Sha1;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IPolicyService;
@@ -110,7 +110,7 @@ public class MojiMaterialUploadApiTask {
 			if (!StringUtils.isEmpty(postResult)) {
 				MojiMaterialUploadResponse response = JSON.parseObject(postResult, MojiMaterialUploadResponse.class);
 				// 上传成功，返回200
-				if (response.getCode().equals(IMojiConstant.M_STATUS_SUCCESS.getValue() + "")) {
+				if (response.getCode().equals(MojiConstant.M_STATUS_SUCCESS.getValue() + "")) {
 					String[] mediaMaterialIdKeys = { response.getData().getId(),  response.getData().getId()};
 					materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
 					mediaAdspace.put(key, mediaMaterialIdKeys);
@@ -160,7 +160,7 @@ public class MojiMaterialUploadApiTask {
 		// 广告类型
 		request.setAd_type(convertMediaAdType(materialAdspaceId));
 		// 广告样式
-		request.setShow_type(IMojiConstant.SHOW_TYPE_1.getValue());
+		request.setShow_type(MojiConstant.SHOW_TYPE_1.getValue());
 		// 跳转链接
 		request.setRedirect_url(material.getLpgUrl());
 		// 物料上传地址
@@ -199,11 +199,11 @@ public class MojiMaterialUploadApiTask {
 	 */
 	private int convertMediaAdType(String mediaAdspaceId) {
 		if (mediaAdspaceId.equals(moji_ad_splash_101)) {// 点评闪惠交易成功页
-			return IMojiConstant.MOJI_SPLASH.getValue();
+			return MojiConstant.MOJI_SPLASH.getValue();
 		} else if (mediaAdspaceId.equals(moji_ad_banner_1008)) {// 点评电影交易成功页
-			return IMojiConstant.MOJI_BANNER.getValue();
+			return MojiConstant.MOJI_BANNER.getValue();
 		} else if (mediaAdspaceId.equals(moji_ad_banner_2002)) {// 点评电影票详情页
-			return IMojiConstant.MOJI_BANNER.getValue();
+			return MojiConstant.MOJI_BANNER.getValue();
 		}
 		return 0;
 	}

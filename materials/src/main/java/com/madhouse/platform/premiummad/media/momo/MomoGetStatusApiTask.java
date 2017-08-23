@@ -6,19 +6,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.model.MomoGetStatusRequest;
-import com.madhouse.platform.premiummad.media.model.MomoGetStatusResponse;
-import com.madhouse.platform.premiummad.media.util.MomoHttpUtils;
+import com.madhouse.platform.premiummad.media.momo.request.MomoGetStatusRequest;
+import com.madhouse.platform.premiummad.media.momo.response.MomoGetStatusResponse;
+import com.madhouse.platform.premiummad.media.momo.util.MomoHttpUtils;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;

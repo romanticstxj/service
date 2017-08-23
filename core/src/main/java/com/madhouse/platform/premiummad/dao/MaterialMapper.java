@@ -70,7 +70,7 @@ public interface MaterialMapper {
 	int updateByBath(List<Material> list);
 
 	/**
-	 * 插入素材信息，返回主�?
+	 * 插入素材信息，返回主键
 	 * 
 	 * @param record
 	 * @return
@@ -95,7 +95,7 @@ public interface MaterialMapper {
 	List<Material> selectByIds(List<Integer> list);
 	
 	/**
-	 * 获取�?要审核媒体的广告�?
+	 * 获取需要审核媒体的广告主
 	 * 
 	 * @param mediaId
 	 * @return
@@ -103,14 +103,14 @@ public interface MaterialMapper {
 	List<Material> selectMediaMaterials(@Param("mediaId")Integer mediaId, @Param("auditStatus")Integer auditStatus);
 	
 	/**
-	 * 根据媒体id �? 媒体方素材key更新
+	 * 根据媒体id �? 媒体方素材key更新
 	 * @param record
 	 * @return
 	 */
 	int updateByMediaAndMediaMaterialKey(Material record);
 	
 	/**
-	 * 查询�?有素�?
+	 * 查询所有素材
 	 * 
 	 * @param list
 	 * @return

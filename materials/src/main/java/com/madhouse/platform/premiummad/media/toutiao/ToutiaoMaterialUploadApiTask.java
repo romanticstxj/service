@@ -17,10 +17,10 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.IToutiaoConstant;
-import com.madhouse.platform.premiummad.media.model.ToutiaoMaterialUploadRequest;
-import com.madhouse.platform.premiummad.media.model.ToutiaoMaterialUploadResponse;
-import com.madhouse.platform.premiummad.media.util.ToutiaoHttpUtil;
+import com.madhouse.platform.premiummad.media.toutiao.constant.ToutiaoConstant;
+import com.madhouse.platform.premiummad.media.toutiao.request.ToutiaoMaterialUploadRequest;
+import com.madhouse.platform.premiummad.media.toutiao.response.ToutiaoMaterialUploadResponse;
+import com.madhouse.platform.premiummad.media.toutiao.util.ToutiaoHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -96,12 +96,12 @@ public class ToutiaoMaterialUploadApiTask {
 				} else if (null != jsonObject.get("success_ad_ids")) {
 					List<ToutiaoMaterialUploadResponse> responseList = JSON.parseArray(jsonObject.get("success_ad_ids").toString(), ToutiaoMaterialUploadResponse.class);
 					ToutiaoMaterialUploadResponse response = responseList.get(0);
-					if (response.getAdid() != null && response.getStatus().equals(IToutiaoConstant.M_STATUS_SUCCESS.getDescription())) {
+					if (response.getAdid() != null && response.getStatus().equals(ToutiaoConstant.M_STATUS_SUCCESS.getDescription())) {
 						LOGGER.info("头条物料上传成功");
 						String[] mediaMaterialIdKeys = {response.getAdid(), response.getAdid()};
 						materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
 						mediaAdTypeMap.put(key, mediaMaterialIdKeys);
-					} else if (response.getAdid() != null && response.getStatus().equals(IToutiaoConstant.M_STATUS_FAIL.getDescription())) {
+					} else if (response.getAdid() != null && response.getStatus().equals(ToutiaoConstant.M_STATUS_FAIL.getDescription())) {
 						LOGGER.info("头条物料上传失败-" + ToutiaoHttpUtil.unicodeToString(response.getMsg()));
 						if (!StringUtils.isBlank(response.getMsg())) {
 							MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
@@ -145,7 +145,7 @@ public class ToutiaoMaterialUploadApiTask {
 		// 广告类型
 		request.setAd_type(getMediaAdType(material.getAdspaceId()));
 		// 获胜的 url
-		request.setNurl(IToutiaoConstant.NURL.getDescription().replace("{adspaceid}", getMediaNurl(material.getAdspaceId())));
+		request.setNurl(ToutiaoConstant.NURL.getDescription().replace("{adspaceid}", getMediaNurl(material.getAdspaceId())));
 		request.setAdid(material.getId() + String.valueOf(material.getAdspaceId()) + 1);
 		request.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
 		request.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
@@ -179,7 +179,7 @@ public class ToutiaoMaterialUploadApiTask {
 				}
 			}
 		}
-		showUrls.add(IToutiaoConstant.IMP_MONITOR_PM.getDescription());
+		showUrls.add(ToutiaoConstant.IMP_MONITOR_PM.getDescription());
 		request.setShow_url(showUrls);
 
 		list.add(request);
@@ -211,10 +211,10 @@ public class ToutiaoMaterialUploadApiTask {
 	 */
 	private int getMediaAdType(Integer dbAdspaceId) {
 		if (String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_ios_1) || String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_android_1)) {
-			return IToutiaoConstant.TOUTIAO_FEED_LP_LARGE.getValue();
+			return ToutiaoConstant.TOUTIAO_FEED_LP_LARGE.getValue();
 		}
 		if (String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_ios_2) || String.valueOf(dbAdspaceId).equals(mh_toutiao_mapping_android_2)) {
-			return IToutiaoConstant.OUTIAO_FEED_LP_SMALL.getValue();
+			return ToutiaoConstant.OUTIAO_FEED_LP_SMALL.getValue();
 		}
 		return 0;
 	}

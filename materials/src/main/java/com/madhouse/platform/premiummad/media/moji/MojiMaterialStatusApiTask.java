@@ -18,10 +18,10 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.IMojiConstant;
-import com.madhouse.platform.premiummad.media.model.MojiMaterialStatusResponse;
-import com.madhouse.platform.premiummad.media.util.MojiHttpUtil;
-import com.madhouse.platform.premiummad.media.util.Sha1;
+import com.madhouse.platform.premiummad.media.moji.constant.MojiConstant;
+import com.madhouse.platform.premiummad.media.moji.response.MojiMaterialStatusResponse;
+import com.madhouse.platform.premiummad.media.moji.util.MojiHttpUtil;
+import com.madhouse.platform.premiummad.media.sohu.util.Sha1;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -113,14 +113,14 @@ public class MojiMaterialStatusApiTask {
 		auditItem.setMediaMaterialKey(String.valueOf(response.getData().getPosition_id()));
 		auditItem.setMediaId(String.valueOf(MediaMapping.DIANPING.getValue()));
 
-		if (code.equals(String.valueOf(IMojiConstant.M_STATUS_SUCCESS.getValue()))) { // 审核成功
+		if (code.equals(String.valueOf(MojiConstant.M_STATUS_SUCCESS.getValue()))) { // 审核成功
 			auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
 			auditResults.add(auditItem);
-		} else if (code.equals(IMojiConstant.M_STATUS_ERROR.getValue() + "")) { // 审核失败
+		} else if (code.equals(MojiConstant.M_STATUS_ERROR.getValue() + "")) { // 审核失败
 			auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
 			auditItem.setErrorMessage(response.getData().getReject_reason());
 			auditResults.add(auditItem);
-		} else if (code.equals(String.valueOf(IMojiConstant.M_STATUS_UNAUDITED.getValue()))) {// 未审核
+		} else if (code.equals(String.valueOf(MojiConstant.M_STATUS_UNAUDITED.getValue()))) {// 未审核
 			LOGGER.info("墨迹MaterialStatusTask-response:物料未审核,id为{}" + item.getId());
 		} else {
 			LOGGER.info(response.getMessage() + "id为{}" + item.getId());

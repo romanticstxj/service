@@ -175,9 +175,9 @@
         <task:scheduled ref="funadxUploadMaterialApiTask" method="uploadMaterial" cron="${cron.funadxUploadMaterialApiTask}"/>-->
 	
 		<!-- sina -->
-		<task:scheduled ref="WeiboMaterialUploadApiTask" method="uploadMaterial" cron="${cron.weiboMaterialUploadApiTask}"/>
-        <task:scheduled ref="WeiboMaterialStatusApiTask" method="getStatus" cron="${cron.weiboMaterialStatusApiTask}"/>
-        <task:scheduled ref="WeiboClientUploadApiTask" method="uploadClient" cron="${cron.weiboClientUploadApiTask}"/>
-        <task:scheduled ref="WeiboClientStatusApiTask" method="getStatus" cron="${cron.weiboClientStatusApiTask}"/>
+		<task:scheduled ref="weiboMaterialUploadApiTask" method="uploadMaterial" cron="${cron.weiboMaterialUploadApiTask}"/>
+        <task:scheduled ref="weiboMaterialStatusApiTask" method="getStatus" cron="${cron.weiboMaterialStatusApiTask}"/>
+        <task:scheduled ref="weiboClientUploadApiTask" method="uploadClient" cron="${cron.weiboClientUploadApiTask}"/>
+        <task:scheduled ref="weiboClientStatusApiTask" method="getStatus" cron="${cron.weiboClientStatusApiTask}"/>
 	</task:scheduled-tasks>
 </beans>
