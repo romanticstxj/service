@@ -187,7 +187,7 @@
 	      support_https = #{supportHttps,jdbcType=BIT},
 	      bid_type = #{bidType,jdbcType=TINYINT},
 	      bid_floor = #{bidFloor,jdbcType=INTEGER},
-	      adtype = #{adtype,jdbcType=TINYINT},
+	      adtype = #{adType,jdbcType=TINYINT},
 	      layout = #{layout,jdbcType=SMALLINT},
 	      material_type = #{materialType,jdbcType=SMALLINT},
 	      material_size = #{materialSize,jdbcType=VARCHAR},
