@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
@@ -45,6 +46,9 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		//生成adspaceKey，更新入到数据库e
 		Integer id = adspace.getId();
 		String name = adspace.getName();
+		if(StringUtils.isEmpty(xFrom)){ //防止前端请求过来没有xfrom请求头参数
+			xFrom = SystemConstant.Request.XFROM_DEFAULT_VALUE;
+		}
 		String combinedStr = new StringBuffer(id.toString()).append(name).append(xFrom).toString();
 		String adspaceKey = StringUtils.getMD5(combinedStr);
 		String truncatedAdspaceKey = adspaceKey.substring(8, 24);
@@ -108,23 +112,34 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		return adspaceDao.queryAdspaceMediaMapping(queryParam);
 	}
 
-
-	//插入dsp映射关系表时查询有没有已经存在的我方广告位Id
-	private int queryAdspaceDspMapping(Integer adspaceId) {
-		return adspaceDao.queryAdspaceDspMapping(adspaceId);
-	}
-
 	//判断一次设入的dspId是否有重复
-	private boolean isDspMappingDuplicated(List<DspMapping> dspMappings) {
+	private void checkDspMapping(List<DspMapping> dspMappings) {
 		Set<Integer> dspIdSet = new HashSet<Integer>();
 		boolean result = true;
 		for(DspMapping dspMapping : dspMappings){
 			Integer dspId = dspMapping.getDspId();
+			String dspMediaId = dspMapping.getDspMediaId();
+			String dspAdspaceKey = dspMapping.getDspAdspaceKey();
 			result = dspIdSet.add(dspId);
-			if(!result) break;
+			if(!result){ //dspId重复
+				throw new BusinessException(StatusCode.SC20202);
+			}
+			
+			if(!StringUtils.isEmpty(dspId)){
+				if(StringUtils.isEmpty(dspMediaId) && StringUtils.isEmpty(dspAdspaceKey)){//DSP广告位的映射信息不全
+					throw new BusinessException(StatusCode.SC20203);
+				}
+			}
+			
+			//dsp媒体和广告位信息有值，那么dspId比填
+			if(!(StringUtils.isEmpty(dspMediaId) && StringUtils.isEmpty(dspAdspaceKey))){
+				if(StringUtils.isEmpty(dspId)){
+					throw new BusinessException(StatusCode.SC20204);
+				}
+			}
 		}
-		return result;
 	}
+	
 
 	@Override
 	public AdspaceMapping queryAdspaceMappingById(Integer id) {
@@ -156,10 +171,7 @@ public class AdspaceServiceImpl implements IAdspaceService {
 		
 		List<DspMapping> dspMappings = adspaceMapping.getDspMappings();
 		if(dspMappings != null && dspMappings.size() > 0){
-			boolean result = isDspMappingDuplicated(dspMappings);
-			if(!result){ //DSP ID不可重复
-				throw new BusinessException(StatusCode.SC20202);
-			}
+			checkDspMapping(dspMappings);
 			adspaceDao.insertAdspaceDspMapping(dspMappings);
 		}
 		

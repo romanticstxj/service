@@ -72,7 +72,8 @@ public class DspServiceImpl implements IDspService {
 		if(queryResult != null){
 			throw new BusinessException(StatusCode.SC20301);
 		}
-		return dspDao.updateByPrimaryKeySelective(dsp);
+		queryParam.setId(dsp.getId());
+		return dspDao.updateByPrimaryKeySelective(queryParam);
 	}
 
 	@Override
@@ -90,7 +91,7 @@ public class DspServiceImpl implements IDspService {
             if (count > 0)
             throw new BusinessException(StatusCode.SC20302);
         }
-        return dspDao.updateByPrimaryKeySelective(dsp);
+        return dspDao.updateByPrimaryKey(dsp);
 	}
 
 	@Override
