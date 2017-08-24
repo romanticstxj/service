@@ -2,6 +2,8 @@ package com.madhouse.platform.premiummad.service;
 
 import java.util.List;
 
+import com.madhouse.platform.premiummad.entity.UserAuth;
+
 public interface IUserAuthService {
 	
 	/**
@@ -13,4 +15,6 @@ public interface IUserAuthService {
 	List<Integer> queryAdspaceIdList(Integer userId, String adspaceIds);
 
 	List<Integer> queryPolicyIdList(Integer userId, String policyIds);
+
+	void updateUserMediaAuth(UserAuth userAuth);
 }

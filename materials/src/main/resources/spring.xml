@@ -125,41 +125,53 @@
 	<!-- 基于XML配置任务调度 -->
     <task:scheduled-tasks>
     	<!-- sohu News -->
-        <task:scheduled ref="sohuNewsCustomerCreateApiTask" method="create" cron="${cron.sohuNewsCustomerCreateApiTask}"/>
+        <!-- <task:scheduled ref="sohuNewsCustomerCreateApiTask" method="create" cron="${cron.sohuNewsCustomerCreateApiTask}"/>
     	<task:scheduled ref="sohuNewsCustomerListApiTask" method="list" cron="${cron.sohuNewsCustomerListApiTask}"/>
-        <task:scheduled ref="sohuNewsUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>
-        <task:scheduled ref="sohuNewsStatusApiTask" method="getStatusDetail" cron="${cron.sohutvStatusApiTask}"/>
+        <task:scheduled ref="sohuNewsUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohuNewsUploadMaterialApiTask}"/>
+        <task:scheduled ref="sohuNewsStatusApiTask" method="getStatusDetail" cron="${cron.sohuNewsStatusApiTask}"/> -->
 		
-		<!-- sohu TV -->
+		<!-- sohu TV 
         <task:scheduled ref="sohuTvCustomerCreateApiTask" method="create" cron="${cron.sohuTvCustomerCreateApiTask}"/>
         <task:scheduled ref="sohuTvCustomerListApiTask" method="list" cron="${cron.sohuTvCustomerListApiTask}"/>
         <task:scheduled ref="sohutvStatusApiTask" method="getStatusDetail" cron="${cron.sohutvStatusApiTask}"/>
-        <task:scheduled ref="sohutvUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>
+        <task:scheduled ref="sohutvUploadMaterialApiTask" method="uploadSohuMaterial" cron="${cron.sohutvUploadMaterialApiTask}"/>-->
 		
-		<!-- Dianping
+		<!-- Dianping 产品确认不再投此家
  		<task:scheduled ref="dianpingMaterialUploadApiTask" method="uploadMaterial" cron="${cron.dianpingMaterialUploadApiTask}"/>
         <task:scheduled ref="dianpingGetStatusApiTask" method="getStatusResponse" cron="${cron.dianpingGetStatusApiTask}"/>-->
         
-        <!-- moji
+        <!-- moji  媒体线下审核
         <task:scheduled ref="mojiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.mojiMaterialUploadApiTask}"/>
-        <task:scheduled ref="mojiMaterialStatusApiTask" method="getStatusResponse" cron="${cron.mojiMaterialStatusApiTask}"/> -->
+        <task:scheduled ref="mojiMaterialStatusApiTask" method="getStatusResponse" cron="${cron.mojiMaterialStatusApiTask}"/>-->
         
-        <!-- iqiyi
+        <!-- iqiyi SSP 流量还未接入
         <task:scheduled ref="iQiyiCustomerCreateOrUpdateApiTask" method="createOrUpadate" cron="${cron.iqiyiCustomerCreateApiTask}"/>
         <task:scheduled ref="iQiyiCustomerStatusApiTask" method="batchStatus" cron="${cron.iqiyiCustomerListApiTask}"/>
         <task:scheduled ref="iQiyiMaterialStatusApiTask" method="getStatusDetail" cron="${cron.iqiyiMaterialStatusApiTask}"/>
         <task:scheduled ref="iQiyiMaterialUploadApiTask" method="uploadMaterial" cron="${cron.iqiyiMaterialUploadApiTask}"/> -->
         
-        <!-- toutiao
+        <!-- toutiao 测试地址是正式环境 -->
         <task:scheduled ref="toutiaoMaterialUploadApiTask" method="uploadMaterial" cron="${cron.toutiaoMaterialUploadApiTask}"/>
-        <task:scheduled ref="toutiaoMaterialStatusApiTask" method="getStatusDetail" cron="${cron.toutiaoMaterialStatusApiTask}"/> -->
+        <task:scheduled ref="toutiaoMaterialStatusApiTask" method="getStatusDetail" cron="${cron.toutiaoMaterialStatusApiTask}"/>
         
-        <!-- Momo
+        <!-- Momo -->
         <task:scheduled ref="momoMaterialUploadApiTask" method="uploadMaterial" cron="${cron.momoMaterialUploadApiTask}"/>
-        <task:scheduled ref="momoGetStatusApiTask" method="getStatusResponse" cron="${cron.momoMaterialStatusApiTask}"/> -->
+        <task:scheduled ref="momoGetStatusApiTask" method="getStatusResponse" cron="${cron.momoMaterialStatusApiTask}"/>
         
-        <!-- Letv
-        <task:scheduled ref="letvUploadMaterialApiTask" method="uploadMaterial" cron="${cron.momoMaterialUploadApiTask}"/>
-        <task:scheduled ref="letvStatusApiTask" method="getStatusResponse" cron="${cron.momoMaterialStatusApiTask}"/> -->
+        <!-- Letv -->
+        <task:scheduled ref="letvUploadMaterialApiTask" method="uploadMaterial" cron="${cron.letvUploadMaterialApiTask}"/>
+        <task:scheduled ref="letvStatusApiTask" method="getStatusDetail" cron="${cron.letvStatusApiTask}"/>
+	
+		<!-- TENCENT -->
+        <task:scheduled ref="advertBatchStatusApiTask" method="advertBatchStatus" cron="${cron.advertBatchStatusApiTask}"/>
+        <task:scheduled ref="advertUploadApiTask" method="advertUpload" cron="${cron.advertUploadApiTask}"/>
+		
+		<!-- valuemaker -->
+        <task:scheduled ref="valueMakerUploadApiTask" method="uploadValueMakerMaterial" cron="${cron.valuemakerMaterialUploadApiTask}"/> 
+        <task:scheduled ref="valueMakerStatusApiTask" method="getValueMakerMaterialStatus" cron="${cron.valuemakerMaterialStatusApiTask}"/>
+	
+		<!-- funsion 产品确认接的是MadMax， 和 PremiumMad 没关系
+        <task:scheduled ref="funadxMaterialStatusApiTask" method="getStatus" cron="${cron.funadxMaterialStatusApiTask}"/>
+        <task:scheduled ref="funadxUploadMaterialApiTask" method="uploadMaterial" cron="${cron.funadxUploadMaterialApiTask}"/>-->
 	</task:scheduled-tasks>
 </beans>

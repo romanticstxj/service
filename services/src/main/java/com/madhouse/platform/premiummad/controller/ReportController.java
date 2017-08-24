@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
-import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.ReportDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.ReportCriterion;
@@ -38,7 +37,6 @@ public class ReportController {
     		@RequestParam String startDate, @RequestParam String endDate,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, null);
-//		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
 		ReportDto dto = new ReportDto(type, dims, realtime, mediaId, startDate, endDate, mediaIdList, null);
 		return queryMediaReport(dto);
     }
@@ -49,9 +47,6 @@ public class ReportController {
 		if(ObjectUtils.isEmpty(mediaIds)){
 	        return ResponseUtils.response(StatusCode.SC20001, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
-			if(isAdmin(mediaIds)){ //如果是管理员
-				mediaIds.clear();
-			}
 			ReportRule.validateDto(dto);
 			ReportCriterion criterion = ReportRule.convertToModel(dto, new ReportCriterion());
 			List<ReportMedia> reportMedias = reportService.queryMediaReport(criterion);
@@ -64,7 +59,6 @@ public class ReportController {
     		@RequestParam Integer realtime, @RequestParam String startDate, 
     		@RequestParam String endDate, @RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, null);
-//		String returnedMediaIds = StringUtils.getIdsStr(mediaIdList);
 		ReportDto dto = new ReportDto(type, dims, realtime, null, startDate, endDate, mediaIdList, null);
 		return queryDspReport(dto);
     }
@@ -75,9 +69,6 @@ public class ReportController {
 		if(ObjectUtils.isEmpty(mediaIds)){
 	        return ResponseUtils.response(StatusCode.SC20001, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
-			if(isAdmin(mediaIds)){ //如果是管理员
-				mediaIds.clear();
-			}
 			ReportRule.validateDto(dto);
 			ReportCriterion criterion = ReportRule.convertToModel(dto, new ReportCriterion());
 			List<ReportDsp> reportDsps = reportService.queryDspReport(criterion);
@@ -103,12 +94,6 @@ public class ReportController {
 		if(ObjectUtils.isEmpty(mediaIds) || ObjectUtils.isEmpty(policyIds)){
 	        return ResponseUtils.response(StatusCode.SC20001, null);
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
-			if(isAdmin(mediaIds)){ //如果是媒体管理员
-				mediaIds.clear();
-			}
-			if(isAdmin(policyIds)){ //如果是策略管理员
-				policyIds.clear();
-			}
 			ReportRule.validateDto(dto);
 			ReportCriterion criterion = ReportRule.convertToModel(dto, new ReportCriterion());
 			List<ReportPolicy> reportPolicies = reportService.queryPolicyReport(criterion);
@@ -116,9 +101,4 @@ public class ReportController {
 		}
 	}
     
-    private boolean isAdmin(List<Integer> ids){
-    	return ids.size() == 1 && 
-    			ids.get(0).toString().equals(SystemConstant.OtherConstant.SYSTEM_ADMIN_MEDIA_ID);
-    }
-	
 }

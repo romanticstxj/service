@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.madhouse.platform.premiummad.dao.UserAuthDao;
+import com.madhouse.platform.premiummad.entity.UserAuth;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -38,6 +39,18 @@ public class UserAuthServiceImpl implements IUserAuthService {
 		String[] idStrs = StringUtils.splitToStringArray(policyIds);
 		//通过Admin的标志来做全搜索或是过滤
 		return userAuthDao.queryPolicyIdList(userId, idStrs, count);
+	}
+
+	@Override
+	public void updateUserMediaAuth(UserAuth userAuth) {
+		Integer isAdmin = userAuth.getIsAdmin();
+		if(isAdmin != null && isAdmin.intValue() == 1){ //设置成管理员权限
+			Integer[] mediaIdsForAdmin = new Integer[1];
+			mediaIdsForAdmin[0] = -1;
+			userAuth.setMediaIds(mediaIdsForAdmin);
+		}
+		userAuthDao.removeUserMediaAuth(userAuth.getUserId());
+		userAuthDao.addUserMediaAuth(userAuth);
 	}
 
 }

@@ -5,7 +5,6 @@ import javax.servlet.ServletResponse;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -26,6 +25,7 @@ import com.madhouse.platform.premiummad.constant.SystemConstant;
 public class LogAspect {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
+	private static final Logger logger1 = LoggerFactory.getLogger(SystemConstant.Logging.LOGGER_PREMIUMMAD);
 
 	@Pointcut(SystemConstant.Logging.AOP_SERVICE_IMPL_EXPR)
 	public void pointCutService() {
@@ -33,12 +33,14 @@ public class LogAspect {
 	}
 	
 	@Before("pointCutService()")
-	public void beforeService(JoinPoint joinPoint) throws NoSuchMethodException, SecurityException{
+	public void beforeService(JoinPoint joinPoint){
 		Object[] args = joinPoint.getArgs();
 		StringBuffer sb = new StringBuffer("Begin service: ")
 				.append(joinPoint.toShortString()).append(" with parameters of (");
-		for(Object arg: args){
-			sb.append(arg).append(" ");
+		if(args != null){
+			for(Object arg: args){
+				sb.append(arg).append(" ");
+			}
 		}
 		sb.append(")");
 		logger.debug(sb.toString());
@@ -49,27 +51,27 @@ public class LogAspect {
 		logger.debug("End service");
 	}
 
-	@AfterReturning(value="pointCutService()", returning="retVal", argNames="retVal")
-	public void afterReturnService(JoinPoint joinPoint, Object retVal){
-		logger.debug("Service result: " + retVal.toString());
-	}
-	
 	@Pointcut(SystemConstant.Logging.AOP_SERVICE_CNTR_EXPR)
 	public void pointCutController() {
 
 	}
 
 	@Before("pointCutController()")
-	public void beforeController(JoinPoint joinPoint) throws Throwable {
+	public void beforeController(JoinPoint joinPoint){
 		Object[] objects = joinPoint.getArgs();
 		StringBuffer sb = new StringBuffer("Begin Controller: ").append(joinPoint.toShortString())
 				.append(" with parameters of (");
-		for (Object obj : objects) {
-			if (!(ServletRequest.class.isAssignableFrom(obj.getClass()) || ServletResponse.class.isAssignableFrom(obj.getClass()) || MultipartFile.class.isAssignableFrom(obj.getClass()) || WebDataBinder.class.isAssignableFrom(obj.getClass()))) {
-				sb.append(JSON.toJSONString(obj)).append(" ");
+		if(objects != null){
+			for (Object obj : objects) {
+				if(obj != null){
+					if (!(ServletRequest.class.isAssignableFrom(obj.getClass()) || ServletResponse.class.isAssignableFrom(obj.getClass()) || MultipartFile.class.isAssignableFrom(obj.getClass()) || WebDataBinder.class.isAssignableFrom(obj.getClass()))) {
+						sb.append(JSON.toJSONString(obj)).append(" ");
+					}
+				}
 			}
+			
 		}
 		sb.append(")");
-		logger.debug(sb.toString());
+		logger1.debug(sb.toString());
 	}
 }

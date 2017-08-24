@@ -16,6 +16,7 @@ public interface SystemConstant {
 	interface Request{
 		String XFROM = "X-From";
 	    String USERID = "X-User-Id";
+	    String CONTENT_TYPE = "Content-Type";
 	}
 
 	interface OtherConstant{
@@ -73,5 +74,20 @@ public interface SystemConstant {
 		int TYPE_MEDIA = 32;
 		int TYPE_MIN_VAL = TYPE_DEFAULT;
 		int TYPE_MAX_VAL = TYPE_DEFAULT + TYPE_CARRIER + TYPE_CONN + TYPE_DEVICE + TYPE_LOCATION + TYPE_MEDIA;
+		
+		int IS_LIMIT = 1;
+		int IS_NOT_LIMIT = 0;
+
+		//物料审核方式(后端)
+		int NO_AUDIT = 0; //不审核
+		int AUDIT_BY_SSP = 1; //平台审核
+		int AUDIT_BY_MEDIA = 2; //媒体审核
+		
+		//物料审核状态
+		int AUDIT_PASS = 2; //审核通过
+		int AUDIT_FAIL = -1; //审核未通过
+		int TO_BE_AUDIT = 0; //待审核
+		int IN_AUDIT = 1; //审核中（后端状态）
+		int TO_BE_SUBMIT = 1; //待提交给媒体审核（前端状态）
 	}
 }

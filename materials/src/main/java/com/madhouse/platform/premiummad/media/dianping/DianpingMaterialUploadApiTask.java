@@ -76,13 +76,13 @@ public class DianpingMaterialUploadApiTask {
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.DIANPING.getValue(), MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info("搜狐没有未上传的广告主");
-			LOGGER.info("++++++++++Sohu News upload material end+++++++++++");
+			LOGGER.info("美团点评没有未上传的广告主");
+			LOGGER.info("++++++++++Dianping News upload material end+++++++++++");
 			return;
 		}
 
 		// 上传到媒体
-		LOGGER.info("SohuNewsUploadMaterialApiTask-sohuNews", unSubmitMaterials.size());
+		LOGGER.info("DianpingMaterialUploadApiTask-Dianping", unSubmitMaterials.size());
 
 		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
 		for (Material material : unSubmitMaterials) {
@@ -128,7 +128,7 @@ public class DianpingMaterialUploadApiTask {
 		// 物料上传地址
 		List<String> imgList = new ArrayList<String>();
 		if (null != material.getAdMaterials() && !material.getAdMaterials().equals("")) {
-			String[] adMaterials = material.getAdMaterials().split("|");
+			String[] adMaterials = material.getAdMaterials().split("\\|");
 			for (int i = 0; i < adMaterials.length; i++) {
 				imgList.add(adMaterials[i]);
 			}
@@ -155,9 +155,13 @@ public class DianpingMaterialUploadApiTask {
 		if (null != material.getImpUrls() && !material.getImpUrls().equals("")) {
 			// 物料中第三方的监播地址
 			impressionMonitor1 = material.getImpUrls();
-			String[] impressionMonitorArray = impressionMonitor1.split("|");
+			String[] impressionMonitorArray = impressionMonitor1.split("\\|");
 			if (null != impressionMonitorArray) {
 				for (int i = 0; i < impressionMonitorArray.length; i++) {
+					// 时间
+					if (impressionMonitorArray[i].matches("^-?\\d+$")) {
+						continue;
+					}
 					impressionMonitorList.add(impressionMonitorArray[i]);
 				}
 			}

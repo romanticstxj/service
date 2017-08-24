@@ -30,7 +30,7 @@
 		<property name="enableSubPackages" value="true" />
 	</javaClientGenerator>
 
-	<table tableName="mad_report_policy_media" domainObjectName="ReportPolicy"
+	<table tableName="mad_sys_adspace" domainObjectName="Adspace"
 		enableCountByExample="false" enableUpdateByExample="false"
 		enableDeleteByExample="false" enableSelectByExample="false"
 		selectByExampleQueryId="false"></table>
