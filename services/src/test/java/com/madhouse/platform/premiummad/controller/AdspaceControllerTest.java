@@ -118,18 +118,19 @@ public class AdspaceControllerTest {
 		adspaceDto.setAdType(3);
 		adspaceDto.setLayout(102);
 		adspaceDto.setMaterialType("1,2,4");
-		adspaceDto.setMaterialSize("11*12");
+		adspaceDto.setMaterialSize("");
 		adspaceDto.setMaterialMaxKbyte(300);
 		adspaceDto.setDescription("desc");
 //		String link = "http://172.16.25.48:8080/services/adspace/update";
 		String link = "http://localhost:8080/services/adspace/update";
-		HttpUtilTest.httpPost(link, JSON.toJSONString(adspaceDto));
+		String content = "{\"adType\":3,\"bidFloor\":21,\"bidType\":1,\"description\":\"desc\",\"id\":200009,\"layout\":102,\"materialMaxKbyte\":null,\"materialSize\":\"\",\"materialType\":\"1,2,4\",\"mediaId\":100001,\"name\":\"adspace43\",\"supportHttps\":1,\"terminalOs\":1,\"terminalType\":1}";
+		HttpUtilTest.httpPost(link,content);
 	}
 	
 	@Test
 	public void detail(){
 //		String link = "http://172.16.25.48:8080/services/adspace/detail?id=200000";
-		String link = "http://localhost:8080/services/adspace/detail?id=200053";
+		String link = "http://localhost:8080/services/adspace/detail?id=200062";
 		HttpUtilTest.httpGet(link);
 	}
 	

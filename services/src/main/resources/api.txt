@@ -218,9 +218,9 @@
                     "bidFloor": "<*||double||comment:底价>",
                     "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 视频 , 3: 原生)>",
                     "layout": "<*||integer||comment:广告形式(列表)>",
-                    "materialType": "<string||comment:主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)>",
-                    "materialSize": "<string||comment:主物料尺寸(格式：width*height)>",
-                    "materialMaxKbyte": "<integer||comment:主物料最大K数>",
+                    "materialType": "<*||string||comment:主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)>",
+                    "materialSize": "<*||string||comment:主物料尺寸(格式：width*height)>",
+                    "materialMaxKbyte": "<*||integer||comment:主物料最大K数>",
                     "materialCount": "<integer||comment:主物料个数>",
                     "materialDuration": "<string||comment:主物料视频时长(半角逗号分隔)>",
                     "logoType": "<string||comment:logo格式(1: gif, 2: png, 4: jpg)>",
@@ -307,9 +307,9 @@
                     "bidFloor": "<*||double||comment:底价>",
                     "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 视频 , 3: 原生)>",
                     "layout": "<*||integer||comment:广告形式(列表)>",
-                    "materialType": "<string||comment:主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)>",
-                    "materialSize": "<string||comment:主物料尺寸(格式：width*height)>",
-                    "materialMaxKbyte": "<integer||comment:主物料最大K数>",
+                    "materialType": "<*||string||comment:主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)>",
+                    "materialSize": "<*||string||comment:主物料尺寸(格式：width*height)>",
+                    "materialMaxKbyte": "<*||integer||comment:主物料最大K数>",
                     "materialCount": "<integer||comment:主物料个数>",
                     "materialDuration": "<string||comment:主物料视频时长(半角逗号分隔)>",
                     "logoType": "<string||comment:logo格式(1: gif, 2: png, 4: jpg)>",
@@ -547,10 +547,9 @@
                 	"id": "<*||integer||comment:dspid>",
                 	"name": "<*||string||comment:需求方平台名称>",
                 	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
-                	"bidUrl": "<string||comment:DSP URL>",
-                    "status": "<integer||comment:状态(0: 停用, 1: 启用)>",
-                    "bidPercent": "<integer||comment:加价百分比>",
-                    "updateType": "<*||integer||comment:更新类型(1:更新dsp，2:更新dsp状态，3:更新dsp加价百分比)>"
+                	"bidUrl": "<*||string||comment:DSP URL>",
+                	"maxQPS": "<integer||comment:最大QPS>",
+                    "token": "<string||comment:更新类型(1:更新dsp，2:更新dsp状态，3:更新dsp加价百分比)>"
                 }
             },
             "responses": {
@@ -1010,7 +1009,7 @@
                 	"id": "<*||integer||comment:策略ID>",
                 	"name": "<*||string||comment:策略名称>",
                 	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>",
-                	"weight": "<*||integer||comment:优先级>",
+                	"weight": "<*||integer||comment:权重>",
                     "startDate": "<date||comment:开始日期>",
                     "isEndDate": "<*||integer||comment:0:不限结束日期, 1:限制结束日期",
                     "endDate": "<date||comment:结束日期(为零值不限结束日期)>",
@@ -1018,8 +1017,10 @@
                 	"timeTargeting": "<string||comment:时间定向(格式:0:0,1,2,3&1:19,20,21,22,23)，注：0代表周日；如果选择不限，则此字段不传值>",
                 	"isLocationTargeting": "<*||integer||comment:0:不限地域, 1:限制地域>",
                 	"locationTargeting": "<string||comment:地域定向(用半角逗号分隔所有的城市或省或国家，如果所有的城市被选上则传值省代码，若传空值则是不限的意思)>",
-                	"osTargeting": "<*||integer||comment:OS定向(多个用半角逗号分隔, 0:未知, 1:Android, 2:iOS)>",
-                	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
+                	"isOsTargeting": "<*||integer||comment:0:不限操作系统, 1:限制操作系统)>",
+                	"osTargeting": "<integer||comment:OS定向(多个用半角逗号分隔, 0:未知, 1:Android, 2:iOS)>",
+                	"isConnTargeting": "<*||integer||comment:0:不限连网方式, 1:限制连网方式)>",
+                	"connTargeting": "<integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
                     "isQuantityLimit": "<*||integer||comment:总量限制(0：不限投放量，1：限制投放量)>",
                     "limitType": "<integer||comment:总量控制(1: 每天, 2: 整单)>",
                     "limitReqs": "<integer||comment:请求量控制>",
@@ -1036,9 +1037,9 @@
 		                	"mediaDealId": "<string||comment:媒体dealId>",
 		                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>",
                             "adspace": {
-                            	"adspaceId": "<*||integer||comment:广告位id>",
-			                	"bidFloor": "<*||double||comment:广告位底价>",
-			                	"status": "<*||integer||comment:广告位状态(0:禁用, 1:启用)>"
+                            	"adspaceId": "<integer||comment:广告位id>",
+			                	"bidFloor": "<double||comment:广告位底价>",
+			                	"status": "<integer||comment:广告位状态(0:禁用, 1:启用)>"
                             }
                     	}
                     ],
