@@ -7,7 +7,8 @@
 	${alias}.agency, ${alias}.deal_id, ${alias}.start_date, ${alias}.end_date,  ${alias}.size, ${alias}.icon, 
 	${alias}.title, ${alias}.description, ${alias}.cover, ${alias}.ad_materials, ${alias}.duration, 
 	${alias}.lpg_url, ${alias}.active_type, ${alias}.imp_urls, ${alias}.clk_urls, ${alias}.sec_urls, 
-    ${alias}.audited_user, ${alias}.status, ${alias}.reason, ${alias}.media_material_key, ${alias}.media_material_id, 
+    ${alias}.audited_user, ${alias}.status, ${alias}.reason, 
+    ${alias}.media_query_key, ${alias}.media_material_key, ${alias}.media_material_url,
     ${alias}.created_time, ${alias}.updated_time
   </sql>
   <select id="selectByMaterialKeyAndMediaIds" resultMap="BaseResultMap" parameterType="com.madhouse.platform.premiummad.model.MaterialModel">
@@ -28,8 +29,8 @@
       cover, ad_materials, duration, 
       lpg_url, active_type, imp_urls, 
       clk_urls, sec_urls, audited_user, 
-      status, reason, media_material_key, 
-      media_material_id,
+      status, reason, media_query_key, 
+      media_material_key, media_material_url,
       created_time, updated_time)
     values
     <foreach collection="list" item="item" index="index" separator=",">
@@ -42,8 +43,8 @@
 	      #{item.cover,jdbcType=VARCHAR}, #{item.adMaterials,jdbcType=VARCHAR}, #{item.duration,jdbcType=INTEGER}, 
 	      #{item.lpgUrl,jdbcType=VARCHAR}, #{item.activeType,jdbcType=TINYINT}, #{item.impUrls,jdbcType=VARCHAR}, 
 	      #{item.clkUrls,jdbcType=VARCHAR}, #{item.secUrls,jdbcType=VARCHAR}, #{item.auditedUser,jdbcType=INTEGER}, 
-	      #{item.status,jdbcType=TINYINT}, #{item.reason,jdbcType=VARCHAR}, #{item.mediaMaterialKey,jdbcType=VARCHAR}, 
-	      #{item.mediaMaterialId,jdbcType=VARCHAR},
+	      #{item.status,jdbcType=TINYINT}, #{item.reason,jdbcType=VARCHAR}, 
+	      #{item.mediaQueryKey,jdbcType=VARCHAR}, #{item.mediaMaterialKey,jdbcType=VARCHAR}, #{item.mediaMaterialUrl,jdbcType=VARCHAR},
 	      #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedTime,jdbcType=TIMESTAMP})
 	</foreach>
   </insert>
@@ -138,11 +139,14 @@
       <if test="reason != null" >
         reason,
       </if>
+      <if test="mediaQueryKey != null" >
+        media_query_key,
+      </if>
       <if test="mediaMaterialKey != null" >
         media_material_key,
       </if>
-      <if test="mediaMaterialId != null" >
-        media_material_id,
+      <if test="mediaMaterialUrl != null" >
+        media_material_url,
       </if>
       <if test="createdTime != null" >
         created_time,
@@ -239,11 +243,14 @@
       <if test="reason != null" >
         #{reason,jdbcType=VARCHAR},
       </if>
+      <if test="mediaQueryKey != null" >
+        #{mediaQueryKey,jdbcType=VARCHAR},
+      </if>
       <if test="mediaMaterialKey != null" >
         #{mediaMaterialKey,jdbcType=VARCHAR},
       </if>
-      <if test="mediaMaterialId != null" >
-        #{mediaMaterialId,jdbcType=VARCHAR},
+      <if test="mediaMaterialUrl != null" >
+        #{mediaMaterialUrl,jdbcType=VARCHAR},
       </if>
       <if test="createdTime != null" >
         #{createdTime,jdbcType=TIMESTAMP},
@@ -341,11 +348,14 @@
 	      <if test="item.reason != null" >
 	        reason = #{item.reason,jdbcType=VARCHAR},
 	      </if>
+	      <if test="item.mediaQueryKey != null" >
+	        media_query_key = #{item.mediaQueryKey,jdbcType=VARCHAR},
+	      </if>
 	      <if test="item.mediaMaterialKey != null" >
 	        media_material_key = #{item.mediaMaterialKey,jdbcType=VARCHAR},
 	      </if>
-	      <if test="item.mediaMaterialId != null" >
-	        media_material_id = #{item.mediaMaterialId,jdbcType=VARCHAR},
+	      <if test="item.mediaMaterialUrl != null" >
+	        media_material_url = #{item.mediaMaterialUrl,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.createdTime != null" >
 	        created_time = #{item.createdTime,jdbcType=TIMESTAMP},
@@ -389,7 +399,7 @@
 	  and ma.media_id = #{mediaId,jdbcType=INTEGER}
 	  and ma.status = #{auditStatus,jdbcType=INTEGER}
   </select>
-  <update id="updateByMediaAndMediaMaterialKey" parameterType="com.madhouse.platform.premiummad.entity.Material" >
+  <update id="updateByMediaAndMediaQueryKey" parameterType="com.madhouse.platform.premiummad.entity.Material" >
     update mad_sys_material
     <set >
       <if test="dspId != null" >
@@ -473,15 +483,18 @@
       <if test="reason != null" >
         reason = #{reason,jdbcType=VARCHAR},
       </if>
-      <if test="mediaMaterialId != null" >
-        media_material_id = #{mediaMaterialId,jdbcType=VARCHAR},
+      <if test="mediaMaterialKey != null" >
+        media_material_key = #{mediaMaterialKey,jdbcType=VARCHAR},
+      </if>
+      <if test="mediaMaterialUrl != null" >
+        media_material_url = #{mediaMaterialUrl,jdbcType=VARCHAR},
       </if>
       <if test="updatedTime != null" >
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where media_id = #{mediaId,jdbcType=INTEGER}
-      and media_material_key = #{mediaMaterialKey,jdbcType=VARCHAR}
+      and media_query_key = #{mediaQueryKey,jdbcType=VARCHAR}
   </update>
   
   <select id="queryAll" resultMap="BaseResultMap" parameterType="string">
@@ -522,4 +535,15 @@
 	    </foreach>
       </if>
   </update>
+  
+  <select id="selectMaterials" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mad_sys_material
+    where media_query_key in
+	    <foreach collection="mediaQueryKeys" item="mediaQueryKey" index="index" open="(" close=")" separator=",">
+	        #{mediaQueryKey,jdbcType=VARCHAR}
+	    </foreach>
+    and media_id = #{mediaId,jdbcType=INTEGER}
+  </select>
 </mapper>

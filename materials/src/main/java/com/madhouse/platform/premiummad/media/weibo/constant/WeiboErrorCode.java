@@ -4,6 +4,7 @@ package com.madhouse.platform.premiummad.media.weibo.constant;
  * 新浪微博错误编码
  */
 public enum WeiboErrorCode {
+	WEC000(0, "成功"), 
 	WEC100(100, "系统错误"), 
 	WEC101(101, "DSP验证失败"),
 	WEC201(201, "缺乏必要的参数"),

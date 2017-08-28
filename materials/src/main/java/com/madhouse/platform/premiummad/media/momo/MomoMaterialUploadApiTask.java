@@ -97,8 +97,8 @@ public class MomoMaterialUploadApiTask {
 				MomoUploadResponse response = JSON.parseObject(responseJson, MomoUploadResponse.class);
 				// 200：成功
 				if (response.getEc() == 200) {
-					String[] mediaMaterialIdKeys = {material.getMediaMaterialKey()};
-					materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
+					String[] mediaQueryAndMaterialKeys = {material.getMediaQueryKey()};
+					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 				} else {
 					// 自动驳回
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
@@ -143,7 +143,7 @@ public class MomoMaterialUploadApiTask {
 		}
 
 		String crid = StringUtils.getMD5(material.getId().toString());
-		material.setMediaMaterialKey(crid);
+		material.setMediaQueryKey(crid);
 		request.setDspid(dspId);
 		request.setCid(crid);// 活动ID
 		request.setAdid(crid); // 广告ID

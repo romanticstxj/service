@@ -56,16 +56,16 @@ public class ToutiaoMaterialStatusApiTask {
 			return;
 		}
 
-		Set<String> mediaMaterialKeySet = new HashSet<String>();
+		Set<String> mediaQueryKeySet = new HashSet<String>();
 		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 		for (Material item : unAuditMaterials) {
 			// 两个广告位对应媒体一个只要请求一次
-			if (mediaMaterialKeySet.contains(item.getMediaMaterialKey())) {
+			if (mediaQueryKeySet.contains(item.getMediaQueryKey())) {
 				continue;
 			}
 
 			Map<String, String> paramMap = new HashMap<String, String>();
-			paramMap.put("adid", item.getMediaMaterialKey());
+			paramMap.put("adid", item.getMediaQueryKey());
 			paramMap.put("dspid", dspid);
 			// 返回结果
 			String getResult = toutiaoHttpUtil.get(getMaterialStatusUrl, paramMap);
@@ -73,7 +73,7 @@ public class ToutiaoMaterialStatusApiTask {
 			if (getResult != null && !getResult.isEmpty()) {
 				ToutiaoMaterialStatusDetailResponse response = JSON.parseObject(getResult, ToutiaoMaterialStatusDetailResponse.class);
 				MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-				auditItem.setMediaMaterialKey(String.valueOf(response.getAdid()));
+				auditItem.setMediaQueryKey(String.valueOf(response.getAdid()));
 				auditItem.setMediaId(String.valueOf(MediaMapping.TOUTIAO.getValue()));
 				String status = response.getStatus();
 				String error = response.getError();
@@ -92,7 +92,7 @@ public class ToutiaoMaterialStatusApiTask {
 					LOGGER.info(MediaMapping.TOUTIAO.getDescrip() + "获取状态失败");
 				}
 				
-				mediaMaterialKeySet.add(String.valueOf(response.getAdid()));
+				mediaQueryKeySet.add(String.valueOf(response.getAdid()));
 			}
 		}
 

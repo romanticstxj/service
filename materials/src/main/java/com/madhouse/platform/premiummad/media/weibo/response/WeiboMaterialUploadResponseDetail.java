@@ -2,7 +2,7 @@ package com.madhouse.platform.premiummad.media.weibo.response;
 
 public class WeiboMaterialUploadResponseDetail {
 	private Integer err_code;// 参考错误代码
-	private String ad_url;// 出错的广告URL
+	private String creative_id;// 出错的素材ID
 
 	public Integer getErr_code() {
 		return err_code;
@@ -12,11 +12,11 @@ public class WeiboMaterialUploadResponseDetail {
 		this.err_code = err_code;
 	}
 
-	public String getAd_url() {
-		return ad_url;
+	public String getCreative_id() {
+		return creative_id;
 	}
 
-	public void setAd_url(String ad_url) {
-		this.ad_url = ad_url;
+	public void setCreative_id(String creative_id) {
+		this.creative_id = creative_id;
 	}
 }

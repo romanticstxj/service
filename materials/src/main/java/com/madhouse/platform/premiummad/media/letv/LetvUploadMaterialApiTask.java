@@ -95,8 +95,8 @@ public class LetvUploadMaterialApiTask {
 			if (result.equals(LetvConstant.RESPONSE_SUCCESS.getValue()) && message.size() == 0) {
 				// 成功,更新物料任务表状态,媒体无自生成的key,故此处媒体用我方id标志
 				for (Material material : unSubmitMaterials) {
-					String[] mediaMaterialIdKeys = {material.getMediaMaterialKey()};
-					materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
+					String[] mediaQueryAndMaterialKeys = {material.getMediaQueryKey()};
+					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 				}
 			} else if (result.equals(LetvConstant.RESPONSE_PARAM_CHECK_FAIL.getValue()) && message.size() > 0) {
 				Iterator<Entry<String, String>> iterator = message.entrySet().iterator();
@@ -174,9 +174,9 @@ public class LetvUploadMaterialApiTask {
 			LetvUploadMaterialDetailRequest uploadMaterialRequest = new LetvUploadMaterialDetailRequest();
 			uploadMaterialRequest.setUrl(material.getAdMaterials().split("\\|")[0]);
 			// 媒体方的主键是素材url
-			material.setMediaMaterialKey(uploadMaterialRequest.getUrl());
+			material.setMediaQueryKey(uploadMaterialRequest.getUrl());
 			// 为了推送失败驳回时使用
-			materialKeyIdMap.put(material.getMediaMaterialKey(), String.valueOf(material.getId()));
+			materialKeyIdMap.put(material.getMediaQueryKey(), String.valueOf(material.getId()));
 
 			uploadMaterialRequest.setLandingpage(Collections.singletonList(material.getLpgUrl()));
 			uploadMaterialRequest.setAdvertiser(advertisers.get(0).getAdvertiserName());

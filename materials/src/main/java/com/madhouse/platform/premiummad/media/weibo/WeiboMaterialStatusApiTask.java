@@ -40,6 +40,9 @@ public class WeiboMaterialStatusApiTask {
 
 	@Autowired
 	private IMaterialService materialService;
+	
+	@Autowired
+	private WeiboAdCreativeMidApiTask weiboAdCreativeMidApiTask;
 
 	public void getStatus() {
 		LOGGER.info("++++++++++Weibo get material status begin+++++++++++");
@@ -54,7 +57,7 @@ public class WeiboMaterialStatusApiTask {
 		// 设置request参数
 		List<String> creative_ids = new ArrayList<String>();
 		for (Material material : unAuditMaterials) {
-			creative_ids.add(material.getMediaMaterialKey());
+			creative_ids.add(material.getMediaQueryKey());
 		}
 		WeiboMaterialStatusRequest weiboMaterialStatusRequest = new WeiboMaterialStatusRequest();
 		weiboMaterialStatusRequest.setCreative_ids(creative_ids);
@@ -99,17 +102,16 @@ public class WeiboMaterialStatusApiTask {
 			String status = weiboMaterialStatusMessageDetail.getStatus();
 
 			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-			auditItem.setMediaMaterialKey(crid);
+			auditItem.setMediaQueryKey(crid);
 			auditItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
 
 			// 根据返回的物料状态明细的materialId,遍历物料任务列表找到有响应物料的物料任务进行处理
-			if (WeiboConstant.M_STATUS_APPROVED.getValue() == Integer.parseInt(status)) { // 审核通过
-				auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
-				auditResults.add(auditItem);
-				// 成功后发送请求获取状态 TODO
-			} else if (WeiboConstant.M_STATUS_UNAUDITED.getValue() == Integer.parseInt(status)) { // 未审核
+			if (WeiboConstant.M_STATUS_APPROVED.getDescription().equals(status)) { // 审核通过
+				// 成功后发送请求获取状态
+				weiboAdCreativeMidApiTask.getMid(new String[]{crid});
+			} else if (WeiboConstant.M_STATUS_UNAUDITED.getDescription().equals(status)) { // 未审核
 				LOGGER.info("WeiboMaterialStatusApiTask:mediaMaterialKey=" + crid + " " + status);
-			} else if (WeiboConstant.M_STATUS_REFUSED.getValue() == Integer.parseInt(status)) { // 驳回
+			} else if (WeiboConstant.M_STATUS_REFUSED.getDescription().equals(status)) { // 驳回
 				auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
 				auditItem.setErrorMessage(weiboMaterialStatusMessageDetail.getReason());
 				auditResults.add(auditItem);

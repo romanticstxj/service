@@ -94,8 +94,8 @@ public class DianpingMaterialUploadApiTask {
 				// 0：成功
 				if (dianpingGetStatusResponse.getRet() == 0) {
 					LOGGER.info("DianpingUploadMaterial--SUCCESS");
-					String[] mediaMaterialIdKeys = {dianpingGetStatusResponse.getData().getCreativeId(), dianpingGetStatusResponse.getData().getCreativeId()};
-					materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
+					String[] mediaQueryAndMaterialKeys = {dianpingGetStatusResponse.getData().getCreativeId(), dianpingGetStatusResponse.getData().getCreativeId()};
+					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 				} else {
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + dianpingGetStatusResponse.getRet() + " " + dianpingGetStatusResponse.getMsg());
 				}

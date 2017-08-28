@@ -73,7 +73,7 @@ public class LetvStatusApiTask {
 				List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 				for (LetvStatusDetailResponse statusDetail : letvStatusDetailResponse) {
 					MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-					auditItem.setMediaMaterialKey(String.valueOf(statusDetail.getUrl()));
+					auditItem.setMediaQueryKey(String.valueOf(statusDetail.getUrl()));
 					auditItem.setMediaId(String.valueOf(MediaMapping.LETV.getValue()));
 					if (statusDetail.getResult().equals("通过")) {
 						auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
@@ -104,7 +104,7 @@ public class LetvStatusApiTask {
 		LetvStatusRequest letvStatusRequest = new LetvStatusRequest();
 		List<String> adUrl = new ArrayList<String>();
 		for (Material item : unAuditMaterials) {
-			adUrl.add(item.getMediaMaterialKey());
+			adUrl.add(item.getMediaQueryKey());
 		}
 		letvStatusRequest.setAdurl(adUrl);
     	letvStatusRequest.setDspid(tokenRequest.getDspid());

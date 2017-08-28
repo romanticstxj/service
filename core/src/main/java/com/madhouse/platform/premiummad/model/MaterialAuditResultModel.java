@@ -22,14 +22,19 @@ public class MaterialAuditResultModel {
 	private String errorMessage;
 
 	/**
-	 * 媒体方查询key
+	 * 媒体分配的key
 	 */
 	private String mediaMaterialKey;
 	
 	/**
-	 * 媒体分配的id
+	 * 查询媒体状态
 	 */
-	private String mediaMaterialId;
+	private String mediaQueryKey;
+	
+	/**
+	 * 媒体上传的url
+	 */
+	private String mediaMaterialUrl;
 
 	public String getId() {
 		return id;
@@ -71,11 +76,19 @@ public class MaterialAuditResultModel {
 		this.mediaMaterialKey = mediaMaterialKey;
 	}
 
-	public String getMediaMaterialId() {
-		return mediaMaterialId;
+	public String getMediaQueryKey() {
+		return mediaQueryKey;
 	}
 
-	public void setMediaMaterialId(String mediaMaterialId) {
-		this.mediaMaterialId = mediaMaterialId;
+	public void setMediaQueryKey(String mediaQueryKey) {
+		this.mediaQueryKey = mediaQueryKey;
+	}
+
+	public String getMediaMaterialUrl() {
+		return mediaMaterialUrl;
+	}
+
+	public void setMediaMaterialUrl(String mediaMaterialUrl) {
+		this.mediaMaterialUrl = mediaMaterialUrl;
 	}
 }

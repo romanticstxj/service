@@ -60,7 +60,7 @@ public class MomoGetStatusApiTask {
 		// 获取媒体方的素材 crid
 		Set<String> crids = new HashSet<>();
 		for (Material material : unauditMaterials) {
-			crids.add(material.getMediaMaterialKey());
+			crids.add(material.getMediaQueryKey());
 		}
 
 		// 向陌陌发请求
@@ -80,7 +80,7 @@ public class MomoGetStatusApiTask {
 			List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 			for (MomoGetStatusResponse.DataBean resultListBean : list) {
 				MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-				auditItem.setMediaMaterialKey(resultListBean.getCrid());
+				auditItem.setMediaQueryKey(resultListBean.getCrid());
 				auditItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
 
 				String status = String.valueOf(resultListBean.getStatus());

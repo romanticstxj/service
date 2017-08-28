@@ -73,7 +73,7 @@ public class AdvertBatchStatusApiTask {
 			List<AdvertBachStatusData> dspOrderIds = new ArrayList<AdvertBachStatusData>();
 			for (Material material : unauditMaterials) {
 				AdvertBachStatusData item = new AdvertBachStatusData();
-				item.setDsp_order_id(material.getMediaMaterialKey());
+				item.setDsp_order_id(material.getMediaQueryKey());
 				dspOrderIds.add(item);
 			}
 
@@ -93,7 +93,7 @@ public class AdvertBatchStatusApiTask {
 					for (RetMsg item : records) {
 						MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 						int status = item.getStatus();
-						auditItem.setMediaMaterialKey(item.getDsp_order_id());
+						auditItem.setMediaQueryKey(item.getDsp_order_id());
 						auditItem.setMediaId(String.valueOf(mediaId));
 						if (TencentAduitStatus.AUDITED.getValue() == status) { // 审核通过
 							auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());

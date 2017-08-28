@@ -95,8 +95,8 @@ public class SohutvUploadMaterialApiTask {
 					if (status) {// 上传物料，成功，更新物料task表status为2
 						String content = (String)sohutvResponse.getContent();// 直接字符串
 						if (content != null && !content.equals("")) {
-							String[] mediaMaterialIdKeys = {content, content};
-							materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
+							String[] mediaQueryAndMaterialKeys = {content, content};
+							materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 						} else {
 							LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + result);
 						}

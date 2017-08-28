@@ -55,7 +55,7 @@ public class FunadxMaterialStatusApiTask {
 		// 获取媒体方的素材ID
 		List<String> crids = new ArrayList<String>();
 		for (Material material : unauditMaterials) {
-			crids.add(material.getMediaMaterialKey());
+			crids.add(material.getMediaQueryKey());
 		}
 		LOGGER.info("风行获取审核审核状态信息的请求crid列表:{}", crids.toString());
 
@@ -88,7 +88,7 @@ public class FunadxMaterialStatusApiTask {
 					Integer status = funadxDetailResponse.getResult();
 
 					MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-					auditItem.setMediaMaterialKey(crid);
+					auditItem.setMediaQueryKey(crid);
 					auditItem.setMediaId(String.valueOf(MediaMapping.FUNADX.getValue()));
 
 					if (IFunadxConstant.M_STATUS_APPROVED.getValue() == status) { // 审核已通过

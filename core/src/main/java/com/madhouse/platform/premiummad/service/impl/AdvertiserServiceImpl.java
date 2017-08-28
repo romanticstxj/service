@@ -49,19 +49,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		if (auditResults == null || auditResults.isEmpty()) {
 			return;
 		}
-
-		// 获取广告主ID列表
-		List<Integer> advertiserIds = new ArrayList<Integer>();
-		for (AdvertiserAuditResultModel item : auditResults) {
-			advertiserIds.add(Integer.valueOf(item.getId()));
-		}
-
-		// 校验我方系统是否存在
-		List<Advertiser> advertisers = advertiserDao.selectByIds(advertiserIds);
-		if (advertisers == null || advertisers.size() != advertiserIds.size()) {
-			throw new BusinessException(StatusCode.SC500, "存在无效的广告主ID");
-		}
-
+		
 		// 已驳回或已通过的记录更新状态
 		for (AdvertiserAuditResultModel item : auditResults) {
 			// 审核中的广告主不处理
@@ -80,6 +68,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 			int effortRows = advertiserDao.updateByMediaAndMediaAdKey(updateItem);
 			if (effortRows != 1) {
 				LOGGER.info("获取媒体状态后，广告主状态更新失败[advertiserId=" + updateItem.getId() + ",status=" + updateItem.getStatus() + "]");
+				continue;
 			}
 		}
 	}

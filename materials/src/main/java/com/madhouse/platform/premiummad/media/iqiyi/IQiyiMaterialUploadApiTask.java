@@ -81,8 +81,8 @@ public class IQiyiMaterialUploadApiTask {
 					LOGGER.info("IQiYiUploadMaterial-code:" + code);
 					// 上传物料成功
 					if (code.equals(String.valueOf(IQiYiConstant.RESPONSE_SUCCESS.getValue()))) {
-						String[] mediaMaterialIdKeys = {iqiyiUploadMaterialResponse.getM_id(), iqiyiUploadMaterialResponse.getM_id()};
-						materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
+						String[] mediaQueryAndMaterialKeys = {iqiyiUploadMaterialResponse.getM_id(), iqiyiUploadMaterialResponse.getM_id()};
+						materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 						LOGGER.info("IQiYiUploadMaterial-Add-thirdResponse: Success,materialId：" + material.getId());
 					} else {
 						MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();

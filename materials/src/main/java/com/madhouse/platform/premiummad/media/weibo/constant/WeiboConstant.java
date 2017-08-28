@@ -51,28 +51,30 @@ public enum WeiboConstant{
 	MATERIAL_NOT_SUPPORTS(422,""),
 	MATERIAL_REPEAT_ERROR(423,""),
 	
-	
-	M_STATUS_APPROVED(1,"审核已通过"),
-	M_STATUS_REFUSED(-1,"审核未通过"),
+	M_STATUS_APPROVED(1,"审核通过"),
+	M_STATUS_REFUSED(-1,"审核不通过"),
 	M_STATUS_UNAUDITED(0,"待审核");
-	
-	
 	
 	int value;
 	String description;
-	WeiboConstant(int value,String description){
+
+	WeiboConstant(int value, String description) {
 		this.value = value;
 		this.description = description;
 	}
+
 	public int getValue() {
 		return value;
 	}
+
 	public void setValue(int value) {
 		this.value = value;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}

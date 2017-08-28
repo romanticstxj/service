@@ -80,8 +80,8 @@ public class FunadxUploadMaterialApiTask {
 				LOGGER.info("FunadxUpload api result: " + result);
 				// 返回结果result==0为接口调用成功
 				if (IFunadxConstant.RESPONSE_SUCCESS.getValue() == result) {
-					String[] mediaMaterialIdKeys = {String.valueOf(material.getId())};
-					materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
+					String[] mediaQueryAndMaterialKeys = {String.valueOf(material.getId())};
+					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 				} else {
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + result + " " + uploadResponse.getMessage());
 				}

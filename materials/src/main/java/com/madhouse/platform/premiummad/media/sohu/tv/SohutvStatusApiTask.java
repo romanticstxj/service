@@ -73,7 +73,7 @@ public class SohutvStatusApiTask {
 
 			Map<String, Object> paramMap = new HashMap<>();
 			paramMap.put("customer_key", advertisers.get(0).getMediaAdvertiserKey());
-			paramMap.put("file_source", item.getMediaMaterialKey());
+			paramMap.put("file_source", item.getMediaQueryKey());
 			paramMap.put("perpage", 50);
 			paramMap.put("page", 1);
 
@@ -123,11 +123,11 @@ public class SohutvStatusApiTask {
 
 		// 返回结果处理
 		SohuStatusDetailResponse statusDetail = list.get(0);
-		if (statusDetail.getFile_source().equals(auditMaterial.getMediaMaterialKey())) {
+		if (statusDetail.getFile_source().equals(auditMaterial.getMediaQueryKey())) {
 			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 			auditItem.setId(auditMaterial.getId().toString());
 			auditItem.setMediaId(auditMaterial.getMediaId().toString());
-			auditItem.setMediaMaterialKey(auditMaterial.getMediaMaterialKey());
+			auditItem.setMediaQueryKey(auditMaterial.getMediaQueryKey());
 
 			// 根据返回的审核结果设置内容
 			int statusNet = statusDetail.getStatus();

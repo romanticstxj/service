@@ -98,9 +98,9 @@ public class ToutiaoMaterialUploadApiTask {
 					ToutiaoMaterialUploadResponse response = responseList.get(0);
 					if (response.getAdid() != null && response.getStatus().equals(ToutiaoConstant.M_STATUS_SUCCESS.getDescription())) {
 						LOGGER.info("头条物料上传成功");
-						String[] mediaMaterialIdKeys = {response.getAdid(), response.getAdid()};
-						materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
-						mediaAdTypeMap.put(key, mediaMaterialIdKeys);
+						String[] mediaQueryAndMaterialKeys = {response.getAdid(), response.getAdid()};
+						materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
+						mediaAdTypeMap.put(key, mediaQueryAndMaterialKeys);
 					} else if (response.getAdid() != null && response.getStatus().equals(ToutiaoConstant.M_STATUS_FAIL.getDescription())) {
 						LOGGER.info("头条物料上传失败-" + ToutiaoHttpUtil.unicodeToString(response.getMsg()));
 						if (!StringUtils.isBlank(response.getMsg())) {

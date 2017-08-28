@@ -111,9 +111,9 @@ public class MojiMaterialUploadApiTask {
 				MojiMaterialUploadResponse response = JSON.parseObject(postResult, MojiMaterialUploadResponse.class);
 				// 上传成功，返回200
 				if (response.getCode().equals(MojiConstant.M_STATUS_SUCCESS.getValue() + "")) {
-					String[] mediaMaterialIdKeys = { response.getData().getId(),  response.getData().getId()};
-					materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
-					mediaAdspace.put(key, mediaMaterialIdKeys);
+					String[] mediaQueryAndMaterialKeys = { response.getData().getId(),  response.getData().getId()};
+					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
+					mediaAdspace.put(key, mediaQueryAndMaterialKeys);
 				} else {
 					// 发生错误自动驳回
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();

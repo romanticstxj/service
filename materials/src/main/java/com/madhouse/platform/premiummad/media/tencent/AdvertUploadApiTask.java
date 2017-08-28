@@ -214,8 +214,8 @@ public class AdvertUploadApiTask {
 		// 媒体方唯一标识是我方媒体id
 		for (Material material : unSubmitMaterials) {
 			if (successfulMaterialIds.contains(String.valueOf(material.getId()))) {
-				String[] mediaMaterialIdKeys = {String.valueOf(material.getId())};
-				materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
+				String[] mediaQueryAndMaterialKeys = {String.valueOf(material.getId())};
+				materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 			}
 		}
 

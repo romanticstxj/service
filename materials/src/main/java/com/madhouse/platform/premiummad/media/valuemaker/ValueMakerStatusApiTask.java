@@ -51,7 +51,7 @@ public class ValueMakerStatusApiTask {
 
 		// 向媒体获取审核状态
 		for (Material item : unauditMaterials) {
-			String result = valueMakerHttpUtil.get(getMaterialStatusUrl, item.getMediaMaterialKey());
+			String result = valueMakerHttpUtil.get(getMaterialStatusUrl, item.getMediaQueryKey());
 			LOGGER.info("ValueMakerMaterialStatus:getResult=" + result);
 			ValueMakerMaterialStatusDetailResponse responseJson = JSON.parseObject(result, ValueMakerMaterialStatusDetailResponse.class);
 			String id = responseJson.getId();
@@ -59,10 +59,10 @@ public class ValueMakerStatusApiTask {
 			if (id != null && status != 0 && isCorrectreturn(status)) {
 				List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 				MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-				auditItem.setMediaMaterialKey(String.valueOf(id));
+				auditItem.setMediaQueryKey(String.valueOf(id));
 				auditItem.setMediaId(String.valueOf(MediaMapping.VALUEMAKER.getValue()));
 				if (status == ValueMakerConstant.M_STATUS_UNAUDITED.getValue()) {// 待审核
-					LOGGER.info("ValueMakerMaterialStatus--materialId=" + item.getId() + "|创意id=" + item.getMediaMaterialKey() + "|status=" + status);
+					LOGGER.info("ValueMakerMaterialStatus--materialId=" + item.getId() + "|创意id=" + item.getMediaQueryKey() + "|status=" + status);
 				} else if (status == ValueMakerConstant.M_STATUS_APPROVED.getValue()) {// 审核通过}
 					auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
 					auditResults.add(auditItem);

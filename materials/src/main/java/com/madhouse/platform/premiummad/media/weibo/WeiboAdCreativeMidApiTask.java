@@ -15,6 +15,7 @@ import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
+import com.madhouse.platform.premiummad.media.weibo.constant.WeiboErrorCode;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboAdCreativeCreateRequest;
 import com.madhouse.platform.premiummad.media.weibo.response.WeiboAdCreativeCreateResponse;
 import com.madhouse.platform.premiummad.media.weibo.response.WeiboAdCreativeDetail;
@@ -42,11 +43,11 @@ public class WeiboAdCreativeMidApiTask {
 	@Autowired
 	private IMaterialService materialService;
 
-	public void getMid(List<String> creativeIds) {
+	public void getMid(String[] creativeIds) {
 		LOGGER.info("++++++++++Weibo get material mid begin+++++++++++");
 
-		// 获取审核通过，mid没有回写的素材 TODO
-		List<Material> noMidMaterials = materialDao.selectMediaMaterials(MediaMapping.WEIBO.getValue(), MaterialStatusCode.MSC10003.getValue());
+		// 获取审核通过，mid没有回写的素材
+		List<Material> noMidMaterials = materialDao.selectMaterials(creativeIds, MediaMapping.WEIBO.getValue());
 		if (noMidMaterials == null || noMidMaterials.isEmpty()) {
 			LOGGER.info("新浪微博没有需要获取 Mid 的素材");
 			return;
@@ -55,7 +56,7 @@ public class WeiboAdCreativeMidApiTask {
 		// 设置request参数
 		List<String> creative_ids = new ArrayList<String>();
 		for (Material material : noMidMaterials) {
-			creative_ids.add(material.getMediaMaterialKey());
+			creative_ids.add(material.getMediaQueryKey());
 		}
 
 		WeiboAdCreativeCreateRequest weiboAdCreativeCreateRequest = new WeiboAdCreativeCreateRequest();
@@ -72,11 +73,10 @@ public class WeiboAdCreativeMidApiTask {
 		// 处理我方数据
 		if (!StringUtils.isBlank(responseJson)) {
 			WeiboAdCreativeCreateResponse weiboAdCreativeCreateResponse = JSON.parseObject(responseJson, WeiboAdCreativeCreateResponse.class);
-			Integer retCode = weiboAdCreativeCreateResponse.getRet_code();
-			if (WeiboConstant.RESPONSE_SUCCESS.getValue() == retCode) {
+			if (WeiboConstant.RESPONSE_SUCCESS.getValue() == weiboAdCreativeCreateResponse.getRet_code().intValue() && WeiboErrorCode.WEC000.getValue() == weiboAdCreativeCreateResponse.getErr_code().intValue()) {
 				handleSuccessResult(weiboAdCreativeCreateResponse);
 			} else {
-				LOGGER.info("新浪微博获取Mid失败-" + responseJson);
+				handleErrorResult(weiboAdCreativeCreateResponse);
 			}
 		} else {
 			LOGGER.info("新浪微博获取Mid失败");
@@ -102,11 +102,12 @@ public class WeiboAdCreativeMidApiTask {
 			String mid = weiboAdCreativeDetail.getObj_id();
 
 			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-			auditItem.setMediaMaterialKey(crid);
+			auditItem.setMediaQueryKey(crid);
 			auditItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
-
+			// 获取 mid 后审核通过
+			auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
 			if (!StringUtils.isBlank(mid)) {
-				auditItem.setMediaMaterialId(mid);
+				auditItem.setMediaMaterialKey(mid);
 				auditResults.add(auditItem);
 			} else {
 				LOGGER.info("获取Mid失败[meidaMaterialId=" + crid + "]-" + weiboAdCreativeDetail.getErr_msg());
@@ -116,6 +117,47 @@ public class WeiboAdCreativeMidApiTask {
 		// 更新数据库
 		if (!auditResults.isEmpty()) {
 			materialService.updateStatusToMedia(auditResults);
+		}
+	}
+
+	/**
+	 * 接口调用成功后的处理
+	 * 
+	 * @param dataSource
+	 * @param weiboAdCreativeCreateResponse
+	 */
+	private void handleErrorResult(WeiboAdCreativeCreateResponse weiboAdCreativeCreateResponse) {
+		List<WeiboAdCreativeDetail> details = weiboAdCreativeCreateResponse.getRet_msg();
+		if (details == null || details.isEmpty()) {
+			LOGGER.info("新浪微博获取Mid失败-" + JSON.toJSONString(weiboAdCreativeCreateResponse));
+			return;
+		}
+
+		// 系统错误
+		if (WeiboErrorCode.WEC100.getValue() == weiboAdCreativeCreateResponse.getRet_code()) {
+			LOGGER.error("素材[meidaQueryKey=" + details.get(0).getCreative_id() + "]上传失败-" + WeiboErrorCode.getDescrip(weiboAdCreativeCreateResponse.getRet_code()));
+			return;
+		}
+
+		// 未知错误
+		if (StringUtils.isBlank(details.get(0).getErr_msg())) {
+			LOGGER.error("素材[meidaQueryKey=" + details.get(0).getCreative_id() + "]新浪微博获取Mid失败-未知错误");
+			return;
+		}
+
+		// 已知业务错误
+		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
+		MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+		rejuseItem.setMediaQueryKey(details.get(0).getCreative_id());
+		rejuseItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
+		rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+		rejuseItem.setErrorMessage(details.get(0).getErr_msg());
+		rejusedMaterials.add(rejuseItem);
+		LOGGER.info("新浪微博获取Mid失败-" + details.get(0).getErr_msg());
+
+		// 处理失败的结果，自动驳回 - 通过素材key更新
+		if (!rejusedMaterials.isEmpty()) {
+			materialService.updateStatusToMedia(rejusedMaterials);
 		}
 	}
 }

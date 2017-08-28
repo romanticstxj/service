@@ -86,7 +86,7 @@ public class ValueMakerUploadApiTask {
 		for (Material material : unSubmitMaterials) {
 			// 上传过媒体，更新
 			String url = uploadMaterialUrl;
-			if (!StringUtils.isBlank(material.getMediaMaterialKey())) {
+			if (!StringUtils.isBlank(material.getMediaQueryKey())) {
 				url = updateMaterialUrl;
 			}
 			
@@ -109,8 +109,8 @@ public class ValueMakerUploadApiTask {
 			// 处理结果
 			int responseStatus = responseMap.get("responseStatus").equals("") ? 0 : Integer.parseInt(responseMap.get("responseStatus"));
 			if (responseStatus == ValueMakerConstant.RESPONSE_STATUS_200.getValue()) {// 上传成功
-				String[] mediaMaterialIdKeys = {material.getMediaMaterialKey()};
-				materialIdKeys.put(material.getId(), mediaMaterialIdKeys);
+				String[] mediaQueryAndMaterialKeys = {material.getMediaQueryKey()};
+				materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 			} else if (ValueMakerConstant.RESPONSE_STATUS_422.getValue() == responseStatus) {
 				// 业务异常
 				String result = responseMap.get("result");
@@ -205,7 +205,7 @@ public class ValueMakerUploadApiTask {
 
 		// dsp系统中的id
 		String id = MD5_16bit(String.valueOf(material.getId()) + String.valueOf(material.getAdspaceId()));
-		material.setMediaMaterialKey(id);
+		material.setMediaQueryKey(id);
 		request.setId(id);
 
 		// 1-Banner广告，2-开屏广告，3-插屏广告，4-信息流广告

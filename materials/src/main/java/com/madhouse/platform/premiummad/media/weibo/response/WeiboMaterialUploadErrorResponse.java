@@ -1,15 +1,17 @@
 package com.madhouse.platform.premiummad.media.weibo.response;
 
-public class WeiboMaterialUploadResponse {
+import java.util.List;
+
+public class WeiboMaterialUploadErrorResponse {
 	private Integer ret_code;
 	private Integer err_code;
-	private String ret_msg;
-	
-	public String getRet_msg() {
+	private List<WeiboMaterialUploadResponseDetail> ret_msg;
+
+	public List<WeiboMaterialUploadResponseDetail> getRet_msg() {
 		return ret_msg;
 	}
 
-	public void setRet_msg(String ret_msg) {
+	public void setRet_msg(List<WeiboMaterialUploadResponseDetail> ret_msg) {
 		this.ret_msg = ret_msg;
 	}
 

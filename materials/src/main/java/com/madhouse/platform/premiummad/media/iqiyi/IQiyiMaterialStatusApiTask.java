@@ -52,15 +52,15 @@ public class IQiyiMaterialStatusApiTask {
 			return;
 		}
 
-		// 获取未审核媒体的ID列表
-		String mediaMaterialIds = "";
+		// 获取未审核媒体的key列表
+		String mediaQueryKeys = "";
 		for (Material material : unAuditMaterials) {
-			mediaMaterialIds = "," + mediaMaterialIds + material.getMediaMaterialKey();
+			mediaQueryKeys = "," + mediaQueryKeys + material.getMediaQueryKey();
 		}
 
 		// 调用请求
 		IQiyiMaterialStatusRequest iQiyiMaterialStatusRequest = new IQiyiMaterialStatusRequest();
-		iQiyiMaterialStatusRequest.setBatch(mediaMaterialIds.substring(1));
+		iQiyiMaterialStatusRequest.setBatch(mediaQueryKeys.substring(1));
 
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("batch", iQiyiMaterialStatusRequest.getBatch());
@@ -119,7 +119,7 @@ public class IQiyiMaterialStatusApiTask {
 			if ("COMPLETE".equals(item.getStatus())) {
 				auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
 				// 爱奇艺奇 id，只有 status 为 COMPLETE 时才返回该项。tv_id 作为后续广告竞价的 crid 参数值
-				auditItem.setMediaMaterialId(item.getTv_id());
+				auditItem.setMediaMaterialKey(item.getTv_id());
 				auditResults.add(auditItem);
 				continue;
 			}

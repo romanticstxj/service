@@ -19,6 +19,7 @@ import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboIndustryMapping;
+import com.madhouse.platform.premiummad.media.weibo.request.WeiboClient;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboClientUploadRequest;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboQualificationFile;
 import com.madhouse.platform.premiummad.media.weibo.response.WeiboClientUploadResponse;
@@ -111,17 +112,16 @@ public class WeiboClientUploadApiTask {
 	 */
 	private WeiboClientUploadRequest buildRequest(Advertiser advertiser) {
 		WeiboClientUploadRequest request = new WeiboClientUploadRequest();
-		
-		// 客户代码 
-		request.setClient_id(String.valueOf(advertiser.getId()));
+		List<WeiboClient> clients = new ArrayList<WeiboClient>();
+		WeiboClient client = new WeiboClient();
+		// 客户代码
+		client.setClient_id(String.valueOf(advertiser.getId()));
 		// 客户名称取自广告主的名称
-		request.setClient_name(advertiser.getAdvertiserName());
+		client.setClient_name(advertiser.getAdvertiserName());
 		// 客户行业
-		request.setContent_category(String.valueOf(WeiboIndustryMapping.getMediaIndustryId(advertiser.getIndustry())));
-		
+		client.setContent_category(String.valueOf(WeiboIndustryMapping.getMediaIndustryId(advertiser.getIndustry())));
 		// 客户URL
-		request.setUrl(advertiser.getWebsite());
-		
+		client.setUrl(advertiser.getWebsite());
 		// 资质文件信息
 		if (!StringUtils.isBlank(advertiser.getLicense())) {
 			List<WeiboQualificationFile> qualificationFiles = new ArrayList<WeiboQualificationFile>();
@@ -132,8 +132,12 @@ public class WeiboClientUploadApiTask {
 				item.setFile_name("资质文件"); // 默认写死
 				qualificationFiles.add(item);
 			}
-			request.setQualification_files(qualificationFiles);
+			client.setQualification_files(qualificationFiles);
 		}
+		client.setMemo("");
+		clients.add(client);
+
+		request.setClients(clients);
 		request.setDspid(dspid);
 		request.setToken(token);
 

@@ -1,17 +1,9 @@
 package com.madhouse.platform.premiummad.media.weibo.response;
 
-public class WeiboMaterialUploadResponse {
+public class WeiboResponse {
 	private Integer ret_code;
 	private Integer err_code;
 	private String ret_msg;
-	
-	public String getRet_msg() {
-		return ret_msg;
-	}
-
-	public void setRet_msg(String ret_msg) {
-		this.ret_msg = ret_msg;
-	}
 
 	public Integer getRet_code() {
 		return ret_code;
@@ -27,5 +19,13 @@ public class WeiboMaterialUploadResponse {
 
 	public void setErr_code(Integer err_code) {
 		this.err_code = err_code;
+	}
+
+	public String getRet_msg() {
+		return ret_msg;
+	}
+
+	public void setRet_msg(String ret_msg) {
+		this.ret_msg = ret_msg;
 	}
 }
