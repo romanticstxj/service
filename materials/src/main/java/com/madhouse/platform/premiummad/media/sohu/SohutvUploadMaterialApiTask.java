@@ -5,11 +5,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
@@ -20,6 +22,7 @@ import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.model.SohuResponse;
 import com.madhouse.platform.premiummad.media.model.SohuUploadMaterialRequest;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.util.DateUtils;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -52,6 +55,9 @@ public class SohutvUploadMaterialApiTask {
 	
 	@Autowired
 	private AdvertiserMapper advertiserDao;
+	
+	@Autowired
+	private IPolicyService policyService;
 	
 	/**
 	 * 上传广告物料
@@ -124,20 +130,23 @@ public class SohutvUploadMaterialApiTask {
 		uploadMaterialRequest.setMaterial_name(material.getMaterialName());
 
 		// 素材上传地址，不可重复
-		String path = StringUtils.isEmpty(material.getAdMaterials()) ? "" : material.getAdMaterials();
-		String url = path.startsWith("http") ? path : "http" + path;
-		uploadMaterialRequest.setFile_source(url);// 物料上传地址
+		uploadMaterialRequest.setFile_source(material.getAdMaterials().split("\\|")[0]);// 物料上传地址
 
 		// 曝光监测地址
 		List<String> impUrls = new ArrayList<String>();
 		if (material.getImpUrls() != null && !material.getImpUrls().isEmpty()) {
 			// 素材表里以 |分割
-			String[] impTrackUrlArray = material.getImpUrls().split("|");
+			String[] impTrackUrlArray = material.getImpUrls().split("\\|");
 			if (impTrackUrlArray != null) {
 				for (int i = 0; i < impTrackUrlArray.length; i++) {
+					// 时间
+					if (impTrackUrlArray[i].matches("^-?\\d+$")) {
+						continue;
+					}
+					
 					impUrls.add(impTrackUrlArray[i]);
 					// 媒体最多支持5个
-					if (i == 4) {
+					if (impUrls.size() == 4) {
 						break;
 					}
 				}
@@ -150,7 +159,7 @@ public class SohutvUploadMaterialApiTask {
 		List<String> clkTrackUrl = new ArrayList<String>();
 		if (material.getClkUrls() != null && !material.getClkUrls().isEmpty()) {
 			// 素材表里以 |分割
-			String[] clkTrackUrlArray = material.getClkUrls().split("|");
+			String[] clkTrackUrlArray = material.getClkUrls().split("\\|");
 			if (null != clkTrackUrlArray) {
 				for (int i = 0; i < clkTrackUrlArray.length; i++) {
 					clkTrackUrl.add(clkTrackUrlArray[i]);
@@ -178,7 +187,7 @@ public class SohutvUploadMaterialApiTask {
 
 		// 执行单 ID，与竞价请求中的 impression.campaignId 对应，指定素材将 用于哪一个订单投放
 		// 当投放方式为 PDB 或 Preferred Deal 时必填
-		uploadMaterialRequest.setCampaign_id(String.valueOf(material.getDealId()));
+		uploadMaterialRequest.setCampaign_id(policyService.getMediaDealId(material.getDealId(), material.getMediaId()));
 
 		// 素材有效期
 		uploadMaterialRequest.setExpire(getExpire(material.getEndDate()));

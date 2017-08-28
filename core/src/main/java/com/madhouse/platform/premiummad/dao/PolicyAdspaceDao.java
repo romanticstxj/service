@@ -58,4 +58,13 @@ public interface PolicyAdspaceDao {
     int batchInsert(@Param("policyAdspaces") List<PolicyAdspace> policyAdspaces);
 
 	int deleteByPolicyId(Integer policyId);
+	
+	/**
+	 * 根据策略ID和媒体ID获取媒体关联的 DealId
+	 * 
+	 * @param policyId
+	 * @param mediaId
+	 * @return
+	 */
+	List<PolicyAdspace> selectByPolicyIdAndMediaId(@Param("policyId") Integer policyId, @Param("mediaId") Integer mediaId);
 }

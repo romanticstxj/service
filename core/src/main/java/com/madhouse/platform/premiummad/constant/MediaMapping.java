@@ -6,10 +6,16 @@ package com.madhouse.platform.premiummad.constant;
 public enum MediaMapping {
 	SOHUNEWS(100000, "搜狐新闻"), 
 	SOHUTV(100001, "搜狐TV"),
-	TENCENT(100002, "腾讯"),
-	DIANPING(100003, "美团点评"),
-	MOJI(100004, "墨迹天气"),
-	IQYI(100005, "爱奇艺");
+	TENCENT_NOT_OTV(100002, "腾讯_非otv"),
+	TENCENT(100003, "腾讯"),
+	DIANPING(100004, "美团点评"),
+	MOJI(100005, "墨迹天气"),
+	IQYI(100006, "爱奇艺"),
+	LETV(100007, "乐视"),
+	MOMO(100008, "陌陌"),
+	TOUTIAO(100009, "今日头条"),
+	VALUEMAKER(100010, "万流客"),
+	FUNADX(100011, "风行");
 
 	int value;
 	String descrip;
