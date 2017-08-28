@@ -15,6 +15,7 @@ public interface SystemConstant {
 	
 	interface Request{
 		String XFROM = "X-From";
+		String XFROM_DEFAULT_VALUE = "exchange.prd.onemad.com";
 	    String USERID = "X-User-Id";
 	    String CONTENT_TYPE = "Content-Type";
 	}

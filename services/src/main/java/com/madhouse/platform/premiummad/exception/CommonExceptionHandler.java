@@ -28,7 +28,7 @@ public class CommonExceptionHandler {
 	public ResponseDto<Object> handleAllException(Exception ex) {
 		logger.error(LogUtils.getDetailException(ex));
 		if (ex instanceof BusinessException) {
-			return ResponseUtils.response(((BusinessException) ex).getStatusCode(), null);
+			return ResponseUtils.response(((BusinessException) ex).getStatusCode(), null, ex.getMessage());
 		} else if (ex instanceof JSONException) {
 			return ResponseUtils.response(StatusCode.SC31005, null, ex.getMessage());
 		} else if (ex instanceof MethodArgumentNotValidException) {

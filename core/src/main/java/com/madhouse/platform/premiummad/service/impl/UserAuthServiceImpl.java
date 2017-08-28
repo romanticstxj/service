@@ -52,5 +52,17 @@ public class UserAuthServiceImpl implements IUserAuthService {
 		userAuthDao.removeUserMediaAuth(userAuth.getUserId());
 		userAuthDao.addUserMediaAuth(userAuth);
 	}
+	
+	@Override
+	public void updateUserPolicyAuth(UserAuth userAuth) {
+		Integer isAdmin = userAuth.getIsAdmin();
+		if(isAdmin != null && isAdmin.intValue() == 1){ //设置成管理员权限
+			Integer[] idsForAdmin = new Integer[1];
+			idsForAdmin[0] = -1;
+			userAuth.setPolicyIds(idsForAdmin);
+		}
+		userAuthDao.removeUserPolicyAuth(userAuth.getUserId());
+		userAuthDao.addUserPolicyAuth(userAuth);
+	}
 
 }

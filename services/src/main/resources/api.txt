@@ -194,7 +194,8 @@
                             "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
                             "bidFloor": "<*||double||comment:底价>",
                             "createdTime": "<||date||comment:创建时间>",
-                            "status": "<integer||comment:状态(0:停用,1:启用)>"
+                            "status": "<integer||comment:状态(0:停用,1:启用)>",
+                            "mediaStatus": "<integer||comment:媒体状态(0:停用,1:启用)>"
                         }
                     ]
                 }
@@ -215,7 +216,7 @@
                     "supportHttps": "<*||integer||comment:是否支持https(0:否,1:是)>",
                     "bidType": "<*||integer||comment:结算方式(1:CPM,2:CPC)>",
                     "bidFloor": "<*||double||comment:底价>",
-                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
+                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 视频 , 3: 原生)>",
                     "layout": "<*||integer||comment:广告形式(列表)>",
                     "materialType": "<string||comment:主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)>",
                     "materialSize": "<string||comment:主物料尺寸(格式：width*height)>",
@@ -267,7 +268,7 @@
 		                    "supportHttps": "<*||integer||comment:是否支持https(0:否,1:是)>",
 		                    "bidType": "<*||integer||comment:结算方式(1:CPM,2:CPC)>",
 		                    "bidFloor": "<*||double||comment:底价>",
-		                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
+		                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 视频 , 3: 原生)>",
 		                    "layout": "<*||integer||comment:广告形式(列表)>",
 		                    "materialType": "<string||comment:主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)>",
 		                    "materialSize": "<string||comment:主物料尺寸(格式：width*height)>",
@@ -304,7 +305,7 @@
                     "supportHttps": "<*||integer||comment:是否支持https(0:否,1:是)>",
                     "bidType": "<*||integer||comment:结算方式(1:CPM,2:CPC)>",
                     "bidFloor": "<*||double||comment:底价>",
-                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 原生, 3: 视频)>",
+                    "adType": "<*||integer||comment:广告类型(1: 普通硬广, 2: 视频 , 3: 原生)>",
                     "layout": "<*||integer||comment:广告形式(列表)>",
                     "materialType": "<string||comment:主物料格式(1: gif, 2: png, 4: jpg, 8: mp4, 16: flv, 32: swf)>",
                     "materialSize": "<string||comment:主物料尺寸(格式：width*height)>",
@@ -924,7 +925,8 @@
 		                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>",
                             "adspace": {
                             	"adspaceId": "<*||integer||comment:广告位id>",
-			                	"bidFloor": "<*||double||comment:广告位底价>"
+			                	"bidFloor": "<*||double||comment:广告位底价>",
+			                	"status": "<*||integer||comment:广告位状态(0:禁用, 1:启用)>"
                             }
                     	}
                     ],
@@ -985,7 +987,8 @@
 				                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>",
 		                            "adspace": {
 		                            	"adspaceId": "<*||integer||comment:广告位id>",
-					                	"bidFloor": "<*||double||comment:广告位底价>"
+					                	"bidFloor": "<*||double||comment:广告位底价>",
+			                			"status": "<*||integer||comment:广告位状态(0:禁用, 1:启用)>"
 		                            }
 		                    	}
 		                    ],
@@ -1034,7 +1037,8 @@
 		                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>",
                             "adspace": {
                             	"adspaceId": "<*||integer||comment:广告位id>",
-			                	"bidFloor": "<*||double||comment:广告位底价>"
+			                	"bidFloor": "<*||double||comment:广告位底价>",
+			                	"status": "<*||integer||comment:广告位状态(0:禁用, 1:启用)>"
                             }
                     	}
                     ],
