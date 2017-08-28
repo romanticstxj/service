@@ -28,6 +28,11 @@
     id, policy_id, adspace_id, media_deal_id, bid_type, bid_floor, status, created_user, 
     created_time, updated_user, updated_time
   </sql>
+  <sql id="PolicyAdspaceColumns">
+	${alias}.id, ${alias}.policy_id, ${alias}.adspace_id, ${alias}.media_deal_id, ${alias}.bid_type, 
+	${alias}.bid_floor, ${alias}.status, ${alias}.created_user, ${alias}.created_time, ${alias}.updated_user, 
+	${alias}.updated_time
+  </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--
       WARNING - @mbggenerated
@@ -231,4 +236,17 @@
     delete from mad_sys_policy_adspace
     where policy_id = #{policyId,jdbcType=INTEGER}
   </delete>
+  
+  <select id="selectByPolicyIdAndMediaId" resultMap="BaseResultMap">
+    select 
+    <include refid="PolicyAdspaceColumns">
+    	<property name="alias" value="pa" />
+    </include>
+	from
+		mad_sys_policy_adspace pa
+	left join mad_sys_adspace ad on pa.adspace_id = ad.id
+	where
+		pa.policy_id = #{policyId,jdbcType=INTEGER}
+	and ad.media_id = #{mediaId,jdbcType=INTEGER}
+  </select>
 </mapper>

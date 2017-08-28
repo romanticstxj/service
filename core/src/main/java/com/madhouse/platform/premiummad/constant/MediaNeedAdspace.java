@@ -5,11 +5,17 @@ package com.madhouse.platform.premiummad.constant;
  */
 public enum MediaNeedAdspace {
 	SOHUNEWS(100000, false), 
-	SOHUTV(100001, false), 
-	TENCENT(100002, false), 
-	DIANPING(100003, true),
-	MOJI(100004, true),
-	IQIYI(100005, false);
+	SOHUTV(100001, false),
+	TENCENT_NOT_OTV(100002, true),
+	TENCENT(100003, false),
+	DIANPING(100004, true),
+	MOJI(100005, true),
+	IQYI(100006, false),
+	LETV(100007, false),
+	MOMO(100008, false),
+	TOUTIAO(100009, true),
+	VALUEMAKER(100010, true),
+	FUNADX(100011, false);
 
 	int key;
 	boolean value;

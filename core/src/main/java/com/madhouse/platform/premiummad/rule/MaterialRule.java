@@ -215,7 +215,7 @@ public class MaterialRule extends BaseRule {
 		material.setLpgUrl(entity.getLpgUrl());
 		material.setMaterialName(entity.getName());
 		material.setSecUrls(parseToString(entity.getMonitor(), SECURL)); // 品牌安全监测URL(多个用半角逗号分隔)
-		material.setSize(entity.getW().toString() + "x" + entity.getH().toString()); // 广告素材尺寸 (width x height) TODO
+		material.setSize(entity.getW().toString() + "*" + entity.getH().toString()); // 广告素材尺寸 (width * height)
 		material.setStartDate(entity.getStartDate());
 		material.setTitle(entity.getTitle());
 
