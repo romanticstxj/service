@@ -22,9 +22,10 @@
   </resultMap>
   
   <sql id="Base_Column_List">
-    ${alias}.id, ${alias}.dsp_id, SUM(${alias}.reqs), SUM(${alias}.bids), SUM(${alias}.timeouts), 
-    SUM(${alias}.errs), SUM(${alias}.wins), SUM(${alias}.imps), SUM(${alias}.clks), SUM(${alias}.vimps), 
-    SUM(${alias}.vclks), SUM(${alias}.cost), ${alias}.created_time, ${alias}.updated_time
+    ${alias}.id, ${alias}.dsp_id, SUM(${alias}.reqs) reqs, SUM(${alias}.bids) bids, SUM(${alias}.timeouts) timeouts, 
+    SUM(${alias}.errs) errs, SUM(${alias}.wins) wins, SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, 
+    SUM(${alias}.vimps) vimps, SUM(${alias}.vclks) vclks, SUM(${alias}.cost) cost, 
+    ${alias}.created_time, ${alias}.updated_time
   </sql>
   
   <sql id="mediaAuthCondition">
