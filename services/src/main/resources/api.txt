@@ -194,7 +194,8 @@
                             "materialSize": "<*||string||comment:普通硬广: 物料尺寸, 原生图文信息流: 主图片尺寸, 原生视频信息流: 封面尺寸, 视频暂停: 物料尺寸(格式：width*height)>",
                             "bidFloor": "<*||double||comment:底价>",
                             "createdTime": "<||date||comment:创建时间>",
-                            "status": "<integer||comment:状态(0:停用,1:启用)>"
+                            "status": "<integer||comment:状态(0:停用,1:启用)>",
+                            "mediaStatus": "<integer||comment:媒体状态(0:停用,1:启用)>"
                         }
                     ]
                 }
@@ -924,7 +925,8 @@
 		                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>",
                             "adspace": {
                             	"adspaceId": "<*||integer||comment:广告位id>",
-			                	"bidFloor": "<*||double||comment:广告位底价>"
+			                	"bidFloor": "<*||double||comment:广告位底价>",
+			                	"status": "<*||integer||comment:广告位状态(0:禁用, 1:启用)>"
                             }
                     	}
                     ],
@@ -985,7 +987,8 @@
 				                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>",
 		                            "adspace": {
 		                            	"adspaceId": "<*||integer||comment:广告位id>",
-					                	"bidFloor": "<*||double||comment:广告位底价>"
+					                	"bidFloor": "<*||double||comment:广告位底价>",
+			                			"status": "<*||integer||comment:广告位状态(0:禁用, 1:启用)>"
 		                            }
 		                    	}
 		                    ],
@@ -1034,7 +1037,8 @@
 		                	"status": "<*||integer||comment:状态(0:暂停, 1:启用)>",
                             "adspace": {
                             	"adspaceId": "<*||integer||comment:广告位id>",
-			                	"bidFloor": "<*||double||comment:广告位底价>"
+			                	"bidFloor": "<*||double||comment:广告位底价>",
+			                	"status": "<*||integer||comment:广告位状态(0:禁用, 1:启用)>"
                             }
                     	}
                     ],
