@@ -8,6 +8,8 @@ public class AuditDto {
 	private String ids;
 	@NotNullAndBlank
 	private Integer status;
+	
+	private String reason;
 
 	public String getIds() {
 		return ids;
@@ -23,5 +25,13 @@ public class AuditDto {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
 }

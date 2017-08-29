@@ -56,7 +56,7 @@ public class AdvertiserDto implements Serializable {
 	/**
 	 * 资质文件 （营业执照等）链接
 	 */
-	private String lience;
+	private List<String> lience;
 
 	public String getId() {
 		return id;
@@ -122,12 +122,16 @@ public class AdvertiserDto implements Serializable {
 		this.phone = phone;
 	}
 
-	public String getLience() {
+	public List<String> getLience() {
 		return lience;
 	}
 
-	public void setLience(String lience) {
+	public void setLience(List<String> lience) {
 		this.lience = lience;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

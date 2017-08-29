@@ -50,7 +50,11 @@ public class UserAuthServiceImpl implements IUserAuthService {
 			userAuth.setMediaIds(mediaIdsForAdmin);
 		}
 		userAuthDao.removeUserMediaAuth(userAuth.getUserId());
-		userAuthDao.addUserMediaAuth(userAuth);
+		
+		Integer[] ids = userAuth.getMediaIds();
+		if(ids != null && ids.length > 0){
+			userAuthDao.addUserMediaAuth(userAuth);
+		}
 	}
 	
 	@Override
@@ -62,7 +66,11 @@ public class UserAuthServiceImpl implements IUserAuthService {
 			userAuth.setPolicyIds(idsForAdmin);
 		}
 		userAuthDao.removeUserPolicyAuth(userAuth.getUserId());
-		userAuthDao.addUserPolicyAuth(userAuth);
+		
+		Integer[] ids = userAuth.getPolicyIds();
+		if(ids != null && ids.length > 0){
+			userAuthDao.addUserPolicyAuth(userAuth);
+		}
 	}
 
 }

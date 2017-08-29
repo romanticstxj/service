@@ -49,7 +49,7 @@ public class IQiyiCustomerCreateOrUpdateApiTask {
 		}
 		
 		// 上传到媒体
-		LOGGER.info("SohuNewsCustomerCreateApiTask-sohuNews", unSubmitAdvertisers.size());
+		LOGGER.info("IQiyiCustomerCreateOrUpdateApiTask-Iqiyi", unSubmitAdvertisers.size());
 		Map<Integer, String> advertiserIdKeys = new HashMap<Integer, String>();
 		for (Advertiser advertiser : unSubmitAdvertisers) {
 			Map<String, String> paramMap = new HashMap<>();

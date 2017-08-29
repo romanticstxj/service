@@ -23,7 +23,8 @@ public class AdvertiserControllerTest {
 	public void audit(){
 		AuditDto dto = new AuditDto();
 		dto.setIds("19");
-		dto.setStatus(1);
+		dto.setStatus(2);
+		dto.setReason("basic reason");
 		String url = "http://localhost:8080/services/advertiser/audit";
 		HttpUtilTest.httpPost(url, JSONObject.toJSONString(dto));
 	}

@@ -261,14 +261,14 @@
 	      <if test="item.advertiserKey != null" >
 	        advertiser_key = #{item.advertiserKey,jdbcType=VARCHAR},
 	      </if>
-	      <if test="layout != null" >
-	        layout = #{layout,jdbcType=SMALLINT},
+	      <if test="item.layout != null" >
+	        layout = #{item.layout,jdbcType=SMALLINT},
 	      </if>
-	      <if test="mediaId != null" >
-	        media_id = #{mediaId,jdbcType=INTEGER},
+	      <if test="item.mediaId != null" >
+	        media_id = #{item.mediaId,jdbcType=INTEGER},
 	      </if>
-	      <if test="adspaceId != null" >
-	        adspace_id = #{adspaceId,jdbcType=VARCHAR},
+	      <if test="item.adspaceId != null" >
+	        adspace_id = #{item.adspaceId,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.deliveryType != null" >
 	        delivery_type = #{item.deliveryType,jdbcType=TINYINT},
@@ -333,7 +333,7 @@
 	      <if test="item.reason != null" >
 	        reason = #{item.reason,jdbcType=VARCHAR},
 	      </if>
-	      <if test="mediaMaterialKey != null" >
+	      <if test="item.mediaMaterialKey != null" >
 	        media_material_key = #{item.mediaMaterialKey,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.createdTime != null" >
@@ -364,7 +364,7 @@
     where id in
 	   <foreach collection="list" item="item" index="index"
            open="(" close=")" separator=",">
-           #{item,jdbcType=INTEGER}`
+           #{item,jdbcType=INTEGER}
         </foreach>
   </select>
   <select id="selectMediaMaterials" resultMap="BaseResultMap">
@@ -501,7 +501,7 @@
   
   <update id="auditMaterial" parameterType="string" >
       <if test="ids != null and ids.length > 0" >
-  	  	UPDATE mad_sys_material SET status = #{status}
+  	  	UPDATE mad_sys_material SET status = #{status}, reason = #{reason}
         WHERE id IN
 	    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
 	        #{id,jdbcType=INTEGER}

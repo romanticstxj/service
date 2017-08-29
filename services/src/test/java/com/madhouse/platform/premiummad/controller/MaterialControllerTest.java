@@ -24,6 +24,7 @@ public class MaterialControllerTest {
 		AuditDto dto = new AuditDto();
 		dto.setIds("1,2,3");
 		dto.setStatus(1);
+		dto.setReason("basic reason");
 		String url = "http://localhost:8080/services/material/audit";
 		HttpUtilTest.httpPost(url, JSONObject.toJSONString(dto));
 	}

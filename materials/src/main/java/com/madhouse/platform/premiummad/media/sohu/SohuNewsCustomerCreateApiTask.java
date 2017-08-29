@@ -18,6 +18,7 @@ import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.model.SohuResponse;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
 public class SohuNewsCustomerCreateApiTask {
@@ -26,6 +27,9 @@ public class SohuNewsCustomerCreateApiTask {
 
 	@Value("${sohu.customer.create}")
 	private String customerCreateUrl;
+	
+	@Value("${sohu.customer.update}")
+	private String customerUpdateUrl;
 
 	@Autowired
 	private SohuNewsAuth sohuAuth;
@@ -55,10 +59,12 @@ public class SohuNewsCustomerCreateApiTask {
 		Map<Integer, String> advertiserIdKeys = new HashMap<Integer, String>();
 		for (Advertiser advertiser : unSubmitAdvertisers) {
 			Map<String, Object> paramMap = buildCreatePara(advertiser);
-			String request = sohuAuth.setHttpMethod("POST").setApiUrl(customerCreateUrl).setParamMap(paramMap).buildRequest();
+			// 第一次上传用新增接口，已驳回的再次上传用 更新接口
+			String url = StringUtils.isBlank(advertiser.getMediaAdvertiserKey()) ? customerCreateUrl : customerUpdateUrl;
+			String request = sohuAuth.setHttpMethod("POST").setApiUrl(url).setParamMap(paramMap).buildRequest();
 			LOGGER.info("SohuNewsCustomerCreateApiTask.reqquest: {}", request);
-			String result = HttpUtils.post(customerCreateUrl, request);
-			LOGGER.info("SohuNewsCustomerCreateApiTask.udpate http post:{}. result json: {}", customerCreateUrl, result);
+			String result = HttpUtils.post(url, request);
+			LOGGER.info("SohuNewsCustomerCreateApiTask.udpate http post:{}. result json: {}", url, result);
 			SohuResponse sohutvResponse = JSONObject.parseObject(result, SohuResponse.class);
 			if (sohutvResponse != null) {
 				if (sohutvResponse.isStatus()) {
@@ -86,11 +92,16 @@ public class SohuNewsCustomerCreateApiTask {
 	 */
 	private Map<String, Object> buildCreatePara(Advertiser advertiser) {
 		Map<String, Object> paramMap = new HashMap<>();
+		// 更新时使用
+		if (!StringUtils.isBlank(advertiser.getMediaAdvertiserKey())) {
+			paramMap.put("customer_key", advertiser.getMediaAdvertiserKey());
+		}
 		paramMap.put("customer_name", advertiser.getAdvertiserName());
 		paramMap.put("customer_website", advertiser.getWebsite());
 		paramMap.put("company_address", advertiser.getAddress());
 		paramMap.put("contact", advertiser.getContact());
 		paramMap.put("phone_number", advertiser.getPhone());
+		
 		return paramMap;
 	}
 }

@@ -88,7 +88,7 @@
     </insert>
     
     <insert id="addUserPolicyAuth" parameterType="UserAuth">
-        INSERT INTO mad_sys_user_policy (user_id, policy_id) VALUES
+        	INSERT INTO mad_sys_user_policy (user_id, policy_id) VALUES
          	<foreach collection="policyIds" index="index" item="policyId" separator=",">
        			(
        				#{userId},

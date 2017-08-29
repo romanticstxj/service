@@ -4,8 +4,8 @@
   <sql id="baseColumns">
 	${alias}.id, ${alias}.dsp_id, ${alias}.advertiser_key, ${alias}.advertiser_name, ${alias}.media_id, 
 	${alias}.industry, ${alias}.website, ${alias}.contact, ${alias}.address, ${alias}.phone, 
-	${alias}.license, ${alias}.audited_user, ${alias}.status, ${alias}.reason, ${alias}.created_time, 
-	${alias}.updated_time
+	${alias}.license, ${alias}.audited_user, ${alias}.status, ${alias}.reason, ${alias}.media_advertiser_key, 
+	${alias}.created_time, ${alias}.updated_time
   </sql>
   <select id="selectByAdvertiserKeyAndMediaIds" resultMap="BaseResultMap" parameterType="com.madhouse.platform.premiummad.model.AdvertiserModel">
     select 
@@ -182,7 +182,7 @@
 	      <if test="item.reason != null" >
 	        reason = #{item.reason,jdbcType=VARCHAR},
 	      </if>
-	      <if test="mediaAdvertiserKey != null" >
+	      <if test="item.mediaAdvertiserKey != null" >
 	        media_advertiser_key = #{item.mediaAdvertiserKey,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.createdTime != null" >
@@ -263,7 +263,7 @@
   
   <update id="auditAdvertiser" parameterType="string" >
       <if test="ids != null and ids.length > 0" >
-  	  	UPDATE mad_sys_advertiser SET status = #{status}
+  	  	UPDATE mad_sys_advertiser SET status = #{status}, reason = #{reason}
         WHERE id IN
 	    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
 	        #{id,jdbcType=INTEGER}

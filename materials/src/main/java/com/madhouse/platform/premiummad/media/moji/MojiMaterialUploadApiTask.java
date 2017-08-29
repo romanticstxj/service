@@ -1,5 +1,6 @@
 package com.madhouse.platform.premiummad.media.moji;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,16 +21,15 @@ import com.madhouse.platform.premiummad.media.model.MojiMaterialUploadRequest;
 import com.madhouse.platform.premiummad.media.model.MojiMaterialUploadResponse;
 import com.madhouse.platform.premiummad.media.util.MojiHttpUtil;
 import com.madhouse.platform.premiummad.media.util.Sha1;
+import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
 public class MojiMaterialUploadApiTask {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MojiMaterialUploadApiTask.class);
-
-	@Value("#{'${moji.dataSource}'.split(',')}")
-	private List<String> dataSourceList;
-
+	
 	@Value("${moji.uploadMaterialUrl}")
 	private String uploadMaterialUrl;
 
@@ -74,12 +74,21 @@ public class MojiMaterialUploadApiTask {
 
 	@Autowired
 	private IMaterialService materialService;
+	
+	@Autowired
+	private IPolicyService policyService;
 
+	/**
+	 * 处理我方两个广告位对应媒体一个广告位
+	 * <mediaAdspaceId|materialKey, mediaMaterialKey>
+	 * */
+	private Map<String, String> mediaAdspace = new HashMap<String, String>();
+	
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++moji get material status begin+++++++++++");
 
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.DIANPING.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.MOJI.getValue(), MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
 			LOGGER.info("墨迹天气没有未上传的广告主");
 			LOGGER.info("++++++++++moji upload material end+++++++++++");
@@ -88,16 +97,33 @@ public class MojiMaterialUploadApiTask {
 		// 上传到媒体
 		LOGGER.info("MojiMaterialUploadApiTask-moji", unSubmitMaterials.size());
 
+		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
 		for (Material material : unSubmitMaterials) {
-			Map<String, String> paramMap = buildUploadMaterialRequest(material);
+			String mediaAdspaceId = getMediaAdspaceId(material.getAdspaceId());
+			String key = mediaAdspaceId + "|" + material.getMaterialKey();
+			// 如果同一个素材属于同一个媒体广告位已经上传一个，则直接将起媒体返回的key赋值给当前素材，不用再推送一次
+			if (mediaAdspace.containsKey(key)) {
+				materialIdKeys.put(material.getId(), mediaAdspace.get(key));
+				continue;
+			}
+			
+			Map<String, String> paramMap = buildUploadMaterialRequest(material, mediaAdspaceId);
 			String postResult = mojiHttpUtil.post(uploadMaterialUrl, paramMap);
 			if (!StringUtils.isEmpty(postResult)) {
 				MojiMaterialUploadResponse response = JSON.parseObject(postResult, MojiMaterialUploadResponse.class);
 				// 上传成功，返回200
 				if (response.getCode().equals(IMojiConstant.M_STATUS_SUCCESS.getValue() + "")) {
 					materialIdKeys.put(material.getId(), response.getData().getId());
+					mediaAdspace.put(key, response.getData().getId());
 				} else {
+					// 发生错误自动驳回
+					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+					rejuseItem.setId(String.valueOf(material.getId()));
+					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+					rejuseItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
+					rejuseItem.setErrorMessage(response.getMessage());
+					rejusedMaterials.add(rejuseItem);
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + response.getCode() + " " + response.getMessage());
 				}
 			} else {
@@ -110,6 +136,11 @@ public class MojiMaterialUploadApiTask {
 			materialService.updateStatusAfterUpload(materialIdKeys);
 		}
 
+		// 处理失败的结果，自动驳回 - 通过素材id更新
+		if (!rejusedMaterials.isEmpty()) {
+			materialService.updateStatusToMediaByMaterialId(rejusedMaterials);
+		}
+
 		LOGGER.info("++++++++++moji get material status end+++++++++++");
 	}
 
@@ -119,7 +150,7 @@ public class MojiMaterialUploadApiTask {
 	 * @param material
 	 * @return
 	 */
-	private Map<String, String> buildUploadMaterialRequest(Material material) {
+	private Map<String, String> buildUploadMaterialRequest(Material material, String materialAdspaceId) {
 		// 封装request对象
 		MojiMaterialUploadRequest request = new MojiMaterialUploadRequest();
 		// 客户标识
@@ -127,9 +158,9 @@ public class MojiMaterialUploadApiTask {
 		// 当前时间10位时间戳
 		request.setTime_stamp(Integer.parseInt(System.currentTimeMillis() / 1000 + ""));
 		// 广告位id required
-		request.setPosition_ids(getMediaAdspaceId(material.getAdspaceId()));
+		request.setPosition_ids(materialAdspaceId);
 		// 广告类型
-		request.setAd_type(convertMediaAdType(material.getAdspaceId()));
+		request.setAd_type(convertMediaAdType(materialAdspaceId));
 		// 广告样式
 		request.setShow_type(IMojiConstant.SHOW_TYPE_1.getValue());
 		// 跳转链接
@@ -162,17 +193,18 @@ public class MojiMaterialUploadApiTask {
 	}
 
 	/**
-	 * 根据我方的广告位转换成媒体方的广告类型
+	 * 根据媒体方的广告位ID转换成媒体方的广告类型
+	 * 一个物料对应madhouse2个广告位
 	 * 
 	 * @param adspaceId
 	 * @return
 	 */
-	private int convertMediaAdType(int adspaceId) {
-		if (String.valueOf(adspaceId).equals(mh_moji_mapping_101_android) || String.valueOf(adspaceId).equals(mh_moji_mapping_101_ios)) {// 点评闪惠交易成功页
+	private int convertMediaAdType(String mediaAdspaceId) {
+		if (mediaAdspaceId.equals(moji_ad_splash_101)) {// 点评闪惠交易成功页
 			return IMojiConstant.MOJI_SPLASH.getValue();
-		} else if (String.valueOf(adspaceId).equals(mh_moji_mapping_1008_android) || String.valueOf(adspaceId).equals(mh_moji_mapping_1008_ios)) {// 点评电影交易成功页
+		} else if (mediaAdspaceId.equals(moji_ad_banner_1008)) {// 点评电影交易成功页
 			return IMojiConstant.MOJI_BANNER.getValue();
-		} else if (String.valueOf(adspaceId).equals(mh_moji_mapping_2002_android) || String.valueOf(adspaceId).equals(mh_moji_mapping_2002_ios)) {// 点评电影票详情页
+		} else if (mediaAdspaceId.equals(moji_ad_banner_2002)) {// 点评电影票详情页
 			return IMojiConstant.MOJI_BANNER.getValue();
 		}
 		return 0;
@@ -180,11 +212,15 @@ public class MojiMaterialUploadApiTask {
 
 	/**
 	 * 获取媒体方的广告位
+	 * 一个物料对应madhouse2个广告位
 	 * 
 	 * @param adspaceId
 	 * @return
 	 */
-	private String getMediaAdspaceId(int adspaceId) {
+	private String getMediaAdspaceId(Integer adspaceId) {
+		if (adspaceId == null) {
+			return "";
+		}
 		if (String.valueOf(adspaceId).equals(mh_moji_mapping_101_android) || String.valueOf(adspaceId).equals(mh_moji_mapping_101_ios)) {// 点评闪惠交易成功页
 			return moji_ad_splash_101;
 		} else if (String.valueOf(adspaceId).equals(mh_moji_mapping_1008_android) || String.valueOf(adspaceId).equals(mh_moji_mapping_1008_ios)) {// 点评电影交易成功页
