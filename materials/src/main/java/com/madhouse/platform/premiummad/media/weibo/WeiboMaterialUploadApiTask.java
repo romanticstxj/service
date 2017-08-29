@@ -1,5 +1,8 @@
 package com.madhouse.platform.premiummad.media.weibo;
 
+/*import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;*/
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -17,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.druid.util.Base64;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -103,17 +105,9 @@ public class WeiboMaterialUploadApiTask {
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		for (Material material : unSubmitMaterials) {
-			WeiboMaterialUploadRequest uploadRequest = new WeiboMaterialUploadRequest();
-			// 参数校验
-			String errorMsg = buildRequest(material, uploadRequest);
-			if (!StringUtils.isBlank(errorMsg)) {
-				continue;
-			}
-
 			String creativeType = getCreateType(material.getLayout());
-
-			// 视频的话需要先上传视频到媒体
-			if (CREATIVE_FEED_VIDEO.equals(creativeType)) {
+			// 视频的话需要先上传视频到媒体 - 视频上传成功但是素材上传失败的时候不需要再上传视频
+			if (CREATIVE_FEED_VIDEO.equals(creativeType) && (StringUtils.isBlank(material.getMediaMaterialUrl()) || !StringUtils.isBlank(material.getMediaQueryKey()))) {
 				StringBuilder mediaMaterialUrl = new StringBuilder();
 				String uploadMaterialErrorMsg = this.uploadVideo(material.getAdMaterials().split("\\|")[0], mediaMaterialUrl);
 				// 已知错误拒绝
@@ -121,7 +115,7 @@ public class WeiboMaterialUploadApiTask {
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 					rejuseItem.setId(String.valueOf(material.getId()));
 					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-					rejuseItem.setMediaId(String.valueOf(MediaMapping.SOHUNEWS.getValue()));
+					rejuseItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
 					rejuseItem.setErrorMessage(uploadMaterialErrorMsg.toString());
 					rejusedMaterials.add(rejuseItem);
 					LOGGER.error("素材关联的视频上传到媒体失败[materialId=" + material.getId() + "]-" + uploadMaterialErrorMsg.toString());
@@ -132,10 +126,22 @@ public class WeiboMaterialUploadApiTask {
 					LOGGER.info("素材关联的视频上传到媒体失败[materialId=" + material.getId() + "]");
 					continue;
 				}
-
 				material.setMediaMaterialUrl(mediaMaterialUrl.toString());
+				
+				// 视频上传地址回写-防止下面操作失败导致上传地址丢失
+				Material updateMeterialMediaUrlItem = new Material();
+				updateMeterialMediaUrlItem.setMediaMaterialUrl(material.getMediaMaterialUrl());
+				updateMeterialMediaUrlItem.setId(material.getId());
+				materialDao.updateByPrimaryKeySelective(updateMeterialMediaUrlItem);
 			}
 
+			// 参数校验
+			WeiboMaterialUploadRequest uploadRequest = new WeiboMaterialUploadRequest();
+			String errorMsg = buildRequest(material, uploadRequest);
+			if (!StringUtils.isBlank(errorMsg)) {
+				continue;
+			}
+			
 			// 请求接口
 			String requestJson = JSON.toJSONString(uploadRequest);
 			LOGGER.info("WeiboMaterialUpload request Info: " + requestJson);
@@ -287,7 +293,8 @@ public class WeiboMaterialUploadApiTask {
 			weiboFeedActivitys.add(weiboFeedActivity);
 		} else if (CREATIVE_FEED_VIDEO.equals(creativeType)) {
 			WeiboFeedVideo weiboFeedVideo = new WeiboFeedVideo();
-			weiboFeedVideo.setAd_url(material.getMediaMaterialUrl()); // 上传到媒体的地址
+			weiboFeedVideo.setAd_url(material.getCover()); // 封面url
+			weiboFeedVideo.setVideo_url(material.getMediaMaterialUrl()); // 上传到媒体的地址
 			weiboFeedVideo.setButton_type("none");
 			weiboFeedVideo.setButton_url("");
 			weiboFeedVideo.setClient_id(String.valueOf(advertiser.getId()));
@@ -358,17 +365,29 @@ public class WeiboMaterialUploadApiTask {
 		}
 
 		// step 1 调用初始化接口获取uploadId 和 最大长度
-		WeiboData weiboData = initMedia(inputStream, filePath.substring(pos + 1));
+		Map<String, Integer> md5LenghtLength = StringUtils.getFileMD5(inputStream);
+		WeiboData weiboData = initMedia(md5LenghtLength, filePath.substring(pos + 1));
+		if (weiboData == null) {
+			return "初始化上传视频失败";
+		}
 
 		// step2 将内容分块并上传
 		byte[] buffer = new byte[weiboData.getLength()];
-		int partNumber = 0;
-		int length = 0;
 		inputStream = getStreamContent(filePath);
+		int totalTime = (md5LenghtLength.entrySet().iterator().next().getValue() - 1) / weiboData.getLength() + 1;
 		try {
-			while ((length = inputStream.read(buffer)) > 0) {
-				String result = uploadMedia(weiboData.getUploadId(), partNumber, length, buffer);
-				partNumber++;
+			/*File file = new File("D:\\response.txt");
+			PrintStream ps = new PrintStream(new FileOutputStream(file));*/
+			for (int partNumber = 0; partNumber < totalTime; partNumber ++) {
+				int subLength = 0;
+				for (subLength = 0; subLength < weiboData.getLength();) {
+					int readlen = inputStream.read(buffer, subLength, weiboData.getLength() - subLength);
+					if (readlen == -1) {
+						break;
+					}
+					subLength += readlen;
+				}
+				String result = uploadMedia(weiboData.getUploadId(), partNumber, subLength, buffer/*, ps*/);
 				if (!StringUtils.isBlank(result)) {
 					mediaMaterialUrl = mediaMaterialUrl.append(result);
 				}
@@ -388,7 +407,7 @@ public class WeiboMaterialUploadApiTask {
 	 * @param content
 	 * @param result
 	 */
-	private String uploadMedia(String uploadId, int partNumber, int length, byte[] wholeContent) {
+	private String uploadMedia(String uploadId, int partNumber, int length, byte[] wholeContent/*, PrintStream ps*/) {
 		// 构造请求对象
 		WeiboMediaUploadRequest weiboMediaUploadRequest = new WeiboMediaUploadRequest();
 		weiboMediaUploadRequest.setDspid(dspid);
@@ -403,7 +422,9 @@ public class WeiboMaterialUploadApiTask {
 		LOGGER.info("WeiboMediaUploadRequest: " + requestJson);
 		String responseJson = HttpUtils.post(mediaUploadUrl, requestJson);
 		LOGGER.info("WeiboMediaUploadResponse: " + responseJson);
-
+		/*ps.append("partNumber-" + weiboMediaUploadRequest.getPartNumber() + ",md5-" + weiboMediaUploadRequest.getSliceCheck());
+		ps.append("length-" + length + "-");
+		ps.append(responseJson);*/
 		// 处理返回的结果
 		if (!StringUtils.isBlank(responseJson)) {
 			WeiboResponse weiboResponse = JSON.parseObject(responseJson, WeiboResponse.class);
@@ -425,12 +446,7 @@ public class WeiboMaterialUploadApiTask {
 	 * @param fileName
 	 * @return
 	 */
-	private WeiboData initMedia(InputStream inputStream, String fileName) {
-		Map<String, Integer> md5LenghtLength = StringUtils.getFileMD5(inputStream);
-		if (md5LenghtLength == null || md5LenghtLength.isEmpty()) {
-			LOGGER.info("系统异常");
-			return null;
-		}
+	private WeiboData initMedia(Map<String, Integer> md5LenghtLength, String fileName) {
 		// 构造请求
 		Entry<String, Integer> entry = md5LenghtLength.entrySet().iterator().next();
 		WeiboMediaInitRequest weiboMediaInitRequest = new WeiboMediaInitRequest();
@@ -457,6 +473,8 @@ public class WeiboMaterialUploadApiTask {
 			if (WeiboConstant.RESPONSE_SUCCESS.getValue() == weiboResponse.getRet_code().intValue() && WeiboErrorCode.WEC000.getValue() == weiboResponse.getErr_code().intValue()) {
 				WeiboData data = JSONObject.parseObject(weiboResponse.getRet_msg().toString(), WeiboData.class);
 				return data;
+			} else {
+				LOGGER.info(weiboResponse.getRet_msg());
 			}
 		}
 

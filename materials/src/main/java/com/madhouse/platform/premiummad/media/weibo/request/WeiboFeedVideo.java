@@ -4,7 +4,8 @@ import java.util.List;
 
 public class WeiboFeedVideo {
 	private String creative_id;// 创意ID,即我们平台的物料ID
-	private String ad_url;// 广告素材URL
+	private String ad_url;// 封面URL
+	private String video_url;// 视频URL
 	private String content_category;// 行业编码
 	private String landingpage_url;// 落地页
 	private String client_id;// 广告主ID
@@ -84,6 +85,14 @@ public class WeiboFeedVideo {
 
 	public String getContent_category() {
 		return content_category;
+	}
+
+	public String getVideo_url() {
+		return video_url;
+	}
+
+	public void setVideo_url(String video_url) {
+		this.video_url = video_url;
 	}
 
 	public void setContent_category(String content_category) {
