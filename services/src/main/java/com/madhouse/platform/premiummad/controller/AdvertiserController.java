@@ -62,8 +62,9 @@ public class AdvertiserController {
     public ResponseDto<Advertiser> audit(@RequestBody AuditDto dto) throws Exception {
 		String idsStr = dto.getIds();
 		Integer status = dto.getStatus();
+		String reason = dto.getReason();
 		String[] ids = StringUtils.splitToStringArray(idsStr);
-		advertiserService.auditAdvertiser(ids, status);
+		advertiserService.auditAdvertiser(ids, status, reason);
         return ResponseUtils.response(StatusCode.SC20000, null);
     }
 }

@@ -743,20 +743,21 @@
 		            		"mediaId": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
 		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交(若媒体审核，表示还未提交给媒体), 1: 待审核(若平台审核，表示平台还未审核；若媒体审核，表示已提交给媒体并有待于他们审核的状态), 2: 通过审核)>"
                         }
                     ]
                 }
             }
         }
     },
-    "/material/verify": {
+    "/material/audit": {
         "post": {
             "_summary": "物料审核(批)操作",
             "parameters": {
                 "body": {
-                	"ids": "<*||string||comment:dsp素材ID，多个用逗号分隔>",
-                	"status": "<*||integer||comment:审核操作(-1:审核不通过, 2:审核通过)>"
+                	"ids": "<*||string||comment:物料id，多个用逗号分隔>",
+                	"status": "<*||integer||comment:审核操作(-1:审核不通过, 2:审核通过)>",
+                	"reason": "<string||comment:审核拒绝理由>"
                 }
             },
             "responses": {
@@ -828,13 +829,14 @@
             }
         }
     },
-    "/advertiser/verify": {
+    "/advertiser/audit": {
         "post": {
             "_summary": "广告主(批量)审核",
             "parameters": {
                 "body": {
                     "ids": "<*||string||comment:广告主ID，多个用逗号分隔>",
-                	"status": "<integer||comment:审核操作(-1:审核不通过, 2:审核通过)>"
+                	"status": "<integer||comment:审核操作(-1:审核不通过, 2:审核通过)>",
+                	"reason": "<string||comment:审核拒绝理由>"
                  }
             },
             "responses": {
@@ -1216,7 +1218,28 @@
                 "body": {
                     "userId": "<*||integer||comment:userId>",
                 	"isAdmin": "<*||integer||comment:1-管理员,0-非管理员>",
-                    "mediaIds": ["<string||comment:选择的媒体权限>"]
+                    "mediaIds": ["<integer||comment:选择的媒体权限>"]
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/userauth/policy/update": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "userId": "<*||integer||comment:userId>",
+                	"isAdmin": "<*||integer||comment:1-管理员,0-非管理员>",
+                    "policyIds": ["<integer||comment:选择的策略权限>"]
                 }
             },
             "responses": {
