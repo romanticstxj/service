@@ -43,6 +43,8 @@ public class Adspace {
 	private Integer updateType;
 	
 	private Integer status;
+	
+	private int content;
 
 	public long getId() {
 		return id;
@@ -274,4 +276,11 @@ public class Adspace {
 	public void setCoverMaxKbyte(Integer coverMaxKbyte) {
 		this.coverMaxKbyte = coverMaxKbyte;
 	}
+    public int getContent() {
+        return content;
+    }
+    public void setContent(int content) {
+        this.content = content;
+    }
+	
 }

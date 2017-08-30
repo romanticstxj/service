@@ -123,6 +123,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                                 natives.setIcon(nativesIcon);
                                 natives.setTitle(adspace.getTitleMaxLength() > 0 ? adspace.getTitleMaxLength() : 0);
                                 natives.setDesc(adspace.getDescMaxLength() > 0 ? adspace.getDescMaxLength() : 0);
+                                natives.setContent(adspace.getContent() > 0 ? adspace.getContent() : 0);
                                 metaData.setNatives(natives);
                                 break;
                         }
