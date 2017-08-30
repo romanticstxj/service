@@ -1,7 +1,12 @@
 package com.madhouse.platform.premiummad.entity;
 
+import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
+
 public class UserAuth extends BaseEntity{
 	
+	private Integer id;
+	
+	@NotNullAndBlank
 	private Integer userId;
 	
 	private Integer[] mediaIds;
@@ -41,6 +46,12 @@ public class UserAuth extends BaseEntity{
 	public void setIsAdmin(Integer isAdmin) {
 		this.isAdmin = isAdmin;
 	}
-	
-	
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

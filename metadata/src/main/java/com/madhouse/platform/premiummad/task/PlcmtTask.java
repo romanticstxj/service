@@ -99,27 +99,27 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                                 PlcmtMetaData.Native natives = metaData.new Native();
                                 if(adspace.getLayout().equals(Constant.Layout.NATIVE_311)){
                                     if (adspace.getCoverType() > 0 && !StringUtils.isEmpty(adspace.getCoverSize())) {
-                                        PlcmtMetaData.Image nativesImage = metaData.new Image();
+                                        PlcmtMetaData.Image nativeCover = metaData.new Image();
                                         String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getCoverSize(), "*");
-                                        nativesImage.setW(Integer.parseInt(videoSize[0]));
-                                        nativesImage.setH(Integer.parseInt(videoSize[1]));
-                                        nativesImage.setMimes(queryMimesByType(adspace.getCoverType()));
-                                        natives.setCover(nativesImage);
+                                        nativeCover.setW(Integer.parseInt(videoSize[0]));
+                                        nativeCover.setH(Integer.parseInt(videoSize[1]));
+                                        nativeCover.setMimes(queryMimesByType(adspace.getCoverType()));
+                                        natives.setCover(nativeCover);
                                     }
                                     natives.setVideo(getVideo(adspace, metaData));
                                 } else {
                                     metaData.setLayout(adspace.getLayout()+adspace.getMaterialCount());
                                     natives.setImage(getImage(adspace, metaData));
                                 }
+
                                 PlcmtMetaData.Image nativesIcon = metaData.new Image();
                                 if(adspace.getLogoType() > 0 && !StringUtils.isEmpty(adspace.getLogoSize())){
                                     String[] nativesIconSize = StringUtils.tokenizeToStringArray(adspace.getLogoSize(), "*");
                                     nativesIcon.setW(Integer.parseInt(nativesIconSize[0]));
                                     nativesIcon.setH(Integer.parseInt(nativesIconSize[1]));
-                                }
-                                if(!StringUtils.isEmpty(adspace.getLogoType()+"")){
                                     nativesIcon.setMimes(queryMimesByType(adspace.getLogoType()));
                                 }
+
                                 natives.setIcon(nativesIcon);
                                 natives.setTitle(adspace.getTitleMaxLength() > 0 ? adspace.getTitleMaxLength() : 0);
                                 natives.setDesc(adspace.getDescMaxLength() > 0 ? adspace.getDescMaxLength() : 0);

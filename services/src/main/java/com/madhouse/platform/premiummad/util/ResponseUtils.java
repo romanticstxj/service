@@ -30,8 +30,7 @@ public class ResponseUtils {
 		responseDto.setData(data);
 		responseDto.setSize(size);
 		responseDto.setCode(sc.getValue());
-//		responseDto.setMessage(message != null ? message : sc.getDescrip());
-		responseDto.setMessage(sc.getDescrip() + ": " + (message != null ? message : ""));
+		responseDto.setMessage(sc.getDescrip() + (!StringUtils.isEmpty(message) ? (": " + message) : ""));
 
 		return responseDto;
 
