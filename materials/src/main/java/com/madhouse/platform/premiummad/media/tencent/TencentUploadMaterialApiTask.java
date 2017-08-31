@@ -24,41 +24,36 @@ import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.tencent.constant.TencentErrorCode;
-import com.madhouse.platform.premiummad.media.tencent.request.AdvertUploadData;
+import com.madhouse.platform.premiummad.media.tencent.request.TencentUploadMaterialData;
 import com.madhouse.platform.premiummad.media.tencent.request.TencentCommonRequest;
-import com.madhouse.platform.premiummad.media.tencent.response.AdvertUploadResponse;
-import com.madhouse.platform.premiummad.media.tencent.response.AdvertUploadReturnMessage;
+import com.madhouse.platform.premiummad.media.tencent.response.TencentUploadMaterialResponse;
+import com.madhouse.platform.premiummad.media.tencent.response.TencentUploadMaterialReturnMessage;
 import com.madhouse.platform.premiummad.media.tencent.util.TencentHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IPolicyService;
+import com.madhouse.platform.premiummad.util.MacroReplaceUtil;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 /**
  * 上传广告信息
  */
 @Component
-public class AdvertUploadApiTask {
+public class TencentUploadMaterialApiTask {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AdvertUploadApiTask.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TencentUploadMaterialApiTask.class);
 	private static final int ITERATOR_TIMES = 2;
 	private static final int TECENT_OTV_ITERATOR = 1;
 
 	@Value("${tencent.adcreativeUpload}")
-	private String advertUploadUrl;
-
-	@Value("${tencent.imp.url}")
-	private String impUrl;
+	private String adcreativeUploadUrl;
 
 	@Value("${tencent.clk.url}")
-	private String clkUrl;
-
-	@Value("${tencent.imp.urlssp}")
-	private String impUrlSsp;
+	private String tencentClkUrl;
 
 	@Value("${tencent.clk.urlssp}")
-	private String clkUrlSsp;
-	
+	private String tencentClkUrlSsp;
+
 	// 腾讯支持的广告样式
 	@Value("${tencent_displayId_md_app_stream_img}")
 	private String tencent_displayId_md_app_stream_img;
@@ -74,8 +69,8 @@ public class AdvertUploadApiTask {
 	private String tencent_displayId_md_qqlive_appweb_vedio;
 	@Value("${tencent_displayId_md_qqlive_appweb_img}")
 	private String tencent_displayId_md_qqlive_appweb_img;
-	
-	// SSP 广告位 
+
+	// SSP 广告位
 	@Value("${tencent_md_app_stream_android_img}")
 	private String tencent_md_app_stream_android_img;// MadMax-新闻客户端-原生信息流_android
 	@Value("${tencent_md_app_stream_ios_img}")
@@ -98,13 +93,13 @@ public class AdvertUploadApiTask {
 	private String tencent_md_app_stream_ios_icon;// MadMax-腾讯视频-信息流大图_ios
 	@Value("${tencent_md_qqlive_appweb_android_vedio}")
 	private String tencent_md_qqlive_appweb_android_vedio;// Tencent-新闻客户端-信息流广告_android
-	@Value("${tencent_md_qqlive_appweb_ios_vedio}")                                                
+	@Value("${tencent_md_qqlive_appweb_ios_vedio}")
 	private String tencent_md_qqlive_appweb_ios_vedio;// Tencent-新闻客户端-信息流广告_ios
 	@Value("${tencent_md_qqlive_appweb_android_img}")
 	private String tencent_md_qqlive_appweb_android_img;// Tencent-腾讯视频APP-Phone版_信息流广告_android
 	@Value("${tencent_md_qqlive_appweb_ios_img}")
 	private String tencent_md_qqlive_appweb_ios_img;// Tencent-腾讯视频APP-Phone版_信息流广告_ios
-			
+
 	@Autowired
 	private TencentHttpUtil tencentHttpUtil;
 
@@ -116,11 +111,35 @@ public class AdvertUploadApiTask {
 
 	@Autowired
 	private IPolicyService policyService;
-	
+
 	@Autowired
 	private AdvertiserMapper advertiserDao;
-	
-	public void advertUpload() {
+
+	@Value("${imp.url}")
+	private String impUrl;
+
+	@Value("${clk.url}")
+	private String clkUrl;
+
+	/**
+	 * 宏替换替换映射
+	 */
+	private static Map<String, String> macroClickMap;
+	private static Map<String, String> macroImageMap;
+
+	static {
+		macroClickMap = new HashMap<String, String>();
+		macroClickMap.put("${EXT1}", "${CLICK_EXT1}");
+		macroClickMap.put("${EXT2}", "${CLICK_EXT2}");
+		macroClickMap.put("${EXT3}", "${CLICK_EXT3}");
+
+		macroImageMap = new HashMap<String, String>();
+		macroImageMap.put("${EXT1}", "${DISPLAY_EXT1}");
+		macroImageMap.put("${EXT2}", "${DISPLAY_EXT2}");
+		macroImageMap.put("${EXT3}", "${DISPLAY_EXT3}");
+	}
+
+	public void uploadMaterial() {
 		// TENCENT 对应两个媒体 OTV 和 非 OTV
 		for (int mediaType = 0; mediaType < ITERATOR_TIMES; mediaType++) {
 			int mediaId = 0;
@@ -134,30 +153,30 @@ public class AdvertUploadApiTask {
 			// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 			List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(mediaId, MaterialStatusCode.MSC10002.getValue());
 			if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-				LOGGER.info(MediaMapping.getDescrip(mediaId) + "没有未上传的广告主");
+				LOGGER.info(MediaMapping.getDescrip(mediaId) + "没有未上传的素材");
 				continue;
-			} 
+			}
 
 			// 构造请求对象
-			TencentCommonRequest<List<AdvertUploadData>> request = buildUploadRequest(mediaType, unSubmitMaterials);
-			String responseJson = tencentHttpUtil.post(advertUploadUrl, request);
+			TencentCommonRequest<List<TencentUploadMaterialData>> request = buildUploadRequest(mediaType, unSubmitMaterials);
+			String responseJson = tencentHttpUtil.post(adcreativeUploadUrl, request);
 			LOGGER.info("Tencent上传广告信息返回信息：{}", responseJson);
 			// 上传成功时,responseJson 为空字符串或者null
-			AdvertUploadResponse advertUploadRsponse = null;
+			TencentUploadMaterialResponse advertUploadRsponse = null;
 			try {
-				advertUploadRsponse = JSONObject.parseObject(responseJson, AdvertUploadResponse.class);
+				advertUploadRsponse = JSONObject.parseObject(responseJson, TencentUploadMaterialResponse.class);
 				if (!request.getData().isEmpty() && advertUploadRsponse != null) {
 					// 系统错误或权限校验错误
 					if (TencentErrorCode.TEC100.getValue() == advertUploadRsponse.getError_code() || TencentErrorCode.TEC101.getValue() == advertUploadRsponse.getError_code()) {
 						LOGGER.info("Tencent上传广告出现错误:" + (TencentErrorCode.TEC100.getDescrip()));
 						return;
 					}
-					
+
 					// 获取上传成功和失败的记录
 					Set<String> successfulMaterialIds = new HashSet<String>();
 					List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 					if (advertUploadRsponse.getRet_msg() != null && !advertUploadRsponse.getRet_msg().isEmpty()) {
-						for (AdvertUploadReturnMessage item : advertUploadRsponse.getRet_msg()) {
+						for (TencentUploadMaterialReturnMessage item : advertUploadRsponse.getRet_msg()) {
 							// 上传成功
 							if (StringUtils.isBlank(item.getErr_code()) && StringUtils.isBlank(item.getErr_msg())) {
 								successfulMaterialIds.add(item.getDsp_order_id());
@@ -172,12 +191,12 @@ public class AdvertUploadApiTask {
 							}
 						}
 					}
-					
+
 					// 处理成功的结果
 					if (!successfulMaterialIds.isEmpty()) {
 						handleSuccessResult(unSubmitMaterials, successfulMaterialIds);
 					}
-					
+
 					// 处理失败的结果，自动驳回 - 通过素材id更新
 					if (!rejusedMaterials.isEmpty()) {
 						materialService.updateStatusToMediaByMaterialId(rejusedMaterials);
@@ -214,7 +233,7 @@ public class AdvertUploadApiTask {
 		// 媒体方唯一标识是我方媒体id
 		for (Material material : unSubmitMaterials) {
 			if (successfulMaterialIds.contains(String.valueOf(material.getId()))) {
-				String[] mediaQueryAndMaterialKeys = {String.valueOf(material.getId())};
+				String[] mediaQueryAndMaterialKeys = { String.valueOf(material.getId()) };
 				materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 			}
 		}
@@ -232,9 +251,9 @@ public class AdvertUploadApiTask {
 	 * @param unSubmitMaterials
 	 * @return
 	 */
-	private TencentCommonRequest<List<AdvertUploadData>> buildUploadRequest(int mediaType, List<Material> unSubmitMaterials) {
-		TencentCommonRequest<List<AdvertUploadData>> request = new TencentCommonRequest<List<AdvertUploadData>>();
-		List<AdvertUploadData> advertUploadRequestList = new ArrayList<>();
+	private TencentCommonRequest<List<TencentUploadMaterialData>> buildUploadRequest(int mediaType, List<Material> unSubmitMaterials) {
+		TencentCommonRequest<List<TencentUploadMaterialData>> request = new TencentCommonRequest<List<TencentUploadMaterialData>>();
+		List<TencentUploadMaterialData> advertUploadRequestList = new ArrayList<>();
 
 		// 批量上传物料
 		for (Material material : unSubmitMaterials) {
@@ -245,8 +264,8 @@ public class AdvertUploadApiTask {
 				LOGGER.error("广告主不存在[advertiserKey=" + material.getAdvertiserKey() + "dspId=" + material.getDspId() + "]");
 				return null;
 			}
-			
-			AdvertUploadData advertUploadRequest = new AdvertUploadData();
+
+			TencentUploadMaterialData advertUploadRequest = new TencentUploadMaterialData();
 
 			// 3095 腾讯新增 广告形式和静态落地页(供审核查看)必须 映射
 			// 广告主名称
@@ -254,50 +273,19 @@ public class AdvertUploadApiTask {
 			advertUploadRequest.setAdvertiser_name(advertiserName);
 			advertUploadRequest.setAdvertiser_id(advertisers.get(0).getMediaAdvertiserKey());
 			advertUploadRequest.setDisplay_id(getDisplayId(material.getAdspaceId()));
-			advertUploadRequest.setLanding_page(material.getLpgUrl()); // 静态落地页，腾讯必填  用落地页
-			
-			// 创意素材内容
-			List<Map<String, String>> adContents = new ArrayList<>();
-			
-			// 标题
-			Map<String, String> adContentMap = new HashMap<>();
-			adContentMap.put("file_text", material.getTitle());
-			adContents.add(adContentMap);
-			
-			// 素材上传地址
-			adContentMap = new HashMap<>();
-			String[] adMaterials = material.getAdMaterials().split("\\|");
-			for (String adMaterial : adMaterials) {
-				adContentMap.put("file_url", adMaterial);
+			advertUploadRequest.setLanding_page(material.getLpgUrl()); // 静态落地页，腾讯必填
+																		// 用落地页
+
+			// 客户名称长度不能大于7
+			if (advertiserName.length() > 7) {
+				advertiserName = advertiserName.substring(0, 7);
 			}
-			adContents.add(adContentMap);
-			
-			// 封面
-			adContentMap = new HashMap<>();
-			adContentMap.put("file_url", material.getCover());
-			adContents.add(adContentMap);
-			
-			// 摘要
-			adContentMap = new HashMap<>();
-			adContentMap.put("file_text", material.getDescription());
-			adContents.add(adContentMap);
-			
-			// 广告主名称
-			adContentMap = new HashMap<>();
-			adContentMap.put("file_text", advertiserName.substring(0, 7));//TODO
-			adContents.add(adContentMap);
-			advertUploadRequest.setAd_content(adContents); //new TODO
+			// 创意素材内容
+			List<Map<String, String>> adContents = getAdContent(material, advertiserName, advertUploadRequest.getDisplay_id());
+			advertUploadRequest.setAd_content(adContents);
 
 			// 展示监播
 			List<String> monitorList = new ArrayList<>();
-			if (mediaType != TECENT_OTV_ITERATOR) {
-				// 非otv外投
-				monitorList.add(impUrl + "${EXT2}");
-				monitorList.add(impUrlSsp + "${DISPLAY_EXT1}");
-			} else {
-				// otv直投
-				monitorList.add(impUrl + "${EXT2}");
-			}
 			if (!StringUtils.isEmpty(material.getImpUrls())) {
 				String impTrackingUrl = material.getImpUrls();// 支持多个
 				String[] impTrackingUrlArray = impTrackingUrl.split("\\|");
@@ -307,23 +295,27 @@ public class AdvertUploadApiTask {
 						if (impTrackingUrlArray[i].matches("^-?\\d+$")) {
 							continue;
 						}
-						monitorList.add(impTrackingUrlArray[i]);
+						monitorList.add(MacroReplaceUtil.macroReplaceImageUrl(macroImageMap, impTrackingUrlArray[i])); // 宏替换
 					}
 				}
 			}
+			monitorList.add(MacroReplaceUtil.getStr(impUrl, "?", "${EXT}")); // SSP
+																				// 宏替换
 			advertUploadRequest.setMonitor_url(monitorList);
 
-			// 展示监播
+			// 点击监播
 			List<String> clkMonitorList = new ArrayList<>();
 			if (!StringUtils.isEmpty(material.getClkUrls())) {
 				String clk = material.getClkUrls();
 				String[] clkTrackingUrlArray = clk.split("\\|");
 				if (null != clkTrackingUrlArray) {
 					for (int i = 0; i < clkTrackingUrlArray.length; i++) {
-						clkMonitorList.add(clkTrackingUrlArray[i]);
+						clkMonitorList.add(MacroReplaceUtil.macroReplaceClickUrl(macroClickMap, clkTrackingUrlArray[i]));
 					}
 				}
 			}
+			clkMonitorList.add(MacroReplaceUtil.getStr(clkUrl, "?", "${EXT}"));// SSP
+																				// 宏替换
 			advertUploadRequest.setClick_monitor_url(clkMonitorList);
 
 			String encodeTargetUrl = "";
@@ -333,21 +325,166 @@ public class AdvertUploadApiTask {
 				LOGGER.info("Tencent targetUrl encode exception");
 				e.printStackTrace();
 			}
-
 			if (mediaType != TECENT_OTV_ITERATOR) {
-				advertUploadRequest.setTargeting_url(clkUrl + encodeTargetUrl + "&${EXT}");
-				advertUploadRequest.setTargeting_url(clkUrlSsp + encodeTargetUrl + "${CLICK_EXT1}");
+				advertUploadRequest.setTargeting_url(tencentClkUrlSsp + encodeTargetUrl + "${CLICK_EXT1}");
 			} else {
-				advertUploadRequest.setTargeting_url(clkUrl + encodeTargetUrl + "&${EXT}");
+				advertUploadRequest.setTargeting_url(tencentClkUrl + encodeTargetUrl + "&${EXT}");
 			}
-
 			advertUploadRequest.setDsp_order_id(String.valueOf(material.getId()));
-
 			advertUploadRequestList.add(advertUploadRequest);
 		}
-		
+
 		request.setData(advertUploadRequestList);
 		return request;
+	}
+
+	/**
+	 * 封装创意素材内容
+	 * 
+	 * @param material
+	 * @param mediaDisplayId
+	 * @param advertiserName
+	 */
+	private List<Map<String, String>> getAdContent(Material material, String advertiserName, int mediaDisplayId) {
+		List<Map<String, String>> adContents = new ArrayList<>();
+		if (Integer.valueOf(tencent_displayId_md_app_stream_img) == mediaDisplayId || Integer.valueOf(tencent_displayId_md_app_stream_gif) == mediaDisplayId) {
+			// 广告标题
+			Map<String, String> adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
+
+			// 图片
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
+			adContents.add(adContentMap);
+
+			// 分享配图地址存储在LOGO里
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getIcon());
+			adContents.add(adContentMap);
+
+			// 摘要
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getDescription());
+			adContents.add(adContentMap);
+
+			// 客户名称
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", advertiserName);
+			adContents.add(adContentMap);
+		} else if (Integer.valueOf(tencent_displayId_md_app_stream_native) == mediaDisplayId) {
+			// 广告标题
+			Map<String, String> adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
+
+			// 摘要
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getDescription());
+			adContents.add(adContentMap);
+
+			// 图片
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
+			adContents.add(adContentMap);
+
+			// 客户名称
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", advertiserName);
+			adContents.add(adContentMap);
+
+			// 长标题 TODO
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
+		} else if (Integer.valueOf(tencent_displayId_md_app_stream_vedio) == mediaDisplayId) {
+			// 广告标题
+			Map<String, String> adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
+
+			// 视频
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
+			adContents.add(adContentMap);
+
+			// 贴底图片
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getCover());
+			adContents.add(adContentMap);
+
+			// 分享配图
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getIcon());
+			adContents.add(adContentMap);
+
+			// 分享摘要
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getDescription());
+			adContents.add(adContentMap);
+
+			// 广告主名称
+			adContentMap.put("file_text", advertiserName);
+			adContents.add(adContentMap);
+		} else if (Integer.valueOf(tencent_displayId_md_app_stream_icon) == mediaDisplayId) {
+			// 广告标题
+			Map<String, String> adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
+
+			// 三张图片
+			String[] adMaterials = material.getAdMaterials().split("\\|");
+			for (String adMaterial : adMaterials) {
+				adContentMap = new HashMap<>();
+				adContentMap.put("file_url", adMaterial);
+				adContents.add(adContentMap);
+			}
+			// 广告主名称
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", advertiserName);
+			adContents.add(adContentMap);
+
+			// 分享配图
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getIcon());
+			adContents.add(adContentMap);
+
+			// 分享摘要
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getDescription());
+			adContents.add(adContentMap);
+		} else if (Integer.valueOf(tencent_displayId_md_qqlive_appweb_img) == mediaDisplayId) {
+			// 文字标题
+			Map<String, String> adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
+
+			// 贴底图片
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getCover());
+			adContents.add(adContentMap);
+
+			// 视频素材
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
+			adContents.add(adContentMap);
+
+			// 分享配图
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getIcon());
+			adContents.add(adContentMap);
+
+			// 分享摘要
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getDescription());
+			adContents.add(adContentMap);
+
+			// 分享标题 TODO
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
+		}
+		return adContents;
 	}
 
 	/**

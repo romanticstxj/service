@@ -11,37 +11,34 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.tencent.constant.TencentAduitStatus;
-import com.madhouse.platform.premiummad.media.tencent.request.AdvertBachStatusData;
+import com.madhouse.platform.premiummad.media.tencent.constant.TencentMaterialAduitStatus;
 import com.madhouse.platform.premiummad.media.tencent.request.TencentCommonRequest;
-import com.madhouse.platform.premiummad.media.tencent.response.AdvertBatchStatusResponse;
-import com.madhouse.platform.premiummad.media.tencent.response.RetMsg;
+import com.madhouse.platform.premiummad.media.tencent.request.TencentMaterialStatusData;
+import com.madhouse.platform.premiummad.media.tencent.response.TencentMaterailStatusRetMsg;
+import com.madhouse.platform.premiummad.media.tencent.response.TencentMaterialStatusResponse;
 import com.madhouse.platform.premiummad.media.tencent.util.TencentHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
+import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 
 /**
  * 批量获取广告的审核状态(物料审核)
  */
 @Component
-public class AdvertBatchStatusApiTask {
+public class TencentMaterialStatusApiTask {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AdvertBatchStatusApiTask.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TencentMaterialStatusApiTask.class);
 	private static final int ITERATOR_TIMES = 2;
 	private static final int TECENT_OTV_ITERATOR = 1;
 
 	@Value("${tencent.adcreativeList}")
 	private String advertStatusUrl;
-
-	@Value("${tencent.dsp_id}")
-	private String dsp_id;
-	
-	@Value("${tencent.token}")
-	private String token;
 	
 	@Autowired
 	private TencentHttpUtil tencentHttpUtil;
@@ -52,7 +49,13 @@ public class AdvertBatchStatusApiTask {
 	@Autowired
 	private IMaterialService materialService;
 
-	public void advertBatchStatus() {
+	@Autowired
+	private AdvertiserMapper advertiserDao;
+
+	@Autowired
+	private IAdvertiserService advertiserService;
+	
+	public void getMaterialStatus() {
 		// TENCENT 对应两个媒体 OTV 和 非 OTV
 		for (int mediaType = 0; mediaType < ITERATOR_TIMES; mediaType++) {
 			int mediaId = 0;
@@ -61,7 +64,7 @@ public class AdvertBatchStatusApiTask {
 			} else {
 				mediaId = MediaMapping.TENCENT.getValue();
 			}
-			LOGGER.info(MediaMapping.getDescrip(mediaId) + " AdvertBatchStatusApiTask-advertBatchStatus start");
+			LOGGER.info(MediaMapping.getDescrip(mediaId) + " TencentMaterialStatusApiTask-getMaterialStatus start");
 			// 获取审核中的素材
 			List<Material> unauditMaterials = materialDao.selectMediaMaterials(mediaId, MaterialStatusCode.MSC10003.getValue());
 			if (unauditMaterials == null || unauditMaterials.isEmpty()) {
@@ -70,36 +73,36 @@ public class AdvertBatchStatusApiTask {
 			}
 
 			// 获取腾讯方的 dspOrderId
-			List<AdvertBachStatusData> dspOrderIds = new ArrayList<AdvertBachStatusData>();
+			List<TencentMaterialStatusData> dspOrderIds = new ArrayList<TencentMaterialStatusData>();
 			for (Material material : unauditMaterials) {
-				AdvertBachStatusData item = new AdvertBachStatusData();
+				TencentMaterialStatusData item = new TencentMaterialStatusData();
 				item.setDsp_order_id(material.getMediaQueryKey());
 				dspOrderIds.add(item);
 			}
 
 			// 向腾讯发请求批量获取状态
-			TencentCommonRequest<List<AdvertBachStatusData>> request = new TencentCommonRequest<List<AdvertBachStatusData>>();
+			TencentCommonRequest<List<TencentMaterialStatusData>> request = new TencentCommonRequest<List<TencentMaterialStatusData>>();
 			request.setData(dspOrderIds);
 			LOGGER.info("Tencent批量获取广告的审核请求：{}",  JSONObject.toJSONString(dspOrderIds));
 			String responseJson = tencentHttpUtil.post(advertStatusUrl, request);
 			LOGGER.info("Tencent批量获取广告的审核状态返回:{}", responseJson);
 
 			// 处理返回的结果
-			AdvertBatchStatusResponse advertBatchStatusResponse = JSON.parseObject(responseJson, AdvertBatchStatusResponse.class);
+			TencentMaterialStatusResponse advertBatchStatusResponse = JSON.parseObject(responseJson, TencentMaterialStatusResponse.class);
 			if (advertBatchStatusResponse.getRet_code() == 0) {
-				List<RetMsg> records = advertBatchStatusResponse.getRet_msg();
+				List<TencentMaterailStatusRetMsg> records = advertBatchStatusResponse.getRet_msg();
 				if (records != null && records.size() > 0) {
 					List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
-					for (RetMsg item : records) {
+					for (TencentMaterailStatusRetMsg item : records) {
 						MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 						int status = item.getStatus();
 						auditItem.setMediaQueryKey(item.getDsp_order_id());
 						auditItem.setMediaId(String.valueOf(mediaId));
-						if (TencentAduitStatus.AUDITED.getValue() == status) { // 审核通过
-							auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
+						if (TencentMaterialAduitStatus.AUDITED.getValue() == status) { // 审核通过
+							auditItem.setStatus(AdvertiserStatusCode.ASC10004.getValue());
 							auditResults.add(auditItem);
-						} else if (TencentAduitStatus.REJUSED.getValue() == status) { // 审核驳回
-							auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+						} else if (TencentMaterialAduitStatus.REJUSED.getValue() == status) { // 审核驳回
+							auditItem.setStatus(AdvertiserStatusCode.ASC10001.getValue());
 							auditItem.setErrorMessage(item.getVinfo());
 							auditResults.add(auditItem);
 						}
@@ -114,7 +117,7 @@ public class AdvertBatchStatusApiTask {
 				}
 			}
 
-			LOGGER.info(MediaMapping.getDescrip(mediaId) + " AdvertBatchStatusApiTask-advertBatchStatus end");
+			LOGGER.info(MediaMapping.getDescrip(mediaId) + " TencentMaterialStatusApiTask-getMaterialStatus end");
 		}
 	}
 }

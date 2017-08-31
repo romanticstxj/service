@@ -33,9 +33,6 @@ public class LetvStatusApiTask {
 
 	@Value("${letv.statusUrl}")
 	private String statusUrl;
-
-	@Value("${letv.isDebug}")
-	private Boolean isDebug;
 	
 	@Autowired
     private LetvTokenRequest tokenRequest;

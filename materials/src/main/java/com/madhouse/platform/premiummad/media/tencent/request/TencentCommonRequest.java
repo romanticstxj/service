@@ -9,7 +9,25 @@ public class TencentCommonRequest<T> {
 	private String dsp_id;
 	private String time;
 	private String sig;
+	private Integer page;
+	private Integer size;
 	private T data;
+	
+	public Integer getPage() {
+		return page;
+	}
+
+	public void setPage(Integer page) {
+		this.page = page;
+	}
+
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
+	}
 
 	public String getToken() {
 		return token;

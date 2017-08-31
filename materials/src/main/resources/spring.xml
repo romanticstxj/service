@@ -163,8 +163,10 @@
         <task:scheduled ref="letvStatusApiTask" method="getStatusDetail" cron="${cron.letvStatusApiTask}"/>
 	
 		<!-- TENCENT -->
-        <task:scheduled ref="advertBatchStatusApiTask" method="advertBatchStatus" cron="${cron.advertBatchStatusApiTask}"/>
-        <task:scheduled ref="advertUploadApiTask" method="advertUpload" cron="${cron.advertUploadApiTask}"/>
+		<task:scheduled ref="tencentAdvertiserStatusApiTask" method="getAdvertiserStatus" cron="${cron.tencentAdvertiserStatusApiTask}"/>
+		<task:scheduled ref="tencentUploadAdvertiserApiTask" method="uploadAdvertiser" cron="${cron.tencentUploadAdvertiserApiTask}"/>
+        <task:scheduled ref="tencentMaterialStatusApiTask" method="getMaterialStatus" cron="${cron.tencentMaterialStatusApiTask}"/>
+        <task:scheduled ref="tencentUploadMaterialApiTask" method="uploadMaterial" cron="${cron.tencentUploadMaterialApiTask}"/>
 		
 		<!-- valuemaker -->
         <task:scheduled ref="valueMakerUploadApiTask" method="uploadValueMakerMaterial" cron="${cron.valuemakerMaterialUploadApiTask}"/> 

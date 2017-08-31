@@ -46,9 +46,6 @@ public class LetvUploadMaterialApiTask {
 	@Value("${letv.materialUrl}")
 	private String uploadMaterialApiUrl;
 
-	@Value("${letv.isDebug}")
-	private Boolean isDebug;
-
 	@Autowired
 	private LetvTokenRequest tokenRequest;
 

@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * 广告位上传请求,对应的字段名称data,对应的是json格式
  */
-public class AdvertUploadData {
+public class TencentUploadMaterialData {
 
 	private String dsp_order_id;
 	private String targeting_url;

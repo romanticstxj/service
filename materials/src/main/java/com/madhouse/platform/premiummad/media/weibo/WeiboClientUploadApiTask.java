@@ -96,7 +96,7 @@ public class WeiboClientUploadApiTask {
 			advertiserService.updateStatusAfterUpload(advertiserIdKeys);
 		}
 
-		// 处理失败的结果，自动驳回 - 通过广告位id更新
+		// 处理失败的结果，自动驳回 - 通过广告主id更新
 		if (!rejusedAdvertisers.isEmpty()) {
 			advertiserService.updateStatusToMediaByAdvertiserId(rejusedAdvertisers);
 		}

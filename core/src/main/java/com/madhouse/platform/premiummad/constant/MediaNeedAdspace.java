@@ -7,7 +7,7 @@ public enum MediaNeedAdspace {
 	SOHUNEWS(100000, false), 
 	SOHUTV(100001, false),
 	TENCENT_NOT_OTV(100002, true),
-	TENCENT(100003, false),
+	TENCENT(100003, true),
 	DIANPING(100004, true),
 	MOJI(100005, true),
 	IQYI(100006, false),

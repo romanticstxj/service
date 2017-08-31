@@ -2,7 +2,7 @@ package com.madhouse.platform.premiummad.media.tencent.response;
 
 import java.util.List;
 
-public class RetMsg {
+public class TencentMaterailStatusRetMsg {
 
 	private String dsp_order_id;
 	private int advertiser_id;

@@ -1,6 +1,6 @@
 package com.madhouse.platform.premiummad.media.tencent.response;
 
-public class AdvertUploadReturnMessage {
+public class TencentUploadMaterialReturnMessage {
 	private String dsp_order_id;
 	private String err_code;
 	private String err_msg;

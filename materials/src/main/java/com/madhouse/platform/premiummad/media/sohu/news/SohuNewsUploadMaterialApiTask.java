@@ -5,13 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
@@ -29,6 +27,7 @@ import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.util.DateUtils;
 import com.madhouse.platform.premiummad.util.HttpUtils;
+import com.madhouse.platform.premiummad.util.MacroReplaceUtil;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
@@ -68,6 +67,24 @@ public class SohuNewsUploadMaterialApiTask {
 	
 	@Autowired
 	private IPolicyService policyService;
+	
+	/**
+	 * 宏替换替换映射
+	 */
+	private static Map<String, String> macroClickMap;
+	private static Map<String, String> macroImageMap;
+	
+	static {
+		macroClickMap = new HashMap<String, String>();
+		macroClickMap.put("${EXT1}", "%%EXT1%%");
+		macroClickMap.put("${EXT2}", "%%EXT2%%");
+		macroClickMap.put("${EXT3}", "%%EXT3%%");
+		
+		macroImageMap = new HashMap<String, String>();
+		macroImageMap.put("${EXT1}", "%%EXT1%%");
+		macroImageMap.put("${EXT2}", "%%EXT2%%");
+		macroImageMap.put("${EXT3}", "%%EXT3%%");
+	}
 	
 	/**
 	 * 上传广告物料
@@ -207,7 +224,7 @@ public class SohuNewsUploadMaterialApiTask {
 						continue;
 					}
 					
-					impUrls.add(impTrackUrlArray[i]);
+					impUrls.add(MacroReplaceUtil.macroReplaceImageUrl(macroImageMap, impTrackUrlArray[i])); // 宏替换
 					// 媒体最多支持5个
 					if (impUrls.size() == 3) {
 						break;
@@ -215,7 +232,7 @@ public class SohuNewsUploadMaterialApiTask {
 				}
 			}
 		}
-		impUrls.add(getStr(impUrl, "?", "%%DISPLAY%%")); // 宏替换
+		impUrls.add(MacroReplaceUtil.getStr(impUrl, "?", "%%DISPLAY%%")); // SSP 宏替换
 		uploadMaterialRequest.setImp(impUrls);
 
 		// 点击监测地址
@@ -225,7 +242,7 @@ public class SohuNewsUploadMaterialApiTask {
 			String[] clkTrackUrlArray = material.getClkUrls().split("\\|");
 			if (null != clkTrackUrlArray) {
 				for (int i = 0; i < clkTrackUrlArray.length; i++) {
-					clkTrackUrl.add(clkTrackUrlArray[i]);
+					clkTrackUrl.add(MacroReplaceUtil.macroReplaceImageUrl(macroClickMap, clkTrackUrlArray[i]));// 宏替换
 					// 媒体最多设置 5 个
 					if (i == 3) {
 						break;
@@ -233,7 +250,7 @@ public class SohuNewsUploadMaterialApiTask {
 				}
 			}
 		}
-		clkTrackUrl.add(this.getStr(clkUrl, "?", "%%CLICK%%"));// 宏替换
+		clkTrackUrl.add(MacroReplaceUtil.getStr(clkUrl,"?","%%CLICK%%"));// SSP 宏替换
 		uploadMaterialRequest.setClick_monitor(clkTrackUrl);
 
 		// 落地页地址
@@ -417,14 +434,5 @@ public class SohuNewsUploadMaterialApiTask {
 			return 1;
 		}
 		return 0;
-	}
-	
-	private String getStr(String oldStr, String findStr, String replaceStr) {
-		StringBuffer buffer = new StringBuffer(oldStr);
-		int num = buffer.indexOf(findStr);
-		if (num != -1) {
-			buffer.replace(num + 1, oldStr.length(), replaceStr);
-		}
-		return buffer.toString();
 	}
 }
