@@ -9,40 +9,42 @@ public class Adspace {
 	private String adspaceKey;
 	private long mediaId;
 	private String mediaName;
-	private Integer terminalType; 
-	private Integer terminalOs;
+	private int terminalType; 
+	private int terminalOs;
 	private Boolean enableHttps;
-	private Integer bidType;
-	private Integer bidFloor;
-	private Integer adType;	//广告类型
+	private int bidType;
+	private int bidFloor;
+	private int adType;	//广告类型
 	private Integer layout;	//广告形式
 	private String layoutName;
-	private Integer materialType;
+	private int materialType;
 	private String materialSize;
-	private Integer materialMaxKbyte;
+	private int materialMaxKbyte;
 	private String materialDuration;
 
-	private Integer logoType;
+	private int logoType;
 	
 	private String logoSize;
 	
-	private Integer logoMaxKbyte;
+	private int logoMaxKbyte;
 	
-	private Integer titleMaxLength;
+	private int titleMaxLength;
 	
-	private Integer descMaxLength;
+	private int descMaxLength;
 	
-	private Integer materialCount;
+	private int materialCount;
 
-	private Integer coverType;
+	private int coverType;
 	private String coverSize;
-	private Integer coverMaxKbyte;
+	private int coverMaxKbyte;
 
 	private String description;
 	
-	private Integer updateType;
+	private int updateType;
 	
-	private Integer status;
+	private int status;
+	
+	private int content;
 
 	public long getId() {
 		return id;
@@ -84,19 +86,19 @@ public class Adspace {
 		this.mediaName = mediaName;
 	}
 
-	public Integer getTerminalType() {
+	public int getTerminalType() {
 		return terminalType;
 	}
 
-	public void setTerminalType(Integer terminalType) {
+	public void setTerminalType(int terminalType) {
 		this.terminalType = terminalType;
 	}
 
-	public Integer getTerminalOs() {
+	public int getTerminalOs() {
 		return terminalOs;
 	}
 
-	public void setTerminalOs(Integer terminalOs) {
+	public void setTerminalOs(int terminalOs) {
 		this.terminalOs = terminalOs;
 	}
 	public Boolean getEnableHttps() {
@@ -107,27 +109,27 @@ public class Adspace {
         this.enableHttps = enableHttps;
     }
 
-    public Integer getBidType() {
+    public int getBidType() {
 		return bidType;
 	}
 
-	public void setBidType(Integer bidType) {
+	public void setBidType(int bidType) {
 		this.bidType = bidType;
 	}
 
-	public Integer getBidFloor() {
+	public int getBidFloor() {
 		return bidFloor;
 	}
 
-	public void setBidFloor(Integer bidFloor) {
+	public void setBidFloor(int bidFloor) {
 		this.bidFloor = bidFloor;
 	}
 
-	public Integer getAdType() {
+	public int getAdType() {
 		return adType;
 	}
 
-	public void setAdType(Integer adType) {
+	public void setAdType(int adType) {
 		this.adType = adType;
 	}
 
@@ -147,11 +149,11 @@ public class Adspace {
 		this.layoutName = layoutName;
 	}
 
-	public Integer getMaterialType() {
+	public int getMaterialType() {
 		return materialType;
 	}
 
-	public void setMaterialType(Integer materialType) {
+	public void setMaterialType(int materialType) {
 		this.materialType = materialType;
 	}
 
@@ -163,19 +165,19 @@ public class Adspace {
 		this.materialSize = materialSize;
 	}
 
-	public Integer getMaterialMaxKbyte() {
+	public int getMaterialMaxKbyte() {
 		return materialMaxKbyte;
 	}
 
-	public void setMaterialMaxKbyte(Integer materialMaxKbyte) {
+	public void setMaterialMaxKbyte(int materialMaxKbyte) {
 		this.materialMaxKbyte = materialMaxKbyte;
 	}
 
-	public Integer getLogoType() {
+	public int getLogoType() {
 		return logoType;
 	}
 
-	public void setLogoType(Integer logoType) {
+	public void setLogoType(int logoType) {
 		this.logoType = logoType;
 	}
 
@@ -187,27 +189,27 @@ public class Adspace {
 		this.logoSize = logoSize;
 	}
 
-	public Integer getLogoMaxKbyte() {
+	public int getLogoMaxKbyte() {
 		return logoMaxKbyte;
 	}
 
-	public void setLogoMaxKbyte(Integer logoMaxKbyte) {
+	public void setLogoMaxKbyte(int logoMaxKbyte) {
 		this.logoMaxKbyte = logoMaxKbyte;
 	}
 
-	public Integer getTitleMaxLength() {
+	public int getTitleMaxLength() {
 		return titleMaxLength;
 	}
 
-	public void setTitleMaxLength(Integer titleMaxLength) {
+	public void setTitleMaxLength(int titleMaxLength) {
 		this.titleMaxLength = titleMaxLength;
 	}
 
-	public Integer getDescMaxLength() {
+	public int getDescMaxLength() {
 		return descMaxLength;
 	}
 
-	public void setDescMaxLength(Integer descMaxLength) {
+	public void setDescMaxLength(int descMaxLength) {
 		this.descMaxLength = descMaxLength;
 	}
 
@@ -219,19 +221,19 @@ public class Adspace {
 		this.description = description;
 	}
 
-	public Integer getUpdateType() {
+	public int getUpdateType() {
 		return updateType;
 	}
 
-	public void setUpdateType(Integer updateType) {
+	public void setUpdateType(int updateType) {
 		this.updateType = updateType;
 	}
 
-	public Integer getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(int status) {
 		this.status = status;
 	}
 
@@ -243,19 +245,19 @@ public class Adspace {
 		this.materialDuration = materialDuration;
 	}
 
-	public Integer getMaterialCount() {
+	public int getMaterialCount() {
 		return materialCount;
 	}
 
-	public void setMaterialCount(Integer materialCount) {
+	public void setMaterialCount(int materialCount) {
 		this.materialCount = materialCount;
 	}
 
-	public Integer getCoverType() {
+	public int getCoverType() {
 		return coverType;
 	}
 
-	public void setCoverType(Integer coverType) {
+	public void setCoverType(int coverType) {
 		this.coverType = coverType;
 	}
 
@@ -267,11 +269,18 @@ public class Adspace {
 		this.coverSize = coverSize;
 	}
 
-	public Integer getCoverMaxKbyte() {
+	public int getCoverMaxKbyte() {
 		return coverMaxKbyte;
 	}
 
-	public void setCoverMaxKbyte(Integer coverMaxKbyte) {
+	public void setCoverMaxKbyte(int coverMaxKbyte) {
 		this.coverMaxKbyte = coverMaxKbyte;
 	}
+    public int getContent() {
+        return content;
+    }
+    public void setContent(int content) {
+        this.content = content;
+    }
+	
 }
