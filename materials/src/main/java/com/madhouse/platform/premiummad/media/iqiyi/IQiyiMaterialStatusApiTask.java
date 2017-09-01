@@ -16,11 +16,11 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.IQiYiConstant;
-import com.madhouse.platform.premiummad.media.model.IQiyiMaterialStatusDetailResponse;
-import com.madhouse.platform.premiummad.media.model.IQiyiMaterialStatusRequest;
-import com.madhouse.platform.premiummad.media.model.IQiyiMaterialStatusResponse;
-import com.madhouse.platform.premiummad.media.util.IQiYiHttpUtils;
+import com.madhouse.platform.premiummad.media.iqiyi.constant.IQiYiConstant;
+import com.madhouse.platform.premiummad.media.iqiyi.request.IQiyiMaterialStatusRequest;
+import com.madhouse.platform.premiummad.media.iqiyi.response.IQiyiMaterialStatusDetailResponse;
+import com.madhouse.platform.premiummad.media.iqiyi.response.IQiyiMaterialStatusResponse;
+import com.madhouse.platform.premiummad.media.iqiyi.util.IQiYiHttpUtils;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -52,15 +52,15 @@ public class IQiyiMaterialStatusApiTask {
 			return;
 		}
 
-		// 获取未审核媒体的ID列表
-		String mediaMaterialIds = "";
+		// 获取未审核媒体的key列表
+		String mediaQueryKeys = "";
 		for (Material material : unAuditMaterials) {
-			mediaMaterialIds = "," + mediaMaterialIds + material.getMediaMaterialKey();
+			mediaQueryKeys = "," + mediaQueryKeys + material.getMediaQueryKey();
 		}
 
 		// 调用请求
 		IQiyiMaterialStatusRequest iQiyiMaterialStatusRequest = new IQiyiMaterialStatusRequest();
-		iQiyiMaterialStatusRequest.setBatch(mediaMaterialIds.substring(1));
+		iQiyiMaterialStatusRequest.setBatch(mediaQueryKeys.substring(1));
 
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("batch", iQiyiMaterialStatusRequest.getBatch());
@@ -118,7 +118,7 @@ public class IQiyiMaterialStatusApiTask {
 			// COMPLETE-通过
 			if ("COMPLETE".equals(item.getStatus())) {
 				auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
-				// 爱奇艺奇谱 id，只有 status 为 COMPLETE 时才返回该项。tv_id 作为后续广告竞价的 crid 参数值
+				// 爱奇艺奇 id，只有 status 为 COMPLETE 时才返回该项。tv_id 作为后续广告竞价的 crid 参数值
 				auditItem.setMediaMaterialKey(item.getTv_id());
 				auditResults.add(auditItem);
 				continue;

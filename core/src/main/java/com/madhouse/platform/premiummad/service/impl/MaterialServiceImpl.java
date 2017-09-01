@@ -67,12 +67,15 @@ public class MaterialServiceImpl implements IMaterialService {
 			updateItem.setStatus(Byte.valueOf(item.getStatus().toString()));
 			updateItem.setUpdatedTime(new Date());
 			updateItem.setReason(item.getErrorMessage());
+			updateItem.setMediaQueryKey(item.getMediaQueryKey());
+			// 部分媒体审核成功后会生产一个新的key作为投放时候使用，此处做更新
 			updateItem.setMediaMaterialKey(item.getMediaMaterialKey());
+			updateItem.setMediaMaterialUrl(item.getMediaMaterialUrl());
 			updateItem.setMediaId(Integer.valueOf(item.getMediaId()));
 			
-			int effortRows = materialDao.updateByMediaAndMediaMaterialKey(updateItem);
+			int effortRows = materialDao.updateByMediaAndMediaQueryKey(updateItem);
 			if (effortRows != 1) {
-				LOGGER.info("素材更新失败[mediaId=" + updateItem.getMediaId() + ",mediaMaterialKey=" + updateItem.getMediaMaterialKey() + "]");
+				LOGGER.info("素材更新失败[mediaId=" + updateItem.getMediaId() + ",mediaQueryKey=" + updateItem.getMediaQueryKey() + "]");
 				continue;
 			}
 		}
@@ -105,6 +108,7 @@ public class MaterialServiceImpl implements IMaterialService {
 			updateItem.setReason(item.getErrorMessage());
 			// 部分媒体审核成功后会生产一个新的key作为投放时候使用，此处做更新
 			updateItem.setMediaMaterialKey(item.getMediaMaterialKey());
+			updateItem.setMediaMaterialUrl(item.getMediaMaterialUrl());
 			updateItem.setId(Integer.valueOf(item.getId()));
 			
 			int effortRows = materialDao.updateByPrimaryKeySelective(updateItem);
@@ -118,12 +122,12 @@ public class MaterialServiceImpl implements IMaterialService {
 	/**
 	 * 素材提交媒体后更改状态为审核中
 	 * 
-	 * @param materialIds
+	 * @param materialIdKeys <materialId, mediaMaterialKey-mediaMaterial>
 	 *            我方的广告主ID
 	 */
 	@Transactional
 	@Override
-	public void updateStatusAfterUpload(Map<Integer, String> materialIdKeys) {
+	public void updateStatusAfterUpload(Map<Integer, String[]> materialIdKeys) {
 		// 参数为空
 		if (materialIdKeys == null || materialIdKeys.isEmpty()) {
 			return;
@@ -141,10 +145,17 @@ public class MaterialServiceImpl implements IMaterialService {
 		List<Material> updatedMaterials = new ArrayList<Material>();
 		for (Material item : materials) {
 			Material updateItem = new Material();
-
+			
 			// 状态修改为审核中
 			updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10003.getValue())));
-			updateItem.setMediaMaterialKey(materialIdKeys.get(item.getId()));
+			
+			String[] mediaQueryAndMaterialKeys = materialIdKeys.get(item.getId());
+			// 查询媒体方素材状态所用key
+			updateItem.setMediaQueryKey(mediaQueryAndMaterialKeys[0]);
+			// 媒体分配的key
+			if (mediaQueryAndMaterialKeys.length > 1 && !StringUtils.isBlank(mediaQueryAndMaterialKeys[1])) {
+				updateItem.setMediaMaterialKey(item.getMediaMaterialKey());
+			}
 			updateItem.setUpdatedTime(new Date());
 			updateItem.setId(item.getId());
 

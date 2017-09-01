@@ -39,7 +39,7 @@ public interface IMaterialService {
 	 * @param materialIdKeys
 	 *            我方的素材ID
 	 */
-	void updateStatusAfterUpload(Map<Integer, String> materialIdKeys);
+	void updateStatusAfterUpload(Map<Integer, String[]> materialIdKeys);
 
 	/**
 	 * 根据媒体返回的结果更新状态-通过素材ID更新
