@@ -263,7 +263,7 @@
   
   <update id="auditAdvertiser" parameterType="string" >
       <if test="ids != null and ids.length > 0" >
-  	  	UPDATE mad_sys_advertiser SET status = #{status}
+  	  	UPDATE mad_sys_advertiser SET status = #{status}, reason = #{reason}
         WHERE id IN
 	    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
 	        #{id,jdbcType=INTEGER}

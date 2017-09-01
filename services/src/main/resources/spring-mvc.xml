@@ -28,7 +28,6 @@
 						<value>QuoteFieldNames</value>
 						<value>WriteMapNullValue</value><!--即使json中key的值为null也输出 -->
 						<value>WriteNullStringAsEmpty</value>
-						<value>WriteNullNumberAsZero</value>
 					</list>
 				</property>
 			</bean>

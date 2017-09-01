@@ -10,7 +10,7 @@ public class UserAuthControllerTest {
 	@Test
 	public void testMedia(){
 		UserAuth auth = new UserAuth();
-//		auth.setUserId(1);
+		auth.setUserId(1);
 		auth.setIsAdmin(1);
 		auth.setMediaIds(new Integer[]{1,2,3});
 		String link = "http://localhost:8080/services/userauth/media/update";
@@ -20,9 +20,9 @@ public class UserAuthControllerTest {
 	@Test
 	public void testPolicy(){
 		UserAuth auth = new UserAuth();
-		auth.setUserId(9);
-		auth.setIsAdmin(0);
-		auth.setPolicyIds(new Integer[]{1,2,3});
+		auth.setUserId(10);
+//		auth.setIsAdmin(0);
+		auth.setPolicyIds(new Integer[]{});
 		String link = "http://localhost:8080/services/userauth/policy/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(auth));
 	}

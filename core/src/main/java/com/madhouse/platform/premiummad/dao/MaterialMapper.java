@@ -127,6 +127,7 @@ public interface MaterialMapper {
 	 * 批量审核物料
 	 * @param ids
 	 * @param status
+	 * @param reason 
 	 */
-	void auditMaterial(@Param("ids") String[] ids, @Param("status") Integer status);
+	void auditMaterial(@Param("ids") String[] ids, @Param("status") Integer status, @Param("reason") String reason);
 }

@@ -107,5 +107,5 @@ public interface AdvertiserMapper {
 
 	Advertiser queryById(Integer id);
 
-	void auditAdvertiser(@Param("ids") String[] ids, @Param("status") Integer status);
+	void auditAdvertiser(@Param("ids") String[] ids, @Param("status") Integer status, @Param("reason") String reason);
 }

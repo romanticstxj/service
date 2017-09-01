@@ -278,7 +278,7 @@ public class MaterialServiceImpl implements IMaterialService {
 	}
 
 	@Override
-	public void auditMaterial(String[] ids, Integer status) {
-		materialDao.auditMaterial(ids, status);
+	public void auditMaterial(String[] ids, Integer status, String reason) {
+		materialDao.auditMaterial(ids, status, reason);
 	}
 }
