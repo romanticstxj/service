@@ -5,11 +5,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
@@ -17,11 +19,11 @@ import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.IFunadxConstant;
-import com.madhouse.platform.premiummad.media.model.FunadxMaterialRequest;
-import com.madhouse.platform.premiummad.media.model.FunadxPMRequest;
-import com.madhouse.platform.premiummad.media.model.FunadxUploadRequest;
-import com.madhouse.platform.premiummad.media.model.FunadxUploadResponse;
+import com.madhouse.platform.premiummad.media.funadx.constant.IFunadxConstant;
+import com.madhouse.platform.premiummad.media.funadx.request.FunadxMaterialRequest;
+import com.madhouse.platform.premiummad.media.funadx.request.FunadxPMRequest;
+import com.madhouse.platform.premiummad.media.funadx.request.FunadxUploadRequest;
+import com.madhouse.platform.premiummad.media.funadx.response.FunadxUploadResponse;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.DateUtils;
 import com.madhouse.platform.premiummad.util.HttpUtils;
@@ -62,7 +64,7 @@ public class FunadxUploadMaterialApiTask {
 		// 上传到媒体
 		LOGGER.info("FunadxUploadMaterialApiTask-Funadx", unSubmitMaterials.size());
 
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
 			FunadxUploadRequest uploadRequest = buildUploadRequest(material);
 			// 请求接口
@@ -78,7 +80,8 @@ public class FunadxUploadMaterialApiTask {
 				LOGGER.info("FunadxUpload api result: " + result);
 				// 返回结果result==0为接口调用成功
 				if (IFunadxConstant.RESPONSE_SUCCESS.getValue() == result) {
-					materialIdKeys.put(material.getId(), String.valueOf(material.getId()));
+					String[] mediaQueryAndMaterialKeys = {String.valueOf(material.getId())};
+					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 				} else {
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + result + " " + uploadResponse.getMessage());
 				}

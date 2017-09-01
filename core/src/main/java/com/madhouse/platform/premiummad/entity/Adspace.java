@@ -34,6 +34,8 @@ public class Adspace extends BaseEntity{
 	
 	private Integer descMaxLength;
 	
+	private Integer contentMaxLength; //正文最大长度
+	
 	private Integer coverType;
 	
 	private String coverSize;
@@ -284,5 +286,13 @@ public class Adspace extends BaseEntity{
 
 	public void setMediaStatus(Integer mediaStatus) {
 		this.mediaStatus = mediaStatus;
+	}
+
+	public Integer getContentMaxLength() {
+		return contentMaxLength;
+	}
+
+	public void setContentMaxLength(Integer contentMaxLength) {
+		this.contentMaxLength = contentMaxLength;
 	}
 }

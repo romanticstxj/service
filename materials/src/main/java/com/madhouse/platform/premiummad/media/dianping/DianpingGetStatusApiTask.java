@@ -17,8 +17,8 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.model.DianpingGetStatusResponse;
-import com.madhouse.platform.premiummad.media.util.DianpingHttpUtil;
+import com.madhouse.platform.premiummad.media.dianping.response.DianpingGetStatusResponse;
+import com.madhouse.platform.premiummad.media.dianping.util.DianpingHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -56,7 +56,7 @@ public class DianpingGetStatusApiTask {
 		// 获取媒体方的素材ID
 		List<String> creativeIdList = new ArrayList<String>();
 		for (Material material : unauditMaterials) {
-			creativeIdList.add(material.getMediaMaterialKey());
+			creativeIdList.add(material.getMediaQueryKey());
 		}
 		LOGGER.info("美团点评获取创意审核状态信息的请求创意ID列表:{}", creativeIdList.toString());
 		
@@ -75,7 +75,7 @@ public class DianpingGetStatusApiTask {
     		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
     		for (DianpingGetStatusResponse.DataBean.ResultListBean item : list) {
     			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-    			auditItem.setMediaMaterialKey(String.valueOf(item.getCreativeId()));
+    			auditItem.setMediaQueryKey(String.valueOf(item.getCreativeId()));
     			auditItem.setMediaId(String.valueOf(MediaMapping.DIANPING.getValue()));
 				
     			// 1-通过

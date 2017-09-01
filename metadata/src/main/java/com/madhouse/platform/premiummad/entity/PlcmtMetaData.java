@@ -126,6 +126,7 @@ public class PlcmtMetaData {
         private Video video;
         private int title;
         private int desc;
+        private int content;
 
         public Image getIcon() {
             return icon;
@@ -174,6 +175,15 @@ public class PlcmtMetaData {
         public void setDesc(int desc) {
             this.desc = desc;
         }
+
+        public int getContent() {
+            return content;
+        }
+
+        public void setContent(int content) {
+            this.content = content;
+        }
+        
     }
 
     public long getId() {
