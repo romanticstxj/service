@@ -64,6 +64,8 @@ public class AdspaceDto implements Serializable{
 	private Integer titleMaxLength;
 	
 	private Integer descMaxLength;
+	
+	private Integer contentMaxLength; //正文最大长度
 
 	private String coverType;
 	
@@ -317,6 +319,14 @@ public class AdspaceDto implements Serializable{
 		this.mediaStatus = mediaStatus;
 	}
 
+	public Integer getContentMaxLength() {
+		return contentMaxLength;
+	}
+
+	public void setContentMaxLength(Integer contentMaxLength) {
+		this.contentMaxLength = contentMaxLength;
+	}
+
 	@Override
 	public String toString() {
 		return "AdspaceDto [id=" + id + ", status=" + status + ", name=" + name + ", adspaceKey=" + adspaceKey
@@ -327,8 +337,8 @@ public class AdspaceDto implements Serializable{
 				+ ", materialMaxKbyte=" + materialMaxKbyte + ", materialCount=" + materialCount + ", materialDuration="
 				+ materialDuration + ", logoType=" + logoType + ", logoSize=" + logoSize + ", logoMaxKbyte="
 				+ logoMaxKbyte + ", titleMaxLength=" + titleMaxLength + ", descMaxLength=" + descMaxLength
-				+ ", coverType=" + coverType + ", coverSize=" + coverSize + ", coverMaxKbyte=" + coverMaxKbyte
-				+ ", description=" + description + ", createdTime=" + createdTime + "]";
+				+ ", contentMaxLength=" + contentMaxLength + ", coverType=" + coverType + ", coverSize=" + coverSize
+				+ ", coverMaxKbyte=" + coverMaxKbyte + ", description=" + description + ", createdTime=" + createdTime
+				+ "]";
 	}
-
 }

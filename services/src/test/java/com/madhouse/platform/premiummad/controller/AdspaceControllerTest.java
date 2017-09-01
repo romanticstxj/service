@@ -18,7 +18,7 @@ public class AdspaceControllerTest {
 	@Test
 	public void add(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-		adspaceDto.setName("adspace57335");
+		adspaceDto.setName("adspace573");
 		adspaceDto.setMediaId(100004);
 		adspaceDto.setTerminalType(1);
 		adspaceDto.setTerminalOs(1);
@@ -39,6 +39,7 @@ public class AdspaceControllerTest {
 		adspaceDto.setCoverSize("36*72");
 		adspaceDto.setCoverMaxKbyte(100);
 		adspaceDto.setDescription("desc");
+		adspaceDto.setContentMaxLength(100);
 //		String link = "http://172.16.25.48:8080/services/adspace/create";
 		String link = "http://localhost:8080/services/adspace/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(adspaceDto));
@@ -107,7 +108,7 @@ public class AdspaceControllerTest {
 	@Test
 	public void update(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-		adspaceDto.setId(200009);
+		adspaceDto.setId(200073);
 		adspaceDto.setName("adspace43");
 		adspaceDto.setMediaId(100001);
 		adspaceDto.setTerminalType(1);
@@ -121,10 +122,11 @@ public class AdspaceControllerTest {
 		adspaceDto.setMaterialSize("");
 		adspaceDto.setMaterialMaxKbyte(300);
 		adspaceDto.setDescription("desc");
+		adspaceDto.setContentMaxLength(200);
 //		String link = "http://172.16.25.48:8080/services/adspace/update";
 		String link = "http://localhost:8080/services/adspace/update";
-		String content = "{\"adType\":3,\"bidFloor\":21,\"bidType\":1,\"description\":\"desc\",\"id\":200009,\"layout\":102,\"materialMaxKbyte\":null,\"materialSize\":\"\",\"materialType\":\"1,2,4\",\"mediaId\":100001,\"name\":\"adspace43\",\"supportHttps\":1,\"terminalOs\":1,\"terminalType\":1}";
-		HttpUtilTest.httpPost(link,content);
+//		String content = "{\"adType\":3,\"bidFloor\":21,\"bidType\":1,\"description\":\"desc\",\"id\":200009,\"layout\":102,\"materialMaxKbyte\":null,\"materialSize\":\"\",\"materialType\":\"1,2,4\",\"mediaId\":100001,\"name\":\"adspace43\",\"supportHttps\":1,\"terminalOs\":1,\"terminalType\":1}";
+		HttpUtilTest.httpPost(link,JSON.toJSONString(adspaceDto));
 	}
 	
 	@Test
