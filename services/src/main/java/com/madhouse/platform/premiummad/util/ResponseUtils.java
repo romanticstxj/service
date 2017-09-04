@@ -1,5 +1,6 @@
 package com.madhouse.platform.premiummad.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public class ResponseUtils {
 		int size = data != null ? data.size() : 0;
 		logger.debug("{" + sc.getValue() + " : " + sc.getDescrip() + "}" + ", with data(" + size + ")");
 
-		responseDto.setData(data);
+		responseDto.setData((data == null) ? new ArrayList<T>() : data);
 		responseDto.setSize(size);
 		responseDto.setCode(sc.getValue());
 		responseDto.setMessage(sc.getDescrip() + (!StringUtils.isEmpty(message) ? (": " + message) : ""));
