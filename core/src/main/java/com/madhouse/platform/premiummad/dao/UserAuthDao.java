@@ -24,4 +24,8 @@ public interface UserAuthDao {
 	void addUserMediaAuth(UserAuth userAuth);
 
 	void removeUserMediaAuth(Integer userId);
+
+	void removeUserPolicyAuth(Integer userId);
+
+	void addUserPolicyAuth(UserAuth userAuth);
 }

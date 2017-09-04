@@ -21,10 +21,10 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		
 		String userId = request.getHeader(SystemConstant.Request.USERID);
-		String xForm = request.getHeader(SystemConstant.Request.XFROM);
+		String xFrom = request.getHeader(SystemConstant.Request.XFROM);
 		String contentType = request.getHeader(SystemConstant.Request.CONTENT_TYPE);
-		logger.debug("UserId:"+userId + ", xform:" + xForm + ", contentType:" + contentType);
-		if(userId != null){ //userId非空的情况下判断是否数字
+		logger.debug("UserId:"+userId + ", xform:" + xFrom + ", contentType:" + contentType);
+		if(!StringUtils.isEmpty(userId)){ //userId非空的情况下判断是否数字
 			if(!StringUtils.isNumeric(userId)){
 				throw new BusinessException(StatusCode.SC31007);
 			}

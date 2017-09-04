@@ -16,15 +16,16 @@
     <result column="clks" jdbcType="BIGINT" property="clks" />
     <result column="vimps" jdbcType="BIGINT" property="vimps" />
     <result column="vclks" jdbcType="BIGINT" property="vclks" />
-    <result column="cost" jdbcType="BIGINT" property="cost" />
+    <result column="cost" jdbcType="DOUBLE" property="cost" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
   </resultMap>
   
   <sql id="Base_Column_List">
-    ${alias}.id, ${alias}.dsp_id, SUM(${alias}.reqs), SUM(${alias}.bids), SUM(${alias}.timeouts), 
-    SUM(${alias}.errs), SUM(${alias}.wins), SUM(${alias}.imps), SUM(${alias}.clks), SUM(${alias}.vimps), 
-    SUM(${alias}.vclks), SUM(${alias}.cost), ${alias}.created_time, ${alias}.updated_time
+    ${alias}.id, ${alias}.dsp_id, SUM(${alias}.reqs) reqs, SUM(${alias}.bids) bids, SUM(${alias}.timeouts) timeouts, 
+    SUM(${alias}.errs) errs, SUM(${alias}.wins) wins, SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, 
+    SUM(${alias}.vimps) vimps, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost,
+    ${alias}.created_time, ${alias}.updated_time
   </sql>
   
   <sql id="mediaAuthCondition">

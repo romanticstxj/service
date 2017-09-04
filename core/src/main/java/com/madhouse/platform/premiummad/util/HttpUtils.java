@@ -1,13 +1,22 @@
 package com.madhouse.platform.premiummad.util;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.Consts;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -33,6 +42,8 @@ public class HttpUtils {
 	public static final String RESPONSE_BODY_KEY = "responseBody";
 
 	private static CloseableHttpClient httpClient;
+	
+	private static HttpClient httpClient1 = new HttpClient();
 
 	private static RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(10000)
 			.setConnectionRequestTimeout(10000).build();
@@ -137,5 +148,80 @@ public class HttpUtils {
 		}
 		return result;
 	}
+	
+	/**
+	 * 下载文件
+	 * 
+	 * @param url
+	 * @param localPath
+	 * @return
+	 */
+	public static String downloadFile(String url, String localPath) {
+		GetMethod getMethod = null;
 
+		try {
+			getMethod = new GetMethod(url);
+
+			if (httpClient1.executeMethod(getMethod) == HttpStatus.SC_OK) {
+				String filePath = localPath;
+				if (!filePath.endsWith("\\")) {
+					filePath += "\\";
+				}
+
+				String fileName = url;
+				int pos = url.lastIndexOf("/");
+				if (pos > 0) {
+					fileName = url.substring(pos + 1);
+				}
+
+				filePath += fileName;
+				File file = new File(filePath);
+				OutputStream outputStream = new FileOutputStream(file);
+				InputStream inputStream = getMethod.getResponseBodyAsStream();
+				System.err.println(readBytes3(inputStream).length);
+				int len = 0;
+				byte[] buffer = new byte[4096];
+				while ((len = inputStream.read(buffer)) > 0) {
+					outputStream.write(buffer, 0, len);
+				}
+
+				inputStream.close();
+				outputStream.flush();
+				outputStream.close();
+
+				return filePath;
+			}
+		} catch (Exception ex) {
+			System.err.println(ex.toString());
+		} finally {
+			if (getMethod != null) {
+				getMethod.releaseConnection();
+			}
+		}
+
+		return null;
+	}
+	
+	public static byte[] readBytes3(InputStream in) throws IOException {  
+        BufferedInputStream bufin = new BufferedInputStream(in);  
+        int buffSize = 1024;  
+        ByteArrayOutputStream out = new ByteArrayOutputStream(buffSize);  
+  
+        System.out.println("Available bytes:" + in.available());  
+  
+        byte[] temp = new byte[buffSize];  
+        int size = 0;  
+        while ((size = bufin.read(temp)) != -1) {  
+            out.write(temp, 0, size);  
+        }  
+        bufin.close();  
+  
+        byte[] content = out.toByteArray();  
+        System.out.println("content bytes:" + content.length);  
+        return content;  
+    }  
+	
+	public static void main(String[] args) {
+		downloadFile("http://advbeta.madserving.com/material/bc1aa4fa9fb49acfb3be977d834b5190_1478593496_476350936.mp4 ", "D:\\");
+	}
 }

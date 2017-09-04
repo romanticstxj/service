@@ -1,0 +1,22 @@
+package com.madhouse.platform.premiummad.media.funadx.response;
+
+public class FunadxUploadResponse {
+	private Integer result;
+	private Object message;
+
+	public Integer getResult() {
+		return result;
+	}
+
+	public void setResult(Integer result) {
+		this.result = result;
+	}
+
+	public Object getMessage() {
+		return message;
+	}
+
+	public void setMessage(Object message) {
+		this.message = message;
+	}
+}

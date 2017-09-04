@@ -24,6 +24,7 @@
         <result property="logoMaxKbyte" column="logo_max_kbyte" jdbcType="INTEGER" />
         <result property="titleMaxLength" column="title_max_length" jdbcType="INTEGER" />
         <result property="descMaxLength" column="desc_max_length" jdbcType="INTEGER" />
+        <result property="contentMaxLength" column="content_max_length" jdbcType="INTEGER" />
         <result property="coverType" column="cover_type" jdbcType="INTEGER" />
         <result property="coverSize" column="cover_size" jdbcType="VARCHAR" />
         <result property="coverMaxKbyte" column="cover_max_kbyte" jdbcType="INTEGER" />
@@ -72,7 +73,7 @@
     <sql id="baseColumns">
 		${alias}.`id`,${alias}.`name`,${alias}.`adspace_key`,${alias}.`media_id`,${alias}.`terminal_type`,${alias}.`terminal_os`,${alias}.`support_https`,
 		${alias}.`bid_type`,${alias}.`bid_floor`,${alias}.`adtype`,${alias}.`layout`,${alias}.`material_type`,${alias}.`material_size`,${alias}.`material_max_kbyte`,
-		${alias}.`logo_type`,${alias}.`logo_size`,${alias}.`logo_max_kbyte`,${alias}.`title_max_length`,${alias}.`desc_max_length`,${alias}.`material_count`,
+		${alias}.`logo_type`,${alias}.`logo_size`,${alias}.`logo_max_kbyte`,${alias}.`title_max_length`,${alias}.`desc_max_length`,${alias}.`content_max_length`,${alias}.`material_count`,
 		${alias}.`cover_type`,${alias}.`cover_size`,${alias}.`cover_max_kbyte`,${alias}.`material_duration`,${alias}.`status`,${alias}.`description`,${alias}.`created_user`,
 		${alias}.`created_time`,${alias}.`updated_user`,${alias}.`updated_time`
 	</sql>
@@ -90,7 +91,7 @@
 		SELECT 
 		<include refid="baseColumns">
             <property name="alias" value="a" />
-        </include>, m.name mediaName, l.name layoutName
+        </include>, m.name mediaName, m.status mediaStatus, l.name layoutName
         FROM mad_sys_adspace a 
         LEFT JOIN mad_sys_media m ON m.id = a.media_id
         LEFT JOIN mad_dict_layout l ON a.layout = l.code AND a.adtype = l.ad_type AND a.terminal_type = l.terminal_type
@@ -132,6 +133,7 @@
               <if test="logoMaxKbyte != null">logo_max_kbyte,</if>
               <if test="titleMaxLength != null">title_max_length,</if>
               <if test="descMaxLength != null">desc_max_length,</if>
+              <if test="contentMaxLength != null">content_max_length,</if>
               <if test="materialCount != null">material_count,</if>
               <if test="coverType != null">cover_type,</if>
               <if test="coverSize != null">cover_size,</if>
@@ -164,6 +166,7 @@
               <if test="logoMaxKbyte != null">#{logoMaxKbyte},</if>
               <if test="titleMaxLength != null">#{titleMaxLength},</if>
               <if test="descMaxLength != null">#{descMaxLength},</if>
+              <if test="contentMaxLength != null">#{contentMaxLength},</if>
               <if test="materialCount != null">#{materialCount},</if>
               <if test="coverType != null">#{coverType},</if>
               <if test="coverSize != null">#{coverSize},</if>
@@ -179,37 +182,36 @@
     </insert>
     
     <update id="update" parameterType="com.madhouse.platform.premiummad.entity.Adspace">
-        UPDATE mad_sys_adspace
-        <set>
-              <if test="name != null">name = #{name},</if>
-              <if test="mediaId != null">media_id = #{mediaId},</if>
-              <if test="terminalType != null">terminal_type = #{terminalType},</if>
-              <if test="terminalOs != null">terminal_os = #{terminalOs},</if>
-              <if test="supportHttps != null">support_https = #{supportHttps},</if>
-              <if test="bidType != null">bid_type = #{bidType},</if>
-              <if test="bidFloor != null">bid_floor = #{bidFloor},</if>
-              <if test="adType != null">adtype = #{adType},</if>
-              <if test="layout != null">layout = #{layout},</if>
-              <if test="materialType != null">material_type = #{materialType},</if>
-              <if test="materialSize != null">material_size = #{materialSize},</if>
-              <if test="materialMaxKbyte != null">material_max_kbyte = #{materialMaxKbyte},</if>
-              <if test="logoType != null">logo_type = #{logoType},</if>
-              <if test="logoSize != null">logo_size = #{logoSize},</if>
-              <if test="logoMaxKbyte != null">logo_max_kbyte = #{logoMaxKbyte},</if>
-              <if test="titleMaxLength != null">title_max_length = #{titleMaxLength},</if>
-              <if test="descMaxLength != null">desc_max_length = #{descMaxLength},</if>
-              <if test="materialCount != null">material_count = #{materialCount},</if>
-              <if test="coverType != null">cover_type = #{coverType},</if>
-              <if test="coverSize != null">cover_size = #{coverSize},</if>
-              <if test="coverMaxKbyte != null">cover_max_kbyte = #{coverMaxKbyte},</if>
-              <if test="materialDuration != null">material_duration = #{materialDuration},</if>
-              <if test="description != null">description = #{description},</if>
-              <if test="createdUser != null">created_user = #{createdUser},</if>
-              <if test="updatedUser != null">updated_user = #{updatedUser},</if>
-              <if test="createdTime != null">created_time = #{createdTime},</if>
-              <if test="updatedTime != null">updated_time = #{updatedTime},</if>
-        </set>
-        WHERE id = #{id}
+        update mad_sys_adspace
+	    set name = #{name,jdbcType=VARCHAR},
+	      media_id = #{mediaId,jdbcType=INTEGER},
+	      terminal_type = #{terminalType,jdbcType=TINYINT},
+	      terminal_os = #{terminalOs,jdbcType=TINYINT},
+	      support_https = #{supportHttps,jdbcType=BIT},
+	      bid_type = #{bidType,jdbcType=TINYINT},
+	      bid_floor = #{bidFloor,jdbcType=INTEGER},
+	      adtype = #{adType,jdbcType=TINYINT},
+	      layout = #{layout,jdbcType=SMALLINT},
+	      material_type = #{materialType,jdbcType=SMALLINT},
+	      material_size = #{materialSize,jdbcType=VARCHAR},
+	      material_max_kbyte = #{materialMaxKbyte,jdbcType=SMALLINT},
+	      material_count = #{materialCount,jdbcType=TINYINT},
+	      material_duration = #{materialDuration,jdbcType=VARCHAR},
+	      logo_type = #{logoType,jdbcType=SMALLINT},
+	      logo_size = #{logoSize,jdbcType=VARCHAR},
+	      logo_max_kbyte = #{logoMaxKbyte,jdbcType=SMALLINT},
+	      cover_type = #{coverType,jdbcType=SMALLINT},
+	      cover_size = #{coverSize,jdbcType=VARCHAR},
+	      cover_max_kbyte = #{coverMaxKbyte,jdbcType=INTEGER},
+	      title_max_length = #{titleMaxLength,jdbcType=SMALLINT},
+	      desc_max_length = #{descMaxLength,jdbcType=SMALLINT},
+	      content_max_length = #{contentMaxLength,jdbcType=SMALLINT},
+	      description = #{description,jdbcType=VARCHAR},
+	      created_user = #{createdUser,jdbcType=INTEGER},
+	      created_time = #{createdTime,jdbcType=TIMESTAMP},
+	      updated_user = #{updatedUser,jdbcType=INTEGER},
+	      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+	    where id = #{id,jdbcType=INTEGER}
     </update>
     
     <update id="updateAdspaceKey" parameterType="com.madhouse.platform.premiummad.entity.Adspace">

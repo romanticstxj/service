@@ -18,14 +18,14 @@
     <result column="clks" property="clks" jdbcType="BIGINT" />
     <result column="vimps" property="vimps" jdbcType="BIGINT" />
     <result column="vclks" property="vclks" jdbcType="BIGINT" />
-    <result column="income" property="income" jdbcType="BIGINT" />
+    <result column="income" property="income" jdbcType="DOUBLE" />
     <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
     <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ${alias}.id, ${alias}.media_id, SUM(${alias}.reqs), SUM(${alias}.bids), SUM(${alias}.errs), SUM(${alias}.imps), 
-    SUM(${alias}.clks), SUM(${alias}.vimps), SUM(${alias}.vclks), SUM(${alias}.income), 
-    ${alias}.created_time, ${alias}.updated_time
+    ${alias}.id, ${alias}.media_id, SUM(${alias}.reqs) reqs, SUM(${alias}.bids) bids, SUM(${alias}.errs) errs, 
+    SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, SUM(${alias}.vimps) vimps, SUM(${alias}.vclks) vclks, 
+    CAST(SUM(${alias}.income)/100000 as DECIMAL(15,2)) income, ${alias}.created_time, ${alias}.updated_time
   </sql>
   
   <sql id="mediaAuthCondition">

@@ -16,10 +16,10 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.model.DianpingCreativeInfoRequest;
-import com.madhouse.platform.premiummad.media.model.DianpingUploadCreativeRequest;
-import com.madhouse.platform.premiummad.media.model.DianpingUploadCreativeResponse;
-import com.madhouse.platform.premiummad.media.util.DianpingHttpUtil;
+import com.madhouse.platform.premiummad.media.dianping.request.DianpingCreativeInfoRequest;
+import com.madhouse.platform.premiummad.media.dianping.request.DianpingUploadCreativeRequest;
+import com.madhouse.platform.premiummad.media.dianping.response.DianpingUploadCreativeResponse;
+import com.madhouse.platform.premiummad.media.dianping.util.DianpingHttpUtil;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -84,7 +84,7 @@ public class DianpingMaterialUploadApiTask {
 		// 上传到媒体
 		LOGGER.info("DianpingMaterialUploadApiTask-Dianping", unSubmitMaterials.size());
 
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
 			Map<String, String> paramMap = buildMaterialRequest(material);
 			String brandType = "001";// TODO
@@ -94,7 +94,8 @@ public class DianpingMaterialUploadApiTask {
 				// 0：成功
 				if (dianpingGetStatusResponse.getRet() == 0) {
 					LOGGER.info("DianpingUploadMaterial--SUCCESS");
-					materialIdKeys.put(material.getId(), dianpingGetStatusResponse.getData().getCreativeId());
+					String[] mediaQueryAndMaterialKeys = {dianpingGetStatusResponse.getData().getCreativeId(), dianpingGetStatusResponse.getData().getCreativeId()};
+					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 				} else {
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + dianpingGetStatusResponse.getRet() + " " + dianpingGetStatusResponse.getMsg());
 				}

@@ -63,8 +63,9 @@ public class MaterialController {
 		MaterialAuditRule.validateDto(dto);
 		String idsStr = dto.getIds();
 		Integer status = dto.getStatus();
+		String reason = dto.getReason();
 		String[] ids = StringUtils.splitToStringArray(idsStr);
-		materialService.auditMaterial(ids, status);
+		materialService.auditMaterial(ids, status, reason);
         return ResponseUtils.response(StatusCode.SC20000, null);
     }
 }

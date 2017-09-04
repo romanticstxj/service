@@ -9,6 +9,7 @@ public class Adspace extends BaseEntity{
 	private String adspaceKey;
 	private Integer mediaId;
 	private String mediaName;
+	private Integer mediaStatus;
 	private Integer terminalType; 
 	private Integer terminalOs;
 	private Integer supportHttps;
@@ -32,6 +33,8 @@ public class Adspace extends BaseEntity{
 	private Integer titleMaxLength;
 	
 	private Integer descMaxLength;
+	
+	private Integer contentMaxLength; //正文最大长度
 	
 	private Integer coverType;
 	
@@ -275,5 +278,21 @@ public class Adspace extends BaseEntity{
 
 	public void setCoverMaxKbyte(Integer coverMaxKbyte) {
 		this.coverMaxKbyte = coverMaxKbyte;
+	}
+
+	public Integer getMediaStatus() {
+		return mediaStatus;
+	}
+
+	public void setMediaStatus(Integer mediaStatus) {
+		this.mediaStatus = mediaStatus;
+	}
+
+	public Integer getContentMaxLength() {
+		return contentMaxLength;
+	}
+
+	public void setContentMaxLength(Integer contentMaxLength) {
+		this.contentMaxLength = contentMaxLength;
 	}
 }

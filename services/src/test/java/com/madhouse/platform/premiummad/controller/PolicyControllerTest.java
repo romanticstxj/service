@@ -90,7 +90,7 @@ public class PolicyControllerTest {
 	@Test
 	public void updateStatus() throws ParseException{
 		PolicyDto policyDto = new PolicyDto();
-		policyDto.setId(500015);
+		policyDto.setId(5000199);
 		policyDto.setType(2);
 		policyDto.setStatus((byte) 0); 
 		policyDto.setLocationTargeting("333");

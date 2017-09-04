@@ -15,6 +15,7 @@ public interface SystemConstant {
 	
 	interface Request{
 		String XFROM = "X-From";
+		String XFROM_DEFAULT_VALUE = "exchange.prd.onemad.com";
 	    String USERID = "X-User-Id";
 	    String CONTENT_TYPE = "Content-Type";
 	}
@@ -86,8 +87,9 @@ public interface SystemConstant {
 		//物料审核状态
 		int AUDIT_PASS = 2; //审核通过
 		int AUDIT_FAIL = -1; //审核未通过
-		int TO_BE_AUDIT = 0; //待审核
-		int IN_AUDIT = 1; //审核中（后端状态）
-		int TO_BE_SUBMIT = 1; //待提交给媒体审核（前端状态）
+		int TO_BE_AUDIT_BE = 0; //待审核(后端)
+		int TO_BE_AUDIT_FE = 1; //待审核(前端)
+		int IN_AUDIT = 1; //审核中(后端)
+		int TO_BE_SUBMIT = 0; //待提交(前端)
 	}
 }

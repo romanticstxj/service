@@ -14,9 +14,9 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.IValueMakerConstant;
-import com.madhouse.platform.premiummad.media.model.ValueMakerMaterialStatusDetailResponse;
-import com.madhouse.platform.premiummad.media.util.ValueMakerHttpUtil;
+import com.madhouse.platform.premiummad.media.valuemaker.constant.ValueMakerConstant;
+import com.madhouse.platform.premiummad.media.valuemaker.response.ValueMakerMaterialStatusDetailResponse;
+import com.madhouse.platform.premiummad.media.valuemaker.util.ValueMakerHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 
@@ -51,7 +51,7 @@ public class ValueMakerStatusApiTask {
 
 		// 向媒体获取审核状态
 		for (Material item : unauditMaterials) {
-			String result = valueMakerHttpUtil.get(getMaterialStatusUrl, item.getMediaMaterialKey());
+			String result = valueMakerHttpUtil.get(getMaterialStatusUrl, item.getMediaQueryKey());
 			LOGGER.info("ValueMakerMaterialStatus:getResult=" + result);
 			ValueMakerMaterialStatusDetailResponse responseJson = JSON.parseObject(result, ValueMakerMaterialStatusDetailResponse.class);
 			String id = responseJson.getId();
@@ -59,14 +59,14 @@ public class ValueMakerStatusApiTask {
 			if (id != null && status != 0 && isCorrectreturn(status)) {
 				List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 				MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-				auditItem.setMediaMaterialKey(String.valueOf(id));
+				auditItem.setMediaQueryKey(String.valueOf(id));
 				auditItem.setMediaId(String.valueOf(MediaMapping.VALUEMAKER.getValue()));
-				if (status == IValueMakerConstant.M_STATUS_UNAUDITED.getValue()) {// 待审核
-					LOGGER.info("ValueMakerMaterialStatus--materialId=" + item.getId() + "|创意id=" + item.getMediaMaterialKey() + "|status=" + status);
-				} else if (status == IValueMakerConstant.M_STATUS_APPROVED.getValue()) {// 审核通过}
+				if (status == ValueMakerConstant.M_STATUS_UNAUDITED.getValue()) {// 待审核
+					LOGGER.info("ValueMakerMaterialStatus--materialId=" + item.getId() + "|创意id=" + item.getMediaQueryKey() + "|status=" + status);
+				} else if (status == ValueMakerConstant.M_STATUS_APPROVED.getValue()) {// 审核通过}
 					auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
 					auditResults.add(auditItem);
-				} else if (status == IValueMakerConstant.M_STATUS_REFUSED.getValue()) {// 审核未通过
+				} else if (status == ValueMakerConstant.M_STATUS_REFUSED.getValue()) {// 审核未通过
 					auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
 					// 驳回原因接口不提供，媒体方确认 当前只能查到审核不通过，具体原因需要由运营单独提供
 					auditItem.setErrorMessage("");

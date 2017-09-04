@@ -15,7 +15,8 @@ public enum MediaMapping {
 	MOMO(100008, "陌陌"),
 	TOUTIAO(100009, "今日头条"),
 	VALUEMAKER(100010, "万流客"),
-	FUNADX(100011, "风行");
+	FUNADX(100011, "风行"),
+	WEIBO(100012, "新浪微博");
 
 	int value;
 	String descrip;
