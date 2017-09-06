@@ -501,7 +501,7 @@
     SELECT <include refid="materialBaseColumns">
     	<property name="alias" value="m" />
     </include>, a.advertiser_name advertiserName, me.name mediaName, 
-    me.material_audit_mode materialAuditMode, d.name dspName, m.layout/100 materialType
+    me.material_audit_mode materialAuditMode, d.name dspName, m.layout/100 materialLayout
     FROM mad_sys_material m
     LEFT JOIN mad_sys_advertiser a ON m.advertiser_key = a.advertiser_key
     LEFT JOIN mad_sys_media me ON m.media_id = me.id 
