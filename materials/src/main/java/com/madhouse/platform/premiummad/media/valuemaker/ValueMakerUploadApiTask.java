@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
+import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
@@ -43,15 +44,6 @@ public class ValueMakerUploadApiTask {
 	
 	@Value("${valuemaker.vam}")
 	private String vam;
-
-	@Value("${mh_valuemaker_ad_type_1}")
-	private String mh_valuemaker_ad_type_1;
-	@Value("${mh_valuemaker_ad_type_2}")
-	private String mh_valuemaker_ad_type_2;
-	@Value("${mh_valuemaker_ad_type_3}")
-	private String mh_valuemaker_ad_type_3;
-	@Value("${mh_valuemaker_ad_type_4}")
-	private String mh_valuemaker_ad_type_4;
 
 	@Autowired
 	private ValueMakerHttpUtil valueMakerHttpUtil;
@@ -185,13 +177,20 @@ public class ValueMakerUploadApiTask {
 			if (adMaterialArray != null) {
 				for (int i = 0; i < adMaterialArray.length; i++) {
 					urls.add(adMaterialArray[i]);
+					// 目前只支持一个素材
+					if (urls.size() == 1) {
+						break;
+					}
 				}
 			}
 		}
 		request.setPic_urls(urls);
 
+		// 媒体广告形式 
+		request.setAdtype(getAdType(material.getLayout().intValue()));
+				
 		// 只有信息流需要标题和内容
-		if (needTitle(String.valueOf(material.getAdspaceId()))) {
+		if (needTitle(request.getAdtype())) {
 			request.setTitle(material.getTitle());
 			request.setText(material.getDescription());
 		}
@@ -208,8 +207,6 @@ public class ValueMakerUploadApiTask {
 		material.setMediaQueryKey(id);
 		request.setId(id);
 
-		// 1-Banner广告，2-开屏广告，3-插屏广告，4-信息流广告
-		request.setAdtype(getAdType(String.valueOf(material.getAdspaceId())));
 		return "";
 	}
 	
@@ -218,29 +215,30 @@ public class ValueMakerUploadApiTask {
 	 * 
 	 * @return
 	 */
-	private boolean needTitle(String adspaceId) {
+	private boolean needTitle(int addType) {
 		// 只有信息流需要提供标题文字
-		if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_4) != null) {
+		if (addType == ValueMakerConstant.VALUEMAKER_AD_TYPE_INFORMATIONFLOW.getValue()) {
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * 根据广告位ID获取广告类型
+	 * 根据广告形式获取广告类型
+	 * 1-Banner广告，2-开屏广告，3-插屏广告，4-信息流广告
 	 * 
-	 * @param adspaceId
+	 * @param layout
 	 * @return
 	 */
-	private int getAdType(String adspaceId) {
+	private int getAdType(int layout) {
 		int adtype = 0;
-		if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_1) != null) {
+		if (Layout.LO10001.getValue() == layout) { //横幅
 			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_BANNER.getValue();
-		} else if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_2) != null) {
+		} else if (Layout.LO10005.getValue() == layout) { //开屏
 			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_OPENSCREEN.getValue();
-		} else if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_3) != null) {
+		} else if (Layout.LO10003.getValue() == layout) { //插屏
 			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_TABLEPLAQUE.getValue();
-		} else if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_4) != null) {
+		} else if (Layout.LO30001.getValue() == layout) { //图文信息流（只支持一张图片）
 			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_INFORMATIONFLOW.getValue();
 		}
 		return adtype;
@@ -290,29 +288,5 @@ public class ValueMakerUploadApiTask {
 		} else {
 			return "";
 		}
-	}
-
-	/**
-	 * 判断广告位类型。
-	 * 
-	 * @param materialSpaceid
-	 * @param mh_valuemaker_ad_type
-	 *            各类型id集合
-	 * @return
-	 */
-	private String AnalyzingType(String materialSpaceid, String mh_valuemaker_ad_type) {
-		if (!StringUtils.isEmpty(materialSpaceid) && !StringUtils.isEmpty(mh_valuemaker_ad_type)) {
-			String[] ids = mh_valuemaker_ad_type.trim().split(",");
-			if (ids != null && ids.length > 0) {
-				for (String id : ids) {
-					if (id.equals(materialSpaceid)) {
-						return ids[0].trim();
-					}
-				}
-			} else {
-				return null;
-			}
-		}
-		return null;
 	}
 }

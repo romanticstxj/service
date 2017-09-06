@@ -208,6 +208,7 @@ public class MaterialRule extends BaseRule {
 		material.setDealId(entity.getDealId() != null ? Integer.valueOf(entity.getDealId()) : 0);
 		material.setDeliveryType(Byte.valueOf(entity.getDeliveryType().toString()));
 		material.setDescription(entity.getDesc());
+		material.setContent(entity.getContent());
 		material.setDuration(entity.getDuration() != null ? entity.getDuration() : 0);
 		material.setEndDate(entity.getEndDate());
 		material.setIcon(entity.getIcon());

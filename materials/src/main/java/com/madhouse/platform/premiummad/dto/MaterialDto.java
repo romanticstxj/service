@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.dto;
 
 import java.io.Serializable;
 import java.util.List;
+
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
 public class MaterialDto implements Serializable {
@@ -108,6 +109,11 @@ public class MaterialDto implements Serializable {
 	 * 视频信息流广告封面URL
 	 */
 	private String cover;
+	
+	/**
+	 * 信息流广告正文
+	 */
+	private String content;
 	
 	/**
 	 * 广告素材URL
@@ -269,6 +275,14 @@ public class MaterialDto implements Serializable {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public String getCover() {
