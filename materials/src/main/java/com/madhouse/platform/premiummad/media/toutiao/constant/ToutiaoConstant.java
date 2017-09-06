@@ -11,7 +11,7 @@ public enum ToutiaoConstant {
 	M_STATUS_FAIL(5, "fail"), // 上传失败
 
 	// 头条广告位类型
-	TOUTIAO_FEED_LP_LARGE(1, "690 * 286"), OUTIAO_FEED_LP_SMALL(2, "228 * 150"),
+	TOUTIAO_FEED_LP_LARGE(1, "690*286"), OUTIAO_FEED_LP_SMALL(2, "228*150"),
 
 	// nurl
 	NURL(1, "http://win.madserving.com/toutiao/winnotice?adspaceid={adspaceid}&uid={user_id}&request_id={request_id}&adid={adid}&price={bid_price}&ip={ip}&timestamp={timestamp}&did={did}"),

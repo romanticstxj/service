@@ -1,14 +1,18 @@
-package com.madhouse.platform.premiummad.media.toutiao;
+package com.madhouse.platform.premiummad.media.toutiao.unuse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
@@ -21,9 +25,9 @@ import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 
 @Component
-public class ToutiaoMaterialStatusApiTask {
+public class ToutiaoMaterialStatusApiTask1 {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ToutiaoMaterialStatusApiTask.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ToutiaoMaterialStatusApiTask1.class);
 
 	@Value("${toutiao.statusUrl}")
 	private String getMaterialStatusUrl;
@@ -52,8 +56,14 @@ public class ToutiaoMaterialStatusApiTask {
 			return;
 		}
 
+		Set<String> mediaQueryKeySet = new HashSet<String>();
 		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 		for (Material item : unAuditMaterials) {
+			// 两个广告位对应媒体一个只要请求一次
+			if (mediaQueryKeySet.contains(item.getMediaQueryKey())) {
+				continue;
+			}
+
 			Map<String, String> paramMap = new HashMap<String, String>();
 			paramMap.put("adid", item.getMediaQueryKey());
 			paramMap.put("dspid", dspid);
@@ -81,6 +91,8 @@ public class ToutiaoMaterialStatusApiTask {
 				} else {
 					LOGGER.info(MediaMapping.TOUTIAO.getDescrip() + "获取状态失败");
 				}
+				
+				mediaQueryKeySet.add(String.valueOf(response.getAdid()));
 			}
 		}
 

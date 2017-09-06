@@ -38,9 +38,6 @@ public class SohutvUploadMaterialApiTask {
 	@Value("${sohu.material.create}")
     private String materialCreateUrl;
 
-	 @Value("#{'${sohu.datasource}'.split(',')}")
-	private List<String> sohuDatasource;
-
 	@Value("${imp.url}")
 	private String impUrl;
 
