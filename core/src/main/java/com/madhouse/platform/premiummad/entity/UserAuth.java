@@ -7,7 +7,7 @@ public class UserAuth extends BaseEntity{
 	private Integer id;
 	
 	@NotNullAndBlank
-	private Integer userId;
+	private Integer specifiedUserId;
 	
 	private Integer[] mediaIds;
 	
@@ -15,12 +15,12 @@ public class UserAuth extends BaseEntity{
 	
 	private Integer isAdmin;
 
-	public Integer getUserId() {
-		return userId;
+	public Integer getSpecifiedUserId() {
+		return specifiedUserId;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setSpecifiedUserId(Integer specifiedUserId) {
+		this.specifiedUserId = specifiedUserId;
 	}
 
 	public Integer[] getMediaIds() {

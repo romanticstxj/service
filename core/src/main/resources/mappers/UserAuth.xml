@@ -4,7 +4,7 @@
 <mapper namespace="com.madhouse.platform.premiummad.dao.UserAuthDao">
     
     <sql id="baseMediaColumns">
-		${alias}.id, ${alias}.user_id, ${alias}.media_id, ${alias}.status, ${alias}.created_user, 
+		${alias}.id, ${alias}.user_id , ${alias}.media_id, ${alias}.status, ${alias}.created_user, 
 		${alias}.updated_user, ${alias}.created_time, ${alias}.updated_time
 	</sql>
 	
@@ -81,7 +81,7 @@
         INSERT INTO mad_sys_user_media (user_id, media_id) VALUES
          	<foreach collection="mediaIds" index="index" item="mediaId" separator=",">
        			(
-       				#{userId},
+       				#{specifiedUserId},
        				#{mediaId}
        			)
        		</foreach>
@@ -91,7 +91,7 @@
         	INSERT INTO mad_sys_user_policy (user_id, policy_id) VALUES
          	<foreach collection="policyIds" index="index" item="policyId" separator=",">
        			(
-       				#{userId},
+       				#{specifiedUserId},
        				#{policyId}
        			)
        		</foreach>

@@ -1229,7 +1229,7 @@
             "_summary": "",
             "parameters": {
                 "body": {
-                    "userId": "<*||integer||comment:userId>",
+                    "specifiedUserId": "<*||integer||comment:userId>",
                 	"isAdmin": "<*||integer||comment:1-管理员,0-非管理员>",
                     "mediaIds": ["<integer||comment:选择的媒体权限>"]
                 }
@@ -1250,7 +1250,7 @@
             "_summary": "",
             "parameters": {
                 "body": {
-                    "userId": "<*||integer||comment:userId>",
+                    "specifiedUserId": "<*||integer||comment:userId>",
                 	"isAdmin": "<*||integer||comment:1-管理员,0-非管理员>",
                     "policyIds": ["<integer||comment:选择的策略权限>"]
                 }

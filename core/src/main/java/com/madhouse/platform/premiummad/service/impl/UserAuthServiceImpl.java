@@ -49,7 +49,7 @@ public class UserAuthServiceImpl implements IUserAuthService {
 			mediaIdsForAdmin[0] = -1;
 			userAuth.setMediaIds(mediaIdsForAdmin);
 		}
-		userAuthDao.removeUserMediaAuth(userAuth.getUserId());
+		userAuthDao.removeUserMediaAuth(userAuth.getSpecifiedUserId());
 		
 		Integer[] ids = userAuth.getMediaIds();
 		if(ids != null && ids.length > 0){
@@ -65,7 +65,7 @@ public class UserAuthServiceImpl implements IUserAuthService {
 			idsForAdmin[0] = -1;
 			userAuth.setPolicyIds(idsForAdmin);
 		}
-		userAuthDao.removeUserPolicyAuth(userAuth.getUserId());
+		userAuthDao.removeUserPolicyAuth(userAuth.getSpecifiedUserId());
 		
 		Integer[] ids = userAuth.getPolicyIds();
 		if(ids != null && ids.length > 0){
