@@ -1,10 +1,6 @@
 package com.madhouse.platform.premiummad.task;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +47,8 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             LOGGER.debug("------------PolicyTask-----------start--");
             final List<Policy> listPolicys = policyService.queryAll();
             long begin = System.currentTimeMillis();
-            redisMaster.del(ALL_POLICY);
+
+            Set<String> allPolicyIds = redisMaster.smembers(ALL_POLICY);
             for (Policy  policy: listPolicys) {
                 if(policy.getPolicyAdspaces().size()>0 && policy.getPolicyDsp().size()>0){
                     PolicyMetaData metaData = new PolicyMetaData();
@@ -100,12 +97,22 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                         }
                         redisMaster.setex(String.format(this.POLICY_META_DATA, String.valueOf(policy.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
                         redisMaster.sadd(this.ALL_POLICY, String.valueOf(policy.getId()));
+                        if (allPolicyIds != null && allPolicyIds.size() > 0) {
+                            allPolicyIds.remove(String.valueOf(policy.getId()));
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                         LOGGER.error("------------PolicyTask-----is_for------error:{}",e.toString());
                     }
                 }
             }
+
+            if (allPolicyIds != null && allPolicyIds.size() > 0) {
+                for (String policyId : allPolicyIds) {
+                    redisMaster.srem(this.ALL_POLICY, policyId);
+                }
+            }
+
             redisMaster.expire(this.ALL_POLICY, EXPIRATION_TIME);
             LOGGER.info("op loadPolicyMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PolicyTask-----------  End--");

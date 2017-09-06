@@ -368,4 +368,19 @@ public class StringUtils {
         String multiChoice = StringUtils.singleValueToMultiValue(singleChoice);
         return multiChoice;
 	}
+	
+	public static String formalizeUrls(String urls){
+		if(urls == null || urls.length() == 0){
+			return "";
+		}
+		String[] splittedUrls = urls.split("\\|");
+		StringBuilder sb = new StringBuilder();
+		for(int i=0; i<splittedUrls.length; i++){
+			if(i % 2 != 0){
+				sb.append(splittedUrls[i]).append("|");
+			}
+		}
+		sb.deleteCharAt(sb.length()-1);
+		return sb.toString();
+	}
 }

@@ -228,6 +228,7 @@
                     "logoMaxKbyte": "<integer||comment:logo最大K数>",
                     "titleMaxLength": "<integer||comment:标题最大长度>",
                     "descMaxLength": "<integer||comment:描述最大长度>",
+                    "contentMaxLength": "<integer||comment:正文最大长度>",
                     "coverType": "<string||comment:封面格式(1: gif, 2: png, 4: jpg)>",
                     "coverSize": "<string||comment:封面尺寸>",
                     "coverMaxKbyte": "<integer||comment:封面最大K数>",
@@ -280,6 +281,7 @@
 		                    "logoMaxKbyte": "<integer||comment:logo最大K数>",
 		                    "titleMaxLength": "<integer||comment:标题最大长度>",
 		                    "descMaxLength": "<integer||comment:描述最大长度>",
+		                    "contentMaxLength": "<integer||comment:正文最大长度>",
 		                    "coverType": "<string||comment:封面格式(1: gif, 2: png, 4: jpg)>",
 		                    "coverSize": "<string||comment:封面尺寸>",
 		                    "coverMaxKbyte": "<integer||comment:封面最大K数>",
@@ -317,6 +319,7 @@
                     "logoMaxKbyte": "<integer||comment:logo最大K数>",
                     "titleMaxLength": "<integer||comment:标题最大长度>",
                     "descMaxLength": "<integer||comment:描述最大长度>",
+                    "contentMaxLength": "<integer||comment:正文最大长度>",
                     "coverType": "<string||comment:封面格式(1: gif, 2: png, 4: jpg)>",
                     "coverSize": "<string||comment:封面尺寸>",
                     "coverMaxKbyte": "<integer||comment:封面最大K数>",
@@ -685,20 +688,20 @@
                     "body": [
                         {
                             "id": "<*||integer||comment:物料ID>",
-		                	"materialId": "<integer||comment:DSP定义的素材ID>",
+		                	"materialKey": "<integer||comment:DSP定义的素材ID>",
 		                    "materialName": "<*||string||comment:DSP定义的素材名称>",
 		                    "materialLayout": "<*||integer||comment:物料类型(1:banner, 2:视频, 3:信息流)>",
 		            		"adMaterials": "<string||comment:广告素材URL(多个用竖线分隔)>",
 		            		"lpgUrl": "<string||comment:落地页URL>",
 		            		"dealId": "<integer||comment:PDB或PD投放方式下的DEAL ID>",
 		            		"createdTime": "<date||comment:上传时间>",
-		            		"advertiserId": "<integer||comment:广告主ID>",
+		            		"advertiserKey": "<integer||comment:广告主ID>",
 		            		"advertiserName": "<string||comment:广告主名称>",
 		            		"dspId": "<integer||comment:需求方ID>",
 		            		"dspName": "<string||comment:需求方名称>",
 		            		"mediaId": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
-		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"auditedUser": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
 		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
                         }
                     ]
@@ -719,10 +722,10 @@
                     "body": [
                         {
                             "id": "<*||integer||comment:物料ID>",
-		                	"materialId": "<string||comment:DSP定义的素材ID>",
+		                	"materialKey": "<string||comment:DSP定义的素材ID>",
 		                    "materialName": "<*||string||comment:DSP定义的素材名称>",
 		                    "materialLayout": "<*||integer||comment:物料类型(1:banner, 2:视频, 3:信息流)>",
-		            		"advertiserId": "<string||comment:广告主ID>",
+		            		"advertiserKey": "<string||comment:广告主ID>",
 		            		"advertiserName": "<string||comment:广告主名称>",
 		            		"brand": "<string||comment:品牌>",
 		            		"agency": "<string||comment:代理商名称>",
@@ -736,13 +739,15 @@
 		            		"icon": "<string||comment:信息流Logo URL>",
 		            		"title": "<string||comment:信息流广告标题>",
 		            		"description": "<string||comment:信息流广告描述>",
+		            		"cover": "<string||comment:视频信息流广告封面URL>",
+		            		"duration": "<string||comment:视频广告时长(s)>",
 		            		"lpgUrl": "<string||comment:落地页地址>",
 		            		"impUrls": "<string||comment:曝光监测(多个用竖线分隔)>",
 		            		"clkUrls": "<string||comment:点击监测(多个用竖线分隔)>",
 		            		"secUrls": "<string||comment:品牌安全监测URL(多个用竖线分隔)>",
-		            		"mediaId": "<integer||comment:媒体ID>",
+		            		"mediaKey": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
-		            		"auditor": "<integer||comment:审核方(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"auditedUser": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
 		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交(若媒体审核，表示还未提交给媒体), 1: 待审核(若平台审核，表示平台还未审核；若媒体审核，表示已提交给媒体并有待于他们审核的状态), 2: 通过审核)>"
                         }
                     ]
@@ -782,16 +787,19 @@
                     "body": [
                         {
                             "id": "<*||integer||comment:广告主ID>",
-		                	"advertiserId": "<*string||comment:DSP定义的广告主ID>",
+		                	"advertiserKey": "<*string||comment:DSP定义的广告主ID>",
 		                    "advertiserName": "<*||string||comment:DSP定义的广告主名称>",
-		            		"dspId": "<string||comment:所属DSP>",
-		            		"createdTime": "<string||comment:上传时间>",
-		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>",
+		                    "industry": "<integer||comment:行业code>",
+		                    "industryName": "<*||string||comment:行业名称>",
+		            		"website": "<string||comment:广告主主页>",
 		            		"license": "<string||comment:资质文件>",
-		            		"contact": "<string||comment:联系人>",
-		            		"phone": "<string||comment:联系电话>",
-		            		"reason": "<string||comment:未通过原因>"
+		            		"dspId": "<integer||comment:dsp id>",
+		            		"dspName": "<string||comment:dsp Name>",
+		            		"createdTime": "<string||comment:上传时间>",
+		            		"auditedUser": "<string||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"mediaKey": "<integer||comment:媒体ID>",
+		            		"mediaName": "<string||comment:媒体名称>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -811,18 +819,23 @@
                     "body": [
                         {
                             "id": "<*||integer||comment:广告主ID>",
-		                	"advertiserId": "<*string||comment:DSP定义的广告主ID>",
+		                	"advertiserKey": "<*string||comment:DSP定义的广告主ID>",
 		                    "advertiserName": "<*||string||comment:DSP定义的广告主名称>",
-		            		"dspId": "<string||comment:所属DSP>",
-		            		"createdTime": "<string||comment:上传时间>",
-		            		"auditor": "<string||comment:审核方(1: 我方, 2: 媒体方)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>",
-		            		"license": "<string||comment:资质文件>",
+		                    "industry": "<integer||comment:行业code>",
+		                    "industryName": "<*||string||comment:行业名称>",
+		            		"website": "<string||comment:广告主主页>",
 		            		"contact": "<string||comment:联系人>",
 		            		"phone": "<string||comment:联系电话>",
-		            		"reason": "<string||comment:未通过原因>",
-		            		"audited_user": "<string||comment:审核者>",
-		            		"audited_time": "<string||comment:审核时间>"
+		            		"address": "<string||comment:联系地址>",
+		            		"license": "<string||comment:资质文件>",
+		            		"dspId": "<integer||comment:dsp id>",
+		            		"dspName": "<string||comment:dsp Name>",
+		            		"createdTime": "<string||comment:上传时间>",
+		            		"mediaKey": "<integer||comment:审核媒体ID>",
+		            		"mediaName": "<string||comment:审核媒体名称>",
+		            		"auditedUser": "<string||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
+		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>",
+		            		"reason": "<string||comment:未通过原因>"
                         }
                     ]
                 }

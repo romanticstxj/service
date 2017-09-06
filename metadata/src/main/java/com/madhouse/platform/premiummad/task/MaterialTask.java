@@ -3,6 +3,7 @@ package com.madhouse.platform.premiummad.task;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class MaterialTask {
             LOGGER.debug("------------MaterialTask-----loadMaterialMetaData------start--");
             final List<Material> lists = iMaterialService.queryAll();
             long begin = System.currentTimeMillis();
-            redisMaster.del(ALL_MATERIAL);
+            Set<String> allMaterialIds = redisMaster.smembers(ALL_MATERIAL);
             for (Material material : lists) {
                 MaterialMetaData metaData = new MaterialMetaData();
                 if(null != material){
@@ -62,9 +63,21 @@ public class MaterialTask {
                     metaData.setH(!StringUtils.isEmpty(size[1])?Integer.parseInt(size[1]) : 0);
                     redisMaster.setex(String.format(this.MATERIAL_META_DATA, String.valueOf(metaData.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
                     redisMaster.sadd(this.ALL_MATERIAL, String.valueOf(metaData.getId()));
-                    redisMaster.expire(this.ALL_MATERIAL, EXPIRATION_TIME);
+
+                    if (allMaterialIds != null && allMaterialIds.size() > 0) {
+                        allMaterialIds.remove(String.valueOf(metaData.getId()));
+                    }
                 }
             }
+
+            if (allMaterialIds != null && allMaterialIds.size() > 0) {
+                for (String materialId : allMaterialIds) {
+                    redisMaster.srem(this.ALL_MATERIAL, materialId);
+                }
+            }
+
+            redisMaster.expire(this.ALL_MATERIAL, EXPIRATION_TIME);
+
             LOGGER.info("op loadMaterialMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------MaterialTask-----loadMaterialMetaData------  End--");
         } catch (Exception e) {
