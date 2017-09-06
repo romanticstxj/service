@@ -268,7 +268,7 @@ public class WeiboMaterialUploadApiTask {
 			weiboFeed.setClk_url(clkUrls);
 			weiboFeed.setContent_category(String.valueOf(WeiboIndustryMapping.getMediaIndustryId(advertiser.getIndustry())));
 			weiboFeed.setCreative_id(String.valueOf(material.getId()));
-			weiboFeed.setMblog_text(material.getDescription());
+			weiboFeed.setMblog_text(material.getContent());
 			weiboFeed.setMonitor_url(impUrls);
 			weiboFeed.setObj_id("");
 			weiboFeed.setPics(Arrays.asList(material.getAdMaterials().split("\\|")));
@@ -286,7 +286,7 @@ public class WeiboMaterialUploadApiTask {
 			weiboFeedActivity.setCreative_id(String.valueOf(material.getId()));
 			weiboFeedActivity.setDesc(material.getDescription());
 			weiboFeedActivity.setLandingpage_url(material.getLpgUrl());
-			weiboFeedActivity.setMblog_text(material.getDescription());
+			weiboFeedActivity.setMblog_text(material.getContent());
 			weiboFeedActivity.setMonitor_url(impUrls);
 			weiboFeedActivity.setTitle(material.getTitle());
 			weiboFeedActivity.setUid(uid);
@@ -304,7 +304,7 @@ public class WeiboMaterialUploadApiTask {
 			weiboFeedVideo.setCreative_id(String.valueOf(material.getId()));
 			weiboFeedVideo.setDesc(material.getDescription());
 			weiboFeedVideo.setLandingpage_url(material.getLpgUrl());
-			weiboFeedVideo.setMblog_text(material.getDescription());
+			weiboFeedVideo.setMblog_text(material.getContent());
 			weiboFeedVideo.setMonitor_url(impUrls);
 			weiboFeedVideo.setTitle(material.getTitle());
 			weiboFeedVideo.setUid(uid);

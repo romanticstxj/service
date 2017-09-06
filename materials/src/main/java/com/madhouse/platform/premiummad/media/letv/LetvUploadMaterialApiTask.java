@@ -223,7 +223,7 @@ public class LetvUploadMaterialApiTask {
 			return LetvConstant.AD_TYPE_STARTING_UP.getValue();
 		} else if (layout == Layout.LO10007.getValue()) { // 关机
 			return LetvConstant.AD_TYPE_SHUTDOWN.getValue();
-		} else if (layout == Layout.LO30001.getValue() || layout == Layout.LO30002.getValue() || layout == Layout.LO30003.getValue()) { // 信息流
+		} else if (layout == Layout.LO30001.getValue()) { // 图文信息流（只支持一张图片）
 			return LetvConstant.AD_TYPE_STREAM.getValue();
 		}
 		return 0;

@@ -100,6 +100,11 @@ public class MaterialModel implements Serializable {
 	private String desc;
 	
 	/**
+	 * 信息流广告正文
+	 */
+	private String content;
+	
+	/**
 	 * 视频信息流广告封面URL
 	 */
 	private String cover;
@@ -263,6 +268,14 @@ public class MaterialModel implements Serializable {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public String getCover() {

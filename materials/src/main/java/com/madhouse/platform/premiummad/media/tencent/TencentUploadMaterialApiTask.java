@@ -140,7 +140,7 @@ public class TencentUploadMaterialApiTask {
 	}
 
 	public void uploadMaterial() {
-		// TENCENT 对应两个媒体 OTV 和 非 OTV
+		// TENCENT 对应两个媒体 OTV 和 非 OT
 		for (int mediaType = 0; mediaType < ITERATOR_TIMES; mediaType++) {
 			int mediaId = 0;
 			if (mediaType != TECENT_OTV_ITERATOR) {
@@ -149,7 +149,7 @@ public class TencentUploadMaterialApiTask {
 				mediaId = MediaMapping.TENCENT.getValue();
 			}
 			LOGGER.info(MediaMapping.getDescrip(mediaId) + " AdvertUploadApiTask-advertUpload start");
-
+ 
 			// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 			List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(mediaId, MaterialStatusCode.MSC10002.getValue());
 			if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
@@ -383,9 +383,9 @@ public class TencentUploadMaterialApiTask {
 			adContentMap.put("file_text", material.getDescription());
 			adContents.add(adContentMap);
 
-			// 图片
+			// 缩略图
 			adContentMap = new HashMap<>();
-			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
+			adContentMap.put("file_url", material.getIcon());
 			adContents.add(adContentMap);
 
 			// 客户名称
@@ -393,7 +393,7 @@ public class TencentUploadMaterialApiTask {
 			adContentMap.put("file_text", advertiserName);
 			adContents.add(adContentMap);
 
-			// 长标题 TODO
+			// 长标题
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
 			adContents.add(adContentMap);
@@ -424,6 +424,7 @@ public class TencentUploadMaterialApiTask {
 			adContents.add(adContentMap);
 
 			// 广告主名称
+			adContentMap = new HashMap<>();
 			adContentMap.put("file_text", advertiserName);
 			adContents.add(adContentMap);
 		} else if (Integer.valueOf(tencent_displayId_md_app_stream_icon) == mediaDisplayId) {
@@ -438,6 +439,9 @@ public class TencentUploadMaterialApiTask {
 				adContentMap = new HashMap<>();
 				adContentMap.put("file_url", adMaterial);
 				adContents.add(adContentMap);
+				if (adContentMap.size() == 3) {
+					break;
+				}
 			}
 			// 广告主名称
 			adContentMap = new HashMap<>();
@@ -454,6 +458,18 @@ public class TencentUploadMaterialApiTask {
 			adContentMap.put("file_text", material.getDescription());
 			adContents.add(adContentMap);
 		} else if (Integer.valueOf(tencent_displayId_md_qqlive_appweb_img) == mediaDisplayId) {
+			// 视频素材
+			Map<String, String> adContentMap = new HashMap<>();
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
+			adContents.add(adContentMap);
+
+			// 标题
+			adContentMap = new HashMap<>();
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
+		} else if (Integer.valueOf(tencent_displayId_md_qqlive_appweb_vedio) == mediaDisplayId) {
 			// 文字标题
 			Map<String, String> adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
@@ -464,7 +480,7 @@ public class TencentUploadMaterialApiTask {
 			adContentMap.put("file_url", material.getCover());
 			adContents.add(adContentMap);
 
-			// 视频素材
+			// 视频
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
 			adContents.add(adContentMap);
@@ -479,7 +495,7 @@ public class TencentUploadMaterialApiTask {
 			adContentMap.put("file_text", material.getDescription());
 			adContents.add(adContentMap);
 
-			// 分享标题 TODO
+			// 分享标题
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
 			adContents.add(adContentMap);
