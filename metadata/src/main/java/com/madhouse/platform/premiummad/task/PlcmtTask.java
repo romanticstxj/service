@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             LOGGER.debug("------------PlcmtTask-----------start--");
             final List<Adspace> listAdspaces = plcmtService.queryAll();
             long begin = System.currentTimeMillis();
-            redisMaster.del(ALL_PLACEMENT);
+            Set<String> allPlcmtIds = redisMaster.smembers(ALL_PLACEMENT);
             for (Adspace adspace : listAdspaces) {
                 PlcmtMetaData metaData = new PlcmtMetaData();
                 try {
@@ -131,11 +132,21 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                     }
                     redisMaster.setex(String.format(this.PLACEMENT_META_DATA, String.valueOf(adspace.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
                     redisMaster.sadd(this.ALL_PLACEMENT, String.valueOf(adspace.getId()));
+                    if (allPlcmtIds != null && allPlcmtIds.size() > 0) {
+                        allPlcmtIds.remove(String.valueOf(adspace.getId()));
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     LOGGER.error("------------PlcmtTask-----is_for------error:{}",e.toString());
                 }
             }
+
+            if (allPlcmtIds != null && allPlcmtIds.size() > 0) {
+                for (String plcmtId : allPlcmtIds) {
+                    redisMaster.srem(this.ALL_PLACEMENT, plcmtId);
+                }
+            }
+
             redisMaster.expire(this.ALL_PLACEMENT, EXPIRATION_TIME);
             LOGGER.info("op loadPlcmtMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------PlcmtTask-----------  End--");
