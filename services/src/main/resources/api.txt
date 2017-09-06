@@ -739,6 +739,8 @@
 		            		"icon": "<string||comment:信息流Logo URL>",
 		            		"title": "<string||comment:信息流广告标题>",
 		            		"description": "<string||comment:信息流广告描述>",
+		            		"cover": "<string||comment:视频信息流广告封面URL>",
+		            		"duration": "<string||comment:视频广告时长(s)>",
 		            		"lpgUrl": "<string||comment:落地页地址>",
 		            		"impUrls": "<string||comment:曝光监测(多个用竖线分隔)>",
 		            		"clkUrls": "<string||comment:点击监测(多个用竖线分隔)>",
