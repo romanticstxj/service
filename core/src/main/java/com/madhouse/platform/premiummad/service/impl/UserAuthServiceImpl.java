@@ -73,4 +73,14 @@ public class UserAuthServiceImpl implements IUserAuthService {
 		}
 	}
 
+	@Override
+	public List<Integer> queryAuthorizedMediaIdList(Integer userId) {
+		return userAuthDao.queryAuthorizedMediaIdList(userId);
+	}
+
+	@Override
+	public List<Integer> queryAuthorizedPolicyIdList(Integer userId) {
+		return userAuthDao.queryAuthorizedPolicyIdList(userId);
+	}
+
 }

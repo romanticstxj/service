@@ -33,6 +33,18 @@
         </if>
 	</select>
 	
+	<select id="queryAuthorizedMediaIdList" parameterType="integer" resultType="integer">
+		SELECT media_id
+        FROM mad_sys_user_media
+        WHERE user_id = #{userId}
+	</select>
+	
+	<select id="queryAuthorizedPolicyIdList" parameterType="integer" resultType="integer">
+		SELECT policy_id
+        FROM mad_sys_user_policy
+        WHERE user_id = #{userId}
+	</select>
+	
 	<select id="queryAdspaceIdList" parameterType="string" resultType="integer">
 		SELECT * FROM (
 			SELECT a.id adspaceId
