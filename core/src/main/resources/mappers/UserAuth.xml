@@ -4,7 +4,7 @@
 <mapper namespace="com.madhouse.platform.premiummad.dao.UserAuthDao">
     
     <sql id="baseMediaColumns">
-		${alias}.id, ${alias}.user_id, ${alias}.media_id, ${alias}.status, ${alias}.created_user, 
+		${alias}.id, ${alias}.user_id , ${alias}.media_id, ${alias}.status, ${alias}.created_user, 
 		${alias}.updated_user, ${alias}.created_time, ${alias}.updated_time
 	</sql>
 	
@@ -31,6 +31,18 @@
             	#{mediaId,jdbcType=INTEGER}
             </foreach>
         </if>
+	</select>
+	
+	<select id="queryAuthorizedMediaIdList" parameterType="integer" resultType="integer">
+		SELECT media_id
+        FROM mad_sys_user_media
+        WHERE user_id = #{userId}
+	</select>
+	
+	<select id="queryAuthorizedPolicyIdList" parameterType="integer" resultType="integer">
+		SELECT policy_id
+        FROM mad_sys_user_policy
+        WHERE user_id = #{userId}
 	</select>
 	
 	<select id="queryAdspaceIdList" parameterType="string" resultType="integer">
@@ -81,7 +93,7 @@
         INSERT INTO mad_sys_user_media (user_id, media_id) VALUES
          	<foreach collection="mediaIds" index="index" item="mediaId" separator=",">
        			(
-       				#{userId},
+       				#{specifiedUserId},
        				#{mediaId}
        			)
        		</foreach>
@@ -91,7 +103,7 @@
         	INSERT INTO mad_sys_user_policy (user_id, policy_id) VALUES
          	<foreach collection="policyIds" index="index" item="policyId" separator=",">
        			(
-       				#{userId},
+       				#{specifiedUserId},
        				#{policyId}
        			)
        		</foreach>

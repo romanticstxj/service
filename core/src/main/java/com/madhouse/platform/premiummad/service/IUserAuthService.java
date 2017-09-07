@@ -19,4 +19,9 @@ public interface IUserAuthService {
 	void updateUserMediaAuth(UserAuth userAuth);
 
 	void updateUserPolicyAuth(UserAuth userAuth);
+	
+	List<Integer> queryAuthorizedMediaIdList(Integer userId);
+	
+	List<Integer> queryAuthorizedPolicyIdList(Integer userId);
+
 }
