@@ -42,7 +42,8 @@ public class UserAuthControllerTest {
 	
 	@Test
 	public void testQueryPolicy(){
-		String link = "http://localhost:8080/services/userauth/policy/query?specifiedUserId=1313";
+		String link = "http://172.16.25.48:8080/services/userauth/policy/query?specifiedUserId=12121";
+//		String link = "http://localhost:8080/services/userauth/policy/query?specifiedUserId=1313";
 		HttpUtilTest.httpGet(link);
 	}
 	

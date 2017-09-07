@@ -1,8 +1,6 @@
 package com.madhouse.platform.premiummad.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
-import com.madhouse.platform.premiummad.dto.MediaDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
-import com.madhouse.platform.premiummad.entity.Media;
 import com.madhouse.platform.premiummad.entity.UserAuth;
 import com.madhouse.platform.premiummad.rule.BaseRule;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
-import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 
