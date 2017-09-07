@@ -13,8 +13,8 @@ public enum MediaNeedAdspace {
 	IQYI(100006, false),
 	LETV(100007, false),
 	MOMO(100008, false),
-	TOUTIAO(100009, true),
-	VALUEMAKER(100010, true),
+	TOUTIAO(100009, false),
+	VALUEMAKER(100010, false),
 	FUNADX(100011, false),
 	WEIBO(100012, false);
 
