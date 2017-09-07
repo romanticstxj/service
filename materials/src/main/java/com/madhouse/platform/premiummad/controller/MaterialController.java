@@ -59,8 +59,8 @@ public class MaterialController {
 	 */
 	@TokenFilter
 	@RequestMapping("/status")
-	public ResponseDto<MaterialAuditResultDto> list(@RequestParam(value = "ids", required = false) String ids, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
-		List<MaterialAuditResultModel> modelResults = materialService.getMaterialAuditResult(ids, dspId);
+	public ResponseDto<MaterialAuditResultDto> list(@RequestParam(value = "id", required = false) String id, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
+		List<MaterialAuditResultModel> modelResults = materialService.getMaterialAuditResult(id, dspId);
 		List<MaterialAuditResultDto> dtoResults = new ArrayList<MaterialAuditResultDto>();
 		BeanUtils.copyList(modelResults, dtoResults, MaterialAuditResultDto.class);
 		return ResponseUtils.response(StatusCode.SC200, dtoResults);
