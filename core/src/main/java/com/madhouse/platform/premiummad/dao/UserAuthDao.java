@@ -28,4 +28,8 @@ public interface UserAuthDao {
 	void removeUserPolicyAuth(Integer userId);
 
 	void addUserPolicyAuth(UserAuth userAuth);
+	
+	List<Integer> queryAuthorizedMediaIdList(Integer userId);
+	
+	List<Integer> queryAuthorizedPolicyIdList(Integer userId);
 }

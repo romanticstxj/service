@@ -701,7 +701,8 @@
 		            		"dspName": "<string||comment:需求方名称>",
 		            		"mediaId": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
-		            		"auditedUser": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"materialAuditMode": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"auditedUser": "<integer||comment:审核者(userId)>",
 		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
                         }
                     ]
@@ -747,7 +748,8 @@
 		            		"secUrls": "<string||comment:品牌安全监测URL(多个用竖线分隔)>",
 		            		"mediaKey": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
-		            		"auditedUser": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"materialAuditMode": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"auditedUser": "<integer||comment:审核者(userId)>",
 		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交(若媒体审核，表示还未提交给媒体), 1: 待审核(若平台审核，表示平台还未审核；若媒体审核，表示已提交给媒体并有待于他们审核的状态), 2: 通过审核)>"
                         }
                     ]
@@ -796,7 +798,8 @@
 		            		"dspId": "<integer||comment:dsp id>",
 		            		"dspName": "<string||comment:dsp Name>",
 		            		"createdTime": "<string||comment:上传时间>",
-		            		"auditedUser": "<string||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"materialAuditMode": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"auditedUser": "<integer||comment:审核者(userId)>",
 		            		"mediaKey": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
 		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
@@ -833,7 +836,8 @@
 		            		"createdTime": "<string||comment:上传时间>",
 		            		"mediaKey": "<integer||comment:审核媒体ID>",
 		            		"mediaName": "<string||comment:审核媒体名称>",
-		            		"auditedUser": "<string||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"materialAuditMode": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
+		            		"auditedUser": "<integer||comment:审核者(userId)>",
 		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>",
 		            		"reason": "<string||comment:未通过原因>"
                         }
@@ -1224,12 +1228,31 @@
             }
         }
     },
+    "/userauth/media/query": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                    "specifiedUserId": "<*||integer||comment:userId>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": {
+                    	"specifiedUserId": "<*||integer||comment:userId>",
+	                	"isAdmin": "<*||integer||comment:1-管理员,0-非管理员>",
+	                    "mediaIds": ["<integer||comment:选择的媒体权限>"]
+                    }
+                }
+            }
+        }
+    },
     "/userauth/media/update": {
         "post": {
             "_summary": "",
             "parameters": {
                 "body": {
-                    "userId": "<*||integer||comment:userId>",
+                    "specifiedUserId": "<*||integer||comment:userId>",
                 	"isAdmin": "<*||integer||comment:1-管理员,0-非管理员>",
                     "mediaIds": ["<integer||comment:选择的媒体权限>"]
                 }
@@ -1245,12 +1268,31 @@
             }
         }
     },
+    "/userauth/policy/query": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                    "specifiedUserId": "<*||integer||comment:userId>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": {
+                    	"specifiedUserId": "<*||integer||comment:userId>",
+	                	"isAdmin": "<*||integer||comment:1-管理员,0-非管理员>",
+	                    "policyIds": ["<integer||comment:选择的策略权限>"]
+                    }
+                }
+            }
+        }
+    },
     "/userauth/policy/update": {
         "post": {
             "_summary": "",
             "parameters": {
                 "body": {
-                    "userId": "<*||integer||comment:userId>",
+                    "specifiedUserId": "<*||integer||comment:userId>",
                 	"isAdmin": "<*||integer||comment:1-管理员,0-非管理员>",
                     "policyIds": ["<integer||comment:选择的策略权限>"]
                 }

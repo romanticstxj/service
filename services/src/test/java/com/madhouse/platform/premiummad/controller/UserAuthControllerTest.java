@@ -10,21 +10,41 @@ public class UserAuthControllerTest {
 	@Test
 	public void testMedia(){
 		UserAuth auth = new UserAuth();
-		auth.setUserId(1);
+		auth.setSpecifiedUserId(1313);
 		auth.setIsAdmin(1);
-		auth.setMediaIds(new Integer[]{1,2,3});
+		Integer[] mediaIds = new Integer[100];
+		for(int i=0; i< 100; i++){
+			mediaIds[i] = 500001 + i;
+		}
+		auth.setMediaIds(mediaIds);
+//		String link = "http://172.16.25.48:8080/services/userauth/media/update";
 		String link = "http://localhost:8080/services/userauth/media/update";
-		HttpUtilTest.httpPost(link, JSON.toJSONString(auth));
+		String jsonStr = JSON.toJSONString(auth);
+		System.out.println(jsonStr);
+		HttpUtilTest.httpPost(link, jsonStr);
 	}
 	
 	@Test
 	public void testPolicy(){
 		UserAuth auth = new UserAuth();
-		auth.setUserId(10);
+		auth.setSpecifiedUserId(10);
 //		auth.setIsAdmin(0);
 		auth.setPolicyIds(new Integer[]{});
 		String link = "http://localhost:8080/services/userauth/policy/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(auth));
+	}
+	
+	@Test
+	public void testQueryMedia(){
+		String link = "http://localhost:8080/services/userauth/media/query?specifiedUserId=53";
+		HttpUtilTest.httpGet(link);
+	}
+	
+	@Test
+	public void testQueryPolicy(){
+		String link = "http://172.16.25.48:8080/services/userauth/policy/query?specifiedUserId=12121";
+//		String link = "http://localhost:8080/services/userauth/policy/query?specifiedUserId=1313";
+		HttpUtilTest.httpGet(link);
 	}
 	
 }
