@@ -161,9 +161,9 @@ public class MomoMaterialUploadApiTask {
 		MomoUploadRequest.NativeCreativeBean.LogoBean logoBean = new MomoUploadRequest.NativeCreativeBean.LogoBean();
 		MomoUploadRequest.NativeCreativeBean.VideoBean videoBean = new MomoUploadRequest.NativeCreativeBean.VideoBean();
 		// 根据后缀判断是图片还是视频
-		if (!material.getAdMaterials().endsWith("mp4")) {
+		if (!material.getAdMaterials().split("\\|")[0].endsWith("mp4")) {
 			// image
-			imageBean.setUrl(material.getAdMaterials());
+			imageBean.setUrl(material.getAdMaterials().split("\\|")[0]);
 			imageBean.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
 			imageBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 			creativeBean.setImage(Collections.singletonList(imageBean));
@@ -175,7 +175,7 @@ public class MomoMaterialUploadApiTask {
 			imageBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 			videoBean.setCover_img(imageBean);
 
-			videoBean.setUrl(material.getAdMaterials());
+			videoBean.setUrl(material.getAdMaterials().split("\\|")[0]);
 			creativeBean.setVideo(Collections.singletonList(videoBean));
 			creativeBean.setNative_format("FEED_LANDING_PAGE_VIDEO"); // 广告样式
 			creativeBean.setCard_title(material.getTitle());
