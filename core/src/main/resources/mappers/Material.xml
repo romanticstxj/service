@@ -476,7 +476,7 @@
     </include>, a.advertiser_name advertiserName, me.name mediaName, 
     me.material_audit_mode materialAuditMode, d.name dspName, m.layout/100 materialLayout
     FROM mad_sys_material m
-    LEFT JOIN mad_sys_advertiser a ON m.advertiser_key = a.advertiser_key
+    LEFT JOIN mad_sys_advertiser a ON m.advertiser_key = a.advertiser_key AND m.media_id = a.media_id AND m.dsp_id = a.dsp_id
     LEFT JOIN mad_sys_media me ON m.media_id = me.id 
     LEFT JOIN mad_sys_dsp d ON m.dsp_id = d.id
     <if test="mediaIds != null and mediaIds.size() > 0">
@@ -493,7 +493,7 @@
     </include>, a.advertiser_name advertiserName, me.name mediaName, 
     me.material_audit_mode materialAuditMode, d.name dspName, m.layout/100 materialLayout
     FROM mad_sys_material m
-    LEFT JOIN mad_sys_advertiser a ON m.advertiser_key = a.advertiser_key
+    LEFT JOIN mad_sys_advertiser a ON m.advertiser_key = a.advertiser_key AND m.media_id = a.media_id AND m.dsp_id = a.dsp_id
     LEFT JOIN mad_sys_media me ON m.media_id = me.id 
     LEFT JOIN mad_sys_dsp d ON m.dsp_id = d.id
     WHERE m.id = #{id,jdbcType=INTEGER}
