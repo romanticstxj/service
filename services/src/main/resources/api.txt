@@ -703,7 +703,7 @@
 		            		"mediaName": "<string||comment:媒体名称>",
 		            		"materialAuditMode": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
 		            		"auditedUser": "<integer||comment:审核者(userId)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态;媒体审核(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核),平台审核(-1: 未通过, 0: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -750,7 +750,7 @@
 		            		"mediaName": "<string||comment:媒体名称>",
 		            		"materialAuditMode": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
 		            		"auditedUser": "<integer||comment:审核者(userId)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交(若媒体审核，表示还未提交给媒体), 1: 待审核(若平台审核，表示平台还未审核；若媒体审核，表示已提交给媒体并有待于他们审核的状态), 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态;媒体审核(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核),平台审核(-1: 未通过, 0: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -802,7 +802,7 @@
 		            		"auditedUser": "<integer||comment:审核者(userId)>",
 		            		"mediaKey": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态;媒体审核(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核),平台审核(-1: 未通过, 0: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -838,7 +838,7 @@
 		            		"mediaName": "<string||comment:审核媒体名称>",
 		            		"materialAuditMode": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
 		            		"auditedUser": "<integer||comment:审核者(userId)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>",
+		                    "status": "<integer||comment:审核状态;媒体审核(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核),平台审核(-1: 未通过, 0: 待审核, 2: 通过审核)>",
 		            		"reason": "<string||comment:未通过原因>"
                         }
                     ]
