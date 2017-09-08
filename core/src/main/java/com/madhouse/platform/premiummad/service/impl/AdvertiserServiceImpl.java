@@ -175,7 +175,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 
 		// 查询广告主的审核结果
 		List<AdvertiserAuditResultModel> results = new ArrayList<AdvertiserAuditResultModel>();
-		if (idStrs != null && idStrs.length > 1) {
+		if (idStrs != null && idStrs.length > 0) {
 			List<Advertiser> selectAdvertisers = advertiserDao.selectByAdvertiserKeysAndDspId(idStrs, dspId, null);
 			AdvertiserRule.convert(selectAdvertisers, results);
 		}
