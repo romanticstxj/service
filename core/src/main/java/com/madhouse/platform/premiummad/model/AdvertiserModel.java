@@ -55,7 +55,7 @@ public class AdvertiserModel implements Serializable {
 	/**
 	 * 资质文件 （营业执照等）链接
 	 */
-	private List<String> lience;
+	private List<String> license;
 
 	public String getDspId() {
 		return dspId;
@@ -129,12 +129,12 @@ public class AdvertiserModel implements Serializable {
 		this.phone = phone;
 	}
 
-	public List<String> getLience() {
-		return lience;
+	public List<String> getLicense() {
+		return license;
 	}
 
-	public void setLience(List<String> lience) {
-		this.lience = lience;
+	public void setLicense(List<String> license) {
+		this.license = license;
 	}
 }
  
