@@ -128,6 +128,8 @@ public interface MaterialMapper {
 	 * @param ids
 	 * @param status
 	 * @param reason 
+	 * @param userId 
 	 */
-	void auditMaterial(@Param("ids") String[] ids, @Param("status") Integer status, @Param("reason") String reason);
+	void auditMaterial(@Param("ids") String[] ids, @Param("status") Integer status, 
+			@Param("reason") String reason, @Param("userId") Integer userId);
 }

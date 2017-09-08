@@ -6,8 +6,8 @@ public class ReportControllerTest {
 	
 	@Test
 	public void mediaReport(){
-		String link = "http://localhost:8080/services/report/media?type=1&dims=3&realtime=0&startDate=20170801"
-				+ "&endDate=20170823";
+		String link = "http://localhost:8080/services/report/media?type=1&dims=1&realtime=0&startDate=20170830"
+				+ "&endDate=20170901";
 		HttpUtilTest.httpGet(link);
 	}
 	

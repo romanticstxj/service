@@ -52,5 +52,5 @@ public interface IMaterialService {
 
 	Material queryById(Integer id);
 
-	void auditMaterial(String[] ids, Integer status, String reason);
+	void auditMaterial(String[] ids, Integer status, String reason, Integer userId);
 }

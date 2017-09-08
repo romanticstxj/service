@@ -59,13 +59,14 @@ public class MaterialController {
     }
 	
 	@RequestMapping("/audit")
-    public ResponseDto<Material> audit(@RequestBody AuditDto dto) throws Exception {
+    public ResponseDto<Material> audit(@RequestBody AuditDto dto,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		MaterialAuditRule.validateDto(dto);
 		String idsStr = dto.getIds();
 		Integer status = dto.getStatus();
 		String reason = dto.getReason();
 		String[] ids = StringUtils.splitToStringArray(idsStr);
-		materialService.auditMaterial(ids, status, reason);
+		materialService.auditMaterial(ids, status, reason, userId);
         return ResponseUtils.response(StatusCode.SC20000, null);
     }
 }
