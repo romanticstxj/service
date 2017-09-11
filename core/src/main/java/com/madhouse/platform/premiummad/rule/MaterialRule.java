@@ -286,6 +286,7 @@ public class MaterialRule extends BaseRule {
 			destinationItem.setId(sourceItem.getMaterialKey()); // DSP 传过来的素材ID
 			destinationItem.setMediaId(String.valueOf(sourceItem.getMediaId()));
 			destinationItem.setStatus(Integer.valueOf(sourceItem.getStatus()));
+			destinationItem.setAdspaceId(sourceItem.getAdspaceId());
 			destinationItem.setErrorMessage(sourceItem.getReason());
 			destination.add(destinationItem);
 		}

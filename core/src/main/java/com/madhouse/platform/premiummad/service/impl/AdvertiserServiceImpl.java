@@ -331,7 +331,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 	}
 
 	@Override
-	public void auditAdvertiser(String[] ids, Integer status, String reason) {
-		advertiserDao.auditAdvertiser(ids, status, reason);
+	public void auditAdvertiser(String[] ids, Integer status, String reason, Integer userId) {
+		advertiserDao.auditAdvertiser(ids, status, reason, userId);
 	}
 }
