@@ -6,8 +6,15 @@ public class ReportControllerTest {
 	
 	@Test
 	public void mediaReport(){
-		String link = "http://localhost:8080/services/report/media?type=1&dims=3&realtime=0&startDate=20170801"
-				+ "&endDate=20170823";
+		String link = "http://localhost:8080/services/report/media?type=1&dims=1&realtime=0&startDate=20170910"
+				+ "&endDate=20170911";
+		HttpUtilTest.httpGet(link);
+	}
+	
+	@Test
+	public void mediaDashboardReport(){
+		String link = "http://localhost:8080/services/report/mediaDashboard?dims=1&realtime=1&startDate=20170909"
+				+ "&endDate=20170912";
 		HttpUtilTest.httpGet(link);
 	}
 	

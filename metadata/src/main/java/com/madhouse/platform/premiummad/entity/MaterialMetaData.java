@@ -67,6 +67,7 @@ public class MaterialMetaData {
     private int w;
     private int h;
     private String icon;
+    private String brand;
     private String title;
     private String desc;
     private String cover;
@@ -271,6 +272,14 @@ public class MaterialMetaData {
 
     public void setMediaMaterialUrl(String mediaMaterialUrl) {
         this.mediaMaterialUrl = mediaMaterialUrl;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
     
     

@@ -183,7 +183,7 @@ public class MaterialServiceImpl implements IMaterialService {
 
 		// 查询广告主的审核结果
 		List<MaterialAuditResultModel> results = new ArrayList<MaterialAuditResultModel>();
-		if (idStrs != null && idStrs.length > 1) {
+		if (idStrs != null && idStrs.length > 0) {
 			List<Material> selectMaterials = materialDao.selectByMaterialKeysAndDspId(idStrs, dspId);
 			MaterialRule.convert(selectMaterials, results);
 		}
@@ -289,7 +289,7 @@ public class MaterialServiceImpl implements IMaterialService {
 	}
 
 	@Override
-	public void auditMaterial(String[] ids, Integer status, String reason) {
-		materialDao.auditMaterial(ids, status, reason);
+	public void auditMaterial(String[] ids, Integer status, String reason, Integer userId) {
+		materialDao.auditMaterial(ids, status, reason, userId);
 	}
 }

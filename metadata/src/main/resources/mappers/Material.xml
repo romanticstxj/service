@@ -12,6 +12,7 @@
     <result column="end_date" property="endDate" jdbcType="VARCHAR" />
     <result column="size" property="size" jdbcType="VARCHAR" />
     <result column="icon" property="icon" jdbcType="VARCHAR" />
+   	<result column="brand" property="brand" jdbcType="VARCHAR" />
     <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="description" property="desc" jdbcType="VARCHAR" />
     <result column="cover" property="cover" jdbcType="VARCHAR" />
@@ -43,6 +44,7 @@
 		layout,
 		media_id,
 		deal_id,
+		brand,
 		size,
 		icon,
 		title,

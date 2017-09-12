@@ -59,12 +59,13 @@ public class AdvertiserController {
     }
 	
 	@RequestMapping("/audit")
-    public ResponseDto<Advertiser> audit(@RequestBody AuditDto dto) throws Exception {
+    public ResponseDto<Advertiser> audit(@RequestBody AuditDto dto,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		String idsStr = dto.getIds();
 		Integer status = dto.getStatus();
 		String reason = dto.getReason();
 		String[] ids = StringUtils.splitToStringArray(idsStr);
-		advertiserService.auditAdvertiser(ids, status, reason);
+		advertiserService.auditAdvertiser(ids, status, reason, userId);
         return ResponseUtils.response(StatusCode.SC20000, null);
     }
 }
