@@ -14,5 +14,7 @@ public interface IReportService{
 	List<ReportDsp> queryDspReport(ReportCriterion reportCriterion);
 
 	List<ReportPolicy> queryPolicyReport(ReportCriterion reportCriterion);
+
+	List<ReportMedia> queryMediaReportDashboard(ReportCriterion reportCriterion);
 	
 }
