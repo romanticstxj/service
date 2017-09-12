@@ -12,4 +12,6 @@ public interface ReportMediaDao {
 	List<ReportMedia> queryRtMediaReport(ReportCriterion reportCriterion);
 
 	List<ReportMedia> queryMediaLocationReport(ReportCriterion reportCriterion);
+
+	List<ReportMedia> queryMediaReportDashboard(ReportCriterion reportCriterion);
 }

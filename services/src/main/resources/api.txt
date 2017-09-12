@@ -1139,6 +1139,44 @@
             }
         }
     },
+    "/report/mediaDashboard": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                	"dims": "<*||string||comment:维度选择(单选), 1:日期,2:时间>",
+                	"realtime": "<*||integer||comment:(单选)1 实时,0 离线>",
+                	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
+                	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": {
+                    	"id": "<*||integer||comment:媒体报表ID>",
+	                	"mediaId": "<*||integer||comment:媒体ID>",
+	                	"mediaName": "<*||string||comment:媒体名称>",
+	                	"adspaceId": "<integer||comment:广告位ID>",
+	                	"adspaceName": "<*||string||comment:广告位名称>",
+	                	"carrier": "<integer||comment:运营商code>",
+	                	"conn": "<integer||comment:联网方式code>",
+	                	"device": "<integer||comment:设备类型code>",
+	                	"location": "<string||comment:地域code>",
+	                	"date": "<date||comment:日期>",
+	                    "hour": "<integer||comment:小时>",
+	                    "reqs": "<*||integer||comment:请求数>",
+	                    "bids": "<*||integer||comment:填充数>",
+	                    "errs": "<*||integer||comment:错误数>",
+	                	"imps": "<*||integer||comment:展示数>",
+	                	"clks": "<*||integer||comment:点击数>",
+	                	"vimps": "<integer||comment:有效展示数>",
+	                	"vclks": "<integer||comment:有效点击数>",
+	                	"income": "<*||integer||comment:媒体收入>"
+                    }
+                }
+            }
+        }
+    },
     "/report/dsp": {
         "get": {
             "_summary": "",

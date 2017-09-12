@@ -93,4 +93,16 @@
     ORDER BY rp.media_id
   </select>
   
+  <select id="queryMediaReportDashboard" resultMap="BaseResultMap" parameterType="ReportCriterion" >
+    SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include>
+    <if test="hasDate != null and hasDate == true"> ,rp.date </if>
+    <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
+    <if test="realtime != null and realtime.intValue() == 0">FROM mad_report_media rp</if>
+    <if test="realtime != null and realtime.intValue() == 1">FROM mad_report_media_rt rp</if>
+    WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <include refid="mediaAuthCondition"/>
+    <if test="hasDate != null and hasDate == true">GROUP BY rp.date ORDER BY rp.date</if>
+    <if test="hasHour != null and hasHour == true">GROUP BY rp.hour ORDER BY rp.hour</if>
+  </select>
+  
 </mapper>

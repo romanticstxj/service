@@ -51,6 +51,17 @@ public class ReportServiceImpl implements IReportService {
 		}
 		return reportMedias;
 	}
+	
+	@Override
+	public List<ReportMedia> queryMediaReportDashboard(ReportCriterion reportCriterion) {
+		List<ReportMedia> reportMedias = null;
+		reportMedias = reportMediaDao.queryMediaReportDashboard(reportCriterion);
+		
+		if(reportMedias == null){ //查询参数错误，没查任何结果
+			throw new BusinessException(StatusCode.SC20501);
+		}
+		return reportMedias;
+	}
 
 	@Override
 	public List<ReportDsp> queryDspReport(ReportCriterion reportCriterion) {
