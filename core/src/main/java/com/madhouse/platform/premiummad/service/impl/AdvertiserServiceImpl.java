@@ -95,7 +95,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		// 校验我方系统是否存在
 		List<Advertiser> advertisers = advertiserDao.selectByIds(advertiserIds);
 		if (advertisers == null || advertisers.size() != advertiserIds.size()) {
-			throw new BusinessException(StatusCode.SC500, "存在无效的广告主ID");
+			throw new BusinessException(StatusCode.SC414, "存在无效的广告主ID");
 		}
 
 		// 已驳回或已通过的记录更新状态
@@ -139,7 +139,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		advertiserIds.addAll(advertiserIdKeys.keySet());
 		List<Advertiser> advertisers = advertiserDao.selectByIds(advertiserIds);
 		if (advertisers == null || advertisers.size() != advertiserIds.size()) {
-			throw new BusinessException(StatusCode.SC500, "存在无效的广告主ID");
+			throw new BusinessException(StatusCode.SC414, "存在无效的广告主ID");
 		}
 
 		// 设置状态为审核中
@@ -198,7 +198,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		String[] distinctMediaIds = AdvertiserRule.parseListToDistinctArray(entity.getMediaId());
 		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
 		MediaRule.checkMedias(distinctMediaIds, uploadedMedias);
-
+		
 		// 判断广告主是否已存在
 		List<Advertiser> advertisers = advertiserDao.selectByAdvertiserKeyAndMediaIds(entity);
 		List<Map<Integer, Advertiser>> classfiedMaps = new ArrayList<Map<Integer, Advertiser>>();

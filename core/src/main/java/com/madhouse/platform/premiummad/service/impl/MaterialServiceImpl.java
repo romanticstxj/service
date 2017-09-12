@@ -4,20 +4,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.madhouse.platform.premiummad.constant.MaterialAuditMode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
+import com.madhouse.platform.premiummad.constant.MediaNeedAdspace;
 import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.dao.AdspaceDao;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
+import com.madhouse.platform.premiummad.dao.PolicyDao;
 import com.madhouse.platform.premiummad.dao.SysMediaMapper;
+import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.Material;
+import com.madhouse.platform.premiummad.entity.Policy;
 import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
@@ -42,6 +45,12 @@ public class MaterialServiceImpl implements IMaterialService {
 	@Autowired
 	private IAdvertiserService advertiserService;
 
+	@Autowired
+	private PolicyDao policyDao;
+	
+	@Autowired
+	private AdspaceDao adspaceDao;
+	
 	/**
 	 * 根据媒体返回的结果更新状态-通过媒体key更新
 	 * 
@@ -138,7 +147,7 @@ public class MaterialServiceImpl implements IMaterialService {
 		materialIds.addAll(materialIdKeys.keySet());
 		List<Material> materials = materialDao.selectByIds(materialIds);
 		if (materials == null || materials.size() != materialIds.size()) {
-			throw new BusinessException(StatusCode.SC500, "存在无效的素材ID");
+			throw new BusinessException(StatusCode.SC418, "存在无效的素材ID");
 		}
 
 		// 设置状态为审核中
@@ -208,6 +217,18 @@ public class MaterialServiceImpl implements IMaterialService {
 		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
 		MediaRule.checkMedias(distinctMediaIds, uploadedMedias);
 
+		// 判断需要广告位是否与媒体关联
+		if (MediaNeedAdspace.getValue(entity.getMediaId())) {
+			List<Adspace> adspaces = adspaceDao.selectByIds(entity.getAdspaceId());
+			MaterialRule.validateAdsapce(adspaces, entity);
+		}
+
+		// 判断提交DealID，是否存在且类型为1、2并且与deliveryType一致
+		if (!StringUtils.isBlank(entity.getDealId())) {
+			Policy policy = policyDao.selectByPrimaryKey(Integer.valueOf(entity.getDealId()));
+			MaterialRule.validatePolicy(policy, entity);
+		}
+		
 		// 判断所有需要广告主需要审核的媒体是否都已审核通过
 		String errorMsg = advertiserService.validateAdKeyAndMedias(uploadedMedias, entity.getDspId(), entity.getAdvertiserId());
 		if (!StringUtils.isBlank(errorMsg)) {
