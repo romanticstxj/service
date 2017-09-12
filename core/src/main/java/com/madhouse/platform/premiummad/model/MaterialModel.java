@@ -1,7 +1,6 @@
 package com.madhouse.platform.premiummad.model;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 public class MaterialModel implements Serializable {
@@ -57,12 +56,12 @@ public class MaterialModel implements Serializable {
 	/**
 	 * 有效日期(yyyy-MM-dd)
 	 */
-	private Date startDate;
+	private String startDate;
 	
 	/**
 	 * 失效日期(yyyy-MM-dd)
 	 */
-	private Date endDate;
+	private String endDate;
 	
 	/**
 	 * PremiumMAD 平台定义的媒体ID
@@ -190,19 +189,19 @@ public class MaterialModel implements Serializable {
 		this.dealId = dealId;
 	}
 
-	public Date getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public String getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
 

@@ -33,7 +33,7 @@ public class AdvertiserController {
 	 */
 	@TokenFilter
 	@RequestMapping("/upload")
-	public ResponseDto<Void> list(@RequestBody AdvertiserDto advertiserDto, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
+	public ResponseDto<Void> upload(@RequestBody AdvertiserDto advertiserDto, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
 		AdvertiserModel entity = new AdvertiserModel();
 		BeanUtils.copyProperties(advertiserDto, entity);
 		entity.setDspId(dspId); // 广告主所属DSP

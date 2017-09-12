@@ -5,11 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.madhouse.platform.premiummad.dao.MediaDao;
 import com.madhouse.platform.premiummad.entity.Media;
+import com.madhouse.platform.premiummad.model.MediaModel;
 import com.madhouse.platform.premiummad.service.IMediaService;
-import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
@@ -46,6 +45,12 @@ public class MediaServiceImpl implements IMediaService {
 	@Override
 	public int updateStatus(Media media) {
 		return mediaDao.updateStatus(media);
+	}
+
+	@Override
+	public List<MediaModel> getAuditedMedia(String dspId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
