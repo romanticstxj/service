@@ -208,6 +208,7 @@ public class MaterialRule extends BaseRule {
 		material.setDealId(entity.getDealId() != null ? Integer.valueOf(entity.getDealId()) : 0);
 		material.setDeliveryType(Byte.valueOf(entity.getDeliveryType().toString()));
 		material.setDescription(entity.getDesc());
+		material.setContent(entity.getContent());
 		material.setDuration(entity.getDuration() != null ? entity.getDuration() : 0);
 		material.setEndDate(entity.getEndDate());
 		material.setIcon(entity.getIcon());
@@ -285,6 +286,7 @@ public class MaterialRule extends BaseRule {
 			destinationItem.setId(sourceItem.getMaterialKey()); // DSP 传过来的素材ID
 			destinationItem.setMediaId(String.valueOf(sourceItem.getMediaId()));
 			destinationItem.setStatus(Integer.valueOf(sourceItem.getStatus()));
+			destinationItem.setAdspaceId(sourceItem.getAdspaceId());
 			destinationItem.setErrorMessage(sourceItem.getReason());
 			destination.add(destinationItem);
 		}

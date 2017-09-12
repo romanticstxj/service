@@ -67,6 +67,7 @@ public class MaterialMetaData {
     private int w;
     private int h;
     private String icon;
+    private String brand;
     private String title;
     private String desc;
     private String cover;
@@ -75,6 +76,10 @@ public class MaterialMetaData {
     private int actType;
     private String lpgUrl;
     private Monitor monitor;
+    
+    private String mediaQueryKey;
+    private String mediaMaterialKey;
+    private String mediaMaterialUrl;
 
     
     public long getId() {
@@ -244,5 +249,39 @@ public class MaterialMetaData {
     public void setDspId(long dspId) {
         this.dspId = dspId;
     }
+
+    public String getMediaQueryKey() {
+        return mediaQueryKey;
+    }
+
+    public void setMediaQueryKey(String mediaQueryKey) {
+        this.mediaQueryKey = mediaQueryKey;
+    }
+
+    public String getMediaMaterialKey() {
+        return mediaMaterialKey;
+    }
+
+    public void setMediaMaterialKey(String mediaMaterialKey) {
+        this.mediaMaterialKey = mediaMaterialKey;
+    }
+
+    public String getMediaMaterialUrl() {
+        return mediaMaterialUrl;
+    }
+
+    public void setMediaMaterialUrl(String mediaMaterialUrl) {
+        this.mediaMaterialUrl = mediaMaterialUrl;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+    
+    
 }
 

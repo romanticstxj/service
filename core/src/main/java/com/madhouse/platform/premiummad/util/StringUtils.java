@@ -1,16 +1,22 @@
 package com.madhouse.platform.premiummad.util;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+
 import org.apache.commons.lang3.CharEncoding;
 import org.springframework.util.Base64Utils;
+
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 
 public class StringUtils {
@@ -49,7 +55,52 @@ public class StringUtils {
 		}
 		return null;
 	}
+	
+	public static Map<String, Integer> getFileMD5(InputStream file) {
+		Map<String, Integer> md5LenghtLength = new HashMap<String, Integer>();
+	    try {
+    	    MessageDigest md = MessageDigest.getInstance("MD5");
+    	    byte[] buffer = new byte[1024];
+    	    int length = -1;
+    	    int totalLength = 0;
+    	    while ((length = file.read(buffer, 0, 1024)) != -1) {
+    	    	totalLength = totalLength + length;
+    	        md.update(buffer, 0, length);
+    	    }
+    	    BigInteger bigInt = new BigInteger(1, md.digest());
+    	    md5LenghtLength.put(bigInt.toString(16), totalLength);
+    	    return md5LenghtLength;
+	    } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+       
+	}
 
+	public static String getMD5(byte[] data, int offset, int len) {
+		if (data != null && data.length > 0) {
+			try {
+				MessageDigest md = MessageDigest.getInstance("MD5");
+				md.update(data, offset, len);
+				byte[] temp = md.digest();
+
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < temp.length; ++i) {
+					String str = Integer.toString(temp[i] & 0xff, 16);
+					if (str.length() < 2) {
+						sb.append("0");
+					}
+					sb.append(str);
+				}
+				return sb.toString();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * 将指定byte数组转换成32位字符串
 	 * 

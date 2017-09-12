@@ -163,12 +163,12 @@ public class AdvertiserRule extends BaseRule {
 		advertiser.setAdvertiserName(entity.getName());
 		advertiser.setContact(entity.getContact());
 		advertiser.setIndustry(Short.valueOf(entity.getIndustry().toString()));
-		if (entity.getLience() != null && !entity.getLience().isEmpty()) {
-			StringBuilder liences = new StringBuilder();
-			for (String lience : entity.getLience()) {
-				liences.append("|" + lience);
+		if (entity.getLicense() != null && !entity.getLicense().isEmpty()) {
+			StringBuilder licenses = new StringBuilder();
+			for (String license : entity.getLicense()) {
+				licenses.append("|" + license);
 			}
-			advertiser.setLicense(liences.substring(1));
+			advertiser.setLicense(licenses.substring(1));
 		}
 		advertiser.setPhone(entity.getPhone());
 		advertiser.setWebsite(entity.getWebSite());

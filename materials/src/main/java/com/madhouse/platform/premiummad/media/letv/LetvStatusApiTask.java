@@ -16,11 +16,11 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.LetvConstant;
-import com.madhouse.platform.premiummad.media.model.LetvResponse;
-import com.madhouse.platform.premiummad.media.model.LetvStatusDetailResponse;
-import com.madhouse.platform.premiummad.media.model.LetvStatusRequest;
-import com.madhouse.platform.premiummad.media.model.LetvTokenRequest;
+import com.madhouse.platform.premiummad.media.letv.constant.LetvConstant;
+import com.madhouse.platform.premiummad.media.letv.request.LetvStatusRequest;
+import com.madhouse.platform.premiummad.media.letv.request.LetvTokenRequest;
+import com.madhouse.platform.premiummad.media.letv.response.LetvResponse;
+import com.madhouse.platform.premiummad.media.letv.response.LetvStatusDetailResponse;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
@@ -33,9 +33,6 @@ public class LetvStatusApiTask {
 
 	@Value("${letv.statusUrl}")
 	private String statusUrl;
-
-	@Value("${letv.isDebug}")
-	private Boolean isDebug;
 	
 	@Autowired
     private LetvTokenRequest tokenRequest;
@@ -73,7 +70,7 @@ public class LetvStatusApiTask {
 				List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 				for (LetvStatusDetailResponse statusDetail : letvStatusDetailResponse) {
 					MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-					auditItem.setMediaMaterialKey(String.valueOf(statusDetail.getUrl()));
+					auditItem.setMediaQueryKey(String.valueOf(statusDetail.getUrl()));
 					auditItem.setMediaId(String.valueOf(MediaMapping.LETV.getValue()));
 					if (statusDetail.getResult().equals("通过")) {
 						auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
@@ -91,9 +88,9 @@ public class LetvStatusApiTask {
 				}
 			} else if (result.equals(LetvConstant.RESPONSE_PARAM_CHECK_FAIL.getValue())) {
 				// 失败,纪录错误信息
-				LOGGER.error("素材[materialId=" + getMaterialIds(unAuditMaterials) + "]上传失败");
+				LOGGER.error("素材[materialId=" + getMaterialIds(unAuditMaterials) + "]获取状态失败");
 			} else {
-				LOGGER.error("素材[materialId=" + getMaterialIds(unAuditMaterials) + "]上传失败");
+				LOGGER.error("素材[materialId=" + getMaterialIds(unAuditMaterials) + "]获取状态失败");
 			}
 		}
 
@@ -104,7 +101,7 @@ public class LetvStatusApiTask {
 		LetvStatusRequest letvStatusRequest = new LetvStatusRequest();
 		List<String> adUrl = new ArrayList<String>();
 		for (Material item : unAuditMaterials) {
-			adUrl.add(item.getMediaMaterialKey());
+			adUrl.add(item.getMediaQueryKey());
 		}
 		letvStatusRequest.setAdurl(adUrl);
     	letvStatusRequest.setDspid(tokenRequest.getDspid());

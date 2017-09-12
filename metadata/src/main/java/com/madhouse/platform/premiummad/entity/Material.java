@@ -22,6 +22,8 @@ public class Material {
     
     private String icon;
     
+    private String brand;
+    
     private String title;
     
     private String desc;
@@ -46,7 +48,9 @@ public class Material {
     
     private String adMaterials;
    
+    private String mediaQueryKey;
     private String mediaMaterialKey;
+    private String mediaMaterialUrl;
     
     public String getMediaMaterialKey() {
         return mediaMaterialKey;
@@ -230,6 +234,30 @@ public class Material {
 
     public void setAdspaceId(long adspaceId) {
         this.adspaceId = adspaceId;
+    }
+
+    public String getMediaQueryKey() {
+        return mediaQueryKey;
+    }
+
+    public void setMediaQueryKey(String mediaQueryKey) {
+        this.mediaQueryKey = mediaQueryKey;
+    }
+
+    public String getMediaMaterialUrl() {
+        return mediaMaterialUrl;
+    }
+
+    public void setMediaMaterialUrl(String mediaMaterialUrl) {
+        this.mediaMaterialUrl = mediaMaterialUrl;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
     
     

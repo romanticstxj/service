@@ -50,11 +50,21 @@ public class DspTask {
             LOGGER.debug("------------DSPTask-----loadDSPMetaData------start--");
             final List<DSPMetaData> lists = service.queryAll();
             long begin = System.currentTimeMillis();
-            redisMaster.del(ALL_DSP);
+            Set<String> allDspIds = redisMaster.smembers(ALL_DSP);
             for (DSPMetaData metaData : lists) {
                 redisMaster.setex(String.format(this.DSP_META_DATA, String.valueOf(metaData.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
                 redisMaster.sadd(this.ALL_DSP, String.valueOf(metaData.getId()));
+                if (allDspIds != null && allDspIds.size() > 0) {
+                    allDspIds.remove(String.valueOf(metaData.getId()));
+                }
             }
+
+            if (allDspIds != null && allDspIds.size() > 0) {
+                for (String dspId : allDspIds) {
+                    redisMaster.srem(this.ALL_DSP, dspId);
+                }
+            }
+
             redisMaster.expire(this.ALL_DSP, EXPIRATION_TIME);
             LOGGER.info("op loadDSPMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------DSPTask-----loadDSPMetaData------  End--");

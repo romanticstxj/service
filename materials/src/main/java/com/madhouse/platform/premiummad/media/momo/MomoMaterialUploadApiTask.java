@@ -9,11 +9,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
@@ -21,11 +23,11 @@ import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.MomoIndustryMapping;
-import com.madhouse.platform.premiummad.media.model.MomoUploadRequest;
-import com.madhouse.platform.premiummad.media.model.MomoUploadRequest.NativeCreativeBean.ImageBean;
-import com.madhouse.platform.premiummad.media.model.MomoUploadResponse;
-import com.madhouse.platform.premiummad.media.util.MomoHttpUtils;
+import com.madhouse.platform.premiummad.media.momo.constant.MomoIndustryMapping;
+import com.madhouse.platform.premiummad.media.momo.request.MomoUploadRequest;
+import com.madhouse.platform.premiummad.media.momo.request.MomoUploadRequest.NativeCreativeBean.ImageBean;
+import com.madhouse.platform.premiummad.media.momo.response.MomoUploadResponse;
+import com.madhouse.platform.premiummad.media.momo.util.MomoHttpUtils;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -72,7 +74,7 @@ public class MomoMaterialUploadApiTask {
 		LOGGER.info("MomoMaterialUploadApiTask-Momo", unSubmitMaterials.size());
 
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
 			MomoUploadRequest request = new MomoUploadRequest();
 			String errorMsg = buildUploadMaterialRequest(material, request);
@@ -95,7 +97,8 @@ public class MomoMaterialUploadApiTask {
 				MomoUploadResponse response = JSON.parseObject(responseJson, MomoUploadResponse.class);
 				// 200：成功
 				if (response.getEc() == 200) {
-					materialIdKeys.put(material.getId(), material.getMediaMaterialKey());
+					String[] mediaQueryAndMaterialKeys = {material.getMediaQueryKey()};
+					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
 				} else {
 					// 自动驳回
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
@@ -140,7 +143,7 @@ public class MomoMaterialUploadApiTask {
 		}
 
 		String crid = StringUtils.getMD5(material.getId().toString());
-		material.setMediaMaterialKey(crid);
+		material.setMediaQueryKey(crid);
 		request.setDspid(dspId);
 		request.setCid(crid);// 活动ID
 		request.setAdid(crid); // 广告ID
@@ -158,9 +161,9 @@ public class MomoMaterialUploadApiTask {
 		MomoUploadRequest.NativeCreativeBean.LogoBean logoBean = new MomoUploadRequest.NativeCreativeBean.LogoBean();
 		MomoUploadRequest.NativeCreativeBean.VideoBean videoBean = new MomoUploadRequest.NativeCreativeBean.VideoBean();
 		// 根据后缀判断是图片还是视频
-		if (!material.getAdMaterials().endsWith("mp4")) {
+		if (!material.getAdMaterials().split("\\|")[0].endsWith("mp4")) {
 			// image
-			imageBean.setUrl(material.getAdMaterials());
+			imageBean.setUrl(material.getAdMaterials().split("\\|")[0]);
 			imageBean.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
 			imageBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 			creativeBean.setImage(Collections.singletonList(imageBean));
@@ -172,7 +175,7 @@ public class MomoMaterialUploadApiTask {
 			imageBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 			videoBean.setCover_img(imageBean);
 
-			videoBean.setUrl(material.getAdMaterials());
+			videoBean.setUrl(material.getAdMaterials().split("\\|")[0]);
 			creativeBean.setVideo(Collections.singletonList(videoBean));
 			creativeBean.setNative_format("FEED_LANDING_PAGE_VIDEO"); // 广告样式
 			creativeBean.setCard_title(material.getTitle());

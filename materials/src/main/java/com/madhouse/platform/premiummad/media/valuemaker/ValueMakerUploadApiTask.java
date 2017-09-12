@@ -16,17 +16,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
+import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.constant.IValueMakerConstant;
-import com.madhouse.platform.premiummad.media.constant.ValuekerIndustryMapping;
-import com.madhouse.platform.premiummad.media.model.ValueMakerMaterialUploadRequest;
-import com.madhouse.platform.premiummad.media.model.ValuekerResponse;
-import com.madhouse.platform.premiummad.media.util.ValueMakerHttpUtil;
+import com.madhouse.platform.premiummad.media.valuemaker.constant.ValueMakerConstant;
+import com.madhouse.platform.premiummad.media.valuemaker.constant.ValuekerIndustryMapping;
+import com.madhouse.platform.premiummad.media.valuemaker.request.ValueMakerMaterialUploadRequest;
+import com.madhouse.platform.premiummad.media.valuemaker.response.ValuekerResponse;
+import com.madhouse.platform.premiummad.media.valuemaker.util.ValueMakerHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -43,15 +44,6 @@ public class ValueMakerUploadApiTask {
 	
 	@Value("${valuemaker.vam}")
 	private String vam;
-
-	@Value("${mh_valuemaker_ad_type_1}")
-	private String mh_valuemaker_ad_type_1;
-	@Value("${mh_valuemaker_ad_type_2}")
-	private String mh_valuemaker_ad_type_2;
-	@Value("${mh_valuemaker_ad_type_3}")
-	private String mh_valuemaker_ad_type_3;
-	@Value("${mh_valuemaker_ad_type_4}")
-	private String mh_valuemaker_ad_type_4;
 
 	@Autowired
 	private ValueMakerHttpUtil valueMakerHttpUtil;
@@ -82,11 +74,11 @@ public class ValueMakerUploadApiTask {
 		// 上传到媒体
 		LOGGER.info("ValueMakerUploadApiTask-ValueMaker", unSubmitMaterials.size());
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
-		Map<Integer, String> materialIdKeys = new HashMap<Integer, String>();
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
 			// 上传过媒体，更新
 			String url = uploadMaterialUrl;
-			if (!StringUtils.isBlank(material.getMediaMaterialKey())) {
+			if (!StringUtils.isBlank(material.getMediaQueryKey())) {
 				url = updateMaterialUrl;
 			}
 			
@@ -108,26 +100,27 @@ public class ValueMakerUploadApiTask {
 
 			// 处理结果
 			int responseStatus = responseMap.get("responseStatus").equals("") ? 0 : Integer.parseInt(responseMap.get("responseStatus"));
-			if (responseStatus == IValueMakerConstant.RESPONSE_STATUS_200.getValue()) {// 上传成功
-				materialIdKeys.put(material.getId(), material.getMediaMaterialKey());
-			} else if (IValueMakerConstant.RESPONSE_STATUS_422.getValue() == responseStatus) {
+			if (responseStatus == ValueMakerConstant.RESPONSE_STATUS_200.getValue()) {// 上传成功
+				String[] mediaQueryAndMaterialKeys = {material.getMediaQueryKey()};
+				materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
+			} else if (ValueMakerConstant.RESPONSE_STATUS_422.getValue() == responseStatus) {
 				// 业务异常
 				String result = responseMap.get("result");
 				if (!StringUtils.isBlank(result)) {
 					ValuekerResponse resposne = JSONObject.parseObject(result, ValuekerResponse.class);
 					// 已知业务异常直接驳回
-					if (resposne != null && !StringUtils.isBlank(IValueMakerConstant.getErrorMessage(resposne.getStatus()))) {
+					if (resposne != null && !StringUtils.isBlank(ValueMakerConstant.getErrorMessage(resposne.getStatus()))) {
 						MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 						rejuseItem.setId(String.valueOf(material.getId()));
 						rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
 						rejuseItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
-						rejuseItem.setErrorMessage(IValueMakerConstant.getErrorMessage(resposne.getStatus()));
+						rejuseItem.setErrorMessage(ValueMakerConstant.getErrorMessage(resposne.getStatus()));
 						rejusedMaterials.add(rejuseItem);
 					}
 				}
 			} else { 
 				// 非业务异常
-				LOGGER.info("valueMaker上传物料请求出错，错误编码：" + responseStatus + "-" + IValueMakerConstant.getDescription(responseStatus));
+				LOGGER.info("valueMaker上传物料请求出错，错误编码：" + responseStatus + "-" + ValueMakerConstant.getDescription(responseStatus));
 			}
 		}
 
@@ -184,18 +177,25 @@ public class ValueMakerUploadApiTask {
 			if (adMaterialArray != null) {
 				for (int i = 0; i < adMaterialArray.length; i++) {
 					urls.add(adMaterialArray[i]);
+					// 目前只支持一个素材
+					if (urls.size() == 1) {
+						break;
+					}
 				}
 			}
 		}
 		request.setPic_urls(urls);
 
+		// 媒体广告形式 
+		request.setAdtype(getAdType(material.getLayout().intValue()));
+				
 		// 只有信息流需要标题和内容
-		if (needTitle(String.valueOf(material.getAdspaceId()))) {
+		if (needTitle(request.getAdtype())) {
 			request.setTitle(material.getTitle());
 			request.setText(material.getDescription());
 		}
 
-		request.setFormat(IValueMakerConstant.VALUEMAKER_FROMAT_STATIC.getValue());
+		request.setFormat(ValueMakerConstant.VALUEMAKER_FROMAT_STATIC.getValue());
 
 		// 万流客用于审核落地页域名  - 用 广告主 web 主页 
 		List<String> adomainlist = new ArrayList<>();
@@ -204,11 +204,9 @@ public class ValueMakerUploadApiTask {
 
 		// dsp系统中的id
 		String id = MD5_16bit(String.valueOf(material.getId()) + String.valueOf(material.getAdspaceId()));
-		material.setMediaMaterialKey(id);
+		material.setMediaQueryKey(id);
 		request.setId(id);
 
-		// 1-Banner广告，2-开屏广告，3-插屏广告，4-信息流广告
-		request.setAdtype(getAdType(String.valueOf(material.getAdspaceId())));
 		return "";
 	}
 	
@@ -217,30 +215,31 @@ public class ValueMakerUploadApiTask {
 	 * 
 	 * @return
 	 */
-	private boolean needTitle(String adspaceId) {
+	private boolean needTitle(int addType) {
 		// 只有信息流需要提供标题文字
-		if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_4) != null) {
+		if (addType == ValueMakerConstant.VALUEMAKER_AD_TYPE_INFORMATIONFLOW.getValue()) {
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * 根据广告位ID获取广告类型
+	 * 根据广告形式获取广告类型
+	 * 1-Banner广告，2-开屏广告，3-插屏广告，4-信息流广告
 	 * 
-	 * @param adspaceId
+	 * @param layout
 	 * @return
 	 */
-	private int getAdType(String adspaceId) {
+	private int getAdType(int layout) {
 		int adtype = 0;
-		if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_1) != null) {
-			adtype = IValueMakerConstant.VALUEMAKER_AD_TYPE_BANNER.getValue();
-		} else if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_2) != null) {
-			adtype = IValueMakerConstant.VALUEMAKER_AD_TYPE_OPENSCREEN.getValue();
-		} else if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_3) != null) {
-			adtype = IValueMakerConstant.VALUEMAKER_AD_TYPE_TABLEPLAQUE.getValue();
-		} else if (AnalyzingType(adspaceId, mh_valuemaker_ad_type_4) != null) {
-			adtype = IValueMakerConstant.VALUEMAKER_AD_TYPE_INFORMATIONFLOW.getValue();
+		if (Layout.LO10001.getValue() == layout) { //横幅
+			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_BANNER.getValue();
+		} else if (Layout.LO10005.getValue() == layout) { //开屏
+			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_OPENSCREEN.getValue();
+		} else if (Layout.LO10003.getValue() == layout) { //插屏
+			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_TABLEPLAQUE.getValue();
+		} else if (Layout.LO30001.getValue() == layout) { //图文信息流（只支持一张图片）
+			adtype = ValueMakerConstant.VALUEMAKER_AD_TYPE_INFORMATIONFLOW.getValue();
 		}
 		return adtype;
 	}
@@ -289,29 +288,5 @@ public class ValueMakerUploadApiTask {
 		} else {
 			return "";
 		}
-	}
-
-	/**
-	 * 判断广告位类型。
-	 * 
-	 * @param materialSpaceid
-	 * @param mh_valuemaker_ad_type
-	 *            各类型id集合
-	 * @return
-	 */
-	private String AnalyzingType(String materialSpaceid, String mh_valuemaker_ad_type) {
-		if (!StringUtils.isEmpty(materialSpaceid) && !StringUtils.isEmpty(mh_valuemaker_ad_type)) {
-			String[] ids = mh_valuemaker_ad_type.trim().split(",");
-			if (ids != null && ids.length > 0) {
-				for (String id : ids) {
-					if (id.equals(materialSpaceid)) {
-						return ids[0].trim();
-					}
-				}
-			} else {
-				return null;
-			}
-		}
-		return null;
 	}
 }

@@ -29,6 +29,8 @@
         <result property="materialDuration" column="material_duration" jdbcType="VARCHAR" />
         <result property="status" column="status" jdbcType="INTEGER" />
         <result property="description" column="description" jdbcType="VARCHAR" />
+        <result property="content" column="content_max_length" jdbcType="INTEGER" />
+        
 	</resultMap>
 	
 	<resultMap id="mediaMappingResult" type="com.madhouse.platform.premiummad.entity.MediaMappingMetaData">

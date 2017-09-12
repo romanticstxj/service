@@ -12,6 +12,7 @@
     <result column="end_date" property="endDate" jdbcType="VARCHAR" />
     <result column="size" property="size" jdbcType="VARCHAR" />
     <result column="icon" property="icon" jdbcType="VARCHAR" />
+   	<result column="brand" property="brand" jdbcType="VARCHAR" />
     <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="description" property="desc" jdbcType="VARCHAR" />
     <result column="cover" property="cover" jdbcType="VARCHAR" />
@@ -24,12 +25,45 @@
     <result column="adspace_id" property="adspaceId" jdbcType="INTEGER" />
     <result column="media_id" property="mediaId" jdbcType="INTEGER" />
   	<result column="ad_materials" property="adMaterials" jdbcType="VARCHAR" />
+  	<result column="media_query_key" property="mediaQueryKey" jdbcType="VARCHAR" />
   	<result column="media_material_key" property="mediaMaterialKey" jdbcType="VARCHAR" />
+  	<result column="media_material_url" property="mediaMaterialUrl" jdbcType="VARCHAR" />
   </resultMap>
   
   <select id="queryAll" resultMap="baseResult">
-  	select id,DATE_FORMAT(start_date,'%Y-%m-%d')start_date , DATE_FORMAT(end_date,'%Y-%m-%d') end_date ,ad_materials,adspace_id,media_id, dsp_id,material_key,material_name,layout,media_id,deal_id,size,icon,title,description,cover,duration,lpg_url,active_type,imp_urls,clk_urls,sec_urls,audited_user,media_material_key 
-  	from mad_sys_material  where `status` =2
+  	SELECT
+		id,
+		DATE_FORMAT(start_date, '%Y-%m-%d') start_date,
+		DATE_FORMAT(end_date, '%Y-%m-%d') end_date,
+		ad_materials,
+		adspace_id,
+		media_id,
+		dsp_id,
+		material_key,
+		material_name,
+		layout,
+		media_id,
+		deal_id,
+		brand,
+		size,
+		icon,
+		title,
+		description,
+		cover,
+		duration,
+		lpg_url,
+		active_type,
+		imp_urls,
+		clk_urls,
+		sec_urls,
+		audited_user,
+		media_query_key,
+		media_material_key,
+		media_material_url
+	FROM
+		mad_sys_material
+	WHERE
+		`status` = 2
   </select>
   
 </mapper>
