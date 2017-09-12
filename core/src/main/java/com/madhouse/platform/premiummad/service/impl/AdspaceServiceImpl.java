@@ -15,6 +15,7 @@ import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.DspMapping;
 import com.madhouse.platform.premiummad.exception.BusinessException;
+import com.madhouse.platform.premiummad.model.AdspaceModel;
 import com.madhouse.platform.premiummad.service.IAdspaceService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -191,6 +192,12 @@ public class AdspaceServiceImpl implements IAdspaceService {
 
 	@Override
 	public List<Adspace> queryAll(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<AdspaceModel> getAuditedAdspace(String dspId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
