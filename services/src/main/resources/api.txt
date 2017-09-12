@@ -703,7 +703,7 @@
 		            		"mediaName": "<string||comment:媒体名称>",
 		            		"materialAuditMode": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
 		            		"auditedUser": "<integer||comment:审核者(userId)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态;媒体审核(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核),平台审核(-1: 未通过, 0: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -750,7 +750,7 @@
 		            		"mediaName": "<string||comment:媒体名称>",
 		            		"materialAuditMode": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
 		            		"auditedUser": "<integer||comment:审核者(userId)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交(若媒体审核，表示还未提交给媒体), 1: 待审核(若平台审核，表示平台还未审核；若媒体审核，表示已提交给媒体并有待于他们审核的状态), 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态;媒体审核(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核),平台审核(-1: 未通过, 0: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -802,7 +802,7 @@
 		            		"auditedUser": "<integer||comment:审核者(userId)>",
 		            		"mediaKey": "<integer||comment:媒体ID>",
 		            		"mediaName": "<string||comment:媒体名称>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>"
+		                    "status": "<integer||comment:审核状态;媒体审核(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核),平台审核(-1: 未通过, 0: 待审核, 2: 通过审核)>"
                         }
                     ]
                 }
@@ -838,7 +838,7 @@
 		            		"mediaName": "<string||comment:审核媒体名称>",
 		            		"materialAuditMode": "<integer||comment:审核方式(0:不审核, 1: 我方, 2: 媒体方)>",
 		            		"auditedUser": "<integer||comment:审核者(userId)>",
-		                    "status": "<integer||comment:审核状态(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核)>",
+		                    "status": "<integer||comment:审核状态;媒体审核(-1: 未通过, 0: 待提交, 1: 待审核, 2: 通过审核),平台审核(-1: 未通过, 0: 待审核, 2: 通过审核)>",
 		            		"reason": "<string||comment:未通过原因>"
                         }
                     ]
@@ -1108,6 +1108,44 @@
                 	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,4:媒体,8:广告位>",
                 	"realtime": "<*||integer||comment:(单选)1 实时,0 离线>",
                 	"mediaId": "<integer||comment:媒体id(过滤)>",
+                	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
+                	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": {
+                    	"id": "<*||integer||comment:媒体报表ID>",
+	                	"mediaId": "<*||integer||comment:媒体ID>",
+	                	"mediaName": "<*||string||comment:媒体名称>",
+	                	"adspaceId": "<integer||comment:广告位ID>",
+	                	"adspaceName": "<*||string||comment:广告位名称>",
+	                	"carrier": "<integer||comment:运营商code>",
+	                	"conn": "<integer||comment:联网方式code>",
+	                	"device": "<integer||comment:设备类型code>",
+	                	"location": "<string||comment:地域code>",
+	                	"date": "<date||comment:日期>",
+	                    "hour": "<integer||comment:小时>",
+	                    "reqs": "<*||integer||comment:请求数>",
+	                    "bids": "<*||integer||comment:填充数>",
+	                    "errs": "<*||integer||comment:错误数>",
+	                	"imps": "<*||integer||comment:展示数>",
+	                	"clks": "<*||integer||comment:点击数>",
+	                	"vimps": "<integer||comment:有效展示数>",
+	                	"vclks": "<integer||comment:有效点击数>",
+	                	"income": "<*||integer||comment:媒体收入>"
+                    }
+                }
+            }
+        }
+    },
+    "/report/mediaDashboard": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                	"dims": "<*||string||comment:维度选择(单选), 1:日期,2:时间>",
+                	"realtime": "<*||integer||comment:(单选)1 实时,0 离线>",
                 	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
                 	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
                 }

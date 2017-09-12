@@ -128,8 +128,8 @@ public interface MaterialMapper {
 	 * @param ids
 	 * @param status
 	 * @param reason 
+	 * @param userId 
 	 */
-	void auditMaterial(@Param("ids") String[] ids, @Param("status") Integer status, @Param("reason") String reason);
 	
 	/**
 	 * 根据媒体key和媒体素材key查询
@@ -140,4 +140,6 @@ public interface MaterialMapper {
 	 */
 	List<Material> selectMaterials(@Param("mediaQueryKeys") String[] mediaQueryKeys, @Param("mediaId")Integer mediaId);
 
+	void auditMaterial(@Param("ids") String[] ids, @Param("status") Integer status, 
+			@Param("reason") String reason, @Param("userId") Integer userId);
 }

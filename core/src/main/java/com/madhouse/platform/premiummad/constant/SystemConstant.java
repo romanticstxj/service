@@ -37,6 +37,10 @@ public interface SystemConstant {
 		long WEEK = 1000L * 60L * 60L * 24L * 7L;
 		
 		int POLICY_TYPE_RTB = 8; 
+		
+		int ALL_HOURS = 24;
+		int HOUR_ZERO = 0;
+		int HOUR_23 = 23;
 	}
 	
 	interface ErrorMessage{
