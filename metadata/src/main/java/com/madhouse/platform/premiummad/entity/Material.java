@@ -22,6 +22,8 @@ public class Material {
     
     private String icon;
     
+    private String brand;
+    
     private String title;
     
     private String desc;
@@ -248,6 +250,14 @@ public class Material {
 
     public void setMediaMaterialUrl(String mediaMaterialUrl) {
         this.mediaMaterialUrl = mediaMaterialUrl;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
     
     
