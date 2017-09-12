@@ -67,14 +67,14 @@ public class SohutvUploadMaterialApiTask {
 	
 	static {
 		macroClickMap = new HashMap<String, String>();
-		macroClickMap.put("${EXT1}", "%%EXT1%%");
-		macroClickMap.put("${EXT2}", "%%EXT2%%");
-		macroClickMap.put("${EXT3}", "%%EXT3%%");
+		macroClickMap.put("__EXT1__", "%%EXT1%%");
+		macroClickMap.put("__EXT2__", "%%EXT2%%");
+		macroClickMap.put("__EXT3__", "%%EXT3%%");
 		
 		macroImageMap = new HashMap<String, String>();
-		macroImageMap.put("${EXT1}", "%%EXT1%%");
-		macroImageMap.put("${EXT2}", "%%EXT2%%");
-		macroImageMap.put("${EXT3}", "%%EXT3%%");
+		macroImageMap.put("__EXT1__", "%%EXT1%%");
+		macroImageMap.put("__EXT2__", "%%EXT2%%");
+		macroImageMap.put("__EXT3__", "%%EXT3%%");
 	}
 	
 	/**
@@ -170,16 +170,12 @@ public class SohutvUploadMaterialApiTask {
 		// 曝光监测地址
 		List<String> impUrls = new ArrayList<String>();
 		if (material.getImpUrls() != null && !material.getImpUrls().isEmpty()) {
-			// 素材表里以 |分割
+			// 素材表里以 |分割  -> startDelay1~url1|startDelay2~url2
 			String[] impTrackUrlArray = material.getImpUrls().split("\\|");
 			if (impTrackUrlArray != null) {
 				for (int i = 0; i < impTrackUrlArray.length; i++) {
-					// 时间
-					if (impTrackUrlArray[i].matches("^-?\\d+$")) {
-						continue;
-					}
-					
-					impUrls.add(MacroReplaceUtil.macroReplaceImageUrl(macroImageMap, impTrackUrlArray[i])); // 宏替换
+					String[] track = impTrackUrlArray[i].split("~");
+					impUrls.add(MacroReplaceUtil.macroReplaceImageUrl(macroImageMap, track[1])); // 宏替换
 					// 媒体最多支持5个
 					if (impUrls.size() == 3) {
 						break;

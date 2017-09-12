@@ -18,6 +18,11 @@ public class MaterialAuditResultDto {
 	private Integer status;
 	
 	/**
+	 * 广告位ID
+	 */
+	private Integer adspaceId;
+	
+	/**
 	 * 审核未通过原因
 	 */
 	private String errorMessage;
@@ -44,6 +49,14 @@ public class MaterialAuditResultDto {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Integer getAdspaceId() {
+		return adspaceId;
+	}
+
+	public void setAdspaceId(Integer adspaceId) {
+		this.adspaceId = adspaceId;
 	}
 
 	public String getErrorMessage() {

@@ -8,6 +8,8 @@ import java.util.Date;
 public class DateUtils {
 
 
+	public static String FORMATE_YYYY_MM_DD = "yyyy-MM-dd";
+	
 	public static Date getYmd(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);

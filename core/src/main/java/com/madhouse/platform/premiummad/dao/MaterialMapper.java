@@ -124,14 +124,6 @@ public interface MaterialMapper {
 	Material queryById(Integer id);
 
 	/**
-	 * 批量审核物料
-	 * @param ids
-	 * @param status
-	 * @param reason 
-	 * @param userId 
-	 */
-	
-	/**
 	 * 根据媒体key和媒体素材key查询
 	 * 
 	 * @param mediaQueryKeys
