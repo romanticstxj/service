@@ -34,10 +34,9 @@ public interface IAdspaceService extends IBaseService<Adspace>{
 	int removeAdspaceMapping(Integer adspaceId);
 
 	/**
-	 * 获取指定dsp下已审核的所有的广告位
+	 * 获取已启用的广告位
 	 * 
-	 * @param dspId
 	 * @return
 	 */
-	List<AdspaceModel> getAuditedAdspace(String dspId);
+	List<AdspaceModel> getAuditedAdspaces();
 }

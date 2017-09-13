@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.madhouse.platform.premiummad.dao.MimesDao">
+	<resultMap id="baseResult" type="com.madhouse.platform.premiummad.entity.Mimes">
+		<id column="code" jdbcType="INTEGER" property="code" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+	</resultMap>
+	
+    <select id="queryMimesById" resultType="String">
+		select name  from mad_dict_mimes 
+		where 1 = 1
+		<choose>
+			<when test="list != null and list.size != 0">
+				AND code IN
+				<foreach collection="list" item="item" separator="," open="(" close=")">
+					#{item}
+				</foreach>
+			</when>
+			<otherwise>
+				AND code IN (-1)
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+
+</mapper>

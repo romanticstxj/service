@@ -47,4 +47,11 @@ public interface AdspaceDao {
 	 * @return
 	 */
 	List<Adspace> selectByIds(List<Integer> list);
+	
+	/**
+	 * 获取已启用的广告位
+	 * 
+	 * @return
+	 */
+	List<Adspace> selectAuditedAdspaces();
 }

@@ -23,7 +23,7 @@ public class AdspaceController {
 	private IAdspaceService adspaceService;
 
 	/**
-	 * 获取所有已审核的广告位
+	 * 获取所有启用的广告位
 	 * 
 	 * @param dspId
 	 * @param token
@@ -33,7 +33,7 @@ public class AdspaceController {
 	@TokenFilter
 	@RequestMapping("/list")
 	public ResponseDto<AdspaceDto> list(@RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
-		List<AdspaceModel> modelResults = adspaceService.getAuditedAdspace(dspId);
+		List<AdspaceModel> modelResults = adspaceService.getAuditedAdspaces();
 		List<AdspaceDto> dtoResults = convert(modelResults);
 		return ResponseUtils.response(StatusCode.SC200, dtoResults);
 	}
@@ -57,6 +57,7 @@ public class AdspaceController {
 			AdspaceModel.Image sourceBanner = sourceItem.getBanner();
 			AdspaceModel.Video sourceVideo = sourceItem.getVideo();
 			AdspaceModel.Native sourceNatives = sourceItem.getNatives();
+			BeanUtils.copyProperties(sourceItem, destinationItem);
 			if (sourceBanner != null) {
 				AdspaceDto.Image destinationBanner = new AdspaceDto.Image();
 				BeanUtils.copyProperties(sourceBanner, destinationBanner);
