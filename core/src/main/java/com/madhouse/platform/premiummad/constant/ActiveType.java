@@ -26,4 +26,12 @@ public enum ActiveType {
 		return descrip;
 	}
 
+	public static String getDescrip(int value) {
+		for (ActiveType item : ActiveType.values()) {
+			if (item.getValue() == value) {
+				return item.getDescrip();
+			}
+		}
+		return null;
+	}
 }

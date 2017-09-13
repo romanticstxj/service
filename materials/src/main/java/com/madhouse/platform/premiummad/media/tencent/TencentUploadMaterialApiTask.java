@@ -129,14 +129,14 @@ public class TencentUploadMaterialApiTask {
 
 	static {
 		macroClickMap = new HashMap<String, String>();
-		macroClickMap.put("${EXT1}", "${CLICK_EXT1}");
-		macroClickMap.put("${EXT2}", "${CLICK_EXT2}");
-		macroClickMap.put("${EXT3}", "${CLICK_EXT3}");
+		macroClickMap.put("__EXT1__", "${CLICK_EXT1}");
+		macroClickMap.put("__EXT2__", "${CLICK_EXT2}");
+		macroClickMap.put("__EXT3__", "${CLICK_EXT3}");
 
 		macroImageMap = new HashMap<String, String>();
-		macroImageMap.put("${EXT1}", "${DISPLAY_EXT1}");
-		macroImageMap.put("${EXT2}", "${DISPLAY_EXT2}");
-		macroImageMap.put("${EXT3}", "${DISPLAY_EXT3}");
+		macroImageMap.put("__EXT1__", "${DISPLAY_EXT1}");
+		macroImageMap.put("__EXT2__", "${DISPLAY_EXT2}");
+		macroImageMap.put("__EXT3__", "${DISPLAY_EXT3}");
 	}
 
 	public void uploadMaterial() {
