@@ -375,12 +375,17 @@ public class StringUtils {
 		}
 		String[] splittedUrls = urls.split("\\|");
 		StringBuilder sb = new StringBuilder();
-		for(int i=0; i<splittedUrls.length; i++){
-			if(i % 2 != 0){
-				sb.append(splittedUrls[i]).append("|");
+		for(String splittedUrl: splittedUrls){
+			if(splittedUrl != null){
+				String[] twiceSplittedUrls = splittedUrl.split("~");
+				if(twiceSplittedUrls != null && twiceSplittedUrls.length == 2){
+					sb.append(twiceSplittedUrls[1]).append("|");
+				}
 			}
 		}
-		sb.deleteCharAt(sb.length()-1);
+		if(sb != null && sb.length() > 0){
+			sb.deleteCharAt(sb.length()-1);
+		}
 		return sb.toString();
 	}
 }

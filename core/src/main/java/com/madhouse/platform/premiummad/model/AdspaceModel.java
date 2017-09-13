@@ -3,13 +3,13 @@ package com.madhouse.platform.premiummad.model;
 import java.util.List;
 
 public class AdspaceModel {
-	private long id;
-	private long mediaId;
-	private int w;
-	private int h;
-	private int adType;
-	private int layout;
-	private long blockId;
+	private Integer id;
+	private Integer mediaId;
+	private Integer w;
+	private Integer h;
+	private Integer adType;
+	private Integer layout;
+	private Integer blockId;
 
 	private Image banner;
 	private Video video;
@@ -17,26 +17,26 @@ public class AdspaceModel {
 
 	private boolean enableHttps;
 	private String adspaceKey;
-	private int status;
+	private Integer status;
 
 	public static class Image {
-		private int w;
-		private int h;
+		private Integer w;
+		private Integer h;
 		private List<String> mimes;
 
-		public int getW() {
+		public Integer getW() {
 			return w;
 		}
 
-		public void setW(int w) {
+		public void setW(Integer w) {
 			this.w = w;
 		}
 
-		public int getH() {
+		public Integer getH() {
 			return h;
 		}
 
-		public void setH(int h) {
+		public void setH(Integer h) {
 			this.h = h;
 		}
 
@@ -50,59 +50,59 @@ public class AdspaceModel {
 	}
 
 	public static class Video {
-		private int w;
-		private int h;
-		private int minDuraion;
-		private int maxDuration;
-		private int linearity;
-		private int startDelay;
+		private Integer w;
+		private Integer h;
+		private Integer minDuraion;
+		private Integer maxDuration;
+		private Integer linearity;
+		private Integer startDelay;
 		private List<String> mimes;
 
-		public int getW() {
+		public Integer getW() {
 			return w;
 		}
 
-		public void setW(int w) {
+		public void setW(Integer w) {
 			this.w = w;
 		}
 
-		public int getH() {
+		public Integer getH() {
 			return h;
 		}
 
-		public void setH(int h) {
+		public void setH(Integer h) {
 			this.h = h;
 		}
 
-		public int getMinDuraion() {
+		public Integer getMinDuraion() {
 			return minDuraion;
 		}
 
-		public void setMinDuraion(int minDuraion) {
+		public void setMinDuraion(Integer minDuraion) {
 			this.minDuraion = minDuraion;
 		}
 
-		public int getMaxDuration() {
+		public Integer getMaxDuration() {
 			return maxDuration;
 		}
 
-		public void setMaxDuration(int maxDuration) {
+		public void setMaxDuration(Integer maxDuration) {
 			this.maxDuration = maxDuration;
 		}
 
-		public int getLinearity() {
+		public Integer getLinearity() {
 			return linearity;
 		}
 
-		public void setLinearity(int linearity) {
+		public void setLinearity(Integer linearity) {
 			this.linearity = linearity;
 		}
 
-		public int getStartDelay() {
+		public Integer getStartDelay() {
 			return startDelay;
 		}
 
-		public void setStartDelay(int startDelay) {
+		public void setStartDelay(Integer startDelay) {
 			this.startDelay = startDelay;
 		}
 
@@ -120,9 +120,9 @@ public class AdspaceModel {
 		private Image cover;
 		private Image image;
 		private Video video;
-		private int title;
-		private int desc;
-		private int content;
+		private Integer title;
+		private Integer desc;
+		private Integer content;
 
 		public Image getIcon() {
 			return icon;
@@ -156,76 +156,76 @@ public class AdspaceModel {
 			this.video = video;
 		}
 
-		public int getTitle() {
+		public Integer getTitle() {
 			return title;
 		}
 
-		public void setTitle(int title) {
+		public void setTitle(Integer title) {
 			this.title = title;
 		}
 
-		public int getDesc() {
+		public Integer getDesc() {
 			return desc;
 		}
 
-		public void setDesc(int desc) {
+		public void setDesc(Integer desc) {
 			this.desc = desc;
 		}
 
-		public int getContent() {
+		public Integer getContent() {
 			return content;
 		}
 
-		public void setContent(int content) {
+		public void setContent(Integer content) {
 			this.content = content;
 		}
 	}
 
-	public long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public long getMediaId() {
+	public Integer getMediaId() {
 		return mediaId;
 	}
 
-	public void setMediaId(long mediaId) {
+	public void setMediaId(Integer mediaId) {
 		this.mediaId = mediaId;
 	}
 
-	public int getW() {
+	public Integer getW() {
 		return w;
 	}
 
-	public void setW(int w) {
+	public void setW(Integer w) {
 		this.w = w;
 	}
 
-	public int getH() {
+	public Integer getH() {
 		return h;
 	}
 
-	public void setH(int h) {
+	public void setH(Integer h) {
 		this.h = h;
 	}
 
-	public int getAdType() {
+	public Integer getAdType() {
 		return adType;
 	}
 
-	public void setAdType(int adType) {
+	public void setAdType(Integer adType) {
 		this.adType = adType;
 	}
 
-	public int getLayout() {
+	public Integer getLayout() {
 		return layout;
 	}
 
-	public void setLayout(int layout) {
+	public void setLayout(Integer layout) {
 		this.layout = layout;
 	}
 
@@ -253,11 +253,11 @@ public class AdspaceModel {
 		this.natives = natives;
 	}
 
-	public long getBlockId() {
+	public Integer getBlockId() {
 		return blockId;
 	}
 
-	public void setBlockId(long blockId) {
+	public void setBlockId(Integer blockId) {
 		this.blockId = blockId;
 	}
 
@@ -269,11 +269,11 @@ public class AdspaceModel {
 		this.adspaceKey = adspaceKey;
 	}
 
-	public int getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
