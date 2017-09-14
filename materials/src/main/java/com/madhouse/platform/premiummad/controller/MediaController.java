@@ -23,7 +23,7 @@ public class MediaController {
 	private IMediaService mediaService;
 
 	/**
-	 * 获取所有已审核的媒体
+	 * 获取所有已启用的媒体
 	 * 
 	 * @param dspId
 	 * @param token
@@ -33,7 +33,7 @@ public class MediaController {
 	@TokenFilter
 	@RequestMapping("/list")
 	public ResponseDto<MediaDto> list(@RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
-		List<MediaModel> modelResults = mediaService.getAuditedMedia(dspId);
+		List<MediaModel> modelResults = mediaService.getAuditedMedia();
 		List<MediaDto> dtoResults = new ArrayList<MediaDto>();
 		BeanUtils.copyList(modelResults, dtoResults, MediaDto.class);
 		return ResponseUtils.response(StatusCode.SC200, dtoResults);

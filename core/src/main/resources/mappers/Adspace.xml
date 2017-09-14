@@ -326,4 +326,13 @@
            #{item,jdbcType=INTEGER}
         </foreach>
 	</select>
+	
+	<select id="selectAuditedAdspaces" resultMap="baseResult">
+		SELECT 
+		<include refid="baseColumns">
+            <property name="alias" value="a" />
+        </include>
+        FROM mad_sys_adspace a 
+        WHERE a.status = 1
+	</select>
 </mapper>

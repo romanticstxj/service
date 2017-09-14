@@ -1,7 +1,7 @@
 package com.madhouse.platform.premiummad.constant;
 
 /**
- * 广告主所属行业
+ * 点击行为
  */
 public enum ActiveType {
 	AT10000(0, "无"),

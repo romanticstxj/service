@@ -25,7 +25,18 @@
 	</select>
 	
 	<select id="queryAdspaceMappingDsp" resultMap="baseMappingResult">
-  		select  * from mad_sys_adspace_mapping_dsp where `status`>0
+  		SELECT
+			t1.*
+		FROM
+			mad_sys_adspace_mapping_dsp t1,
+			mad_sys_adspace t2,
+			mad_sys_media t3
+		WHERE
+			t1.adspace_id = t2.id
+		AND t2.media_id = t3.id
+		AND t1. STATUS > 0
+		AND t2. STATUS > 0
+		AND t3. STATUS > 0
 	</select>
 
 </mapper>
