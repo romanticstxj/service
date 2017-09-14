@@ -58,6 +58,7 @@ public enum StatusCode {
 	SC418(418, "素材 ID错误"),
 	SC419(419, "URL格式错误"),
 	SC420(420, "Deal ID错误"),
+	SC421(421, "请选择是我平台审核并且还进行审核的记录"),
 	SC500(500, "系统异常");
 
 	int value;
