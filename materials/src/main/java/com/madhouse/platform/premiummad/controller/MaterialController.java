@@ -1,17 +1,13 @@
 package com.madhouse.platform.premiummad.controller;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.madhouse.platform.premiummad.annotation.TokenFilter;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dto.MaterialAuditResultDto;
@@ -42,7 +38,7 @@ public class MaterialController {
 	 */
 	@TokenFilter
 	@RequestMapping("/upload")
-	public ResponseDto<Void> list(@RequestBody MaterialDto materialDto, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
+	public ResponseDto<Void> upload(@RequestBody MaterialDto materialDto, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
 		MaterialModel entity = convert(materialDto);
 		entity.setDspId(dspId);
 		materialService.upload(entity);
@@ -80,8 +76,6 @@ public class MaterialController {
 
 		// 主信息转换
 		BeanUtils.copyProperties(materialDto, entity);
-		entity.setStartDate(parseToDate(materialDto.getStartDate(), "yyyy-MM-dd"));
-		entity.setEndDate(parseToDate(materialDto.getEndDate(), "yyyy-MM-dd"));
 
 		// 广告监测信息转换
 		MonitorModel monitorModel = new MonitorModel();
@@ -94,18 +88,5 @@ public class MaterialController {
 		monitorModel.setImpUrls(trackModels);
 
 		return entity;
-	}
-
-	/**
-	 * 根据指定的日期format 解析成 date 类型
-	 * 
-	 * @param dateStr
-	 * @param format
-	 * @return
-	 * @throws ParseException
-	 */
-	private Date parseToDate(String dateStr, String format) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		return sdf.parse(dateStr);
 	}
 }

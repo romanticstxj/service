@@ -1,5 +1,6 @@
 package com.madhouse.platform.premiummad.rule;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -10,25 +11,69 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
+import org.apache.commons.lang3.StringUtils;
+import com.madhouse.platform.premiummad.constant.ActiveType;
 import com.madhouse.platform.premiummad.constant.DeliveryType;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.constant.MediaNeedAdspace;
 import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.Material;
+import com.madhouse.platform.premiummad.entity.Policy;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.model.MaterialModel;
 import com.madhouse.platform.premiummad.model.MonitorModel;
 import com.madhouse.platform.premiummad.model.TrackModel;
+import com.madhouse.platform.premiummad.util.DateUtils;
 
 public class MaterialRule extends BaseRule {
 
 	public static byte ClKURL = 1;
 	public static byte SECURL = 2;
 	public static byte IMPURL = 3;
+	
+	/**
+	 * 校验上传的策略合法性
+	 * 
+	 * @param policy
+	 * @param entity
+	 */
+	public static void validatePolicy(Policy policy, MaterialModel entity) {
+		if (policy == null) {
+			throw new BusinessException(StatusCode.SC420, "策略ID不存在[dealId]");
+		}
+		// 只有 PD 及 PRD 才需要传dealId
+		if (!(DeliveryType.DT10001.getValue() != policy.getType().intValue()) && !(DeliveryType.DT10002.getValue() != policy.getType().intValue())) {
+			throw new BusinessException(StatusCode.SC420, "策略ID类型只支持PDB和PD两种类型[dealId]");
+		}
+		if (entity.getDeliveryType().intValue() != policy.getType().intValue()) {
+			throw new BusinessException(StatusCode.SC420, "策略ID类型和投放方式不一致[dealId,deliveryType]");
+		}
+	}
+	
+	/**
+	 * 校验上传的广告位的合法性
+	 * 
+	 * @param adspaces
+	 * @param entity
+	 */
+	public static void validateAdsapce(List<Adspace> adspaces, MaterialModel entity) {
+		if (adspaces == null || adspaces.size() < entity.getAdspaceId().size()) {
+			throw new BusinessException(StatusCode.SC417, "存在无效的广告位ID[adspaceId]");
+		}
+		for (Adspace adspace : adspaces) {
+			// 广告位的广告形式与素材的广告形式校验
+			if (adspace.getLayout().intValue() != entity.getLayout().intValue()) {
+				throw new BusinessException(StatusCode.SC417, "广告位的广告形式与素材的广告形式不一致[adspaceId=" + adspace.getId() + "]");
+			}
+			if (adspace.getMediaId().intValue() != entity.getMediaId().intValue()) {
+				throw new BusinessException(StatusCode.SC417, "广告位所属媒体与素材所属媒体不一致[adspaceId=" + adspace.getId() + "]");
+			}
+		}
+	}
 
 	/**
 	 * 提取 map 的 values
@@ -52,22 +97,99 @@ public class MaterialRule extends BaseRule {
 	 */
 	public static void paramterValidate(MaterialModel entity) {
 		if (Layout.getDescrip(entity.getLayout().intValue()) == null) {
-			throw new BusinessException(StatusCode.SC419, "广告形式编码不存在");
+			throw new BusinessException(StatusCode.SC400, "广告形式编码不存在[layout]");
 		}
 		if (DeliveryType.getDescrip(entity.getDeliveryType().intValue()) == null) {
-			throw new BusinessException(StatusCode.SC415, "投放方式编码不存在");
+			throw new BusinessException(StatusCode.SC400, "投放方式编码不存在[deliveryType]");
+		}
+		if (entity.getActType() != null) {
+			if (ActiveType.getDescrip(entity.getActType()) == null) {
+				throw new BusinessException(StatusCode.SC400, "广告点击行为编码不存在[actType]");
+			}
 		}
 		if (entity.getMediaId() == null) {
-			throw new BusinessException(StatusCode.SC400, "素材关联的媒体ID必须");
+			throw new BusinessException(StatusCode.SC400, "素材关联的媒体ID必须[media]");
 		}
 		if (entity.getAdm() == null || entity.getAdm().isEmpty()) {
-			throw new BusinessException(StatusCode.SC400, "广告素材url必须");
+			throw new BusinessException(StatusCode.SC400, "广告素材url必须[adm]");
+		}
+		if (!StringUtils.isBlank(entity.getDealId())) {
+			if (!entity.getDealId().matches("^-?\\d+$")) {
+				throw new BusinessException(StatusCode.SC400, "策略ID不存在[dealId]");
+			}
+		}
+		
+		// 开始时间和结束时间格式和合法性校验 yyyy-MM-dd
+		if (!StringUtils.isBlank(entity.getStartDate())) {
+			if (!isDate(entity.getStartDate(), DateUtils.FORMATE_YYYY_MM_DD)) {
+				throw new BusinessException(StatusCode.SC400, "有效日期格式错误,必须为yyyy-MM-dd[startDate]");
+			}
+		}
+		if (!StringUtils.isBlank(entity.getEndDate())) {
+			if (!isDate(entity.getEndDate(), DateUtils.FORMATE_YYYY_MM_DD)) {
+				throw new BusinessException(StatusCode.SC400, "失效日期格式错误,必须为yyyy-MM-dd[endDate]");
+			}
+		}
+		if (!StringUtils.isBlank(entity.getStartDate()) && !StringUtils.isBlank(entity.getEndDate())) {
+			if (entity.getEndDate().compareTo(entity.getStartDate()) < 0) {
+				throw new BusinessException(StatusCode.SC400, "失效日期[endDate]必须大于有效日期[startDate]");
+			}
 		}
 		
 		// 媒体需要提交广告位时，需要校验广告位是否必须
 		if (MediaNeedAdspace.getValue(entity.getMediaId())) {
 			if (entity.getAdspaceId() == null || entity.getAdspaceId().isEmpty()) {
 				throw new BusinessException(StatusCode.SC400, MediaMapping.getDescrip(entity.getMediaId()) + "广告位必须");
+			}
+		}
+
+		// 校验URL合法性
+		if (!StringUtils.isBlank(entity.getIcon())) {
+			if (!isUrl(entity.getIcon())) {
+				throw new BusinessException(StatusCode.SC419, "信息流广告图标URL格式错误[icon]");
+			}
+		}
+		if (!StringUtils.isBlank(entity.getCover())) {
+			if (!isUrl(entity.getCover())) {
+				throw new BusinessException(StatusCode.SC419, "视频信息流广告封面URL格式错误[cover]");
+			}
+		}
+		if (!StringUtils.isBlank(entity.getLpgUrl())) {
+			if (!isUrl(entity.getLpgUrl())) {
+				throw new BusinessException(StatusCode.SC419, "广告落地页URL格式错误[lpgUrl]");
+			}
+		}
+		if (entity.getAdm() != null && !entity.getAdm().isEmpty()) {
+			for (String adm : entity.getAdm()) {
+				if (!isUrl(adm)) {
+					throw new BusinessException(StatusCode.SC419, "广告素材 URL格式错误[adm]");
+				}
+			}
+		}
+		if (entity.getMonitor() != null) {
+			if (entity.getMonitor().getClkUrls() != null && !entity.getMonitor().getClkUrls().isEmpty()) {
+				for (String clkUrl : entity.getMonitor().getClkUrls()) {
+					if (!isUrl(clkUrl)) {
+						throw new BusinessException(StatusCode.SC419, "点击监测URL格式错误[monitor.clkUrls]");
+					}
+				}
+			}
+			if (entity.getMonitor().getSecUrls() != null && !entity.getMonitor().getSecUrls().isEmpty()) {
+				for (String secUrl : entity.getMonitor().getSecUrls()) {
+					if (!isUrl(secUrl)) {
+						throw new BusinessException(StatusCode.SC419, "品牌安全监测 URL格式错误[monitor.secUrls]");
+					}
+				}
+			}
+			if (entity.getMonitor().getImpUrls() != null && !entity.getMonitor().getImpUrls().isEmpty()) {
+				for (TrackModel track : entity.getMonitor().getImpUrls()) {
+					if (track.getStartDelay().intValue() < -2) {
+						throw new BusinessException(StatusCode.SC400, "展示监测时间点错误[monitor.impUrls.startDelay],有效值为0~开始；-1~中点；-2~结束；大于0~实际秒数");
+					}
+					if (!isUrl(track.getUrl())) {
+						throw new BusinessException(StatusCode.SC419, "展示监测 URL格式错误[monitor.impUrls.url]");
+					}
+				}
 			}
 		}
 	}
@@ -210,14 +332,18 @@ public class MaterialRule extends BaseRule {
 		material.setDescription(entity.getDesc());
 		material.setContent(entity.getContent());
 		material.setDuration(entity.getDuration() != null ? entity.getDuration() : 0);
-		material.setEndDate(entity.getEndDate());
+		try {
+			material.setEndDate(parseToDate(entity.getEndDate(), "yyyy-MM-dd"));
+			material.setStartDate(parseToDate(entity.getStartDate(), "yyyy-MM-dd"));
+		} catch (ParseException e) {
+			throw new BusinessException(StatusCode.SC500);
+		}
 		material.setIcon(entity.getIcon());
 		material.setImpUrls(parseToString(entity.getMonitor(), IMPURL)); // 展示监测URL(多个用半角逗号分隔)
 		material.setLpgUrl(entity.getLpgUrl());
 		material.setMaterialName(entity.getName());
 		material.setSecUrls(parseToString(entity.getMonitor(), SECURL)); // 品牌安全监测URL(多个用半角逗号分隔)
 		material.setSize(entity.getW().toString() + "*" + entity.getH().toString()); // 广告素材尺寸 (width * height)
-		material.setStartDate(entity.getStartDate());
 		material.setTitle(entity.getTitle());
 
 		// set default value
@@ -245,7 +371,7 @@ public class MaterialRule extends BaseRule {
 			for (TrackModel track : monitor.getImpUrls()) {
 				result.append("|");
 				result.append(track.getStartDelay());
-				result.append("|");
+				result.append("~");
 				result.append(track.getUrl());
 			}
 			return result.substring(1);

@@ -1,7 +1,9 @@
 package com.madhouse.platform.premiummad.dao;
 
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
+
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.DspMapping;
@@ -38,5 +40,18 @@ public interface AdspaceDao {
 
 	Integer updateAdspaceKey(Adspace adspace);
 
+	/**
+	 * 根据广告位ID查询
+	 * 
+	 * @param list
+	 * @return
+	 */
+	List<Adspace> selectByIds(List<Integer> list);
 	
+	/**
+	 * 获取已启用的广告位
+	 * 
+	 * @return
+	 */
+	List<Adspace> selectAuditedAdspaces();
 }

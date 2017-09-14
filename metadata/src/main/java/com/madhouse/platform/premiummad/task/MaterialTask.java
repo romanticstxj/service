@@ -92,11 +92,12 @@ public class MaterialTask {
     private List<MaterialMetaData.Monitor.Track> getTrack(Monitor monitor,String impUrls) {
         List<MaterialMetaData.Monitor.Track> listTracks= new ArrayList<MaterialMetaData.Monitor.Track>();
         String[] imps = StringUtils.tokenizeToStringArray(impUrls,"|");
-        for (int i = 0; i < imps.length; i=i+2) {
+        for (int i = 0; i < imps.length; i++) {
             if(!StringUtils.isEmpty(imps[i])){
                 MaterialMetaData.Monitor.Track track= monitor.new Track();
-                track.setStartDelay(Integer.parseInt(imps[i]));
-                track.setUrl(imps[i+1]);
+                String[] imp= StringUtils.tokenizeToStringArray(imps[i],"~");
+                track.setStartDelay(Integer.parseInt(imp[0]));
+                track.setUrl(imp[1]);
                 listTracks.add(track);
             }
         }

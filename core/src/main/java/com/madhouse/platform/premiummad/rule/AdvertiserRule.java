@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.madhouse.platform.premiummad.constant.AdevertiserIndustry;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -43,10 +45,24 @@ public class AdvertiserRule extends BaseRule {
 	 */
 	public static void paramterValidate(AdvertiserModel entity) {
 		if (AdevertiserIndustry.getDescrip(entity.getIndustry().intValue()) == null) {
-			throw new BusinessException(StatusCode.SC412, "广告主所属工业编码不存在");
+			throw new BusinessException(StatusCode.SC412, "广告主所属工业编码不存在[mediaId]");
 		}
 		if (entity.getMediaId() == null || entity.getMediaId().isEmpty()) {
-			throw new BusinessException(StatusCode.SC400, "广告主关联的媒体ID必须");
+			throw new BusinessException(StatusCode.SC400, "广告主关联的媒体ID必须[mediaId]");
+		}
+		
+		// 校验实体URL的合法性
+		if (!StringUtils.isBlank(entity.getWebSite())) {
+			if (!isUrl(entity.getWebSite())) {
+				throw new BusinessException(StatusCode.SC419, "广告主 web主页URL格式错误[website]");
+			}
+		}
+		if (entity.getLicense() != null && !entity.getLicense().isEmpty()) {
+			for (String license : entity.getLicense()) {
+				if (!isUrl(license)) {
+					throw new BusinessException(StatusCode.SC419, "资质文件（营业执照等）链接格式错误[license]");
+				}
+			}
 		}
 	}
 

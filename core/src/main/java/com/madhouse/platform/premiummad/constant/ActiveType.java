@@ -1,7 +1,7 @@
 package com.madhouse.platform.premiummad.constant;
 
 /**
- * 广告主所属行业
+ * 点击行为
  */
 public enum ActiveType {
 	AT10000(0, "无"),
@@ -26,4 +26,12 @@ public enum ActiveType {
 		return descrip;
 	}
 
+	public static String getDescrip(int value) {
+		for (ActiveType item : ActiveType.values()) {
+			if (item.getValue() == value) {
+				return item.getDescrip();
+			}
+		}
+		return null;
+	}
 }

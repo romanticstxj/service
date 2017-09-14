@@ -5,6 +5,7 @@ import java.util.List;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
+import com.madhouse.platform.premiummad.model.AdspaceModel;
 
 public interface IAdspaceService extends IBaseService<Adspace>{
 	/**
@@ -32,4 +33,10 @@ public interface IAdspaceService extends IBaseService<Adspace>{
 
 	int removeAdspaceMapping(Integer adspaceId);
 
+	/**
+	 * 获取已启用的广告位
+	 * 
+	 * @return
+	 */
+	List<AdspaceModel> getAuditedAdspaces();
 }

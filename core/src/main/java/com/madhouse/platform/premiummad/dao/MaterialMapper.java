@@ -134,4 +134,6 @@ public interface MaterialMapper {
 
 	void auditMaterial(@Param("ids") String[] ids, @Param("status") Integer status, 
 			@Param("reason") String reason, @Param("userId") Integer userId);
+	
+	int judgeWhetherCanAudit(@Param("ids") String[] ids);
 }
