@@ -377,7 +377,7 @@ public class StringUtils {
 		StringBuilder sb = new StringBuilder();
 		for(String splittedUrl: splittedUrls){
 			if(splittedUrl != null){
-				String[] twiceSplittedUrls = splittedUrl.split("~");
+				String[] twiceSplittedUrls = splittedUrl.split(SystemConstant.DB.impUrlsDelimiter);
 				if(twiceSplittedUrls != null && twiceSplittedUrls.length == 2){
 					sb.append(twiceSplittedUrls[1]).append("|");
 				}
