@@ -81,6 +81,7 @@ public class MaterialTask {
             LOGGER.info("op loadMaterialMetaData :{} ms", System.currentTimeMillis() - begin);//op不能修改,是关键字,在运维那里有监控
             LOGGER.debug("------------MaterialTask-----loadMaterialMetaData------  End--");
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("------------MaterialTask-----loadMaterialMetaData------error:{}",e.toString());
         } finally {
             if(null != redisMaster){
@@ -95,12 +96,13 @@ public class MaterialTask {
         for (int i = 0; i < imps.length; i++) {
             if(!StringUtils.isEmpty(imps[i])){
                 MaterialMetaData.Monitor.Track track= monitor.new Track();
-                String[] imp= StringUtils.tokenizeToStringArray(imps[i],"`");
+                String[] imp= imps[i].split("`");
                 track.setStartDelay(Integer.parseInt(imp[0]));
                 track.setUrl(imp[1]);
                 listTracks.add(track);
             }
         }
         return listTracks;   
+        
     }
 }
