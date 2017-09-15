@@ -63,5 +63,5 @@ public interface IAdvertiserService {
 
 	Advertiser queryById(Integer id);
 
-	void auditAdvertiser(String[] ids, Integer status, String reason, Integer userId);
+	boolean auditAdvertiser(String[] ids, Integer status, String reason, Integer userId);
 }

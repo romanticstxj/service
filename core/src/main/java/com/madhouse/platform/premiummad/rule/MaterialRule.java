@@ -371,7 +371,7 @@ public class MaterialRule extends BaseRule {
 			for (TrackModel track : monitor.getImpUrls()) {
 				result.append("|");
 				result.append(track.getStartDelay());
-				result.append("~");
+				result.append("`");
 				result.append(track.getUrl());
 			}
 			return result.substring(1);

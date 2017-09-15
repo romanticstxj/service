@@ -65,7 +65,10 @@ public class AdvertiserController {
 		Integer status = dto.getStatus();
 		String reason = dto.getReason();
 		String[] ids = StringUtils.splitToStringArray(idsStr);
-		advertiserService.auditAdvertiser(ids, status, reason, userId);
-        return ResponseUtils.response(StatusCode.SC20000, null);
+		boolean isAllAudited = advertiserService.auditAdvertiser(ids, status, reason, userId);
+		if(isAllAudited)
+			return ResponseUtils.response(StatusCode.SC20000, null);
+		else
+			return ResponseUtils.response(StatusCode.SC423, null);
     }
 }
