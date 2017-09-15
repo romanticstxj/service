@@ -558,4 +558,17 @@
 	    </foreach>
     and media_id = #{mediaId,jdbcType=INTEGER}
   </select>
+  
+  <select id="judgeWhetherCanAudit" resultType="integer" parameterType="string">
+    SELECT COUNT(0) FROM mad_sys_material ma 
+    LEFT JOIN mad_sys_media me ON ma.media_id = me.id 
+    WHERE (me.material_audit_mode != 1 OR ma.status != 0)
+    <if test="ids != null and ids.length > 0" >
+    	AND ma.id IN
+	    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+	        #{id,jdbcType=INTEGER}
+	    </foreach>
+    </if>
+  </select>
+  
 </mapper>

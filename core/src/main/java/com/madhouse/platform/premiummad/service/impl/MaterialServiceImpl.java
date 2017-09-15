@@ -311,6 +311,10 @@ public class MaterialServiceImpl implements IMaterialService {
 
 	@Override
 	public void auditMaterial(String[] ids, Integer status, String reason, Integer userId) {
+		int count = materialDao.judgeWhetherCanAudit(ids);
+		if(count > 0){
+			throw new BusinessException(StatusCode.SC421);
+		}
 		materialDao.auditMaterial(ids, status, reason, userId);
 	}
 }
