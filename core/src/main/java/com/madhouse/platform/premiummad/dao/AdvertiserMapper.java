@@ -119,4 +119,6 @@ public interface AdvertiserMapper {
 			@Param("reason") String reason, @Param("userId") Integer userId);
 	
 	int judgeWhetherCanAudit(@Param("ids") String[] ids);
+
+	List<String> selectAuditableAdvertisers(@Param("ids") String[] ids);
 }

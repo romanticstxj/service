@@ -136,4 +136,6 @@ public interface MaterialMapper {
 			@Param("reason") String reason, @Param("userId") Integer userId);
 	
 	int judgeWhetherCanAudit(@Param("ids") String[] ids);
+	
+	List<String> selectAuditableMaterials(@Param("ids") String[] ids);
 }

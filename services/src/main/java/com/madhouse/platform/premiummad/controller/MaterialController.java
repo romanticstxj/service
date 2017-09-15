@@ -66,7 +66,10 @@ public class MaterialController {
 		Integer status = dto.getStatus();
 		String reason = dto.getReason();
 		String[] ids = StringUtils.splitToStringArray(idsStr);
-		materialService.auditMaterial(ids, status, reason, userId);
-        return ResponseUtils.response(StatusCode.SC20000, null);
+		boolean isAllAudited = materialService.auditMaterial(ids, status, reason, userId);
+		if(isAllAudited)
+			return ResponseUtils.response(StatusCode.SC20000, null);
+		else
+			return ResponseUtils.response(StatusCode.SC423, null);
     }
 }
