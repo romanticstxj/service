@@ -188,8 +188,8 @@ public class MomoMaterialUploadApiTask {
 			creativeBean.setCard_img(card_img);
 		}
 		creativeBean.setLandingpage_url(material.getLpgUrl());// 落地页
-		creativeBean.setDesc(material.getDescription());
-		creativeBean.setTitle(material.getTitle());
+		creativeBean.setDesc(material.getBrand());
+		creativeBean.setTitle(material.getContent());
 
 		// logo
 		logoBean.setUrl(material.getIcon());

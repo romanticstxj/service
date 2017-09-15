@@ -170,11 +170,11 @@ public class SohutvUploadMaterialApiTask {
 		// 曝光监测地址
 		List<String> impUrls = new ArrayList<String>();
 		if (material.getImpUrls() != null && !material.getImpUrls().isEmpty()) {
-			// 素材表里以 |分割  -> startDelay1~url1|startDelay2~url2
+			// 素材表里以 |分割  -> startDelay1`url1|startDelay2`url2
 			String[] impTrackUrlArray = material.getImpUrls().split("\\|");
 			if (impTrackUrlArray != null) {
 				for (int i = 0; i < impTrackUrlArray.length; i++) {
-					String[] track = impTrackUrlArray[i].split("~");
+					String[] track = impTrackUrlArray[i].split("`");
 					impUrls.add(MacroReplaceUtil.macroReplaceImageUrl(macroImageMap, track[1])); // 宏替换
 					// 媒体最多支持5个
 					if (impUrls.size() == 3) {
