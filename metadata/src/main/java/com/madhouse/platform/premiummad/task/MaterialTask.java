@@ -95,7 +95,7 @@ public class MaterialTask {
         for (int i = 0; i < imps.length; i++) {
             if(!StringUtils.isEmpty(imps[i])){
                 MaterialMetaData.Monitor.Track track= monitor.new Track();
-                String[] imp= StringUtils.tokenizeToStringArray(imps[i],"~");
+                String[] imp= StringUtils.tokenizeToStringArray(imps[i],"`");
                 track.setStartDelay(Integer.parseInt(imp[0]));
                 track.setUrl(imp[1]);
                 listTracks.add(track);
