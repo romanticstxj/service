@@ -49,24 +49,29 @@ public class MaterialTask {
             long begin = System.currentTimeMillis();
             Set<String> allMaterialIds = redisMaster.smembers(ALL_MATERIAL);
             for (Material material : lists) {
-                MaterialMetaData metaData = new MaterialMetaData();
-                if(null != material){
-                    BeanUtils.copyProperties(material, metaData);
-                    MaterialMetaData.Monitor monitor = metaData.new Monitor();
-                    monitor.setClkUrls(Arrays.asList(StringUtils.tokenizeToStringArray(material.getClkUrls(),"|")));
-                    monitor.setSecUrls(Arrays.asList(StringUtils.tokenizeToStringArray(material.getSecUrls(),"|")));
-                    monitor.setImpUrls(getTrack(monitor,material.getImpUrls()));
-                    metaData.setMonitor(monitor);
-                    metaData.setAdm(Arrays.asList(StringUtils.tokenizeToStringArray(material.getAdMaterials(),"|")));
-                    String[] size = StringUtils.tokenizeToStringArray(material.getSize(),"*");
-                    metaData.setW(!StringUtils.isEmpty(size[0])?Integer.parseInt(size[0]) : 0);
-                    metaData.setH(!StringUtils.isEmpty(size[1])?Integer.parseInt(size[1]) : 0);
-                    redisMaster.setex(String.format(this.MATERIAL_META_DATA, String.valueOf(metaData.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
-                    redisMaster.sadd(this.ALL_MATERIAL, String.valueOf(metaData.getId()));
-
-                    if (allMaterialIds != null && allMaterialIds.size() > 0) {
-                        allMaterialIds.remove(String.valueOf(metaData.getId()));
+                try {
+                    MaterialMetaData metaData = new MaterialMetaData();
+                    if(null != material){
+                        BeanUtils.copyProperties(material, metaData);
+                        MaterialMetaData.Monitor monitor = metaData.new Monitor();
+                        monitor.setClkUrls(Arrays.asList(StringUtils.tokenizeToStringArray(material.getClkUrls(),"|")));
+                        monitor.setSecUrls(Arrays.asList(StringUtils.tokenizeToStringArray(material.getSecUrls(),"|")));
+                        monitor.setImpUrls(getTrack(monitor,material.getImpUrls()));
+                        metaData.setMonitor(monitor);
+                        metaData.setAdm(Arrays.asList(StringUtils.tokenizeToStringArray(material.getAdMaterials(),"|")));
+                        String[] size = StringUtils.tokenizeToStringArray(material.getSize(),"*");
+                        metaData.setW(!StringUtils.isEmpty(size[0])?Integer.parseInt(size[0]) : 0);
+                        metaData.setH(!StringUtils.isEmpty(size[1])?Integer.parseInt(size[1]) : 0);
+                        redisMaster.setex(String.format(this.MATERIAL_META_DATA, String.valueOf(metaData.getId())), EXPIRATION_TIME, JSON.toJSONString(metaData));
+                        redisMaster.sadd(this.ALL_MATERIAL, String.valueOf(metaData.getId()));
+    
+                        if (allMaterialIds != null && allMaterialIds.size() > 0) {
+                            allMaterialIds.remove(String.valueOf(metaData.getId()));
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LOGGER.error("------------MaterialTask-----is_for------error:{}",e.toString());
                 }
             }
 
@@ -95,12 +100,14 @@ public class MaterialTask {
         for (int i = 0; i < imps.length; i++) {
             if(!StringUtils.isEmpty(imps[i])){
                 MaterialMetaData.Monitor.Track track= monitor.new Track();
-                String[] imp= StringUtils.tokenizeToStringArray(imps[i],"~");
+                System.out.println(imps[i]);
+                String[] imp= imps[i].split("`");
                 track.setStartDelay(Integer.parseInt(imp[0]));
                 track.setUrl(imp[1]);
                 listTracks.add(track);
             }
         }
         return listTracks;   
+        
     }
 }

@@ -51,4 +51,11 @@ public interface SysMediaMapper {
 	 * @return
 	 */
 	public List<SysMedia> selectMedias(@Param("idStrs") String[] idStrs);
+	
+	/**
+	 * 获取已启用的媒体
+	 * 
+	 * @return
+	 */
+	public List<SysMedia> selectAuditedMedias();
 }

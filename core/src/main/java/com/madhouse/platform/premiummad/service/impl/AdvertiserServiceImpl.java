@@ -332,6 +332,10 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 
 	@Override
 	public void auditAdvertiser(String[] ids, Integer status, String reason, Integer userId) {
+		int count = advertiserDao.judgeWhetherCanAudit(ids);
+		if(count > 0){
+			throw new BusinessException(StatusCode.SC421);
+		}
 		advertiserDao.auditAdvertiser(ids, status, reason, userId);
 	}
 }
