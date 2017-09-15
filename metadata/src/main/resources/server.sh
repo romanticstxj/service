@@ -13,7 +13,7 @@ export JMX_PORT=0912
 export CLASSPATH=$BASE_DIR/conf:$(ls $BASE_DIR/*.jar | tr '\n' :)
 
 #UEAP jvm args
-UEAP_JVM_ARGS=" -Xms2g -Xmx2g -Xmn1100m -Xss256k 
+UEAP_JVM_ARGS=" -Xms500m -Xmx500m -Xss256k 
 -XX:MaxMetaspaceSize=128m 
 -XX:MetaspaceSize=80m 
 -XX:MaxDirectMemorySize=256m 
