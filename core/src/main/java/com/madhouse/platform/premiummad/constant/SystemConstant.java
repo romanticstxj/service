@@ -95,5 +95,7 @@ public interface SystemConstant {
 		int TO_BE_AUDIT_FE = 1; //待审核(前端)
 		int IN_AUDIT = 1; //审核中(后端)
 		int TO_BE_SUBMIT = 0; //待提交(前端)
+		
+		String impUrlsDelimiter = "`";
 	}
 }
