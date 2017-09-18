@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,6 +171,11 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 	@Transactional
 	@Override
 	public List<AdvertiserAuditResultModel> getAdvertiserAuditResult(String ids, String dspId) {
+		// 参数校验
+		if (StringUtils.isBlank(ids)) {
+			throw new BusinessException(StatusCode.SC400, "DSP定义的广告主ID必须[id]");
+		}
+
 		// 解析传入的广告主Key
 		String[] idStrs = AdvertiserRule.parseStringToDistinctArray(ids);
 

@@ -26,7 +26,7 @@ public class Policy {
 
     private int controlType; //总量控制(0: 不限, 1: 每天, 2: 整单)
 
-    private int maxCount;
+    private long maxCount;
     
     private int controlMethod; //投放速度(1:加速投放, 2:匀速投放)
 
@@ -124,11 +124,11 @@ public class Policy {
         this.controlType = controlType;
     }
 
-    public int getMaxCount() {
+    public long getMaxCount() {
         return maxCount;
     }
 
-    public void setMaxCount(int maxCount) {
+    public void setMaxCount(long maxCount) {
         this.maxCount = maxCount;
     }
 

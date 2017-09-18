@@ -187,6 +187,11 @@ public class MaterialServiceImpl implements IMaterialService {
 	 */
 	@Override
 	public List<MaterialAuditResultModel> getMaterialAuditResult(String ids, String dspId) {
+		// 参数校验
+		if (StringUtils.isBlank(ids)) {
+			throw new BusinessException(StatusCode.SC400, "DSP定义的素材ID必须[id]");
+		}
+		
 		// 解析传入的素材ID
 		String[] idStrs = MaterialRule.parseStringToDistinctArray(ids);
 
