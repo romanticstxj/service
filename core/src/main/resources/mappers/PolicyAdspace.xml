@@ -162,7 +162,7 @@
           				#{policyAdspace.mediaDealId},
           				#{policyAdspace.bidType},
           				#{policyAdspace.bidFloor},
-          				1,
+          				#{policyAdspace.status},
           				#{policyAdspace.createdUser},
           				#{policyAdspace.createdTime},
           				#{policyAdspace.updatedUser},

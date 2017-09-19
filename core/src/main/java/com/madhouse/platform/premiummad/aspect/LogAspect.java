@@ -36,7 +36,7 @@ public class LogAspect {
 	public void beforeService(JoinPoint joinPoint){
 		Object[] args = joinPoint.getArgs();
 		StringBuffer sb = new StringBuffer("Begin service: ")
-				.append(joinPoint.toShortString()).append(" with parameters of (");
+				.append(joinPoint.getSignature()).append(" with parameters of (");
 		if(args != null){
 			for(Object arg: args){
 				sb.append(arg).append(" ");
@@ -59,7 +59,7 @@ public class LogAspect {
 	@Before("pointCutController()")
 	public void beforeController(JoinPoint joinPoint){
 		Object[] objects = joinPoint.getArgs();
-		StringBuffer sb = new StringBuffer("Begin Controller: ").append(joinPoint.toShortString())
+		StringBuffer sb = new StringBuffer("Begin Controller: ").append(joinPoint.getSignature())
 				.append(" with parameters of (");
 		if(objects != null){
 			for (Object obj : objects) {

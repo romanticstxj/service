@@ -315,12 +315,17 @@ public class StringUtils {
 	}
 
 	public static Double convertCurrencyFentoYuan(Integer currencyFen) {
-		// TODO Auto-generated method stub
+		if(currencyFen == null){
+			return null;
+		}
 		Double currencyYuan = (double) currencyFen / 100;
 		return currencyYuan;
 	}
 
 	public static Integer convertCurrencyYuanToFen(Double currencyYuan) {
+		if(currencyYuan == null){
+			return null;
+		}
 		Integer currencyFen = Integer.parseInt(
 				new DecimalFormat(SystemConstant.OtherConstant.ZERO).format(currencyYuan * SystemConstant.OtherConstant.RATIO_FEN_TO_YUAN));
 		return currencyFen;
