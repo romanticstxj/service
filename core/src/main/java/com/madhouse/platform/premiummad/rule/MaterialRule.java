@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
+
 import com.madhouse.platform.premiummad.constant.ActiveType;
 import com.madhouse.platform.premiummad.constant.DeliveryType;
 import com.madhouse.platform.premiummad.constant.Layout;
@@ -221,23 +223,23 @@ public class MaterialRule extends BaseRule {
 	/**
 	 * 将需要上传的广告主媒体关系分类（上传过和未上传过）
 	 * 
+	 * @param adspaceIds
 	 * @param materialMedias
 	 * @param entity
 	 * @param classfiedMaps
 	 */
-	public static void classifyMaterials(List<Material> materials, MaterialModel entity, List<Map<Integer, Material>> classfiedMaps) {
+	public static void classifyMaterials(List<Integer> adspaceIds, List<Material> materials, MaterialModel entity, List<Map<Integer, Material>> classfiedMaps) {
 		Map<Integer, Material> unUploadedMaterials = new HashMap<Integer, Material>();
 		Map<Integer, Material> unAuditedMaterials = new HashMap<Integer, Material>();
 		Map<Integer, Material> audittingMaterials = new HashMap<Integer, Material>();
 		Map<Integer, Material> auditedMaterials = new HashMap<Integer, Material>();
 		Map<Integer, Material> rejectedMaterials = new HashMap<Integer, Material>();
 
-		List<Integer> adspaceIds = entity.getAdspaceId();
 		Integer mediaId = entity.getMediaId();
 		
 		// 不需要上传广告位的媒体设置一个默认值  为了循环一次
 		if (!MediaNeedAdspace.getValue(entity.getMediaId())) {
-			adspaceIds = new ArrayList<Integer>();
+			adspaceIds.clear();
 			adspaceIds.add(0);
 		}
 		

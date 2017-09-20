@@ -128,7 +128,7 @@ public class SohuNewsUploadMaterialApiTask {
 				SohuResponse sohutvResponse = JSON.parseObject(result, SohuResponse.class);
 				if (sohutvResponse != null) {
 					boolean status = sohutvResponse.isStatus();
-					if (status) {// 上传物料，成功，更新物料task表status为2
+					if (status) {// 上传物料成功
 						String content = (String)sohutvResponse.getContent();// 直接字符串
 						if (content != null && !content.equals("")) {
 							String[] mediaQueryAndMaterialKeys = {content, content};
