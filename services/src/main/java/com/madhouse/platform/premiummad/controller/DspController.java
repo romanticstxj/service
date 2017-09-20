@@ -15,9 +15,9 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dto.DspDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Dsp;
+import com.madhouse.platform.premiummad.rule.BaseRule;
 import com.madhouse.platform.premiummad.rule.DspRule;
 import com.madhouse.platform.premiummad.service.IDspService;
-import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Update;
@@ -49,9 +49,7 @@ public class DspController {
 	@RequestMapping("/create")
     public ResponseDto<DspDto> addDsp(@RequestBody DspDto dspDto,
     		@RequestHeader(value="X-FROM", required=false) String xFrom) {
-		String fieldName = BeanUtils.hasEmptyField(dspDto);
-        if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20002, null, fieldName + " cannot be null");
+		BaseRule.validateDto(dspDto);
         Integer count = dspService.checkName(dspDto.getName().trim());
         if (count > 0) //检查名称
             return ResponseUtils.response(StatusCode.SC20302,null);
@@ -80,9 +78,7 @@ public class DspController {
 	 */
 	@RequestMapping("/update")
     public ResponseDto<DspDto> updateDsp(@RequestBody @Validated(Update.class) DspDto dspDto) {
-		String fieldName = BeanUtils.hasEmptyField(dspDto);
-        if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20002, null, fieldName + " cannot be null");
+		BaseRule.validateDto(dspDto);
         Dsp dsp = DspRule.convertToModel(dspDto, new Dsp());
         dspService.update(dsp);
         List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());

@@ -18,9 +18,7 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 public class ReportRule extends BaseRule{
 	
 	public static void validateDto(ReportDto reportDto){
-		String fieldName = BeanUtils.hasEmptyField(reportDto);
-        if (fieldName != null)
-        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
+		BaseRule.validateDto(reportDto);
         
         if(reportDto.getType() < SystemConstant.DB.TYPE_MIN_VAL || reportDto.getType() > SystemConstant.DB.TYPE_MAX_VAL){
         	throw new BusinessException(StatusCode.SC20503);
@@ -36,11 +34,9 @@ public class ReportRule extends BaseRule{
 	}
 	
 	public static void validateDashboardReportDto(ReportDto reportDto) throws ParseException{
-		reportDto.setType(SystemConstant.DB.TYPE_DEFAULT);
-		String fieldName = BeanUtils.hasEmptyField(reportDto);
-        if (fieldName != null)
-        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
+		BaseRule.validateDto(reportDto);
         
+		reportDto.setType(SystemConstant.DB.TYPE_DEFAULT);
         if(reportDto.getType() < SystemConstant.DB.TYPE_MIN_VAL || reportDto.getType() > SystemConstant.DB.TYPE_MAX_VAL){
         	throw new BusinessException(StatusCode.SC20503);
         }
