@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.madhouse.platform.premiummad.constant.MaterialAuditMode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaNeedAdspace;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
@@ -222,8 +221,8 @@ public class MaterialServiceImpl implements IMaterialService {
 		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
 		MediaRule.checkMedias(distinctMediaIds, uploadedMedias);
 
-		// 判断需要广告位是否与媒体关联
-		if (MediaNeedAdspace.getValue(entity.getMediaId())) {
+		// 如果传了广告位，校验其合法性
+		if (entity.getMediaId() != null) {
 			List<Adspace> adspaces = adspaceDao.selectByIds(entity.getAdspaceId());
 			MaterialRule.validateAdsapce(adspaces, entity);
 		}
