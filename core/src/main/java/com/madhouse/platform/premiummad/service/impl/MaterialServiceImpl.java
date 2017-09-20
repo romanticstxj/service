@@ -237,13 +237,18 @@ public class MaterialServiceImpl implements IMaterialService {
 		// 判断所有需要广告主需要审核的媒体是否都已审核通过
 		String errorMsg = advertiserService.validateAdKeyAndMedias(uploadedMedias, entity.getDspId(), entity.getAdvertiserId());
 		if (!StringUtils.isBlank(errorMsg)) {
-			throw new BusinessException(StatusCode.SC414, errorMsg);
+			StatusCode code = StatusCode.SC414;
+			if (!"未上传".equals(errorMsg)) {
+				code = StatusCode.SC413;
+			}
+			throw new BusinessException(code, errorMsg);
 		}
 
 		// 判断素材与媒体是否已存在
+		List<Integer> adspaceIds = entity.getAdspaceId() == null ? new ArrayList<Integer>() : entity.getAdspaceId();
 		List<Material> materials = materialDao.selectByMaterialKeyAndMediaIds(entity);
 		List<Map<Integer, Material>> classfiedMaps = new ArrayList<Map<Integer, Material>>();
-		MaterialRule.classifyMaterials(materials, entity, classfiedMaps);
+		MaterialRule.classifyMaterials(adspaceIds, materials, entity, classfiedMaps);
 
 		// 存在待审核、审核中，审核通过的不允许推送，提示信息
 		errorMsg = MaterialRule.validateMaterials(classfiedMaps, entity.getId(), entity.getMediaId());
@@ -272,20 +277,20 @@ public class MaterialServiceImpl implements IMaterialService {
 			}
 		}
 
-		// 根据媒体审核模式处理
-		audit(uploadedMedias, classfiedMaps.get(4), classfiedMaps.get(3));
+		// 根据媒体审核模式处理 一次上传一个媒体
+		audit(adspaceIds, uploadedMedias.get(0), classfiedMaps.get(4), classfiedMaps.get(3));
 	}
 
-	private void audit(List<SysMedia> uploadedMedias, Map<Integer, Material> unUploadedMaterials, Map<Integer, Material> rejectedMaterials) {
-		for (SysMedia media : uploadedMedias) {
-			// 平台、媒体审核不处理
-			if (MaterialAuditMode.MAM10002.getValue() == media.getMaterialAuditMode().intValue() || MaterialAuditMode.MAM10003.getValue() == media.getMaterialAuditMode().intValue()) {
-				continue;
-			}
-
-			Material item = unUploadedMaterials.get(media.getId());
+	private void audit(List<Integer> uploadedAdspaceIds, SysMedia media, Map<Integer, Material> unUploadedMaterials, Map<Integer, Material> rejectedMaterials) {
+		// 平台、媒体审核不处理
+		if (MaterialAuditMode.MAM10002.getValue() == media.getMaterialAuditMode().intValue() || MaterialAuditMode.MAM10003.getValue() == media.getMaterialAuditMode().intValue()) {
+			return;
+		}
+		
+		for (Integer adspaceId : uploadedAdspaceIds) {
+			Material item = unUploadedMaterials.get(adspaceId);
 			if (item == null) {
-				item = unUploadedMaterials.get(media.getId());
+				item = rejectedMaterials.get(adspaceId);
 			}
 			if (item != null) {
 				Material updateItem = new Material();
