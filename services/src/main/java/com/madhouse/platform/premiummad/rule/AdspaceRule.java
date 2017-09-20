@@ -63,9 +63,4 @@ public class AdspaceRule extends BaseRule{
         adspaceDto.setCoverType(coverType);
 	}
 
-	public static void validateDto(AdspaceDto adspaceDto){
-		String fieldName = BeanUtils.hasEmptyField(adspaceDto);
-        if (fieldName != null)
-        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
-	}
 }
