@@ -238,7 +238,7 @@ public class MaterialServiceImpl implements IMaterialService {
 		String errorMsg = advertiserService.validateAdKeyAndMedias(uploadedMedias, entity.getDspId(), entity.getAdvertiserId());
 		if (!StringUtils.isBlank(errorMsg)) {
 			StatusCode code = StatusCode.SC414;
-			if (!"未上传".equals(errorMsg)) {
+			if (!errorMsg.endsWith("未上传")) {
 				code = StatusCode.SC413;
 			}
 			throw new BusinessException(code, errorMsg);
