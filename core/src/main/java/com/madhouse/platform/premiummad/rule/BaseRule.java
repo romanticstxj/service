@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.madhouse.platform.premiummad.constant.FieldType;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
@@ -75,7 +76,7 @@ public class BaseRule {
 	public static void validateDto(Object dto){
 		String fieldName = BeanUtils.hasEmptyField(dto);
         if (fieldName != null)
-        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
+        	throw new BusinessException(StatusCode.SC20002, FieldType.getChineseMessage(fieldName) + "不能为空");
 	}
 	
 	/**

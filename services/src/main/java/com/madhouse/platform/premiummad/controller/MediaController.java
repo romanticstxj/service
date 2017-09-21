@@ -15,6 +15,7 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dto.MediaDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Media;
+import com.madhouse.platform.premiummad.rule.BaseRule;
 import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
@@ -48,6 +49,7 @@ public class MediaController {
 		if(userIdByGet != null){ //优先获取get请求的userId参数
 			userId = userIdByGet;
 		}
+		
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
 		return listByMediaIds(mediaIdList);
     }
@@ -76,9 +78,7 @@ public class MediaController {
 	 */
 	@RequestMapping("/create")
     public ResponseDto<MediaDto> addMedia(@RequestBody @Validated(Insert.class) MediaDto mediaDto) {
-		String fieldName = BeanUtils.hasEmptyField(mediaDto);
-        if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20002, null, fieldName + " cannot be null");
+		BaseRule.validateDto(mediaDto);
         Integer count = mediaService.checkName(mediaDto.getName().trim());
         if (count > 0) //检查名称
             return ResponseUtils.response(StatusCode.SC20101,null);
@@ -117,9 +117,7 @@ public class MediaController {
 	@RequestMapping("/update")
     public ResponseDto<MediaDto> updateMedia(@RequestBody @Validated(Update.class) MediaDto mediaDto,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
-		String fieldName = BeanUtils.hasEmptyField(mediaDto);
-        if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20002, null, fieldName + " cannot be null");
+		BaseRule.validateDto(mediaDto);
 		//权限check
 		Integer id = mediaDto.getId();
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));

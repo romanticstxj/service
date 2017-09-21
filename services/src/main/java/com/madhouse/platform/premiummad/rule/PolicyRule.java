@@ -146,10 +146,7 @@ public class PolicyRule extends BaseRule{
 	}
 
 	public static void validateDto(PolicyDto policyDto){
-		String fieldName = BeanUtils.hasEmptyField(policyDto);
-        if (fieldName != null)
-        	throw new BusinessException(StatusCode.SC20002, fieldName + " cannot be null");
-        
+		BaseRule.validateDto(policyDto);
         List<PolicyAdspaceDto> policyAdspaceDtos = policyDto.getPolicyAdspaces();
         if(policyAdspaceDtos == null || policyAdspaceDtos.size() == 0){
         	throw new BusinessException(StatusCode.SC20404);

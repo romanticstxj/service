@@ -21,6 +21,7 @@ import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.DspMapping;
 import com.madhouse.platform.premiummad.rule.AdspaceRule;
+import com.madhouse.platform.premiummad.rule.BaseRule;
 import com.madhouse.platform.premiummad.service.IAdspaceService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
@@ -88,7 +89,7 @@ public class AdspaceController {
 	@RequestMapping("/create")
     public ResponseDto<AdspaceDto> addAdspace(@RequestBody @Validated(Insert.class) AdspaceDto adspaceDto, 
     		@RequestHeader(value=SystemConstant.Request.XFROM, required=true) String xFrom) {
-		AdspaceRule.validateDto(adspaceDto);
+		BaseRule.validateDto(adspaceDto);
         Adspace adspace = AdspaceRule.convertToModel(adspaceDto, new Adspace());
         adspaceService.insert(adspace, xFrom);
         List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
@@ -120,7 +121,7 @@ public class AdspaceController {
 	 */
 	@RequestMapping("/update")
     public ResponseDto<AdspaceDto> updateAdspace(@RequestBody @Validated(Update.class) AdspaceDto adspaceDto) {
-		AdspaceRule.validateDto(adspaceDto);
+		BaseRule.validateDto(adspaceDto);
         Adspace adspace = AdspaceRule.convertToModel(adspaceDto, new Adspace());
         adspaceService.update(adspace);
         List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
@@ -167,10 +168,7 @@ public class AdspaceController {
 	 */
 	@RequestMapping("/mapping/relate")
 	public ResponseDto<AdspaceDto> relateAdspaceMapping(@RequestBody AdspaceMappingDto adspaceMappingDto) {
-		//对dto表单做check
-		String fieldName = BeanUtils.hasEmptyField(adspaceMappingDto);
-        if (fieldName != null)
-            return ResponseUtils.response(StatusCode.SC20002, null, fieldName + " cannot be null");
+		BaseRule.validateDto(adspaceMappingDto);
         String mediaAdspaceKey = adspaceMappingDto.getMediaAdspaceKey();
         List<DspMappingDto> dspMappingDtos = adspaceMappingDto.getDspMappings();
         //媒体映射信息和dsp映射信息不能全为空

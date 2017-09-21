@@ -64,6 +64,7 @@
 		mad_sys_material
 	WHERE
 		`status` = 2
+		<![CDATA[ AND start_date <= SYSDATE() AND end_date >= SYSDATE() ]]>  
   </select>
   
 </mapper>
