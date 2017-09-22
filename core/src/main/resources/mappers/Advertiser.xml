@@ -247,6 +247,7 @@
 	        #{item,jdbcType=INTEGER}
 	    </foreach>
     </if>
+    ORDER BY a.created_time DESC 
   </select>
   
   <select id="queryById" resultMap="BaseResultMap" parameterType="integer">
