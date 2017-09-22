@@ -34,9 +34,9 @@ public class ReportRule extends BaseRule{
 	}
 	
 	public static void validateDashboardReportDto(ReportDto reportDto) throws ParseException{
+		reportDto.setType(SystemConstant.DB.TYPE_DEFAULT);
 		BaseRule.validateDto(reportDto);
         
-		reportDto.setType(SystemConstant.DB.TYPE_DEFAULT);
         if(reportDto.getType() < SystemConstant.DB.TYPE_MIN_VAL || reportDto.getType() > SystemConstant.DB.TYPE_MAX_VAL){
         	throw new BusinessException(StatusCode.SC20503);
         }

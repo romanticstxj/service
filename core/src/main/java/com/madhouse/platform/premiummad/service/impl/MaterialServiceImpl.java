@@ -222,7 +222,7 @@ public class MaterialServiceImpl implements IMaterialService {
 		MediaRule.checkMedias(distinctMediaIds, uploadedMedias);
 
 		// 如果传了广告位，校验其合法性
-		if (entity.getMediaId() != null) {
+		if (entity.getAdspaceId() != null) {
 			List<Adspace> adspaces = adspaceDao.selectByIds(entity.getAdspaceId());
 			MaterialRule.validateAdsapce(adspaces, entity);
 		}
