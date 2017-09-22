@@ -518,8 +518,9 @@
     LEFT JOIN mad_sys_advertiser a ON m.advertiser_key = a.advertiser_key AND m.media_id = a.media_id AND m.dsp_id = a.dsp_id
     LEFT JOIN mad_sys_media me ON m.media_id = me.id 
     LEFT JOIN mad_sys_dsp d ON m.dsp_id = d.id
+    WHERE SYSDATE() &lt;= m.end_date 
     <if test="mediaIds != null and mediaIds.size() > 0">
-	    WHERE m.media_id IN
+	    AND m.media_id IN
 	    <foreach collection="mediaIds" item="item" index="index" open="(" close=")" separator=",">
 	        #{item,jdbcType=INTEGER}
 	    </foreach>
