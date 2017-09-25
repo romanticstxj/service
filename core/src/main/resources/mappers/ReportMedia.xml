@@ -16,16 +16,16 @@
     <result column="errs" property="errs" jdbcType="BIGINT" />
     <result column="imps" property="imps" jdbcType="BIGINT" />
     <result column="clks" property="clks" jdbcType="BIGINT" />
-    <result column="vimps" property="vimps" jdbcType="BIGINT" />
+    <result column="vimps1" property="vimps" jdbcType="BIGINT" />
     <result column="vclks" property="vclks" jdbcType="BIGINT" />
-    <result column="income" property="income" jdbcType="DOUBLE" />
+    <result column="income1" property="income" jdbcType="DOUBLE" />
     <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
     <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     ${alias}.id, ${alias}.media_id, SUM(${alias}.reqs) reqs, SUM(${alias}.bids) bids, SUM(${alias}.errs) errs, 
-    SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, SUM(${alias}.vimps) vimps, SUM(${alias}.vclks) vclks, 
-    CAST(SUM(${alias}.income)/100000 as DECIMAL(15,2)) income, ${alias}.created_time, ${alias}.updated_time
+    SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, 
+    CAST(SUM(${alias}.income)/100000 as DECIMAL(15,2)) income1, ${alias}.created_time, ${alias}.updated_time
   </sql>
   
   <sql id="mediaAuthCondition">
@@ -51,7 +51,7 @@
     GROUP BY rp.media_id <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.media_id
+    ORDER BY vimps1 DESC
   </select>
   
   <select id="queryRtMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -68,7 +68,7 @@
     GROUP BY rp.media_id <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.media_id
+    ORDER BY vimps1 DESC
   </select>
   
   <select id="queryMediaLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -90,7 +90,7 @@
     GROUP BY rp.media_id, rp.location <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.media_id
+    ORDER BY vimps1 DESC
   </select>
   
   <select id="queryMediaReportDashboard" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -101,8 +101,9 @@
     <if test="realtime != null and realtime.intValue() == 1">FROM mad_report_media_rt rp</if>
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="mediaAuthCondition"/>
-    <if test="hasDate != null and hasDate == true">GROUP BY rp.date ORDER BY rp.date</if>
-    <if test="hasHour != null and hasHour == true">GROUP BY rp.hour ORDER BY rp.hour</if>
+    <if test="hasDate != null and hasDate == true">GROUP BY rp.date</if>
+    <if test="hasHour != null and hasHour == true">GROUP BY rp.hour</if>
+    ORDER BY income1 DESC
   </select>
   
 </mapper>

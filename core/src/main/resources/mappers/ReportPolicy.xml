@@ -19,7 +19,7 @@
     <result column="wins" property="wins" jdbcType="BIGINT" />
     <result column="imps" property="imps" jdbcType="BIGINT" />
     <result column="clks" property="clks" jdbcType="BIGINT" />
-    <result column="vimps" property="vimps" jdbcType="BIGINT" />
+    <result column="vimps1" property="vimps" jdbcType="BIGINT" />
     <result column="vclks" property="vclks" jdbcType="BIGINT" />
     <result column="income" property="income" jdbcType="DOUBLE" />
     <result column="cost" property="cost" jdbcType="DOUBLE" />
@@ -30,7 +30,7 @@
   <sql id="Base_Column_List" >
     ${alias}.id, ${alias}.policy_id, SUM(${alias}.reqs) reqs, SUM(${alias}.bids) bids, SUM(${alias}.timeouts) timeouts, 
     SUM(${alias}.errs) errs, SUM(${alias}.wins) wins, SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, 
-    SUM(${alias}.vimps) vimps, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.income)/100000 as DECIMAL(15,2)) income, 
+    SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.income)/100000 as DECIMAL(15,2)) income, 
     CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost, ${alias}.created_time, ${alias}.updated_time
   </sql>
   
@@ -65,7 +65,7 @@
     GROUP BY rp.policy_id <if test="hasDsp != null and hasDsp == true">, rp.dsp_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.policy_id
+    ORDER BY vimps1 DESC
   </select>
   
   <select id="queryRtPolicyReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -81,7 +81,7 @@
     GROUP BY rp.policy_id <if test="hasDsp != null and hasDsp == true">, rp.dsp_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.policy_id
+    ORDER BY vimps1 DESC
   </select>
   
   <select id="queryPolicyMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -100,7 +100,7 @@
     GROUP BY rp.policy_id, rp.media_id <if test="hasDsp != null and hasDsp == true">, rp.dsp_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.policy_id
+    ORDER BY vimps1 DESC
   </select>
   
   <select id="queryPolicyLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -121,7 +121,7 @@
     GROUP BY rp.policy_id, rp.location <if test="hasDsp != null and hasDsp == true">, rp.dsp_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.policy_id
+    ORDER BY vimps1 DESC
   </select>
   
 </mapper>
