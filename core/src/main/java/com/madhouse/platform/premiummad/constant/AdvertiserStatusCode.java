@@ -5,8 +5,8 @@ package com.madhouse.platform.premiummad.constant;
  */
 public enum AdvertiserStatusCode {
 	ASC10001(-1, "未通过"), 
-	ASC10002(0, "待审核"), 
-	ASC10003(1, "审核中"), 
+	ASC10002(0, "待提交"), 
+	ASC10003(1, "待审核"), 
 	ASC10004(2, "审核通过");
 
 	int value;

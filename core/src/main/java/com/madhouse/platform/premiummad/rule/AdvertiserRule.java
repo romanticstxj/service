@@ -14,9 +14,11 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import com.madhouse.platform.premiummad.constant.AdevertiserIndustry;
+import com.madhouse.platform.premiummad.constant.AdvertiserAuditMode;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.entity.Advertiser;
+import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.model.AdvertiserModel;
@@ -97,7 +99,7 @@ public class AdvertiserRule extends BaseRule {
 	 * @param entity
 	 * @param classfiedMaps
 	 */
-	public static void classifyAdvertisers(List<Advertiser> advertisers, AdvertiserModel entity, List<Map<Integer, Advertiser>> classfiedMaps) {
+	public static void classifyAdvertisers(Map<Integer, SysMedia> mediaMap, List<Advertiser> advertisers, AdvertiserModel entity, List<Map<Integer, Advertiser>> classfiedMaps) {
 		Map<Integer, Advertiser> unUploadedAdvertisers = new HashMap<Integer, Advertiser>();
 		Map<Integer, Advertiser> unAuditedAdvertisers = new HashMap<Integer, Advertiser>();
 		Map<Integer, Advertiser> audittingAdvertisers = new HashMap<Integer, Advertiser>();
@@ -110,6 +112,8 @@ public class AdvertiserRule extends BaseRule {
 			if (usedMediaIdSet.contains(Integer.valueOf(mediaId))) {
 				continue;
 			}
+			SysMedia media = mediaMap.get(Integer.valueOf(mediaId));
+
 			usedMediaIdSet.add(Integer.valueOf(mediaId));
 
 			boolean record = false;
@@ -117,8 +121,8 @@ public class AdvertiserRule extends BaseRule {
 				if (advertiser.getAdvertiserKey().equals(entity.getId()) && advertiser.getMediaId().intValue() == mediaId.intValue()) {
 					// 已驳回,更新广告信息，状态改为待审核
 					if (AdvertiserStatusCode.ASC10001.getValue() == advertiser.getStatus().intValue()) {
-						advertiser = buildAdvertiser(advertiser, entity, mediaId);
-						advertiser.setStatus(Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10002.getValue())));// 状态置为待审核
+						advertiser = buildAdvertiser(media, advertiser, entity, mediaId);
+						advertiser.setStatus(getInitialStatus(media.getAdvertiserAuditMode().intValue()));// 还原初始状态
 						rejectedAdvertisers.put(mediaId, advertiser);
 						record = true;
 						break;
@@ -144,7 +148,7 @@ public class AdvertiserRule extends BaseRule {
 			}
 			// 未上传过
 			if (!record) {
-				Advertiser newEntity = buildAdvertiser(null, entity, mediaId);
+				Advertiser newEntity = buildAdvertiser(media, null, entity, mediaId);
 				unUploadedAdvertisers.put(mediaId, newEntity);
 			}
 		}
@@ -161,14 +165,14 @@ public class AdvertiserRule extends BaseRule {
 	 * @param source
 	 * @return
 	 */
-	public static Advertiser buildAdvertiser(Advertiser advertiser, AdvertiserModel entity, Integer mediaId) {
+	public static Advertiser buildAdvertiser(SysMedia media, Advertiser advertiser, AdvertiserModel entity, Integer mediaId) {
 		// 第一次新增
 		if (advertiser == null) {
 			advertiser = new Advertiser();
 			advertiser.setDspId(Integer.valueOf(entity.getDspId()));
 			advertiser.setAdvertiserKey(entity.getId()); // DSP端提供的广告主ID
 			advertiser.setMediaId(mediaId);
-			advertiser.setStatus(Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10002.getValue()))); // 状态置为待审核
+			advertiser.setStatus(getInitialStatus(media.getAdvertiserAuditMode().intValue())); // 状态置设置为初始状态
 			advertiser.setCreatedTime(new Date());
 			advertiser.setUpdatedTime(advertiser.getCreatedTime());
 		} else { // 更新
@@ -196,6 +200,32 @@ public class AdvertiserRule extends BaseRule {
 		return advertiser;
 	}
 
+	/**
+	 * 根据媒体审核模式，获取媒体审核状态
+	 * 
+	 * @param mediaAuditMode
+	 * @return
+	 */
+	public static byte getInitialStatus(int mediaAuditMode) {
+		// 不审核 状态 -> 审核通过
+		if (AdvertiserAuditMode.AAM10001.getValue() == mediaAuditMode) {
+			return Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10004.getValue()));
+		}
+
+		// 平台审核 -> 待审核
+		if (AdvertiserAuditMode.AAM10002.getValue() == mediaAuditMode) {
+			return Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10003.getValue()));
+		}
+
+		// 媒体审核 -> 待提交
+		if (AdvertiserAuditMode.AAM10003.getValue() == mediaAuditMode) {
+			return Byte.valueOf(String.valueOf(AdvertiserStatusCode.ASC10002.getValue()));
+		}
+
+		// 审核方式异常
+		throw new BusinessException(StatusCode.SC500, "关联媒体广告主审核方式异常[" + mediaAuditMode + "]");
+	}
+	
 	/**
 	 * 对象转换器
 	 * 

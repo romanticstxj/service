@@ -2,8 +2,9 @@ package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
@@ -29,5 +30,19 @@ public class MediaRule extends BaseRule {
 		if (invaildMediaIds.size() > 0) {
 			throw new BusinessException(StatusCode.SC416, "以下媒体ID未启用" + Arrays.toString(invaildMediaIds.toArray()));
 		}
+	}
+	
+	/**
+	 * 构建媒体map
+	 * 
+	 * @param uploadedMedias
+	 * @return
+	 */
+	public static Map<Integer, SysMedia> buildMediaMap(List<SysMedia> uploadedMedias) {
+		Map<Integer, SysMedia> mediaMap = new HashMap<Integer, SysMedia>();
+		for (SysMedia media : uploadedMedias) {
+			mediaMap.put(Integer.valueOf(media.getId()), media);
+		}
+		return mediaMap;
 	}
 }

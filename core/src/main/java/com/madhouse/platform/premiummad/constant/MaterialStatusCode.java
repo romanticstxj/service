@@ -5,8 +5,8 @@ package com.madhouse.platform.premiummad.constant;
  */
 public enum MaterialStatusCode {
 	MSC10001(-1, "未通过"), 
-	MSC10002(0, "待审核"), 
-	MSC10003(1, "审核中"), 
+	MSC10002(0, "待提交"), 
+	MSC10003(1, "待审核"), 
 	MSC10004(2, "审核通过");
 
 	int value;

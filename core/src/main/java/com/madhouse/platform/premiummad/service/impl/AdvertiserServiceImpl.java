@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.madhouse.platform.premiummad.constant.AdvertiserAuditMode;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -204,11 +202,12 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		String[] distinctMediaIds = AdvertiserRule.parseListToDistinctArray(entity.getMediaId());
 		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
 		MediaRule.checkMedias(distinctMediaIds, uploadedMedias);
+		Map<Integer, SysMedia> mediaMap = MediaRule.buildMediaMap(uploadedMedias);
 		
 		// 判断广告主是否已存在
 		List<Advertiser> advertisers = advertiserDao.selectByAdvertiserKeyAndMediaIds(entity);
 		List<Map<Integer, Advertiser>> classfiedMaps = new ArrayList<Map<Integer, Advertiser>>();
-		AdvertiserRule.classifyAdvertisers(advertisers, entity, classfiedMaps);
+		AdvertiserRule.classifyAdvertisers(mediaMap, advertisers, entity, classfiedMaps);
 
 		// 存在待审核、审核中，审核通过的不允许推送，提示信息
 		String errorMsg = AdvertiserRule.validateAdvertisers(classfiedMaps, entity.getId());
@@ -238,7 +237,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		}
 
 		// 根据媒体审核模式处理
-		audit(uploadedMedias, classfiedMaps.get(4), classfiedMaps.get(3));
+		//audit(uploadedMedias, classfiedMaps.get(4), classfiedMaps.get(3));
 	}
 
 	/**
@@ -248,7 +247,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 	 * @param unUploadedAdvertisers
 	 * @param rejectedAdvertisers
 	 */
-	private void audit(List<SysMedia> uploadedMedias, Map<Integer, Advertiser> unUploadedAdvertisers, Map<Integer, Advertiser> rejectedAdvertisers) {
+	public void audit(List<SysMedia> uploadedMedias, Map<Integer, Advertiser> unUploadedAdvertisers, Map<Integer, Advertiser> rejectedAdvertisers) {
 		for (SysMedia media : uploadedMedias) {
 			// 平台、媒体审核不处理
 			if (AdvertiserAuditMode.AAM10002.getValue() == media.getAdvertiserAuditMode().intValue() || AdvertiserAuditMode.AAM10003.getValue() == media.getAdvertiserAuditMode().intValue()) {
