@@ -14,7 +14,7 @@
     <result column="wins" jdbcType="BIGINT" property="wins" />
     <result column="imps" jdbcType="BIGINT" property="imps" />
     <result column="clks" jdbcType="BIGINT" property="clks" />
-    <result column="vimps" jdbcType="BIGINT" property="vimps" />
+    <result column="vimps1" jdbcType="BIGINT" property="vimps" />
     <result column="vclks" jdbcType="BIGINT" property="vclks" />
     <result column="cost" jdbcType="DOUBLE" property="cost" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -24,7 +24,7 @@
   <sql id="Base_Column_List">
     ${alias}.id, ${alias}.dsp_id, SUM(${alias}.reqs) reqs, SUM(${alias}.bids) bids, SUM(${alias}.timeouts) timeouts, 
     SUM(${alias}.errs) errs, SUM(${alias}.wins) wins, SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, 
-    SUM(${alias}.vimps) vimps, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost,
+    SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost,
     ${alias}.created_time, ${alias}.updated_time
   </sql>
   
@@ -46,7 +46,7 @@
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     GROUP BY rp.dsp_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.dsp_id
+    ORDER BY vimps1 DESC
   </select>
   
   <select id="queryDspMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -61,7 +61,7 @@
     <include refid="mediaAuthCondition"/>
     GROUP BY rp.dsp_id, rp.media_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.dsp_id
+    ORDER BY vimps1 DESC
   </select>
   
   <select id="queryDspLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -78,7 +78,7 @@
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     GROUP BY rp.dsp_id, rp.location <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.dsp_id
+    ORDER BY vimps1 DESC
   </select>
   
   <select id="queryRtDspReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -90,7 +90,7 @@
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     GROUP BY rp.dsp_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY rp.dsp_id
+    ORDER BY vimps1 DESC
   </select>
   
 </mapper>
