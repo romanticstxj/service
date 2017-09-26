@@ -1,5 +1,6 @@
 
 package com.madhouse.platform.premiummad.controller;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class MaterialController {
 	
 	private ResponseDto<Material> listByMediaIds(List<Integer> mediaIdList) {
 		if(ObjectUtils.isEmpty(mediaIdList)){ //无权限查看任何媒体
-	        return ResponseUtils.response(StatusCode.SC20001, null);
+	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<Material>());
 		} else{
 			List<Material> materials = materialService.queryAll(mediaIdList);
 			MaterialAuditRule.convertToDtoList(materials);

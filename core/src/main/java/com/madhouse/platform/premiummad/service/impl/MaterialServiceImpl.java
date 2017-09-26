@@ -247,7 +247,7 @@ public class MaterialServiceImpl implements IMaterialService {
 		List<Integer> adspaceIds = entity.getAdspaceId() == null ? new ArrayList<Integer>() : entity.getAdspaceId();
 		List<Material> materials = materialDao.selectByMaterialKeyAndMediaIds(entity);
 		List<Map<Integer, Material>> classfiedMaps = new ArrayList<Map<Integer, Material>>();
-		MaterialRule.classifyMaterials(adspaceIds, materials, entity, classfiedMaps);
+		MaterialRule.classifyMaterials(uploadedMedias.get(0), adspaceIds, materials, entity, classfiedMaps);
 
 		// 存在待审核、审核中，审核通过的不允许推送，提示信息
 		errorMsg = MaterialRule.validateMaterials(classfiedMaps, entity.getId(), entity.getMediaId());
@@ -277,12 +277,12 @@ public class MaterialServiceImpl implements IMaterialService {
 		}
 
 		// 根据媒体审核模式处理 一次上传一个媒体
-		audit(adspaceIds, uploadedMedias.get(0), classfiedMaps.get(4), classfiedMaps.get(3));
+		//audit(adspaceIds, uploadedMedias.get(0), classfiedMaps.get(4), classfiedMaps.get(3));
 	}
 
-	private void audit(List<Integer> uploadedAdspaceIds, SysMedia media, Map<Integer, Material> unUploadedMaterials, Map<Integer, Material> rejectedMaterials) {
-		// 平台、媒体审核不处理
-		if (MaterialAuditMode.MAM10002.getValue() == media.getMaterialAuditMode().intValue() || MaterialAuditMode.MAM10003.getValue() == media.getMaterialAuditMode().intValue()) {
+	public void audit(List<Integer> uploadedAdspaceIds, SysMedia media, Map<Integer, Material> unUploadedMaterials, Map<Integer, Material> rejectedMaterials) {
+		// 媒体审核不处理
+		if (MaterialAuditMode.MAM10003.getValue() == media.getMaterialAuditMode().intValue()) {
 			return;
 		}
 		
@@ -293,12 +293,22 @@ public class MaterialServiceImpl implements IMaterialService {
 			}
 			if (item != null) {
 				Material updateItem = new Material();
+				updateItem.setUpdatedTime(new Date());
+				updateItem.setId(item.getId());
+				
 				// 如果模式是不审核，审核状态修改为审核通过
 				if (MaterialAuditMode.MAM10001.getValue() == media.getMaterialAuditMode().intValue()) {
 					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10004.getValue())));
-					updateItem.setUpdatedTime(new Date());
-					updateItem.setId(item.getId());
-					
+
+					int effortRows = materialDao.updateByPrimaryKeySelective(updateItem);
+					if (effortRows != 1) {
+						throw new BusinessException(StatusCode.SC500);
+					}
+				}
+				// 如果是平台审核，审核状态修改为待审核
+				if (MaterialAuditMode.MAM10002.getValue() == media.getMaterialAuditMode().intValue()) {
+					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10003.getValue())));
+
 					int effortRows = materialDao.updateByPrimaryKeySelective(updateItem);
 					if (effortRows != 1) {
 						throw new BusinessException(StatusCode.SC500);

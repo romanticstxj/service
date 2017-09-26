@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.madhouse.platform.premiummad.constant.ActiveType;
 import com.madhouse.platform.premiummad.constant.DeliveryType;
 import com.madhouse.platform.premiummad.constant.Layout;
+import com.madhouse.platform.premiummad.constant.MaterialAuditMode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.constant.MediaNeedAdspace;
@@ -24,6 +25,7 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.entity.Policy;
+import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.model.MaterialModel;
@@ -228,7 +230,7 @@ public class MaterialRule extends BaseRule {
 	 * @param entity
 	 * @param classfiedMaps
 	 */
-	public static void classifyMaterials(List<Integer> adspaceIds, List<Material> materials, MaterialModel entity, List<Map<Integer, Material>> classfiedMaps) {
+	public static void classifyMaterials(SysMedia media, List<Integer> adspaceIds, List<Material> materials, MaterialModel entity, List<Map<Integer, Material>> classfiedMaps) {
 		Map<Integer, Material> unUploadedMaterials = new HashMap<Integer, Material>();
 		Map<Integer, Material> unAuditedMaterials = new HashMap<Integer, Material>();
 		Map<Integer, Material> audittingMaterials = new HashMap<Integer, Material>();
@@ -258,8 +260,8 @@ public class MaterialRule extends BaseRule {
 				if ((!MediaNeedAdspace.getValue(entity.getMediaId()) || material.getAdspaceId().intValue() == adspaceId.intValue()) && material.getMaterialKey().equals(entity.getId()) && material.getMediaId().intValue() == mediaId.intValue()) {
 					// 已驳回
 					if (MaterialStatusCode.MSC10001.getValue() == material.getStatus().intValue()) {
-						material = buildMaterial(material, entity, adspaceId);
-						material.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10002.getValue())));// 状态置为待审核
+						material = buildMaterial(media, material, entity, adspaceId);
+						material.setStatus(getInitialStatus(media.getMaterialAuditMode()));// 状态置设置为初始状态
 						rejectedMaterials.put(adspaceId, material);
 						record = true;
 						break;
@@ -286,7 +288,7 @@ public class MaterialRule extends BaseRule {
 			}
 			// 未上传过
 			if (!record) {
-				Material newEntity = buildMaterial(null, entity, adspaceId);
+				Material newEntity = buildMaterial(media, null, entity, adspaceId);
 				unUploadedMaterials.put(adspaceId, newEntity);
 			}
 		}
@@ -304,14 +306,14 @@ public class MaterialRule extends BaseRule {
 	 * @param entity
 	 * @return
 	 */
-	public static Material buildMaterial(Material material, MaterialModel entity, Integer adspaceId) {
+	public static Material buildMaterial(SysMedia media, Material material, MaterialModel entity, Integer adspaceId) {
 		// 第一次新增
 		if (material == null) {
 			material = new Material();
 			material.setDspId(Integer.valueOf(entity.getDspId()));
 			material.setMaterialKey(entity.getId());
 			material.setMediaId(entity.getMediaId());
-			material.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10002.getValue()))); // 状态置为待审核
+			material.setStatus(getInitialStatus(media.getMaterialAuditMode())); // 状态置为待提交
 			material.setCreatedTime(new Date());
 			material.setUpdatedTime(material.getCreatedTime());
 		} else { // 更新
@@ -355,6 +357,32 @@ public class MaterialRule extends BaseRule {
 		return material;
 	}
 
+	/**
+	 * 根据媒体审核模式，获取媒体审核状态
+	 * 
+	 * @param mediaAuditMode
+	 * @return
+	 */
+	public static byte getInitialStatus(int mediaAuditMode) {
+		// 不审核 状态 -> 审核通过
+		if (MaterialAuditMode.MAM10001.getValue() == mediaAuditMode) {
+			return Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10004.getValue()));
+		}
+
+		// 平台审核 -> 待审核
+		if (MaterialAuditMode.MAM10002.getValue() == mediaAuditMode) {
+			return Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10003.getValue()));
+		}
+
+		// 媒体审核 -> 待提交
+		if (MaterialAuditMode.MAM10003.getValue() == mediaAuditMode) {
+			return Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10002.getValue()));
+		}
+
+		// 审核方式异常
+		throw new BusinessException(StatusCode.SC500, "关联媒体素材审核方式异常[" + mediaAuditMode + "]");
+	}
+	
 	public static String parseToString(MonitorModel monitor, byte type) {
 		if (monitor == null) {
 			return "";
