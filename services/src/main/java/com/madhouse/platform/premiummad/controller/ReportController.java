@@ -1,5 +1,6 @@
 package com.madhouse.platform.premiummad.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class ReportController {
     	List<Integer> mediaIds = dto.getMediaIds();
     	//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIds)){
-	        return ResponseUtils.response(StatusCode.SC20001, null);
+	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<ReportMedia>());
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			ReportRule.validateDashboardReportDto(dto);
 			ReportCriterion criterion = ReportRule.convertToModel(dto, new ReportCriterion());
@@ -69,7 +70,7 @@ public class ReportController {
     	List<Integer> mediaIds = dto.getMediaIds();
     	//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIds)){
-	        return ResponseUtils.response(StatusCode.SC20001, null);
+	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<ReportMedia>());
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			ReportRule.validateDto(dto);
 			ReportCriterion criterion = ReportRule.convertToModel(dto, new ReportCriterion());
@@ -91,7 +92,7 @@ public class ReportController {
     	List<Integer> mediaIds = dto.getMediaIds();
     	//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIds)){
-	        return ResponseUtils.response(StatusCode.SC20001, null);
+	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<ReportDsp>());
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			ReportRule.validateDto(dto);
 			ReportCriterion criterion = ReportRule.convertToModel(dto, new ReportCriterion());
@@ -116,7 +117,7 @@ public class ReportController {
     	List<Integer> policyIds = dto.getPolicyIds();
     	//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIds) || ObjectUtils.isEmpty(policyIds)){
-	        return ResponseUtils.response(StatusCode.SC20001, null);
+	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<ReportPolicy>());
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			ReportRule.validateDto(dto);
 			ReportCriterion criterion = ReportRule.convertToModel(dto, new ReportCriterion());

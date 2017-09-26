@@ -52,6 +52,26 @@
     </if>
   </sql>
   
+  <sql id="IS_SPECIAL_COUNTRIES">
+    l.code = '1446000000' OR l.code = '1344000000' OR l.code = '1158000000'
+  </sql>
+  
+  <sql id="IS_COUNTRY">
+    l.domestic=0 OR l.code = '1156000000'
+  </sql>
+  
+  <sql id="IS_FOREIGN_COUNTRY">
+    l.domestic=0
+  </sql>
+  
+  <sql id="IS_PROVINCE">
+    l.code LIKE '%0000'
+  </sql>
+  
+  <sql id="IS_GLOBAL">
+    l.code = '1000000000'
+  </sql>
+  
   <select id="queryPolicyReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> ,p.name policyName
     <if test="hasDsp != null and hasDsp == true">, rp.dsp_id, d.name dspName</if>
@@ -106,8 +126,9 @@
   <select id="queryPolicyLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> 
     ,p.name policyName, rp.location, 
-    IF(l.domestic=0, '其他', IF(l.code LIKE '%0000', l.name, l.name)) cityName,
-    IF(l.domestic=0, '其他', IF(l.code LIKE '%0000', l.name, lp.name)) provinceName
+    IF(<include refid="IS_COUNTRY"/>, '其他', l.name) cityName, 
+	IF(<include refid="IS_COUNTRY"/>, '其他', IF(<include refid="IS_PROVINCE"/>, l.name, lp.name)) provinceName,
+	IF(<include refid="IS_GLOBAL"/>, '其他', IF(<include refid="IS_FOREIGN_COUNTRY"/> OR <include refid="IS_SPECIAL_COUNTRIES"/>, l.name, '中国大陆')) countryName
     <if test="hasDsp != null and hasDsp == true">, rp.dsp_id, d.name dspName</if>
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
