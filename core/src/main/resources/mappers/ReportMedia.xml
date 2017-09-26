@@ -37,34 +37,14 @@
     </if>
   </sql>
   
-  <sql id="IS_SPECIAL_COUNTRIES">
-    l.code = '1446000000' OR l.code = '1344000000' OR l.code = '1158000000'
-  </sql>
-  
-  <sql id="IS_COUNTRY">
-    l.domestic=0 OR l.code = '1156000000'
-  </sql>
-  
-  <sql id="IS_FOREIGN_COUNTRY">
-    l.domestic=0
-  </sql>
-  
-  <sql id="IS_PROVINCE">
-    l.code LIKE '%0000'
-  </sql>
-  
-  <sql id="IS_GLOBAL">
-    l.code = '1000000000'
-  </sql>
-  
   <select id="queryMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> ,m.name mediaName
     <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id, a.name adspaceName</if>
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_media rp
-    LEFT JOIN mad_sys_media m ON rp.media_id = m.id
-    <if test="hasAdspace != null and hasAdspace == true">LEFT JOIN mad_sys_adspace a ON rp.adspace_id = a.id</if>
+    INNER JOIN mad_sys_media m ON rp.media_id = m.id
+    <if test="hasAdspace != null and hasAdspace == true">INNER JOIN mad_sys_adspace a ON rp.adspace_id = a.id</if>
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="mediaAuthCondition"/>
     <if test="mediaId != null"> AND rp.media_id = #{mediaId} </if>
@@ -80,8 +60,8 @@
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_media_rt rp
-    LEFT JOIN mad_sys_media m ON rp.media_id = m.id
-    <if test="hasAdspace != null and hasAdspace == true">LEFT JOIN mad_sys_adspace a ON rp.adspace_id = a.id</if>
+    INNER JOIN mad_sys_media m ON rp.media_id = m.id
+    <if test="hasAdspace != null and hasAdspace == true">INNER JOIN mad_sys_adspace a ON rp.adspace_id = a.id</if>
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="mediaAuthCondition"/>
     <if test="mediaId != null"> AND rp.media_id = #{mediaId} </if>
@@ -93,18 +73,14 @@
   
   <select id="queryMediaLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include>,
-    m.name mediaName, rp.location, 
-    IF(<include refid="IS_COUNTRY"/>, '其他', l.name) cityName, 
-	IF(<include refid="IS_COUNTRY"/>, '其他', IF(<include refid="IS_PROVINCE"/>, l.name, lp.name)) provinceName,
-	IF(<include refid="IS_GLOBAL"/>, '其他', IF(<include refid="IS_FOREIGN_COUNTRY"/> OR <include refid="IS_SPECIAL_COUNTRIES"/>, l.name, '中国大陆')) countryName
+    m.name mediaName, rp.location, l.cityName, l.provinceName, l.countryName
     <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id, a.name adspaceName</if>
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_media_location rp
-    LEFT JOIN mad_sys_media m ON rp.media_id = m.id
-    <if test="hasAdspace != null and hasAdspace == true">LEFT JOIN mad_sys_adspace a ON rp.adspace_id = a.id</if>
-    LEFT JOIN mad_dict_location l ON rp.location = l.code
-    LEFT JOIN mad_dict_location lp ON l.parent_code = lp.code
+    INNER JOIN mad_sys_media m ON rp.media_id = m.id
+    <if test="hasAdspace != null and hasAdspace == true">INNER JOIN mad_sys_adspace a ON rp.adspace_id = a.id</if>
+    INNER JOIN mad_dict_location l ON rp.location = l.code
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="mediaAuthCondition"/>
     <if test="mediaId != null"> AND rp.media_id = #{mediaId} </if>
