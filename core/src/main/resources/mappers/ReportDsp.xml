@@ -66,7 +66,7 @@
   
   <select id="queryDspLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include>,
-    d.name dspName, rp.location, l.cityName, l.provinceName, l.countryName
+    d.name dspName, rp.location, l.city_name cityName, l.province_name provinceName, l.country_name countryName
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_dsp_location rp

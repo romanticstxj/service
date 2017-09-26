@@ -73,7 +73,7 @@
   
   <select id="queryMediaLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include>,
-    m.name mediaName, rp.location, l.cityName, l.provinceName, l.countryName
+    m.name mediaName, rp.location, l.city_name cityName, l.province_name provinceName, l.country_name countryName
     <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id, a.name adspaceName</if>
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
