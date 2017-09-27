@@ -331,7 +331,7 @@ public class WeiboMaterialUploadApiTask {
 		}
 
 		// 视频信息流
-		if (layout >= Layout.LO20001.getValue() && layout <= Layout.LO20007.getValue() || layout == Layout.LO30004.getValue()) {
+		if (layout >= Layout.LO20001.getValue() && layout <= Layout.LO20007.getValue() || layout == Layout.LO30011.getValue()) {
 			return CREATIVE_FEED_VIDEO;
 		}
 
