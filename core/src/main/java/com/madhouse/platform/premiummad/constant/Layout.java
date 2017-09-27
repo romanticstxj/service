@@ -21,7 +21,13 @@ public enum Layout {
 	LO30001(301, "Native-图文信息流1图"), 
 	LO30002(302, "Native-图文信息流2图"),
 	LO30003(303, "Native-图文信息流3图"),
-	LO30004(311, "Native-视频信息流");
+	LO30004(304, "Native-图文信息流4图"),
+	LO30005(305, "Native-图文信息流5图"),
+	LO30006(306, "Native-图文信息流6图"),
+	LO30007(307, "Native-图文信息流7图"),
+	LO30008(308, "Native-图文信息流8图"),
+	LO30009(309, "Native-图文信息流9图"),
+	LO30011(311, "Native-视频信息流");
 	
 	int value;
 	String descrip;

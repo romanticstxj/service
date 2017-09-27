@@ -69,10 +69,18 @@ public class MaterialRule extends BaseRule {
 			throw new BusinessException(StatusCode.SC417, "存在无效的广告位ID[adspaceId]");
 		}
 		for (Adspace adspace : adspaces) {
+			// 广告位的广告形式是图文信息流时需要组合校验 layout + materialCount
+			int adspaceLayout = adspace.getLayout().intValue();
+			if (adspaceLayout == 300) {
+				adspaceLayout = adspaceLayout + adspace.getMaterialCount().intValue();
+			}
+
 			// 广告位的广告形式与素材的广告形式校验
-			if (adspace.getLayout().intValue() != entity.getLayout().intValue()) {
+			if (adspaceLayout != entity.getLayout().intValue()) {
 				throw new BusinessException(StatusCode.SC417, "广告位的广告形式与素材的广告形式不一致[adspaceId=" + adspace.getId() + "]");
 			}
+
+			// 广告位的媒体与素材的媒体校验
 			if (adspace.getMediaId().intValue() != entity.getMediaId().intValue()) {
 				throw new BusinessException(StatusCode.SC417, "广告位所属媒体与素材所属媒体不一致[adspaceId=" + adspace.getId() + "]");
 			}
