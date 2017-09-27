@@ -71,22 +71,31 @@ public class MaterialController {
 	 */
 	private MaterialModel convert(MaterialDto materialDto) throws ParseException {
 		MaterialModel entity = new MaterialModel();
-		MonitorDto monitorDto = materialDto.getMonitor();
-		List<TrackDto> trackDtos = monitorDto.getImpUrls();
 
 		// 主信息转换
 		BeanUtils.copyProperties(materialDto, entity);
 
 		// 广告监测信息转换
-		MonitorModel monitorModel = new MonitorModel();
-		BeanUtils.copyProperties(monitorDto, monitorModel);
-		entity.setMonitor(monitorModel);
+		if (materialDto.getMonitor() != null) {
+			MonitorDto monitorDto = materialDto.getMonitor();
+			MonitorModel monitorModel = new MonitorModel();
+			// 主信息转换
+			BeanUtils.copyProperties(monitorDto, monitorModel);
+			entity.setMonitor(monitorModel);
 
-		// 展示监测信息URL
-		List<TrackModel> trackModels = new ArrayList<TrackModel>();
-		BeanUtils.copyList(trackDtos, trackModels, TrackModel.class);
-		monitorModel.setImpUrls(trackModels);
+			// 点击监测地址
+			monitorModel.setClkUrls(monitorDto.getClkUrls());
+			// 品牌安全监测
+			monitorModel.setSecUrls(monitorDto.getSecUrls());
 
+			// 展示监测信息URL
+			List<TrackDto> trackDtos = monitorDto.getImpUrls();
+			if (trackDtos != null) {
+				List<TrackModel> trackModels = new ArrayList<TrackModel>();
+				BeanUtils.copyList(trackDtos, trackModels, TrackModel.class);
+				monitorModel.setImpUrls(trackModels);
+			}
+		}
 		return entity;
 	}
 }
