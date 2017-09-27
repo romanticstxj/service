@@ -83,7 +83,7 @@ public class AdspaceRule {
 			break;
 		case AdspaceConstant.PlcmtType.NATIVE:
 			AdspaceModel.Native natives = new AdspaceModel.Native();
-			if (adspace.getLayout().equals(Layout.LO30004.getValue())) {
+			if (adspace.getLayout().equals(Layout.LO30011.getValue())) {
 				if (adspace.getCoverType() > 0 && !StringUtils.isEmpty(adspace.getCoverSize())) {
 					AdspaceModel.Image nativeCover = new AdspaceModel.Image();
 					String[] videoSize = org.springframework.util.StringUtils.tokenizeToStringArray(adspace.getCoverSize(), "*");

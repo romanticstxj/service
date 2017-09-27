@@ -28,26 +28,6 @@
     ${alias}.created_time, ${alias}.updated_time
   </sql>
   
-  <sql id="IS_SPECIAL_COUNTRIES">
-    l.code = '1446000000' OR l.code = '1344000000' OR l.code = '1158000000'
-  </sql>
-  
-  <sql id="IS_COUNTRY">
-    l.domestic=0 OR l.code = '1156000000'
-  </sql>
-  
-  <sql id="IS_FOREIGN_COUNTRY">
-    l.domestic=0
-  </sql>
-  
-  <sql id="IS_PROVINCE">
-    l.code LIKE '%0000'
-  </sql>
-  
-  <sql id="IS_GLOBAL">
-    l.code = '1000000000'
-  </sql>
-  
   <sql id="mediaAuthCondition">
   	<if test="mediaIds != null and mediaIds.size() > 0">
     	AND rp.media_id IN 
@@ -62,7 +42,7 @@
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_dsp rp
-    LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id
+    INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     GROUP BY rp.dsp_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -75,8 +55,8 @@
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_dsp_media rp
-    LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id
-    LEFT JOIN mad_sys_media m ON rp.media_id = m.id
+    INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
+    INNER JOIN mad_sys_media m ON rp.media_id = m.id
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="mediaAuthCondition"/>
     GROUP BY rp.dsp_id, rp.media_id <if test="hasDate != null and hasDate == true">, rp.date</if>
@@ -86,16 +66,12 @@
   
   <select id="queryDspLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include>,
-    d.name dspName, rp.location, 
-    IF(<include refid="IS_COUNTRY"/>, '其他', l.name) cityName, 
-	IF(<include refid="IS_COUNTRY"/>, '其他', IF(<include refid="IS_PROVINCE"/>, l.name, lp.name)) provinceName,
-	IF(<include refid="IS_GLOBAL"/>, '其他', IF(<include refid="IS_FOREIGN_COUNTRY"/> OR <include refid="IS_SPECIAL_COUNTRIES"/>, l.name, '中国大陆')) countryName
+    d.name dspName, rp.location, l.city_name cityName, l.province_name provinceName, l.country_name countryName
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_dsp_location rp
-    LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id
-    LEFT JOIN mad_dict_location l ON rp.location = l.code
-    LEFT JOIN mad_dict_location lp ON l.parent_code = lp.code
+    INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
+    INNER JOIN mad_dict_location l ON rp.location = l.code
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     GROUP BY rp.dsp_id, rp.location <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -107,7 +83,7 @@
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_dsp_rt rp
-    LEFT JOIN mad_sys_dsp d ON rp.dsp_id = d.id
+    INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     GROUP BY rp.dsp_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>

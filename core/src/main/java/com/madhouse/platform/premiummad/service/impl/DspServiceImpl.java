@@ -1,6 +1,8 @@
 package com.madhouse.platform.premiummad.service.impl;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +53,12 @@ public class DspServiceImpl implements IDspService {
 
 	@Override
 	public int insertWithParamsProcess(Dsp dsp, String xFrom) {
+		//验证url pattern是否正确
+		String bidUrl = dsp.getBidUrl();
+		boolean matchesUrlPattern = StringUtils.matchesUrlPattern(bidUrl);
+		if(!matchesUrlPattern){
+			throw new BusinessException(StatusCode.SC20303);
+		}
 		dspDao.insertSelective(dsp);
 		postprocessDspParams(dsp, xFrom);
         return updateDspToken(dsp);
@@ -91,6 +99,12 @@ public class DspServiceImpl implements IDspService {
             if (count > 0)
             throw new BusinessException(StatusCode.SC20302);
         }
+        //验证url pattern是否正确
+        String bidUrl = dsp.getBidUrl();
+		boolean matchesUrlPattern = StringUtils.matchesUrlPattern(bidUrl);
+		if(!matchesUrlPattern){
+			throw new BusinessException(StatusCode.SC20303);
+		}
         return dspDao.updateByPrimaryKey(dsp);
 	}
 
