@@ -41,6 +41,8 @@ public interface SystemConstant {
 		int ALL_HOURS = 24;
 		int HOUR_ZERO = 0;
 		int HOUR_23 = 23;
+		
+		String URL_REGEX = "^(https?):\\/\\/[\\w\\-]+(\\.[\\w\\-]+)+([\\w\\-\\.,@?^=%&:\\/~\\+#]*[\\w\\-\\@?^=%&\\/~\\+#])?$";
 	}
 	
 	interface ErrorMessage{
