@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.MediaMappingMetaData;
 import com.madhouse.platform.premiummad.entity.PlcmtMetaData;
+import com.madhouse.platform.premiummad.entity.PlcmtMetaData.Size;
 import com.madhouse.platform.premiummad.service.IPlcmtService;
 import com.madhouse.platform.premiummad.util.Constant;
 import com.madhouse.platform.premiummad.util.ResourceManager;
@@ -77,9 +78,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                                         video.setLinearity(Constant.Linearity.PATCH_VIDEO);
                                         break;
                                     case Constant.Layout.VIDEO_211:
-                                        String[] videoMaterialSize = StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
-                                        video.setW(Integer.parseInt(videoMaterialSize[0]));
-                                        video.setH(Integer.parseInt(videoMaterialSize[1]));
+                                        video.setSizes(gettMaterialListSize(adspace.getMaterialSize(), metaData));
                                         video.setMimes(queryMimesByType(adspace.getMaterialType()));
                                         video.setLinearity(Constant.Linearity.SUSPENSION_PAUSE);
                                         break;
@@ -101,9 +100,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
                                 if(adspace.getLayout().equals(Constant.Layout.NATIVE_311)){
                                     if (adspace.getCoverType() > 0 && !StringUtils.isEmpty(adspace.getCoverSize())) {
                                         PlcmtMetaData.Image nativeCover = metaData.new Image();
-                                        String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getCoverSize(), "*");
-                                        nativeCover.setW(Integer.parseInt(videoSize[0]));
-                                        nativeCover.setH(Integer.parseInt(videoSize[1]));
+                                        nativeCover.setSizes(gettMaterialListSize(adspace.getMaterialSize(), metaData));
                                         nativeCover.setMimes(queryMimesByType(adspace.getCoverType()));
                                         natives.setCover(nativeCover);
                                     }
@@ -115,9 +112,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
 
                                 PlcmtMetaData.Image nativesIcon = metaData.new Image();
                                 if(adspace.getLogoType() > 0 && !StringUtils.isEmpty(adspace.getLogoSize())){
-                                    String[] nativesIconSize = StringUtils.tokenizeToStringArray(adspace.getLogoSize(), "*");
-                                    nativesIcon.setW(Integer.parseInt(nativesIconSize[0]));
-                                    nativesIcon.setH(Integer.parseInt(nativesIconSize[1]));
+                                    nativesIcon.setSizes(gettMaterialListSize(adspace.getMaterialSize(), metaData));
                                     nativesIcon.setMimes(queryMimesByType(adspace.getLogoType()));
                                 }
 
@@ -175,26 +170,16 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
     }
     public PlcmtMetaData.Image getImage(Adspace adspace ,PlcmtMetaData metaData) {
         PlcmtMetaData.Image img = metaData.new Image();
-        String[] str = StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
-        img.setW(Integer.parseInt(str[0]));
-        img.setH(Integer.parseInt(str[1]));
-        
-        metaData.setW(Integer.parseInt(str[0]));
-        metaData.setH(Integer.parseInt(str[1]));
-        
-        
+        img.setSizes(gettMaterialListSize(adspace.getMaterialSize(), metaData));
+        metaData.setSizes(gettMaterialListSize(adspace.getMaterialSize(), metaData));
         img.setMimes(queryMimesByType(adspace.getMaterialType()));
         return img;
     }
     public PlcmtMetaData.Video getVideo(Adspace adspace ,PlcmtMetaData metaData) {
         PlcmtMetaData.Video video = metaData.new Video();
         if(!adspace.getLayout().equals(Constant.Layout.VIDEO_211)){
-            String[] videoSize = StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
-            video.setW(Integer.parseInt(videoSize[0]));
-            video.setH(Integer.parseInt(videoSize[1]));
-            
-            metaData.setW(Integer.parseInt(videoSize[0]));
-            metaData.setH(Integer.parseInt(videoSize[1]));
+            video.setSizes(gettMaterialListSize(adspace.getMaterialSize(), metaData));
+            metaData.setSizes(gettMaterialListSize(adspace.getMaterialSize(), metaData));
             
             String[] nativesdescription = StringUtils.tokenizeToStringArray(adspace.getMaterialDuration(), ",");
             video.setMinDuraion(Integer.parseInt(nativesdescription[0]));
@@ -203,6 +188,21 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
         }
         return video;
     }
+    
+    private List<Size> gettMaterialListSize(String materialSize,PlcmtMetaData metaData) {
+        
+        List<Size> list=new ArrayList<Size>();
+        String[] listSize = StringUtils.tokenizeToStringArray(materialSize, ",");
+        for (String size : listSize) {
+            String[] sizes = StringUtils.tokenizeToStringArray(size, "*");
+            Size metaDataSize = metaData.new Size();
+            metaDataSize.setH(Integer.parseInt(sizes[0]));
+            metaDataSize.setW(Integer.parseInt(sizes[1]));
+            list.add(metaDataSize);
+        }
+        return list;
+    }
+    
     
     public void loadMediaMappingData() {
         Jedis redisMaster = rm.getJedisPoolMaster().getResource();

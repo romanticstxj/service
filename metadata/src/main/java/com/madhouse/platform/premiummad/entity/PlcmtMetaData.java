@@ -6,9 +6,8 @@ import java.util.List;
 public class PlcmtMetaData {
     private long id;
     private long mediaId;
-    private int w;
-    private int h;
     private int adType;
+    private List<Size> sizes;
     private int layout;
     private long blockId;
 
@@ -23,10 +22,9 @@ public class PlcmtMetaData {
     private String adspaceKey;
     private int status;
 
-    public class Image {
+    public class Size {
         private int w;
         private int h;
-        private List<String> mimes;
 
         public int getW() {
             return w;
@@ -42,6 +40,19 @@ public class PlcmtMetaData {
 
         public void setH(int h) {
             this.h = h;
+        }
+    }
+
+    public class Image {
+        private List<Size> sizes;
+        private List<String> mimes;
+
+        public List<Size> getSizes() {
+            return sizes;
+        }
+
+        public void setSizes(List<Size> sizes) {
+            this.sizes = sizes;
         }
 
         public List<String> getMimes() {
@@ -54,28 +65,19 @@ public class PlcmtMetaData {
     }
 
     public class Video {
-        private int w;
-        private int h;
+        private List<Size> sizes;
         private int minDuraion;
         private int maxDuration;
         private int linearity;
         private int startDelay;
         private List<String> mimes;
 
-        public int getW() {
-            return w;
+        public List<Size> getSizes() {
+            return sizes;
         }
 
-        public void setW(int w) {
-            this.w = w;
-        }
-
-        public int getH() {
-            return h;
-        }
-
-        public void setH(int h) {
-            this.h = h;
+        public void setSizes(List<Size> sizes) {
+            this.sizes = sizes;
         }
 
         public int getMinDuraion() {
@@ -183,7 +185,6 @@ public class PlcmtMetaData {
         public void setContent(int content) {
             this.content = content;
         }
-        
     }
 
     public long getId() {
@@ -200,22 +201,6 @@ public class PlcmtMetaData {
 
     public void setMediaId(long mediaId) {
         this.mediaId = mediaId;
-    }
-
-    public int getW() {
-        return w;
-    }
-
-    public void setW(int w) {
-        this.w = w;
-    }
-
-    public int getH() {
-        return h;
-    }
-
-    public void setH(int h) {
-        this.h = h;
     }
 
     public int getAdType() {
@@ -304,5 +289,13 @@ public class PlcmtMetaData {
 
     public void setEnableHttps(boolean enableHttps) {
         this.enableHttps = enableHttps;
+    }
+
+    public List<Size> getSizes() {
+        return sizes;
+    }
+
+    public void setSizes(List<Size> sizes) {
+        this.sizes = sizes;
     }
 }
