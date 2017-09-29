@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -85,30 +86,62 @@ public class ReportRule extends BaseRule{
 		Integer dims = entity.getDims();
 		String dimsStr = StringUtils.convertSingleChoiceToMultiChoice(dims);
 		int[] dimsArray = StringUtils.splitToIntArray(dimsStr);
+		TreeSet<Integer> dimsSorting = new TreeSet<Integer>();
 		
 		for(int dim: dimsArray){
 			switch (dim){
 			case SystemConstant.DB.DIM_DATE: 
 				entity.setHasDate(true);
+				dimsSorting.add(SystemConstant.DB.DIM_SORTING_DATE);
 				break;
 			case SystemConstant.DB.DIM_HOUR: 
 				entity.setHasHour(true);
+				dimsSorting.add(SystemConstant.DB.DIM_SORTING_HOUR);
 				break;
 			case SystemConstant.DB.DIM_MEDIA: 
 				entity.setHasMedia(true);
+				dimsSorting.add(SystemConstant.DB.DIM_SORTING_MEDIA);
 				break;
 			case SystemConstant.DB.DIM_ADSPACE: 
 				entity.setHasAdspace(true);
+				dimsSorting.add(SystemConstant.DB.DIM_SORTING_ADSPACE);
 				break;
 			case SystemConstant.DB.DIM_POLICY: 
 				entity.setHasPolicy(true);
+				dimsSorting.add(SystemConstant.DB.DIM_SORTING_POLICY);
 				break;
 			case SystemConstant.DB.DIM_DSP: 
 				entity.setHasDsp(true);
+				dimsSorting.add(SystemConstant.DB.DIM_SORTING_DSP);
 				break;
 			default: //do nothing
 			}
 		}
+		
+		//根据查询类型设置额外维度
+		int type = entity.getType();
+		switch (type){
+			case SystemConstant.DB.TYPE_CARRIER: 
+				entity.setHasCarrier(true);
+				break;
+			case SystemConstant.DB.TYPE_DEVICE: 
+				entity.setHasDevice(true);
+				break;
+			case SystemConstant.DB.TYPE_CONN: 
+				entity.setHasConn(true);
+				break;
+			case SystemConstant.DB.TYPE_LOCATION: 
+				entity.setHasLocation(true);
+				dimsSorting.add(SystemConstant.DB.DIM_SORTING_LOCATION);
+				break;
+			case SystemConstant.DB.TYPE_MEDIA: 
+				entity.setHasMedia(true);
+				dimsSorting.add(SystemConstant.DB.DIM_SORTING_MEDIA);
+				break;
+			default:
+		}
+		
+		entity.setLastOrderPosition(dimsSorting.last());
 	}
 
 	public static List<ReportMedia> getPopulatedNullDateAndTime(List<ReportMedia> reportMedias, Integer dims, 

@@ -46,7 +46,12 @@
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     GROUP BY rp.dsp_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY vimps1 DESC
+    ORDER BY <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_DSP">vimps1 DESC</when>
+	    		<otherwise>rp.dsp_id</otherwise>
+	    	 </choose>
+    		 <if test="hasDate != null and hasDate == true">, rp.date</if>
+    		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
   </select>
   
   <select id="queryDspMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -61,7 +66,16 @@
     <include refid="mediaAuthCondition"/>
     GROUP BY rp.dsp_id, rp.media_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY vimps1 DESC
+    ORDER BY <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_DSP">vimps1 DESC</when>
+	    		<otherwise>rp.dsp_id</otherwise>
+	    	 </choose>
+	         <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_MEDIA">, vimps1 DESC</when>
+	    		<otherwise>, rp.media_id</otherwise>
+	    	 </choose>
+    		 <if test="hasDate != null and hasDate == true">, rp.date</if>
+    		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
   </select>
   
   <select id="queryDspLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -75,7 +89,16 @@
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     GROUP BY rp.dsp_id, rp.location <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY vimps1 DESC
+    ORDER BY <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_DSP">vimps1 DESC</when>
+	    		<otherwise>rp.dsp_id</otherwise>
+	    	 </choose>
+	         <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_LOCATION">, vimps1 DESC</when>
+	    		<otherwise>, rp.location</otherwise>
+	    	 </choose>
+    		 <if test="hasDate != null and hasDate == true">, rp.date</if>
+    		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
   </select>
   
   <select id="queryRtDspReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
@@ -87,7 +110,12 @@
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     GROUP BY rp.dsp_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY vimps1 DESC
+    ORDER BY <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_DSP">vimps1 DESC</when>
+	    		<otherwise>rp.dsp_id</otherwise>
+	    	 </choose>
+    		 <if test="hasDate != null and hasDate == true">, rp.date</if>
+    		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
   </select>
   
 </mapper>
