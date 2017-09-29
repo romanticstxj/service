@@ -291,11 +291,8 @@ public class TencentUploadMaterialApiTask {
 				String[] impTrackingUrlArray = impTrackingUrl.split("\\|");
 				if (null != impTrackingUrlArray) {
 					for (int i = 0; i < impTrackingUrlArray.length; i++) {
-						// 时间过滤
-						if (impTrackingUrlArray[i].matches("^-?\\d+$")) {
-							continue;
-						}
-						monitorList.add(MacroReplaceUtil.macroReplaceImageUrl(macroImageMap, impTrackingUrlArray[i])); // 宏替换
+						String[] track = impTrackingUrlArray[i].split("`");
+						monitorList.add(MacroReplaceUtil.macroReplaceImageUrl(macroImageMap, track[1])); // 宏替换
 					}
 				}
 			}
