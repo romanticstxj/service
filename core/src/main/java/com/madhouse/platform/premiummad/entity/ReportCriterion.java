@@ -3,7 +3,17 @@ package com.madhouse.platform.premiummad.entity;
 import java.util.Date;
 import java.util.List;
 
+import com.madhouse.platform.premiummad.constant.SystemConstant;
+
 public class ReportCriterion extends BaseEntity{
+	
+	public static final int DIM_SORTING_POLICY = SystemConstant.DB.DIM_SORTING_POLICY;
+	public static final int DIM_SORTING_DSP = SystemConstant.DB.DIM_SORTING_DSP;
+	public static final int DIM_SORTING_MEDIA = SystemConstant.DB.DIM_SORTING_MEDIA;
+	public static final int DIM_SORTING_ADSPACE = SystemConstant.DB.DIM_SORTING_ADSPACE;
+	public static final int DIM_SORTING_LOCATION = SystemConstant.DB.DIM_SORTING_LOCATION;
+	public static final int DIM_SORTING_DATE = SystemConstant.DB.DIM_SORTING_DATE;
+	public static final int DIM_SORTING_HOUR = SystemConstant.DB.DIM_SORTING_HOUR;
 	
 	private Integer type; //查找的报表类型，后台实现其实是关联到哪个表(1:默认,2:运营商,4:设备类型,8:联网方式,16:地域)
 
@@ -28,6 +38,16 @@ public class ReportCriterion extends BaseEntity{
 	private Boolean hasDsp;
 	
 	private Boolean hasPolicy;
+	
+	private Boolean hasCarrier;
+	
+	private Boolean hasDevice;
+	
+	private Boolean hasConn;
+	
+	private Boolean hasLocation;
+	
+	private int lastOrderPosition;
 	
 	private List<Integer> mediaIds;
 	
@@ -143,5 +163,45 @@ public class ReportCriterion extends BaseEntity{
 
 	public void setPolicyIds(List<Integer> policyIds) {
 		this.policyIds = policyIds;
+	}
+
+	public Boolean getHasCarrier() {
+		return hasCarrier;
+	}
+
+	public void setHasCarrier(Boolean hasCarrier) {
+		this.hasCarrier = hasCarrier;
+	}
+
+	public Boolean getHasDevice() {
+		return hasDevice;
+	}
+
+	public void setHasDevice(Boolean hasDevice) {
+		this.hasDevice = hasDevice;
+	}
+
+	public Boolean getHasConn() {
+		return hasConn;
+	}
+
+	public void setHasConn(Boolean hasConn) {
+		this.hasConn = hasConn;
+	}
+
+	public Boolean getHasLocation() {
+		return hasLocation;
+	}
+
+	public void setHasLocation(Boolean hasLocation) {
+		this.hasLocation = hasLocation;
+	}
+
+	public int getLastOrderPosition() {
+		return lastOrderPosition;
+	}
+
+	public void setLastOrderPosition(int lastOrderPosition) {
+		this.lastOrderPosition = lastOrderPosition;
 	}
 }

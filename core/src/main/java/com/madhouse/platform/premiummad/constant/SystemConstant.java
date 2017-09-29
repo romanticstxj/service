@@ -41,6 +41,8 @@ public interface SystemConstant {
 		int ALL_HOURS = 24;
 		int HOUR_ZERO = 0;
 		int HOUR_23 = 23;
+		
+		String URL_REGEX = "^(https?):\\/\\/[\\w\\-]+(\\.[\\w\\-]+)+([\\w\\-\\.,@?^=%&:\\/~\\+#]*[\\w\\-\\@?^=%&\\/~\\+#])?$";
 	}
 	
 	interface ErrorMessage{
@@ -67,6 +69,14 @@ public interface SystemConstant {
 		int DIM_DSP = 32;
 		int DIM_MIN_VAL = DIM_DATE;
 		int DIM_MAX_VAL = DIM_DATE + DIM_HOUR + DIM_MEDIA + DIM_ADSPACE + DIM_POLICY + DIM_DSP;
+		
+		int DIM_SORTING_POLICY = 1;
+		int DIM_SORTING_DSP = 2;
+		int DIM_SORTING_MEDIA = 4;
+		int DIM_SORTING_ADSPACE = 8;
+		int DIM_SORTING_LOCATION = 16;
+		int DIM_SORTING_DATE = 32;
+		int DIM_SORTING_HOUR = 64;
 		
 		int IS_REALTIME = 1;
 		int IS_OFFLINE = 0;

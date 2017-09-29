@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.CharEncoding;
 import org.springframework.util.Base64Utils;
@@ -392,5 +394,11 @@ public class StringUtils {
 			sb.deleteCharAt(sb.length()-1);
 		}
 		return sb.toString();
+	}
+
+	public static boolean matchesUrlPattern(String bidUrl) {
+		Pattern pattern = Pattern.compile(SystemConstant.OtherConstant.URL_REGEX, Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(bidUrl);
+		return matcher.matches();
 	}
 }
