@@ -31,6 +31,7 @@ public class DspControllerTest {
 		dsp.setName("dspName22");
 		dsp.setDeliveryType("2,8");
 		dsp.setBidUrl("http://baidu.com");
+		dsp.setToken("333");
 		dsp.setStatus(2);
 		String url = "http://localhost:8080/services/dsp/update";
 		HttpUtilTest.httpPost(url, JSON.toJSONString(dsp));

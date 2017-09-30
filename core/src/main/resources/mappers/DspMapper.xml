@@ -174,12 +174,6 @@
       <if test="maxQPS != null">
         max_qps = #{maxQPS,jdbcType=INTEGER},
       </if>
-      <if test="createdUser != null">
-        created_user = #{createdUser,jdbcType=INTEGER},
-      </if>
-      <if test="createdTime != null">
-        created_time = #{createdTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="updatedUser != null">
         updated_user = #{updatedUser,jdbcType=INTEGER},
       </if>
@@ -196,8 +190,6 @@
 	      delivery_type = #{deliveryType,jdbcType=TINYINT},
 	      token = #{token,jdbcType=CHAR},
 	      max_qps = #{maxQPS,jdbcType=INTEGER},
-	      created_user = #{createdUser,jdbcType=INTEGER},
-	      created_time = #{createdTime,jdbcType=TIMESTAMP},
 	      updated_user = #{updatedUser,jdbcType=INTEGER},
 	      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

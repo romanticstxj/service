@@ -45,7 +45,7 @@ public class PolicyRule extends BaseRule{
         		Integer bidFloorUnitFen = StringUtils.convertCurrencyYuanToFen(policyAdspaceDtos.get(i).getBidFloor());
         		policyAdspaces.get(i).setBidFloor(bidFloorUnitFen);
         		//设置策略中广告位的日期和创建者信息
-        		BeanUtils.setCommonParam(policyAdspaces.get(i), isCreate);
+        		BeanUtils.setCommonParam(policyAdspaces.get(i), true);
         	}
         }
         
@@ -53,7 +53,7 @@ public class PolicyRule extends BaseRule{
         	for(int i=0; i< policyDsps.size(); i++){
         		policyDsps.get(i).setPolicyId(policyId);
         		//设置策略中dsp的日期和创建者信息
-        		BeanUtils.setCommonParam(policyDsps.get(i), isCreate);
+        		BeanUtils.setCommonParam(policyDsps.get(i), true);
         	}
         }
         

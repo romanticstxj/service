@@ -207,8 +207,6 @@
 	      desc_max_length = #{descMaxLength,jdbcType=SMALLINT},
 	      content_max_length = #{contentMaxLength,jdbcType=SMALLINT},
 	      description = #{description,jdbcType=VARCHAR},
-	      created_user = #{createdUser,jdbcType=INTEGER},
-	      created_time = #{createdTime,jdbcType=TIMESTAMP},
 	      updated_user = #{updatedUser,jdbcType=INTEGER},
 	      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
 	    where id = #{id,jdbcType=INTEGER}
