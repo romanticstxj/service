@@ -288,7 +288,9 @@
   <update id="updateStatus" parameterType="com.madhouse.platform.premiummad.entity.Policy">
     update mad_sys_policy
     <set>
-        status = #{status,jdbcType=INTEGER}
+        status = #{status,jdbcType=INTEGER},
+        updated_user = #{updatedUser,jdbcType=INTEGER},
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
     </set>
     where id = #{id,jdbcType=INTEGER} AND type = #{type,jdbcType=INTEGER}
   </update>
