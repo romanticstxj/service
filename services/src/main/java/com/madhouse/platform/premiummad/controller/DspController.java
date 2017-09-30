@@ -53,7 +53,7 @@ public class DspController {
         Integer count = dspService.checkName(dspDto.getName().trim());
         if (count > 0) //检查名称
             return ResponseUtils.response(StatusCode.SC20302,null);
-        Dsp dsp = DspRule.convertToModel(dspDto, new Dsp());
+        Dsp dsp = DspRule.convertToModel(dspDto, new Dsp(), true);
         dspService.insertWithParamsProcess(dsp, xFrom);
         List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
@@ -79,7 +79,7 @@ public class DspController {
 	@RequestMapping("/update")
     public ResponseDto<DspDto> updateDsp(@RequestBody @Validated(Update.class) DspDto dspDto) {
 		BaseRule.validateDto(dspDto);
-        Dsp dsp = DspRule.convertToModel(dspDto, new Dsp());
+        Dsp dsp = DspRule.convertToModel(dspDto, new Dsp(), false);
         dspService.update(dsp);
         List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
@@ -93,7 +93,7 @@ public class DspController {
 	@RequestMapping("/updateStatus")
     public ResponseDto<DspDto> updateDspStatus(
     		@RequestBody @Validated(UpdateStatus.class) DspDto dspDto) {
-		Dsp dsp = DspRule.convertToModel(dspDto, new Dsp());
+		Dsp dsp = DspRule.convertToModel(dspDto, new Dsp(), false);
         dspService.updateStatus(dsp);
         List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());
         return ResponseUtils.response(StatusCode.SC20000, result);

@@ -225,8 +225,6 @@
       bid_type = #{bidType,jdbcType=BIT},
       bid_floor = #{bidFloor,jdbcType=INTEGER},
       status = #{status,jdbcType=BIT},
-      created_user = #{createdUser,jdbcType=INTEGER},
-      created_time = #{createdTime,jdbcType=TIMESTAMP},
       updated_user = #{updatedUser,jdbcType=INTEGER},
       updated_time = #{updatedTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

@@ -3,19 +3,17 @@ package com.madhouse.platform.premiummad.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.AdspaceDto;
 import com.madhouse.platform.premiummad.entity.Adspace;
-import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class AdspaceRule extends BaseRule{
 
-	public static Adspace convertToModel(AdspaceDto adspaceDto, Adspace adspace){
+	public static Adspace convertToModel(AdspaceDto adspaceDto, Adspace adspace, boolean isCreate){
 		BeanUtils.copyProperties(adspaceDto, adspace, SystemConstant.OtherConstant.ADSPACE_BID_FLOOR);
-        BeanUtils.setCreateParam(adspace);
+        BeanUtils.setCommonParam(adspace, isCreate);
         
         //把页面上的底价（元）转换成数据库需要的底价（分）
         Integer bidFloorUnitFen = StringUtils.convertCurrencyYuanToFen(adspaceDto.getBidFloor());

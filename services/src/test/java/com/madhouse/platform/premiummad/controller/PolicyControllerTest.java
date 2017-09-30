@@ -125,6 +125,7 @@ public class PolicyControllerTest {
 		policyAdspaceDto.setBidType((byte) 1);
 		policyAdspaceDto.setBidFloor(1.50);
 		policyAdspaceDto.setMediaDealId("1000001");
+		policyAdspaceDto.setStatus((byte) 1);
 		adspaceDto.setBidFloor(1.00);
 		policyAdspaceDto.setAdspace(adspaceDto);
 		policyAdspaceDtos.add(policyAdspaceDto);
@@ -133,6 +134,7 @@ public class PolicyControllerTest {
 		policyAdspaceDto.setAdspaceId(200009);
 		policyAdspaceDto.setBidType((byte) 2);
 		policyAdspaceDto.setBidFloor(2.50);
+		policyAdspaceDto.setStatus((byte) 1);
 		policyAdspaceDto.setMediaDealId("1000002");
 		adspaceDto.setBidFloor(2.00);
 		policyAdspaceDto.setAdspace(adspaceDto);
