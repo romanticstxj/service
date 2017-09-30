@@ -40,7 +40,7 @@ public class Adspace extends BaseEntity{
 	
 	private String coverSize;
 	
-	private Integer coverMaxKbyte;
+	private int coverMaxKbyte;
 	
 	private String description;
 	
@@ -272,11 +272,11 @@ public class Adspace extends BaseEntity{
 		this.coverSize = coverSize == null ? null : coverSize.trim();
 	}
 
-	public Integer getCoverMaxKbyte() {
+	public int getCoverMaxKbyte() {
 		return coverMaxKbyte;
 	}
 
-	public void setCoverMaxKbyte(Integer coverMaxKbyte) {
+	public void setCoverMaxKbyte(int coverMaxKbyte) {
 		this.coverMaxKbyte = coverMaxKbyte;
 	}
 

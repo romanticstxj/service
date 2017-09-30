@@ -84,7 +84,7 @@ public class MediaController {
             return ResponseUtils.response(StatusCode.SC20101,null);
         Media media = new Media();
         BeanUtils.copyProperties(mediaDto, media);
-        BeanUtils.setCreateParam(media);
+        BeanUtils.setCommonParam(media, true);
         mediaService.insert(media);
         List<MediaDto> result = convertResult(media, new MediaDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
@@ -134,7 +134,7 @@ public class MediaController {
                 return ResponseUtils.response(StatusCode.SC20101,null);
         }
         BeanUtils.copyProperties(mediaDto, media);
-        BeanUtils.setUpdateParam(media);
+        BeanUtils.setCommonParam(media, false);
         mediaService.update(media);
         List<MediaDto> result = convertResult(media, new MediaDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
@@ -162,7 +162,7 @@ public class MediaController {
         if (media == null)
             return ResponseUtils.response(StatusCode.SC20003, null);
         BeanUtils.copyProperties(mediaDto, media);
-        BeanUtils.setUpdateParam(media);
+        BeanUtils.setCommonParam(media, false);
         mediaService.updateStatus(media);
         List<MediaDto> result = convertResult(media, new MediaDto());
         return ResponseUtils.response(StatusCode.SC20000, result);

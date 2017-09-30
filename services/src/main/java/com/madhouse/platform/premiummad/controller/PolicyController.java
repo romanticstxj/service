@@ -69,7 +69,7 @@ public class PolicyController {
 	@RequestMapping("/create")
     public ResponseDto<PolicyDto> addPolicy(@RequestBody @Validated(Insert.class) PolicyDto policyDto) {
 		PolicyRule.validateDto(policyDto);
-        Policy policy = PolicyRule.convertToModel(policyDto, new Policy());
+        Policy policy = PolicyRule.convertToModel(policyDto, new Policy(), true);
         policyService.insert(policy);
         List<PolicyDto> result = PolicyRule.convertToDto(policy, new PolicyDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
@@ -102,7 +102,7 @@ public class PolicyController {
 	@RequestMapping("/update")
     public ResponseDto<PolicyDto> updatePolicy(@RequestBody @Validated(Update.class) PolicyDto policyDto) {
 		PolicyRule.validateDto(policyDto);
-        Policy policy = PolicyRule.convertToModel(policyDto, new Policy());
+        Policy policy = PolicyRule.convertToModel(policyDto, new Policy(), false);
         policyService.update(policy);
         List<PolicyDto> result = PolicyRule.convertToDto(policy, new PolicyDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
@@ -111,7 +111,7 @@ public class PolicyController {
 	@RequestMapping("/updateStatus")
     public ResponseDto<PolicyDto> updatePolicyStatus(
     		@RequestBody @Validated(UpdateStatus.class) PolicyDto policyDto) {
-        Policy policy = PolicyRule.convertToModel(policyDto, new Policy());
+        Policy policy = PolicyRule.convertToModel(policyDto, new Policy(), false);
         policyService.updateStatus(policy);
         List<PolicyDto> result = PolicyRule.convertToDto(policy, new PolicyDto());
         return ResponseUtils.response(StatusCode.SC20000, result);

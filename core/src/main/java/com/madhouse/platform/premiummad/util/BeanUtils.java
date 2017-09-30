@@ -184,55 +184,6 @@ public class BeanUtils {
 		}
 	}
 	
-	public static String hasEmptyField1(Object obj){
-		if (obj != null) {
-			Class<?> clazz = obj.getClass();
-			Field[] fields = clazz.getDeclaredFields();
-			int length = fields.length;
-			for (int i = 0; i < length; i++) {
-				Field field = fields[i];
-				String fieldName = field.getName();
-				Digits digits = field.getAnnotation(Digits.class);
-				Annotation[] annotations = field.getAnnotations();
-				if(ObjectUtils.isEmpty(annotations)){
-					continue;
-				}
-				for(Annotation ant: annotations){
-					if(ant instanceof NotNullAndBlank){
-						// 如果有NotNull注解，就判断是否为null，如果为null就返回true
-						field.setAccessible(true);
-						Object value = null;
-						try {
-							value = field.get(obj);
-						} catch (IllegalArgumentException | IllegalAccessException e) {
-							e.printStackTrace();
-							throw new RuntimeException("field invoke exception,please check field:" + field.getName());
-						}
-						if (!BasicValidator.validateNotNull(value, digits)) {
-							return fieldName;
-						}
-					} else if(ant instanceof Digits){
-						// 如果有NotNull注解，就判断是否为null，如果为null就返回true
-						field.setAccessible(true);
-						Object value = null;
-						try {
-							value = field.get(obj);
-						} catch (IllegalArgumentException | IllegalAccessException e) {
-							e.printStackTrace();
-							throw new RuntimeException("field invoke exception,please check field:" + field.getName());
-						}
-						if (!BasicValidator.validateDigits(value, digits)) {
-							return fieldName;
-						}
-					}
-				}
-			}
-			return null;
-		} else {
-			return "object"; // 如果对象为null返回object，方便消息提示
-		}
-	}
-
 	/*
 	 * 判断list是否为null
 	 */
@@ -240,6 +191,14 @@ public class BeanUtils {
 		return (list == null || list.size() == 0);
 	}
 
+	public static void setCommonParam(Object obj, boolean isCreate) {
+		if(isCreate){
+			setCreateParam(obj);
+		} else{
+			setUpdateParam(obj);
+		}
+	}
+	
 	/*
 	 * 设置创建人，创建时间，更新人，更新时间
 	 */

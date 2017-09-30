@@ -18,11 +18,11 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class PolicyRule extends BaseRule{
 	
-	public static Policy convertToModel(PolicyDto dto, Policy entity){
+	public static Policy convertToModel(PolicyDto dto, Policy entity, boolean isCreate){
 		
 		//copy PolicyDto
 		BeanUtils.copyProperties(dto, entity, "policyAdspaces", "policyDsp");
-        BeanUtils.setCreateParam(entity);
+        BeanUtils.setCommonParam(entity, isCreate);
         
         setFlagForStorage(dto, entity);
         
@@ -45,7 +45,7 @@ public class PolicyRule extends BaseRule{
         		Integer bidFloorUnitFen = StringUtils.convertCurrencyYuanToFen(policyAdspaceDtos.get(i).getBidFloor());
         		policyAdspaces.get(i).setBidFloor(bidFloorUnitFen);
         		//设置策略中广告位的日期和创建者信息
-        		BeanUtils.setCreateParam(policyAdspaces.get(i));
+        		BeanUtils.setCommonParam(policyAdspaces.get(i), isCreate);
         	}
         }
         
@@ -53,7 +53,7 @@ public class PolicyRule extends BaseRule{
         	for(int i=0; i< policyDsps.size(); i++){
         		policyDsps.get(i).setPolicyId(policyId);
         		//设置策略中dsp的日期和创建者信息
-        		BeanUtils.setCreateParam(policyDsps.get(i));
+        		BeanUtils.setCommonParam(policyDsps.get(i), isCreate);
         	}
         }
         
