@@ -118,8 +118,9 @@ public class BaseRule {
 	 * @throws ParseException
 	 */
 	public static Date parseToDate(String dateStr, String format) throws ParseException {
+		// 如果时间为空，返回当前日期
 		if (StringUtils.isBlank(dateStr)) {
-			return null;
+			return new Date();
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		return sdf.parse(dateStr);

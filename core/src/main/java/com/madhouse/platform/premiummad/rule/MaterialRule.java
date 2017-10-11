@@ -339,7 +339,7 @@ public class MaterialRule extends BaseRule {
 		material.setClkUrls(parseToString(entity.getMonitor(), ClKURL)); // 点击监测URL(多个用半角逗号分隔)
 		material.setCover(entity.getCover());
 
-		material.setDealId(entity.getDealId() != null ? Integer.valueOf(entity.getDealId()) : 0);
+		material.setDealId(entity.getDealId());
 		material.setDeliveryType(Byte.valueOf(entity.getDeliveryType().toString()));
 		material.setDescription(entity.getDesc());
 		material.setContent(entity.getContent());

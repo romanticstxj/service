@@ -37,7 +37,7 @@
 	    (#{item.dspId,jdbcType=INTEGER}, #{item.materialKey,jdbcType=VARCHAR}, 
 	      #{item.materialName,jdbcType=VARCHAR}, #{item.advertiserKey,jdbcType=VARCHAR}, #{item.layout,jdbcType=SMALLINT}, 
 	      #{item.mediaId,jdbcType=INTEGER}, #{item.adspaceId,jdbcType=VARCHAR}, #{item.deliveryType,jdbcType=TINYINT}, 
-	      #{item.brand,jdbcType=VARCHAR}, #{item.agency,jdbcType=VARCHAR}, #{item.dealId,jdbcType=INTEGER}, 
+	      #{item.brand,jdbcType=VARCHAR}, #{item.agency,jdbcType=VARCHAR}, #{item.dealId,jdbcType=VARCHAR}, 
 	      #{item.startDate,jdbcType=DATE}, #{item.endDate,jdbcType=DATE}, #{item.size,jdbcType=VARCHAR}, 
 	      #{item.icon,jdbcType=VARCHAR}, #{item.title,jdbcType=VARCHAR}, #{item.description,jdbcType=VARCHAR}, #{item.content,jdbcType=VARCHAR}, 
 	      #{item.cover,jdbcType=VARCHAR}, #{item.adMaterials,jdbcType=VARCHAR}, #{item.duration,jdbcType=INTEGER}, 
@@ -193,7 +193,7 @@
         #{agency,jdbcType=VARCHAR},
       </if>
       <if test="dealId != null" >
-        #{dealId,jdbcType=INTEGER},
+        #{dealId,jdbcType=VARCHAR},
       </if>
       <if test="startDate != null" >
         #{startDate,jdbcType=DATE},
@@ -301,7 +301,7 @@
 	        agency = #{item.agency,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.dealId != null" >
-	        deal_id = #{item.dealId,jdbcType=INTEGER},
+	        deal_id = #{item.dealId,jdbcType=VARCHAR},
 	      </if>
 	      <if test="item.startDate != null" >
 	        start_date = #{item.startDate,jdbcType=DATE},
@@ -439,7 +439,7 @@
         agency = #{agency,jdbcType=VARCHAR},
       </if>
       <if test="dealId != null" >
-        deal_id = #{dealId,jdbcType=INTEGER},
+        deal_id = #{dealId,jdbcType=VARCHAR},
       </if>
       <if test="startDate != null" >
         start_date = #{startDate,jdbcType=DATE},
