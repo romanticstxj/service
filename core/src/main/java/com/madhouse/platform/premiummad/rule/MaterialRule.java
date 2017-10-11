@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
-
 import com.madhouse.platform.premiummad.constant.ActiveType;
 import com.madhouse.platform.premiummad.constant.DeliveryType;
 import com.madhouse.platform.premiummad.constant.Layout;
@@ -131,15 +129,24 @@ public class MaterialRule extends BaseRule {
 			}
 		}
 		
+		// 当前日期
+		String todayStr = parseToDateStr(new Date(), "yyyy-MM-dd");
+		
 		// 开始时间和结束时间格式和合法性校验 yyyy-MM-dd
 		if (!StringUtils.isBlank(entity.getStartDate())) {
 			if (!isDate(entity.getStartDate(), DateUtils.FORMATE_YYYY_MM_DD)) {
 				throw new BusinessException(StatusCode.SC400, "有效日期格式错误,必须为yyyy-MM-dd[startDate]");
 			}
+			if (entity.getStartDate().compareTo(todayStr) < 0) {
+				throw new BusinessException(StatusCode.SC400, "有效日期[startDate]无效，必须大于当前日期");
+			}
 		}
 		if (!StringUtils.isBlank(entity.getEndDate())) {
 			if (!isDate(entity.getEndDate(), DateUtils.FORMATE_YYYY_MM_DD)) {
 				throw new BusinessException(StatusCode.SC400, "失效日期格式错误,必须为yyyy-MM-dd[endDate]");
+			}
+			if (entity.getEndDate().compareTo(todayStr) < 0) {
+				throw new BusinessException(StatusCode.SC400, "失效日期[endDate]无效，必须大于当前日期");
 			}
 		}
 		if (!StringUtils.isBlank(entity.getStartDate()) && !StringUtils.isBlank(entity.getEndDate())) {
@@ -339,7 +346,7 @@ public class MaterialRule extends BaseRule {
 		material.setClkUrls(parseToString(entity.getMonitor(), ClKURL)); // 点击监测URL(多个用半角逗号分隔)
 		material.setCover(entity.getCover());
 
-		material.setDealId(entity.getDealId() != null ? Integer.valueOf(entity.getDealId()) : 0);
+		material.setDealId(entity.getDealId());
 		material.setDeliveryType(Byte.valueOf(entity.getDeliveryType().toString()));
 		material.setDescription(entity.getDesc());
 		material.setContent(entity.getContent());

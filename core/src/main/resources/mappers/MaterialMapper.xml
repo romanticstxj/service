@@ -18,7 +18,7 @@
     <result column="delivery_type" property="deliveryType" jdbcType="TINYINT" />
     <result column="brand" property="brand" jdbcType="VARCHAR" />
     <result column="agency" property="agency" jdbcType="VARCHAR" />
-    <result column="deal_id" property="dealId" jdbcType="INTEGER" />
+    <result column="deal_id" property="dealId" jdbcType="VARCHAR" />
     <result column="start_date" property="startDate" jdbcType="DATE" />
     <result column="end_date" property="endDate" jdbcType="DATE" />
     <result column="size" property="size" jdbcType="VARCHAR" />
@@ -96,7 +96,7 @@
     values (#{id,jdbcType=INTEGER}, #{dspId,jdbcType=INTEGER}, #{materialKey,jdbcType=VARCHAR}, 
       #{materialName,jdbcType=VARCHAR}, #{advertiserKey,jdbcType=VARCHAR}, #{layout,jdbcType=SMALLINT}, 
       #{mediaId,jdbcType=INTEGER}, #{adspaceId,jdbcType=INTEGER}, #{deliveryType,jdbcType=TINYINT}, 
-      #{brand,jdbcType=VARCHAR}, #{agency,jdbcType=VARCHAR}, #{dealId,jdbcType=INTEGER}, 
+      #{brand,jdbcType=VARCHAR}, #{agency,jdbcType=VARCHAR}, #{dealId,jdbcType=VARCHAR}, 
       #{startDate,jdbcType=DATE}, #{endDate,jdbcType=DATE}, #{size,jdbcType=VARCHAR}, 
       #{icon,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{content,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR}, #{adMaterials,jdbcType=VARCHAR}, 
@@ -255,7 +255,7 @@
         #{agency,jdbcType=VARCHAR},
       </if>
       <if test="dealId != null" >
-        #{dealId,jdbcType=INTEGER},
+        #{dealId,jdbcType=VARCHAR},
       </if>
       <if test="startDate != null" >
         #{startDate,jdbcType=DATE},
@@ -367,7 +367,7 @@
         agency = #{agency,jdbcType=VARCHAR},
       </if>
       <if test="dealId != null" >
-        deal_id = #{dealId,jdbcType=INTEGER},
+        deal_id = #{dealId,jdbcType=VARCHAR},
       </if>
       <if test="startDate != null" >
         start_date = #{startDate,jdbcType=DATE},
@@ -458,7 +458,7 @@
       delivery_type = #{deliveryType,jdbcType=TINYINT},
       brand = #{brand,jdbcType=VARCHAR},
       agency = #{agency,jdbcType=VARCHAR},
-      deal_id = #{dealId,jdbcType=INTEGER},
+      deal_id = #{dealId,jdbcType=VARCHAR},
       start_date = #{startDate,jdbcType=DATE},
       end_date = #{endDate,jdbcType=DATE},
       size = #{size,jdbcType=VARCHAR},

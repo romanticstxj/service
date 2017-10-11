@@ -120,16 +120,15 @@ public class PolicyServiceImpl implements IPolicyService {
 		Policy queryResult = queryPolicyById(policy.getId(), policy.getType());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20003);
-        
 		return policyDao.updateStatus(policy);
 	}
 
 	@Override
-	public String getMediaDealId(Integer dealId, Integer mediaId) {
+	public String getMediaDealId(String dealId, Integer mediaId) {
 		if (dealId == null || mediaId == null) {
 			return null;
 		}
-		List<PolicyAdspace> policyAdspaces = policyAdspaceDao.selectByPolicyIdAndMediaId(dealId, mediaId);
+		List<PolicyAdspace> policyAdspaces = policyAdspaceDao.selectByPolicyIdAndMediaId(Integer.valueOf(dealId), mediaId);
 		if (policyAdspaces == null || policyAdspaces.isEmpty()) {
 			return null;
 		}

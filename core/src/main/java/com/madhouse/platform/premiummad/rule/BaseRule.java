@@ -118,10 +118,27 @@ public class BaseRule {
 	 * @throws ParseException
 	 */
 	public static Date parseToDate(String dateStr, String format) throws ParseException {
+		// 如果时间为空，返回当前日期
 		if (StringUtils.isBlank(dateStr)) {
-			return null;
+			return new Date();
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		return sdf.parse(dateStr);
+	}
+	
+	/**
+	 * 将date format 指定格式
+	 * 
+	 * @param date
+	 * @param format
+	 * @return
+	 * @throws ParseException
+	 */
+	public static String parseToDateStr(Date date, String format) {
+		if (date == null) {
+			return "";
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		return sdf.format(date);
 	}
 }
