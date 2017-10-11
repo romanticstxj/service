@@ -7,7 +7,7 @@
     <result column="material_name" property="name" jdbcType="VARCHAR" />
     <result column="material_key" property="materialId" jdbcType="VARCHAR" />
     <result column="layout" property="layout" jdbcType="SMALLINT" />
-    <result column="deal_id" property="dealId" jdbcType="INTEGER" />
+    <result column="deal_id" property="dealId" jdbcType="VARCHAR" />
     <result column="start_date" property="startDate" jdbcType="VARCHAR" />
     <result column="end_date" property="endDate" jdbcType="VARCHAR" />
     <result column="size" property="size" jdbcType="VARCHAR" />

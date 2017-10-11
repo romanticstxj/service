@@ -54,7 +54,6 @@ public class MaterialTask {
                     if(null != material){
                         BeanUtils.copyProperties(material, metaData);
                         MaterialMetaData.Monitor monitor = metaData.new Monitor();
-                        metaData.setDealId(String.valueOf(material.getDealId()));
                         monitor.setClkUrls(Arrays.asList(StringUtils.tokenizeToStringArray(material.getClkUrls(),"|")));
                         monitor.setSecUrls(Arrays.asList(StringUtils.tokenizeToStringArray(material.getSecUrls(),"|")));
                         monitor.setImpUrls(getTrack(monitor,material.getImpUrls()));

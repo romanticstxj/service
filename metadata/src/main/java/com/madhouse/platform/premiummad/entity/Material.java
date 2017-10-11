@@ -12,7 +12,7 @@ public class Material {
     
     private int layout;
     
-    private int dealId;
+    private String dealId;
     
     private String startDate;
     
@@ -244,11 +244,11 @@ public class Material {
         this.brand = brand;
     }
 
-    public int getDealId() {
+    public String getDealId() {
         return dealId;
     }
 
-    public void setDealId(int dealId) {
+    public void setDealId(String dealId) {
         this.dealId = dealId;
     }
 
