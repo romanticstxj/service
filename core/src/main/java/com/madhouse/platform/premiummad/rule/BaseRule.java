@@ -125,4 +125,20 @@ public class BaseRule {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		return sdf.parse(dateStr);
 	}
+	
+	/**
+	 * 将date format 指定格式
+	 * 
+	 * @param date
+	 * @param format
+	 * @return
+	 * @throws ParseException
+	 */
+	public static String parseToDateStr(Date date, String format) {
+		if (date == null) {
+			return "";
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		return sdf.format(date);
+	}
 }

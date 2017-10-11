@@ -199,7 +199,8 @@ public class ValueMakerUploadApiTask {
 
 		// 万流客用于审核落地页域名  - 用 广告主 web 主页 
 		List<String> adomainlist = new ArrayList<>();
-		adomainlist.add(relatedAdvertiser.getWebsite());
+		// 媒体方期望 domain字段 没有 http://www.前缀
+		adomainlist.add(relatedAdvertiser.getWebsite().replace("http://www.", ""));
 		request.setAdomain_list(adomainlist);
 
 		// dsp系统中的id
