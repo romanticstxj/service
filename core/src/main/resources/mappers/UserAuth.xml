@@ -90,21 +90,31 @@
 	</delete>
 	
     <insert id="addUserMediaAuth" parameterType="UserAuth">
-        INSERT INTO mad_sys_user_media (user_id, media_id) VALUES
+        INSERT INTO mad_sys_user_media (user_id, media_id, created_user, 
+        		created_time, updated_user, updated_time) VALUES
          	<foreach collection="mediaIds" index="index" item="mediaId" separator=",">
        			(
        				#{specifiedUserId},
-       				#{mediaId}
+       				#{mediaId},
+       				#{createdUser},
+       				#{createdTime},
+       				#{updatedUser},
+	      			#{updatedTime}
        			)
        		</foreach>
     </insert>
     
     <insert id="addUserPolicyAuth" parameterType="UserAuth">
-        	INSERT INTO mad_sys_user_policy (user_id, policy_id) VALUES
+        	INSERT INTO mad_sys_user_policy (user_id, policy_id, created_user, 
+        		created_time, updated_user, updated_time) VALUES
          	<foreach collection="policyIds" index="index" item="policyId" separator=",">
        			(
        				#{specifiedUserId},
-       				#{policyId}
+       				#{policyId},
+       				#{createdUser},
+       				#{createdTime},
+       				#{updatedUser},
+	      			#{updatedTime}
        			)
        		</foreach>
     </insert>

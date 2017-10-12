@@ -15,6 +15,7 @@ import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.UserAuth;
 import com.madhouse.platform.premiummad.rule.BaseRule;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
+import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
 
@@ -85,6 +86,7 @@ public class UserAuthController {
 	@RequestMapping("/media/update")
     public ResponseDto<Void> updateMedia(@RequestBody UserAuth userAuth) {
 		BaseRule.validateDto(userAuth);
+		BeanUtils.setCommonParam(userAuth, true);
 		userAuthService.updateUserMediaAuth(userAuth);
         return ResponseUtils.response(StatusCode.SC20000, null);
 	}
@@ -92,6 +94,7 @@ public class UserAuthController {
 	@RequestMapping("/policy/update")
     public ResponseDto<Void> updatePolicy(@RequestBody UserAuth userAuth) {
 		BaseRule.validateDto(userAuth);
+		BeanUtils.setCommonParam(userAuth, true);
 		userAuthService.updateUserPolicyAuth(userAuth);
         return ResponseUtils.response(StatusCode.SC20000, null);
 	}

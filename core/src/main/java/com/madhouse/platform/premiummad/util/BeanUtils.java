@@ -19,7 +19,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.FatalBeanException;
-import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -33,7 +32,6 @@ public class BeanUtils {
 	 * 得到list的大小
 	 * 
 	 * @return 2015年1月29日上午11:50:00
-	 * @author xiejun
 	 */
 	public static int getListSize(List<?> list) {
 		return list != null ? list.size() : 0;
@@ -48,19 +46,18 @@ public class BeanUtils {
 	}
 
 	public static <T, E> void copyList(List<T> source, List<E> target, Class<E> targetClass,String... ignoreProperties) {
-		Assert.notNull(source, "Source must not be null");
-		Assert.notNull(target, "Target must not be null");
-		
-		for (int i = 0; i < source.size(); i++) {
-			Object object = source.get(i);
-			try {
-				if (object != null) {
-					E instance = targetClass.newInstance();
-					org.springframework.beans.BeanUtils.copyProperties(object,instance,ignoreProperties);
-					target.add(instance);
+		if (source != null && target != null) {
+			for (int i = 0; i < source.size(); i++) {
+				Object object = source.get(i);
+				try {
+					if (object != null) {
+						E instance = targetClass.newInstance();
+						org.springframework.beans.BeanUtils.copyProperties(object,instance,ignoreProperties);
+						target.add(instance);
+					}
+				} catch (Exception e) {
+					throw new FatalBeanException("Could not copy property from source to target", e);
 				}
-			} catch (Exception e) {
-				throw new FatalBeanException("Could not copy property from source to target", e);
 			}
 		}
 	}
@@ -321,28 +318,12 @@ public class BeanUtils {
 	    } finally {  
 	        try {
 				oos.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}  
-	        try {
 				baos.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	        try {
 				bis.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	        try {
 				ois.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}  
 	    }  
 	}  
 
