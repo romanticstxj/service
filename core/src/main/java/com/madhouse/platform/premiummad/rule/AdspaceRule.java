@@ -99,14 +99,14 @@ public class AdspaceRule {
 				adspaceModel.setLayout(adspace.getLayout() + adspace.getMaterialCount());
 				natives.setImage(getImage(adspace, adspaceModel, meterialMinesTypes));
 			}
-
-			AdspaceModel.Image nativesIcon = adspaceModel.new Image();
+			
 			if (adspace.getLogoType() > 0 && !StringUtils.isEmpty(adspace.getLogoSize())) {
+				AdspaceModel.Image nativesIcon = adspaceModel.new Image();
 				nativesIcon.setSizes(getMaterialListSize(adspace.getLogoSize(), adspaceModel));
 				nativesIcon.setMimes(logoMinesTypes);
+				natives.setIcon(nativesIcon);
 			}
 
-			natives.setIcon(nativesIcon);
 			natives.setTitle(adspace.getTitleMaxLength());
 			natives.setDesc(adspace.getDescMaxLength());
 			natives.setContent(adspace.getContentMaxLength());
