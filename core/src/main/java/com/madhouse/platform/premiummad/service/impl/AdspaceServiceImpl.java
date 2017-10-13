@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
 import com.madhouse.platform.premiummad.dao.MimesDao;
+import com.madhouse.platform.premiummad.dao.SysMediaMapper;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.DspMapping;
+import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.AdspaceModel;
 import com.madhouse.platform.premiummad.rule.AdspaceRule;
@@ -30,6 +34,9 @@ public class AdspaceServiceImpl implements IAdspaceService {
 
 	@Autowired
 	private MimesDao mimesDao;
+	
+	@Autowired
+	private SysMediaMapper mediaDao; 
 
 	@Override
 	public List<Adspace> queryAllByParams(List<Integer> mediaIdList, Integer status) {
@@ -216,7 +223,8 @@ public class AdspaceServiceImpl implements IAdspaceService {
 			List<String> meterialMinesTypes = mimesDao.queryMimesById(AdspaceRule.getTypes(adspace.getMaterialType()));
 			List<String> coverMinesTypes = mimesDao.queryMimesById(AdspaceRule.getTypes(adspace.getCoverType()));
 			List<String> logoMinesTypes = mimesDao.queryMimesById(AdspaceRule.getTypes(adspace.getLogoType()));
-			AdspaceModel adspaceModel = AdspaceRule.buildAdspace(adspace, meterialMinesTypes, coverMinesTypes, logoMinesTypes);
+			SysMedia media = mediaDao.selectByPrimaryKey(adspace.getMediaId());
+			AdspaceModel adspaceModel = AdspaceRule.buildAdspace(adspace, meterialMinesTypes, coverMinesTypes, logoMinesTypes, media);
 			adspaces.add(adspaceModel);
 		}
 

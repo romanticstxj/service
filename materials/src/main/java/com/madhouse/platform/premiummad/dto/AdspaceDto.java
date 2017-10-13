@@ -4,10 +4,11 @@ import java.util.List;
 
 public class AdspaceDto {
 	private Integer id;
+	private String name;
 	private Integer mediaId;
-	private Integer w;
-	private Integer h;
+	private String mediaName;
 	private Integer adType;
+	private List<Size> sizes;
 	private Integer layout;
 	private Integer blockId;
 
@@ -15,29 +16,45 @@ public class AdspaceDto {
 	private Video video;
 	private Native natives;
 
+	private Integer bidFloor;
+	private Integer bidType;
+
 	private boolean enableHttps;
 	private String adspaceKey;
 	private Integer status;
+	private Integer osType;
 
-	public static class Image {
-		private Integer w;
-		private Integer h;
+	public class Size {
+        private int w;
+        private int h;
+
+        public int getW() {
+            return w;
+        }
+
+        public void setW(int w) {
+            this.w = w;
+        }
+
+        public int getH() {
+            return h;
+        }
+
+        public void setH(int h) {
+            this.h = h;
+        }
+    }
+	
+	public class Image {
+		private List<Size> sizes;
 		private List<String> mimes;
 
-		public Integer getW() {
-			return w;
+		public List<Size> getSizes() {
+			return sizes;
 		}
 
-		public void setW(Integer w) {
-			this.w = w;
-		}
-
-		public Integer getH() {
-			return h;
-		}
-
-		public void setH(Integer h) {
-			this.h = h;
+		public void setSizes(List<Size> sizes) {
+			this.sizes = sizes;
 		}
 
 		public List<String> getMimes() {
@@ -49,29 +66,20 @@ public class AdspaceDto {
 		}
 	}
 
-	public static class Video {
-		private Integer w;
-		private Integer h;
+	public class Video {
+		private List<Size> sizes;
 		private Integer minDuraion;
 		private Integer maxDuration;
 		private Integer linearity;
 		private Integer startDelay;
 		private List<String> mimes;
-
-		public Integer getW() {
-			return w;
+		
+		public List<Size> getSizes() {
+			return sizes;
 		}
 
-		public void setW(Integer w) {
-			this.w = w;
-		}
-
-		public Integer getH() {
-			return h;
-		}
-
-		public void setH(Integer h) {
-			this.h = h;
+		public void setSizes(List<Size> sizes) {
+			this.sizes = sizes;
 		}
 
 		public Integer getMinDuraion() {
@@ -115,7 +123,7 @@ public class AdspaceDto {
 		}
 	}
 
-	public static class Native {
+	public class Native {
 		private Image icon;
 		private Image cover;
 		private Image image;
@@ -197,22 +205,6 @@ public class AdspaceDto {
 		this.mediaId = mediaId;
 	}
 
-	public Integer getW() {
-		return w;
-	}
-
-	public void setW(Integer w) {
-		this.w = w;
-	}
-
-	public Integer getH() {
-		return h;
-	}
-
-	public void setH(Integer h) {
-		this.h = h;
-	}
-
 	public Integer getAdType() {
 		return adType;
 	}
@@ -283,5 +275,53 @@ public class AdspaceDto {
 
 	public void setEnableHttps(boolean enableHttps) {
 		this.enableHttps = enableHttps;
+	}
+
+	public List<Size> getSizes() {
+		return sizes;
+	}
+
+	public void setSizes(List<Size> sizes) {
+		this.sizes = sizes;
+	}
+
+	public Integer getBidFloor() {
+		return bidFloor;
+	}
+
+	public void setBidFloor(Integer bidFloor) {
+		this.bidFloor = bidFloor;
+	}
+
+	public Integer getBidType() {
+		return bidType;
+	}
+
+	public void setBidType(Integer bidType) {
+		this.bidType = bidType;
+	}
+
+	public Integer getOsType() {
+		return osType;
+	}
+
+	public void setOsType(Integer osType) {
+		this.osType = osType;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getMediaName() {
+		return mediaName;
+	}
+
+	public void setMediaName(String mediaName) {
+		this.mediaName = mediaName;
 	}
 }

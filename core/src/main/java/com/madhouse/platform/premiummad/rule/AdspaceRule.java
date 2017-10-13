@@ -2,9 +2,11 @@ package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.madhouse.platform.premiummad.constant.AdspaceConstant;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.entity.Adspace;
+import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.model.AdspaceModel;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -41,9 +43,13 @@ public class AdspaceRule {
 	 * @param logoMinesTypes
 	 * @return
 	 */
-	public static AdspaceModel buildAdspace(Adspace adspace, List<String> meterialMinesTypes, List<String> coverMinesTypes, List<String> logoMinesTypes) {
+	public static AdspaceModel buildAdspace(Adspace adspace, List<String> meterialMinesTypes, List<String> coverMinesTypes, List<String> logoMinesTypes, SysMedia media) {
 		AdspaceModel adspaceModel = new AdspaceModel();
 		BeanUtils.copyProperties(adspace, adspaceModel);
+		// 平台类型
+		adspaceModel.setOsType(adspace.getTerminalOs());
+		// 媒体名称
+		adspaceModel.setMediaName(media != null ? media.getName() : "");
 		// 广告类型(1: 普通硬广, 2: 视频, 3: 原生)
 		switch (adspace.getAdType()) {
 		case AdspaceConstant.PlcmtType.BANNER:
@@ -64,9 +70,7 @@ public class AdspaceRule {
 				video.setLinearity(AdspaceConstant.Linearity.PATCH_VIDEO);
 			}
 			if (adspace.getLayout() == Layout.LO20004.getValue()) {
-				String[] videoMaterialSize = org.springframework.util.StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
-				video.setW(Integer.parseInt(videoMaterialSize[0]));
-				video.setH(Integer.parseInt(videoMaterialSize[1]));
+				video.setSizes(getMaterialListSize(adspace.getMaterialSize(), adspaceModel));
 				video.setMimes(meterialMinesTypes);
 				video.setLinearity(AdspaceConstant.Linearity.SUSPENSION_PAUSE);
 			}
@@ -82,13 +86,11 @@ public class AdspaceRule {
 			adspaceModel.setVideo(video);
 			break;
 		case AdspaceConstant.PlcmtType.NATIVE:
-			AdspaceModel.Native natives = new AdspaceModel.Native();
+			AdspaceModel.Native natives = adspaceModel.new Native();
 			if (adspace.getLayout().equals(Layout.LO30011.getValue())) {
 				if (adspace.getCoverType() > 0 && !StringUtils.isEmpty(adspace.getCoverSize())) {
-					AdspaceModel.Image nativeCover = new AdspaceModel.Image();
-					String[] videoSize = org.springframework.util.StringUtils.tokenizeToStringArray(adspace.getCoverSize(), "*");
-					nativeCover.setW(Integer.parseInt(videoSize[0]));
-					nativeCover.setH(Integer.parseInt(videoSize[1]));
+					AdspaceModel.Image nativeCover = adspaceModel.new Image();
+					nativeCover.setSizes(getMaterialListSize(adspace.getCoverSize(), adspaceModel));
 					nativeCover.setMimes(coverMinesTypes);
 					natives.setCover(nativeCover);
 				}
@@ -98,18 +100,16 @@ public class AdspaceRule {
 				natives.setImage(getImage(adspace, adspaceModel, meterialMinesTypes));
 			}
 
-			AdspaceModel.Image nativesIcon = new AdspaceModel.Image();
+			AdspaceModel.Image nativesIcon = adspaceModel.new Image();
 			if (adspace.getLogoType() > 0 && !StringUtils.isEmpty(adspace.getLogoSize())) {
-				String[] nativesIconSize = org.springframework.util.StringUtils.tokenizeToStringArray(adspace.getLogoSize(), "*");
-				nativesIcon.setW(Integer.parseInt(nativesIconSize[0]));
-				nativesIcon.setH(Integer.parseInt(nativesIconSize[1]));
+				nativesIcon.setSizes(getMaterialListSize(adspace.getLogoSize(), adspaceModel));
 				nativesIcon.setMimes(logoMinesTypes);
 			}
 
 			natives.setIcon(nativesIcon);
-			natives.setTitle(adspace.getTitleMaxLength() > 0 ? adspace.getTitleMaxLength() : 0);
-			natives.setDesc(adspace.getDescMaxLength() > 0 ? adspace.getDescMaxLength() : 0);
-			natives.setContent(adspace.getContentMaxLength() > 0 ? adspace.getContentMaxLength() : 0);
+			natives.setTitle(adspace.getTitleMaxLength());
+			natives.setDesc(adspace.getDescMaxLength());
+			natives.setContent(adspace.getContentMaxLength());
 			adspaceModel.setNatives(natives);
 			break;
 		}
@@ -124,15 +124,10 @@ public class AdspaceRule {
 	 * @param minesTypes
 	 * @return
 	 */
-	public static AdspaceModel.Image getImage(Adspace adspace, AdspaceModel metaData, List<String> minesTypes) {
-		AdspaceModel.Image img = new AdspaceModel.Image();
-		String[] str = org.springframework.util.StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
-		img.setW(Integer.parseInt(str[0]));
-		img.setH(Integer.parseInt(str[1]));
-
-		metaData.setW(Integer.parseInt(str[0]));
-		metaData.setH(Integer.parseInt(str[1]));
-
+	public static AdspaceModel.Image getImage(Adspace adspace, AdspaceModel adspaceModel, List<String> minesTypes) {
+		AdspaceModel.Image img = adspaceModel.new Image();
+		img.setSizes(getMaterialListSize(adspace.getMaterialSize(), adspaceModel));
+		adspaceModel.setSizes(getMaterialListSize(adspace.getMaterialSize(), adspaceModel));
 		img.setMimes(minesTypes);
 		return img;
 	}
@@ -145,15 +140,11 @@ public class AdspaceRule {
 	 * @param minesTypes
 	 * @return
 	 */
-	public static AdspaceModel.Video getVideo(Adspace adspace, AdspaceModel metaData, List<String> minesTypes) {
-		AdspaceModel.Video video = new AdspaceModel.Video();
+	public static AdspaceModel.Video getVideo(Adspace adspace, AdspaceModel adspaceModel, List<String> minesTypes) {
+		AdspaceModel.Video video = adspaceModel.new Video();
 		if (!adspace.getLayout().equals(Layout.LO20004.getValue())) {
-			String[] videoSize = org.springframework.util.StringUtils.tokenizeToStringArray(adspace.getMaterialSize(), "*");
-			video.setW(Integer.parseInt(videoSize[0]));
-			video.setH(Integer.parseInt(videoSize[1]));
-
-			metaData.setW(Integer.parseInt(videoSize[0]));
-			metaData.setH(Integer.parseInt(videoSize[1]));
+			video.setSizes(getMaterialListSize(adspace.getMaterialSize(), adspaceModel));
+			adspaceModel.setSizes(getMaterialListSize(adspace.getMaterialSize(), adspaceModel));
 
 			String[] nativesdescription = org.springframework.util.StringUtils.tokenizeToStringArray(adspace.getMaterialDuration(), ",");
 			video.setMinDuraion(Integer.parseInt(nativesdescription[0]));
@@ -161,5 +152,24 @@ public class AdspaceRule {
 			video.setMimes(minesTypes);
 		}
 		return video;
+	}
+	
+	/**
+	 * size 存在多个，已,分割
+	 * 
+	 * @param materialSize
+	 * @return
+	 */
+	private static List<AdspaceModel.Size> getMaterialListSize(String materialSize, AdspaceModel adspaceModel) {
+		List<AdspaceModel.Size> list = new ArrayList<AdspaceModel.Size>();
+		String[] listSize = org.springframework.util.StringUtils.tokenizeToStringArray(materialSize, ",");
+		for (String size : listSize) {
+			String[] sizes = org.springframework.util.StringUtils.tokenizeToStringArray(size, "*");
+			AdspaceModel.Size metaDataSize = adspaceModel.new Size();
+			metaDataSize.setW(Integer.parseInt(sizes[0]));
+			metaDataSize.setH(Integer.parseInt(sizes[1]));
+			list.add(metaDataSize);
+		}
+		return list;
 	}
 }

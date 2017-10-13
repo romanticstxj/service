@@ -59,34 +59,34 @@ public class AdspaceController {
 			AdspaceModel.Native sourceNatives = sourceItem.getNatives();
 			BeanUtils.copyProperties(sourceItem, destinationItem);
 			if (sourceBanner != null) {
-				AdspaceDto.Image destinationBanner = new AdspaceDto.Image();
+				AdspaceDto.Image destinationBanner = destinationItem.new Image();
 				BeanUtils.copyProperties(sourceBanner, destinationBanner);
 				destinationItem.setBanner(destinationBanner);
 			}
 			if (sourceVideo != null) {
-				AdspaceDto.Video destinationVideo = new AdspaceDto.Video();
+				AdspaceDto.Video destinationVideo = destinationItem.new Video();
 				BeanUtils.copyProperties(sourceVideo, destinationVideo);
 				destinationItem.setVideo(destinationVideo);
 			}
 			if (sourceNatives != null) {
-				AdspaceDto.Native destinationNatives = new AdspaceDto.Native();
+				AdspaceDto.Native destinationNatives = destinationItem.new Native();
 				AdspaceModel.Image sourceCover = sourceNatives.getCover();
 				AdspaceModel.Image sourceIcon = sourceNatives.getIcon();
 				AdspaceModel.Image sourceImage = sourceNatives.getImage();
 
 				BeanUtils.copyProperties(sourceNatives, destinationNatives);
 				if (sourceCover != null) {
-					AdspaceDto.Image destinationCover = new AdspaceDto.Image();
+					AdspaceDto.Image destinationCover = destinationItem.new Image();
 					BeanUtils.copyProperties(sourceCover, destinationCover);
 					destinationNatives.setCover(destinationCover);
 				}
 				if (sourceIcon != null) {
-					AdspaceDto.Image destinationIcon = new AdspaceDto.Image();
+					AdspaceDto.Image destinationIcon = destinationItem.new Image();
 					BeanUtils.copyProperties(sourceIcon, destinationIcon);
 					destinationNatives.setIcon(destinationIcon);
 				}
 				if (sourceImage != null) {
-					AdspaceDto.Image destinationImage = new AdspaceDto.Image();
+					AdspaceDto.Image destinationImage = destinationItem.new Image();
 					BeanUtils.copyProperties(sourceImage, destinationImage);
 					destinationNatives.setImage(destinationImage);
 				}
