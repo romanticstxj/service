@@ -4,24 +4,21 @@ import java.util.List;
 
 public class AdspaceDto {
 	private Integer id;
-	private String name;
-	private Integer mediaId;
-	private String mediaName;
-	private Integer adType;
-	private List<Size> sizes;
-	private Integer layout;
-	private Integer blockId;
+    private String name;
+    private Integer mediaId;
+    private String mediaName;
+    private Integer adType;
+    private List<Size> sizes;
+    private Integer layout;
+    private Integer blockId;
 
-	private Image banner;
-	private Video video;
-	private Native natives;
+    private Image banner;
+    private Video video;
+    private Native natives;
 
-	private Integer bidFloor;
-	private Integer bidType;
-
-	private boolean enableHttps;
-	private String adspaceKey;
-	private Integer status;
+    private boolean enableHttps;
+    private String adspaceKey;
+    private Integer status;
 	private Integer osType;
 
 	public class Size {
@@ -283,22 +280,6 @@ public class AdspaceDto {
 
 	public void setSizes(List<Size> sizes) {
 		this.sizes = sizes;
-	}
-
-	public Integer getBidFloor() {
-		return bidFloor;
-	}
-
-	public void setBidFloor(Integer bidFloor) {
-		this.bidFloor = bidFloor;
-	}
-
-	public Integer getBidType() {
-		return bidType;
-	}
-
-	public void setBidType(Integer bidType) {
-		this.bidType = bidType;
 	}
 
 	public Integer getOsType() {
