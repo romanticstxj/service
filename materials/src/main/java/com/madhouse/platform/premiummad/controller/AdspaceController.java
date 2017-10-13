@@ -73,6 +73,7 @@ public class AdspaceController {
 				AdspaceModel.Image sourceCover = sourceNatives.getCover();
 				AdspaceModel.Image sourceIcon = sourceNatives.getIcon();
 				AdspaceModel.Image sourceImage = sourceNatives.getImage();
+				AdspaceModel.Video sourceNativeVideo = sourceNatives.getVideo();
 
 				BeanUtils.copyProperties(sourceNatives, destinationNatives);
 				if (sourceCover != null) {
@@ -89,6 +90,11 @@ public class AdspaceController {
 					AdspaceDto.Image destinationImage = destinationItem.new Image();
 					BeanUtils.copyProperties(sourceImage, destinationImage);
 					destinationNatives.setImage(destinationImage);
+				}
+				if (sourceNativeVideo != null) {
+					AdspaceDto.Video destinationNativeVideo = destinationItem.new Video();
+					BeanUtils.copyProperties(sourceNativeVideo, destinationNativeVideo);
+					destinationNatives.setVideo(destinationNativeVideo);
 				}
 				destinationItem.setNatives(destinationNatives);
 			}
