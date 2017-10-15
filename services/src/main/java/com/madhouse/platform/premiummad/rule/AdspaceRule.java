@@ -3,13 +3,45 @@ package com.madhouse.platform.premiummad.rule;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.AdspaceDto;
 import com.madhouse.platform.premiummad.entity.Adspace;
+import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class AdspaceRule extends BaseRule{
+	
+	public static void validateDto(Object dto){
+		BaseRule.validateDto(dto);
+		if(dto instanceof AdspaceDto){
+			AdspaceDto adspaceDto = (AdspaceDto) dto;
+			if(!allConformed(adspaceDto.getLogoType(), adspaceDto.getLogoSize(), adspaceDto.getLogoMaxKbyte())){
+				throw new BusinessException(StatusCode.SC20208);
+			}
+			
+			if(!allConformed(adspaceDto.getCoverType(), adspaceDto.getCoverMaxKbyte())){
+				throw new BusinessException(StatusCode.SC20209);
+			}
+		}
+	}
+	
+	/**
+	 * 判断所有的对象，要么都非空，要么都空
+	 * @param objs
+	 * @return
+	 */
+	private static boolean allConformed(Object... objs){
+		boolean allPopulated = true;
+		boolean allNotPopulated = true;
+		for(Object obj : objs){
+			allPopulated = allPopulated && !StringUtils.isEmpty(obj);
+			allNotPopulated = allNotPopulated && StringUtils.isEmpty(obj);
+		}
+		
+		return allPopulated || allNotPopulated;
+	}
 
 	public static Adspace convertToModel(AdspaceDto adspaceDto, Adspace adspace, boolean isCreate){
 		BeanUtils.copyProperties(adspaceDto, adspace, SystemConstant.OtherConstant.ADSPACE_BID_FLOOR);
