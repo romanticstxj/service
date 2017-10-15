@@ -15,7 +15,7 @@ public class MaterialControllerTest {
 	
 	@Test
 	public void detail(){
-		String url = "http://localhost:8080/services/material/detail?id=1";
+		String url = "http://localhost:8080/services/material/detail?id=127";
 		HttpUtilTest.httpGet(url);
 	}
 	

@@ -18,7 +18,7 @@ public class AdspaceControllerTest {
 	@Test
 	public void add(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-		adspaceDto.setName("adspace5733");
+		adspaceDto.setName("adspacemichael1");
 		adspaceDto.setMediaId(100004);
 		adspaceDto.setTerminalType(1);
 		adspaceDto.setTerminalOs(1);
@@ -33,14 +33,14 @@ public class AdspaceControllerTest {
 		adspaceDto.setMaterialCount(3);
 		adspaceDto.setMaterialDuration("10,20");
 		adspaceDto.setLogoType("1,2");
-		adspaceDto.setLogoSize("72*108");
+//		adspaceDto.setLogoSize("72*108");
 		adspaceDto.setLogoMaxKbyte(200);
 		adspaceDto.setCoverType("8,32");
 		adspaceDto.setCoverSize("36*72");
 		adspaceDto.setCoverMaxKbyte(100);
 		adspaceDto.setDescription("desc");
 		adspaceDto.setContentMaxLength(100);
-//		String link = "http://172.16.25.48:8080/services/adspace/create";
+//		String link = "http://172.16.25.31:8080/services/adspace/create";
 		String link = "http://localhost:8080/services/adspace/create";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(adspaceDto));
 	}
@@ -108,9 +108,9 @@ public class AdspaceControllerTest {
 	@Test
 	public void update(){
 		AdspaceDto adspaceDto = new AdspaceDto();
-		adspaceDto.setId(200073);
-		adspaceDto.setName("adspace43");
-		adspaceDto.setMediaId(100001);
+		adspaceDto.setId(200099);
+		adspaceDto.setName("adspacemichael");
+		adspaceDto.setMediaId(100049);
 		adspaceDto.setTerminalType(1);
 		adspaceDto.setTerminalOs(1);
 		adspaceDto.setSupportHttps(1);
@@ -120,10 +120,13 @@ public class AdspaceControllerTest {
 		adspaceDto.setLayout(102);
 		adspaceDto.setMaterialType("1,2,4");
 		adspaceDto.setMaterialSize("");
+		adspaceDto.setLogoType("2");
+		adspaceDto.setLogoSize(null);
+		adspaceDto.setLogoMaxKbyte(0);
 		adspaceDto.setMaterialMaxKbyte(300);
 		adspaceDto.setDescription("desc");
 		adspaceDto.setContentMaxLength(200);
-//		String link = "http://172.16.25.48:8080/services/adspace/update";
+//		String link = "http://172.16.25.31:8080/services/adspace/update";
 		String link = "http://localhost:8080/services/adspace/update";
 //		String content = "{\"adType\":3,\"bidFloor\":21,\"bidType\":1,\"description\":\"desc\",\"id\":200009,\"layout\":102,\"materialMaxKbyte\":null,\"materialSize\":\"\",\"materialType\":\"1,2,4\",\"mediaId\":100001,\"name\":\"adspace43\",\"supportHttps\":1,\"terminalOs\":1,\"terminalType\":1}";
 		HttpUtilTest.httpPost(link,JSON.toJSONString(adspaceDto));
