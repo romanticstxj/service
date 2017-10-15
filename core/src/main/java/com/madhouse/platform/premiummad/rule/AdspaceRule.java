@@ -88,7 +88,7 @@ public class AdspaceRule {
 		case AdspaceConstant.PlcmtType.NATIVE:
 			AdspaceModel.Native natives = adspaceModel.new Native();
 			if (adspace.getLayout().equals(Layout.LO30011.getValue())) {
-				if (adspace.getCoverType() > 0 && !StringUtils.isEmpty(adspace.getCoverSize())) {
+				if (adspace.getCoverType() != null && !StringUtils.isEmpty(adspace.getCoverSize())) {
 					AdspaceModel.Image nativeCover = adspaceModel.new Image();
 					nativeCover.setSizes(getMaterialListSize(adspace.getCoverSize(), adspaceModel));
 					nativeCover.setMimes(coverMinesTypes);
@@ -100,7 +100,7 @@ public class AdspaceRule {
 				natives.setImage(getImage(adspace, adspaceModel, meterialMinesTypes));
 			}
 			
-			if (adspace.getLogoType() > 0 && !StringUtils.isEmpty(adspace.getLogoSize())) {
+			if (adspace.getLogoType() != null && !StringUtils.isEmpty(adspace.getLogoSize())) {
 				AdspaceModel.Image nativesIcon = adspaceModel.new Image();
 				nativesIcon.setSizes(getMaterialListSize(adspace.getLogoSize(), adspaceModel));
 				nativesIcon.setMimes(logoMinesTypes);
@@ -147,8 +147,10 @@ public class AdspaceRule {
 			adspaceModel.setSizes(getMaterialListSize(adspace.getMaterialSize(), adspaceModel));
 
 			String[] nativesdescription = org.springframework.util.StringUtils.tokenizeToStringArray(adspace.getMaterialDuration(), ",");
-			video.setMinDuraion(Integer.parseInt(nativesdescription[0]));
-			video.setMaxDuration(Integer.parseInt(nativesdescription[1]));
+			if (nativesdescription != null && nativesdescription.length == 2) {
+				video.setMinDuraion(Integer.parseInt(nativesdescription[0]));
+				video.setMaxDuration(Integer.parseInt(nativesdescription[1]));
+			}
 			video.setMimes(minesTypes);
 		}
 		return video;
@@ -165,6 +167,10 @@ public class AdspaceRule {
 		String[] listSize = org.springframework.util.StringUtils.tokenizeToStringArray(materialSize, ",");
 		for (String size : listSize) {
 			String[] sizes = org.springframework.util.StringUtils.tokenizeToStringArray(size, "*");
+			// 存储的数据格式有问题，该条记录不返回
+			if (sizes == null || sizes.length != 2) {
+				continue;
+			}
 			AdspaceModel.Size metaDataSize = adspaceModel.new Size();
 			metaDataSize.setW(Integer.parseInt(sizes[0]));
 			metaDataSize.setH(Integer.parseInt(sizes[1]));
