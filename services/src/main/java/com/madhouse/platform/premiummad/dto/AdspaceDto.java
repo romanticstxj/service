@@ -43,12 +43,13 @@ public class AdspaceDto implements Serializable{
 	private Integer adType;	//广告类型
 	@NotNullAndBlank
 	private Integer layout;	//广告形式
+	
 	private String layoutName;
-	
+	@NotNullAndBlank
 	private String materialType; //物料格式
-	
+	@NotNullAndBlank
 	private String materialSize;
-	
+	@NotNullAndBlank
 	private Integer materialMaxKbyte;
 	
 	private Integer materialCount;

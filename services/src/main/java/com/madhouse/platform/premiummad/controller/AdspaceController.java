@@ -89,7 +89,7 @@ public class AdspaceController {
 	@RequestMapping("/create")
     public ResponseDto<AdspaceDto> addAdspace(@RequestBody @Validated(Insert.class) AdspaceDto adspaceDto, 
     		@RequestHeader(value=SystemConstant.Request.XFROM, required=true) String xFrom) {
-		BaseRule.validateDto(adspaceDto);
+		AdspaceRule.validateDto(adspaceDto);
         Adspace adspace = AdspaceRule.convertToModel(adspaceDto, new Adspace(), true);
         adspaceService.insert(adspace, xFrom);
         List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
@@ -121,7 +121,7 @@ public class AdspaceController {
 	 */
 	@RequestMapping("/update")
     public ResponseDto<AdspaceDto> updateAdspace(@RequestBody @Validated(Update.class) AdspaceDto adspaceDto) {
-		BaseRule.validateDto(adspaceDto);
+		AdspaceRule.validateDto(adspaceDto);
         Adspace adspace = AdspaceRule.convertToModel(adspaceDto, new Adspace(), false);
         adspaceService.update(adspace);
         List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
