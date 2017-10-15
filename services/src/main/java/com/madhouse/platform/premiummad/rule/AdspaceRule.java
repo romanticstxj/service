@@ -21,6 +21,7 @@ public class AdspaceRule extends BaseRule{
 				throw new BusinessException(StatusCode.SC20208);
 			}
 			
+			//只判断封面类型和封面最大k数，因为封面尺寸总是由其主素材尺寸确定
 			if(!allConformed(adspaceDto.getCoverType(), adspaceDto.getCoverMaxKbyte())){
 				throw new BusinessException(StatusCode.SC20209);
 			}

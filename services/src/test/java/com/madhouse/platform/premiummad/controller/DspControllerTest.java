@@ -27,22 +27,23 @@ public class DspControllerTest {
 	@Test
 	public void update(){
 		DspDto dsp = new DspDto();
-		dsp.setId(600004);
-		dsp.setName("dspName22");
+		dsp.setId(601056);
+		dsp.setName("新增合作模式1");
 		dsp.setDeliveryType("2,8");
 		dsp.setBidUrl("http://baidu.com");
-		dsp.setToken("333");
-		dsp.setStatus(2);
-		String url = "http://localhost:8080/services/dsp/update";
+		dsp.setToken("CD41036A51CDF5DA1D4A7CA4FA1F5D57");
+		dsp.setStatus(0);
+		String url = "http://172.16.25.31:8080/services/dsp/update";
+//		String url = "http://localhost:8080/services/dsp/update";
 		HttpUtilTest.httpPost(url, JSON.toJSONString(dsp));
 	}
 	
 	@Test
 	public void updateStatus(){
 		DspDto dsp = new DspDto();
-		dsp.setId(600004);
+		dsp.setId(601056);
 		dsp.setStatus(1);
-		String url = "http://localhost:8080/services/dsp/updateStatus";
+		String url = "http://172.16.25.31:8080/services/dsp/updateStatus";
 		HttpUtilTest.httpPost(url, JSON.toJSONString(dsp));
 	}
 	
