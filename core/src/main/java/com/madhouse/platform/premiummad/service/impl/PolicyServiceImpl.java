@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,7 +126,7 @@ public class PolicyServiceImpl implements IPolicyService {
 
 	@Override
 	public String getMediaDealId(String dealId, Integer mediaId) {
-		if (dealId == null || mediaId == null) {
+		if (StringUtils.isBlank(dealId) || mediaId == null) {
 			return null;
 		}
 		List<PolicyAdspace> policyAdspaces = policyAdspaceDao.selectByPolicyIdAndMediaId(Integer.valueOf(dealId), mediaId);
