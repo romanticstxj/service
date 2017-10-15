@@ -12,7 +12,7 @@ public class Material {
     
     private int layout;
     
-    private Integer dealId;
+    private String dealId;
     
     private String startDate;
     
@@ -30,7 +30,7 @@ public class Material {
     
     private String cover;
     
-    private Integer duration;
+    private int duration;
     
     private String lpgUrl;
     
@@ -108,14 +108,6 @@ public class Material {
         this.name = name;
     }
     
-    public Integer getDealId() {
-        return dealId;
-    }
-
-    public void setDealId(Integer dealId) {
-        this.dealId = dealId;
-    }
-
     public String getStartDate() {
         return startDate;
     }
@@ -170,14 +162,6 @@ public class Material {
 
     public void setCover(String cover) {
         this.cover = cover;
-    }
-
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
     }
 
     public String getLpgUrl() {
@@ -259,7 +243,22 @@ public class Material {
     public void setBrand(String brand) {
         this.brand = brand;
     }
-    
+
+    public String getDealId() {
+        return dealId;
+    }
+
+    public void setDealId(String dealId) {
+        this.dealId = dealId;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
     
     
 }

@@ -29,7 +29,7 @@ public class UserAuthControllerTest {
 		UserAuth auth = new UserAuth();
 		auth.setSpecifiedUserId(10);
 //		auth.setIsAdmin(0);
-		auth.setPolicyIds(new Integer[]{});
+		auth.setPolicyIds(new Integer[]{500089});
 		String link = "http://localhost:8080/services/userauth/policy/update";
 		HttpUtilTest.httpPost(link, JSON.toJSONString(auth));
 	}

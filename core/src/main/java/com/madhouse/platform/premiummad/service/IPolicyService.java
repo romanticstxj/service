@@ -19,7 +19,7 @@ public interface IPolicyService extends IBaseService<Policy>{
 	 * @param mediaId
 	 * @return 
 	 */
-	String getMediaDealId(Integer dealId, Integer mediaId);
+	String getMediaDealId(String dealId, Integer mediaId);
 
 	List<Policy> queryAllByParams(List<Integer> policyIdList, Integer status, Integer type);
 }

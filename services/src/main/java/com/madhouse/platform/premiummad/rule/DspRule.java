@@ -10,9 +10,9 @@ import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class DspRule extends BaseRule{
 	
-	public static Dsp convertToModel(DspDto dto, Dsp entity){
+	public static Dsp convertToModel(DspDto dto, Dsp entity, boolean isCreate){
 		BeanUtils.copyProperties(dto, entity);
-        BeanUtils.setCreateParam(entity);
+        BeanUtils.setCommonParam(entity, isCreate);
         
         //把页面上的部分多选项转化为数据库的单值
         int deliveryType = StringUtils.convertMultiChoiceToSingleChoice(dto.getDeliveryType());

@@ -1,7 +1,5 @@
 package com.madhouse.platform.premiummad.media.tencent;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -315,18 +313,19 @@ public class TencentUploadMaterialApiTask {
 																				// 宏替换
 			advertUploadRequest.setClick_monitor_url(clkMonitorList);
 
-			String encodeTargetUrl = "";
-			try {
-				encodeTargetUrl = URLEncoder.encode(material.getLpgUrl(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				LOGGER.info("Tencent targetUrl encode exception");
-				e.printStackTrace();
-			}
-			if (mediaType != TECENT_OTV_ITERATOR) {
-				advertUploadRequest.setTargeting_url(tencentClkUrlSsp + encodeTargetUrl + "${CLICK_EXT1}");
-			} else {
-				advertUploadRequest.setTargeting_url(tencentClkUrl + encodeTargetUrl + "&${EXT}");
-			}
+//			String encodeTargetUrl = "";
+//			try {
+//				encodeTargetUrl = URLEncoder.encode(material.getLpgUrl(), "UTF-8");
+//			} catch (UnsupportedEncodingException e) {
+//				LOGGER.info("Tencent targetUrl encode exception");
+//				e.printStackTrace();
+//			}
+//			if (mediaType != TECENT_OTV_ITERATOR) {
+//				advertUploadRequest.setTargeting_url(tencentClkUrlSsp + encodeTargetUrl + "${CLICK_EXT1}");
+//			} else {
+//				advertUploadRequest.setTargeting_url(tencentClkUrl + encodeTargetUrl + "&${EXT}");
+//			}
+			advertUploadRequest.setTargeting_url(material.getLpgUrl());
 			advertUploadRequest.setDsp_order_id(String.valueOf(material.getId()));
 			advertUploadRequestList.add(advertUploadRequest);
 		}

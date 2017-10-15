@@ -336,7 +336,7 @@ public class WeiboMaterialUploadApiTask {
 		}
 
 		// 图文信息流
-		if (layout >= Layout.LO30001.getValue() && layout <= Layout.LO30003.getValue()) {
+		if (layout >= Layout.LO30001.getValue() && layout <= Layout.LO30009.getValue()) {
 			return CREATIVE_FEED;
 		}
 
