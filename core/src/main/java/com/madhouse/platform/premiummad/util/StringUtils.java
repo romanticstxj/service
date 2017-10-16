@@ -156,6 +156,16 @@ public class StringUtils {
 	public static boolean isEmpty(Object str) {
 		return (str == null || "".equals(str) || "".equals(str.toString().trim()));
 	}
+	
+	/**
+	 * 判断是否空字符串
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean isEmptyStr(Object str) {
+		return (str != null && ( "".equals(str) || "".equals(str.toString().trim())));
+	}
 
 	/**
 	 * 把idList转为逗号分隔的idStr
@@ -345,7 +355,6 @@ public class StringUtils {
 	}
 
 	public static String singleValueToMultiValue(Integer singleValue) {
-
 		if(singleValue == null || singleValue.intValue() <= 0){
 			return "";
 		}
@@ -366,6 +375,9 @@ public class StringUtils {
 	}
 	
 	public static int convertMultiChoiceToSingleChoice(String multiChoice) {
+		if(StringUtils.isEmpty(multiChoice)){
+			return 0;
+		}
         int[] splitedMultiChoices = StringUtils.splitToIntArray(multiChoice);
         int singleChoice = StringUtils.multiValueToSingleValue(splitedMultiChoices);
         return singleChoice;
