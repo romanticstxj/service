@@ -48,8 +48,13 @@ public class AdspaceRule {
 		BeanUtils.copyProperties(adspace, adspaceModel);
 		// 平台类型
 		adspaceModel.setOsType(adspace.getTerminalOs());
-		// 媒体名称
-		adspaceModel.setMediaName(media != null ? media.getName() : "");
+		// 媒体相关值返回名称
+		if (media != null) {
+			adspaceModel.setMediaName(media.getName());
+			adspaceModel.setAdvertiserAuditMode(media.getAdvertiserAuditMode());
+			adspaceModel.setMaterialAuditMode(media.getMaterialAuditMode());
+		}
+		
 		// 广告类型(1: 普通硬广, 2: 视频, 3: 原生)
 		switch (adspace.getAdType()) {
 		case AdspaceConstant.PlcmtType.BANNER:
