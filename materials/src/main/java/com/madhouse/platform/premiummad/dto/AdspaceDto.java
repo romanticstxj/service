@@ -21,6 +21,10 @@ public class AdspaceDto {
     private Integer status;
 	private Integer osType;
 
+	// 媒体关联的广告位和素材审核方式
+	private Byte advertiserAuditMode;
+	private Byte materialAuditMode;
+
 	public class Size {
         private int w;
         private int h;
@@ -304,5 +308,21 @@ public class AdspaceDto {
 
 	public void setMediaName(String mediaName) {
 		this.mediaName = mediaName;
+	}
+
+	public Byte getAdvertiserAuditMode() {
+		return advertiserAuditMode;
+	}
+
+	public void setAdvertiserAuditMode(Byte advertiserAuditMode) {
+		this.advertiserAuditMode = advertiserAuditMode;
+	}
+
+	public Byte getMaterialAuditMode() {
+		return materialAuditMode;
+	}
+
+	public void setMaterialAuditMode(Byte materialAuditMode) {
+		this.materialAuditMode = materialAuditMode;
 	}
 }
