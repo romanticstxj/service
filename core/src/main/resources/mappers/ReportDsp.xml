@@ -5,6 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="dsp_id" jdbcType="INTEGER" property="dspId" />
     <result column="media_id" jdbcType="INTEGER" property="mediaId" />
+    <result column="adspace_id" jdbcType="INTEGER" property="adspaceId" />
     <result column="date" jdbcType="DATE" property="date" />
     <result column="hour" jdbcType="TINYINT" property="hour" />
     <result column="reqs" jdbcType="BIGINT" property="reqs" />
@@ -57,14 +58,18 @@
   <select id="queryDspMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> ,d.name dspName
     , rp.media_id, m.name mediaName
+    <if test="hasAdspace != null and hasAdspace == true"> ,rp.adspace_id, a.name adspaceName </if>
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_dsp_media rp
     INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     INNER JOIN mad_sys_media m ON rp.media_id = m.id
+    <if test="hasAdspace != null and hasAdspace == true"> INNER JOIN mad_sys_adspace a ON rp.adspace_id = a.id </if>
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="mediaAuthCondition"/>
-    GROUP BY rp.dsp_id, rp.media_id <if test="hasDate != null and hasDate == true">, rp.date</if>
+    GROUP BY rp.dsp_id, rp.media_id 
+    <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id</if>
+    <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_DSP">vimps1 DESC</when>
@@ -74,6 +79,12 @@
 		        <when test="lastOrderPosition == DIM_SORTING_MEDIA">, vimps1 DESC</when>
 	    		<otherwise>, rp.media_id</otherwise>
 	    	 </choose>
+	    	 <if test="hasAdspace != null and hasAdspace == true">
+	    	 <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_ADSPACE">, vimps1 DESC</when>
+	    		<otherwise>, rp.adspace_id</otherwise>
+	    	 </choose>
+	    	 </if>
     		 <if test="hasDate != null and hasDate == true">, rp.date</if>
     		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
   </select>
