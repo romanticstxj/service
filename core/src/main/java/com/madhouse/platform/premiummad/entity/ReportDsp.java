@@ -31,6 +31,10 @@ public class ReportDsp extends BaseEntity{
     
     private String mediaName;
     
+    private Integer adspaceId;
+    
+    private String adspaceName;
+    
     private Integer carrier; //运营商code
     
     private Integer conn; //联网方式code
@@ -571,6 +575,22 @@ public class ReportDsp extends BaseEntity{
 
 	public void setCountryName(String countryName) {
 		this.countryName = countryName;
+	}
+
+	public Integer getAdspaceId() {
+		return adspaceId;
+	}
+
+	public void setAdspaceId(Integer adspaceId) {
+		this.adspaceId = adspaceId;
+	}
+
+	public String getAdspaceName() {
+		return adspaceName;
+	}
+
+	public void setAdspaceName(String adspaceName) {
+		this.adspaceName = adspaceName;
 	}
 
 }
