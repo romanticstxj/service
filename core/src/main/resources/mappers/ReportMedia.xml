@@ -37,6 +37,8 @@
     </if>
   </sql>
   
+  <!-- 当没有时间维度时，最细的一个维度按照其聚合后的曝光书进行倒序排序，在他之前的所有维度按照他们的id进行正序排序；
+  		当有时间维度时，最细的维度一定是时间维度，此时时间按正序排序，其余维度按他们的id正序排序 -->
   <select id="queryMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> ,m.name mediaName
     <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id, a.name adspaceName</if>
