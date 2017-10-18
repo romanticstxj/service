@@ -13,8 +13,6 @@
 	
 	<aop:aspectj-autoproxy proxy-target-class="true" /><!-- 要拦截controller需要再springmvc的配置文件中加这一行 -->
 	
-	<mvc:default-servlet-handler default-servlet-name="defaultServlet"/>
-
 	<!-- 启用默认配置 -->
 	<mvc:annotation-driven>
 		<mvc:message-converters register-defaults="true">
