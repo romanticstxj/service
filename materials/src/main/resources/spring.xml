@@ -3,7 +3,7 @@
        xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
-       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:cache="http://www.springframework.org/schema/cache" xmlns:mvc="http://www.springframework.org/schema/mvc" 
        xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
@@ -18,12 +18,15 @@
         http://www.springframework.org/schema/task 
         http://www.springframework.org/schema/task/spring-task-4.0.xsd
         http://www.springframework.org/schema/cache
-        http://www.springframework.org/schema/cache/spring-cache.xsd">
+        http://www.springframework.org/schema/cache/spring-cache.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
     <context:component-scan base-package="com.madhouse.platform.premiummad">
     <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
-    
+
+	<mvc:annotation-driven />
+	
 	<task:annotation-driven/>
     <task:executor id="taskExecutor" pool-size="100-10000" queue-capacity="10" />
 
@@ -42,7 +45,15 @@
             </list>
         </property>
     </bean>
-
+    
+    <!--输入参数忽略大小写-->
+    <bean id="caseInsensitiveRequestFilterProxy" class="org.springframework.web.filter.DelegatingFilterProxy">
+        <property name="targetBeanName" value="caseInsensitiveRequestFilter"/>
+    </bean>
+    <bean id="caseInsensitiveRequestFilter"
+          class="com.madhouse.platform.premiummad.util.CaseInsensitiveRequestParameterNameFilter">
+    </bean>
+    
     <aop:config>
         <aop:advisor advice-ref="druidStatInterceptor" pointcut-ref="druidStatPointcut"/>
     </aop:config>
