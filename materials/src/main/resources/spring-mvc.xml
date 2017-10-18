@@ -45,7 +45,7 @@
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 	
 	<!-- 在mvc中注入此PathMatcher来实现请求URL的大小写不敏感解析 -->
-	<bean id="matcher" class="com.madhouse.platform.premiummad.util.CaseInsenseticePathMatcher" />
+	<bean id="matcher" class="com.madhouse.platform.premiummad.util.CaseInsensitivityPathMatcher" />
 
 	<mvc:interceptors>
 		<!-- dspId 和  token 拦截校验 -->
