@@ -157,22 +157,29 @@ public class BeanUtils {
 				Field field = fields[i];
 				NotNullAndBlank notNull = field.getAnnotation(NotNullAndBlank.class);
 				String fieldName = field.getName();
+				field.setAccessible(true);
+				Object value = null;
+				try {
+					value = field.get(obj);
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					throw new RuntimeException("field get invoke exception,please check field:" + field.getName());
+				}
 				if (notNull != null) {
 					// 如果有NotNull注解，就判断是否为null，如果为null就返回true
-					field.setAccessible(true);
-					Object value = null;
-					try {
-						value = field.get(obj);
-					} catch (IllegalArgumentException | IllegalAccessException e) {
-						e.printStackTrace();
-						throw new RuntimeException("field invoke exception,please check field:" + field.getName());
-					}
 					if (StringUtils.isEmpty(value)) {
 						return fieldName;
 					}
 				} else {
-					continue;
+					//否则，判断若为空字符串，则把此字段设为Null
+					if (StringUtils.isEmptyStr(value)) {
+						try {
+							field.set(obj, null);
+						} catch (IllegalArgumentException | IllegalAccessException e) {
+							throw new RuntimeException("field set invoke exception,please check field:" + field.getName());
+						}
+					}
 				}
+				
 			}
 			return null;
 		} else {

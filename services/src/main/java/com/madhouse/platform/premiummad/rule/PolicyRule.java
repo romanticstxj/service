@@ -152,16 +152,24 @@ public class PolicyRule extends BaseRule{
         	throw new BusinessException(StatusCode.SC20404);
         }
         
+        for(int i=0; i<policyAdspaceDtos.size(); i++){
+        	BaseRule.validateDto(policyAdspaceDtos.get(i));
+        }
+        
         List<PolicyDspDto> policyDspDtos = policyDto.getPolicyDsps();
         if(policyDspDtos == null || policyDspDtos.size() == 0){
         	throw new BusinessException(StatusCode.SC20405);
-        } else{
-        	if(policyDto.getType().intValue() != SystemConstant.OtherConstant.POLICY_TYPE_RTB){
-        		//如果策略类型是pd或者pdb，则此策略的dsp数量只能是一个
-        		if(policyDspDtos.size() > 1){
-        			throw new BusinessException(StatusCode.SC20406);
-        		}
-        	}
+        } 
+
+        if(policyDto.getType().intValue() != SystemConstant.OtherConstant.POLICY_TYPE_RTB){
+    		//如果策略类型是pd或者pdb，则此策略的dsp数量只能是一个
+    		if(policyDspDtos.size() > 1){
+    			throw new BusinessException(StatusCode.SC20406);
+    		}
+    	}
+        
+        for(int i=0; i<policyDspDtos.size(); i++){
+        	BaseRule.validateDto(policyDspDtos.get(i));
         }
 	}
 	

@@ -4,19 +4,19 @@ package com.madhouse.platform.premiummad.constant;
  * 媒体是否需要广告位信息
  */
 public enum MediaNeedAdspace {
-	SOHUNEWS(100000, false), 
-	SOHUTV(100001, false),
-	TENCENT_NOT_OTV(100002, true),
-	TENCENT(100003, true),
-	DIANPING(100004, true),
-	MOJI(100005, true),
-	IQYI(100006, false),
-	LETV(100007, false),
-	MOMO(100008, false),
-	TOUTIAO(100009, false),
-	VALUEMAKER(100010, false),
-	FUNADX(100011, false),
-	WEIBO(100012, false);
+	SOHUNEWS(100227, false), 
+	SOHUTV(-1, false),
+	TENCENT_NOT_OTV(100233, true),
+	TENCENT(-2, true),
+	DIANPING(100126, true),
+	MOJI(100104, true),
+	IQYI(100133, false),
+	LETV(100199, false),
+	MOMO(100131, false),
+	TOUTIAO(100106, false),
+	VALUEMAKER(100156, false),
+	FUNADX(100198, false),
+	WEIBO(100226, false);
 
 	int key;
 	boolean value;

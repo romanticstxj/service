@@ -4,22 +4,23 @@ package com.madhouse.platform.premiummad.constant;
  * 媒体映射关系
  */
 public enum MediaMapping {
-	SOHUNEWS(100000, "搜狐新闻"), 
-	SOHUTV(100001, "搜狐TV"),
-	TENCENT_NOT_OTV(100002, "腾讯_非otv"),
-	TENCENT(100003, "腾讯"),
-	DIANPING(100004, "美团点评"),
-	MOJI(100005, "墨迹天气"),
-	IQYI(100006, "爱奇艺"),
-	LETV(100007, "乐视"),
-	MOMO(100008, "陌陌"),
-	TOUTIAO(100009, "今日头条"),
-	VALUEMAKER(100010, "万流客"),
-	FUNADX(100011, "风行"),
-	WEIBO(100012, "新浪微博");
+	SOHUNEWS(100227, "搜狐新闻"), 
+	SOHUTV(-1, "搜狐TV"),
+	TENCENT_NOT_OTV(100233, "腾讯_非OTV_腾讯ADX"),
+	TENCENT(-2, "腾讯_OTV"),
+	DIANPING(100126, "大众点评_美团"),
+	MOJI(100104, "墨迹天气"),
+	IQYI(100133, "爱奇艺"),
+	LETV(100199, "乐视"),
+	MOMO(100131, "陌陌"),
+	TOUTIAO(100106, "今日头条"),
+	VALUEMAKER(100156, "网易新闻"),//万流客
+	FUNADX(100198, "风行"),
+	WEIBO(100226, "新浪微博");
 
 	int value;
 	String descrip;
+	
 
 	MediaMapping(int value, String descrip) {
 		this.value = value;

@@ -88,6 +88,8 @@ public class ReportRule extends BaseRule{
 		int[] dimsArray = StringUtils.splitToIntArray(dimsStr);
 		TreeSet<Integer> dimsSorting = new TreeSet<Integer>();
 		
+		/** dimsSorting列表的元素会按照既定的维度顺序，设置相应的维度，比如policy规定始终是顶层维度，时间规定始终是最细级别的维度,
+		 * 此处会根据前端选择的报表type和dims来设置这个报表分组和排序的维度顺序 **/
 		for(int dim: dimsArray){
 			switch (dim){
 			case SystemConstant.DB.DIM_DATE: 
@@ -135,6 +137,7 @@ public class ReportRule extends BaseRule{
 				dimsSorting.add(SystemConstant.DB.DIM_SORTING_LOCATION);
 				break;
 			case SystemConstant.DB.TYPE_MEDIA: 
+				//type为媒体，则只添加媒体这个维度，以备从媒体维度向更细的广告位维度切换
 				entity.setHasMedia(true);
 				dimsSorting.add(SystemConstant.DB.DIM_SORTING_MEDIA);
 				break;
