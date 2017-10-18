@@ -63,6 +63,10 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet>
+    <servlet-name>defaultServlet</servlet-name>
+    <servlet-class>com.madhouse.platform.premiummad.spring.DefaultServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>DruidStatView</servlet-name>
     <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
   </servlet>
