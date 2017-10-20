@@ -7,9 +7,14 @@ public class MaterialAuditResultModel {
 	private String id;
 
 	/**
-	 * remiumMAD平台定义的媒体ID
+	 * PremiumMAD平台定义的媒体ID
 	 */
 	private String mediaId;
+	
+	/**
+	 * 媒体ID组
+	 */
+	private int[] mediaIds;
 
 	/**
 	 * 审核状态 -1：审核未通过；0：待审核；1：第三方媒体审核中；2：审核通过
@@ -55,6 +60,14 @@ public class MaterialAuditResultModel {
 
 	public void setMediaId(String mediaId) {
 		this.mediaId = mediaId;
+	}
+
+	public int[] getMediaIds() {
+		return mediaIds;
+	}
+
+	public void setMediaIds(int[] mediaIds) {
+		this.mediaIds = mediaIds;
 	}
 
 	public Integer getStatus() {

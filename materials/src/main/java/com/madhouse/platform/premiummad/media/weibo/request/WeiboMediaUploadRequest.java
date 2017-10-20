@@ -7,45 +7,60 @@ public class WeiboMediaUploadRequest extends WeiboTokenRequest {
 	/**
 	 * 初始化接口获取到的uploadId
 	 */
-	private String uploadId;
+	private String upload_id;
 
 	/**
 	 * 分块编号，从0开始
 	 */
-	private int partNumber;
+	private int part_number;
 
 	/**
 	 * 分块数据md5
 	 */
-	private String sliceCheck;
+	private String slice_check;
 
 	/**
 	 * 分块数据（由于json无法直接传输二进制数据，需要先对分块数据进行base64编码） 分块长度对打位 init 接口中返回的 length值
 	 */
 	private String content;
+	
+	/**
+	 * 文件大小（字节）
+	 */
+	private int file_length;
+	
+	/**
+	 * 文件MD5值
+	 */
+	private String check;
+	
+	/**
+	 * 初始化返回的length
+	 */
+	private int length;
 
-	public String getUploadId() {
-		return uploadId;
+	public String getUpload_id() {
+		return upload_id;
 	}
 
-	public void setUploadId(String uploadId) {
-		this.uploadId = uploadId;
+	public void setUpload_id(String upload_id) {
+		this.upload_id = upload_id;
 	}
 
-	public int getPartNumber() {
-		return partNumber;
+	public int getPart_number() {
+		return part_number;
 	}
 
-	public void setPartNumber(int partNumber) {
-		this.partNumber = partNumber;
+	public void setPart_number(int part_number) {
+		this.part_number = part_number;
 	}
 
-	public String getSliceCheck() {
-		return sliceCheck;
+	public String getSlice_check() {
+		return slice_check;
 	}
 
-	public void setSliceCheck(String sliceCheck) {
-		this.sliceCheck = sliceCheck;
+	public void setSlice_check(String slice_check) {
+		this.slice_check = slice_check;
 	}
 
 	public String getContent() {
@@ -54,5 +69,29 @@ public class WeiboMediaUploadRequest extends WeiboTokenRequest {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public int getFile_length() {
+		return file_length;
+	}
+
+	public void setFile_length(int file_length) {
+		this.file_length = file_length;
+	}
+
+	public String getCheck() {
+		return check;
+	}
+
+	public void setCheck(String check) {
+		this.check = check;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
 	}
 }

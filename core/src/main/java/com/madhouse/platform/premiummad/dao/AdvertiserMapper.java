@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.model.AdvertiserModel;
+import com.madhouse.platform.premiummad.model.MediaAuditAdvertiserModel;
 
 public interface AdvertiserMapper {
 
@@ -113,7 +114,7 @@ public interface AdvertiserMapper {
 	 * @param record
 	 * @return
 	 */
-	int updateByMediaAndMediaAdKey(Advertiser record);
+	int updateByMediaAndMediaAdKey(MediaAuditAdvertiserModel record);
 
 	void auditAdvertiser(@Param("ids") String[] ids, @Param("status") Integer status, 
 			@Param("reason") String reason, @Param("userId") Integer userId);
@@ -121,4 +122,14 @@ public interface AdvertiserMapper {
 	int judgeWhetherCanAudit(@Param("ids") String[] ids);
 
 	List<String> selectAuditableAdvertisers(@Param("ids") String[] ids);
+	
+	/**
+	 * 获取需要审核媒体的广告主
+	 * 
+	 * @param mediaIds
+	 * @param auditStatus
+	 * @return
+	 */
+	List<Advertiser> selectAdvertisersByMedias(@Param("mediaIds")int[] mediaIds, @Param("auditStatus")Integer auditStatus);
+
 }

@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.sohu.response.SohuResponse;
@@ -50,11 +51,18 @@ public class SohuNewsCustomerCreateApiTask {
 	public void create() {
 		LOGGER.info("++++++++++Sohu News upload advertiser begin+++++++++++");
 
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.SOHUNEWS.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
 		// 查询所有待审核且媒体的广告主的审核状态是媒体审核的
-		List<Advertiser> unSubmitAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.SOHUNEWS.getValue(), AdvertiserStatusCode.ASC10002.getValue());
+		List<Advertiser> unSubmitAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10002.getValue());
 		if (unSubmitAdvertisers == null || unSubmitAdvertisers.isEmpty()) {
-			LOGGER.info("搜狐新闻没有未上传的广告主");
-			LOGGER.info("++++++++++Sohu News upload advertiser end+++++++++++");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的广告主");
 			return;
 		}
 
@@ -79,7 +87,7 @@ public class SohuNewsCustomerCreateApiTask {
 					AdvertiserAuditResultModel rejuseItem = new AdvertiserAuditResultModel();
 					rejuseItem.setId(String.valueOf(advertiser.getId()));
 					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-					rejuseItem.setMediaId(String.valueOf(MediaMapping.SOHUNEWS.getValue()));
+					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(sohutvResponse.getMessage());
 					rejusedAdvertisers.add(rejuseItem);
 					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败-" + result);

@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -54,10 +55,18 @@ public class SohutvStatusApiTask {
 	public void getStatusDetail() {
 		LOGGER.info("++++++++++Sohu Tv get material list begin+++++++++++");
 
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.SOHUTV.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
 		// 我方系统未审核的素材
-		List<Material> unAuditMaterials = materialDao.selectMediaMaterials(MediaMapping.SOHUTV.getValue(), MaterialStatusCode.MSC10003.getValue());
+		List<Material> unAuditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unAuditMaterials == null || unAuditMaterials.isEmpty()) {
-			LOGGER.info("++++++++++Sohu Tv no materials need to audit+++++++++++");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有素材需要审核");
 			return;
 		}
 
@@ -126,7 +135,9 @@ public class SohutvStatusApiTask {
 		if (statusDetail.getFile_source().equals(auditMaterial.getMediaQueryKey())) {
 			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 			auditItem.setId(auditMaterial.getId().toString());
-			auditItem.setMediaId(auditMaterial.getMediaId().toString());
+			//auditItem.setMediaId(auditMaterial.getMediaId().toString());
+			int[] mediaIds = {auditMaterial.getMediaId().intValue()};
+			auditItem.setMediaIds(mediaIds);
 			auditItem.setMediaQueryKey(auditMaterial.getMediaQueryKey());
 
 			// 根据返回的审核结果设置内容

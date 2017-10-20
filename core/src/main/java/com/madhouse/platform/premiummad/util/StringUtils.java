@@ -196,8 +196,9 @@ public class StringUtils {
 		if (ids == null) {
 			return null;
 		}
-		int ret[] = new int[ids.length()];
+		
 		StringTokenizer toKenizer = new StringTokenizer(ids, ",");
+		int ret[] = new int[toKenizer.countTokens()];
 		int i = 0;
 		while (toKenizer.hasMoreElements()) {
 			ret[i++] = Integer.valueOf(toKenizer.nextToken());

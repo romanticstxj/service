@@ -1,9 +1,12 @@
 package com.madhouse.platform.premiummad.media.toutiao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.toutiao.constant.ToutiaoConstant;
@@ -47,13 +51,31 @@ public class ToutiaoMaterialUploadApiTask {
 	@Autowired
 	private IMaterialService materialService;	
 	
+	/**
+	 * 支持的广告形式
+	 */
+	private static Set<Integer> supportedLayoutSet;
+
+	static {
+		supportedLayoutSet = new HashSet<Integer>();
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()));// 图文信息流
+	}
+	
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Toutiao upload material begin+++++++++++");
+		
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.TOUTIAO.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.TOUTIAO.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info("今日头条没有未上传的广告主");
-			LOGGER.info("++++++++++Toutiao upload material end+++++++++++");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
 			return;
 		}
 		
@@ -63,6 +85,12 @@ public class ToutiaoMaterialUploadApiTask {
 	    List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
+			// 校验广告形式是否支持 TODO
+			if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout())))) {
+				LOGGER.error("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
+				continue;
+			}
+
 			List<ToutiaoMaterialUploadRequest> list = buildMaterialRequest(material);
 			String postResult = toutiaoHttpUtil.post(uploadMaterialUrl, list);
 			LOGGER.info("response:" + postResult);
@@ -86,7 +114,7 @@ public class ToutiaoMaterialUploadApiTask {
 							MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 							rejuseItem.setId(String.valueOf(material.getId()));
 							rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-							rejuseItem.setMediaId(String.valueOf(MediaMapping.TOUTIAO.getValue()));
+							rejuseItem.setMediaIds(mediaIds);
 							rejuseItem.setErrorMessage(ToutiaoHttpUtil.unicodeToString(response.getMsg()));
 							rejusedMaterials.add(rejuseItem);
 						}

@@ -3,12 +3,15 @@ package com.madhouse.platform.premiummad.media.momo;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +20,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
+import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
+import com.madhouse.platform.premiummad.media.momo.constant.MomoConstant;
 import com.madhouse.platform.premiummad.media.momo.constant.MomoIndustryMapping;
 import com.madhouse.platform.premiummad.media.momo.request.MomoUploadRequest;
 import com.madhouse.platform.premiummad.media.momo.request.MomoUploadRequest.NativeCreativeBean.ImageBean;
@@ -58,15 +64,36 @@ public class MomoMaterialUploadApiTask {
 	private AdvertiserMapper advertiserDao;
 
 	/**
+	 * 支持的广告形式
+	 */
+	private static Set<String> supportedLayoutSet;
+
+	static {
+		supportedLayoutSet = new HashSet<String>();
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + MomoConstant.FEED_LANDING_PAGE_LARGE_IMG.getDescription()); // FEED_LANDING_PAGE_LARGE_IMG(大图样式落地页广告)
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + MomoConstant.FEED_LANDING_PAGE_SQUARE_IMG.getDescription()); // FEED_LANDING_PAGE_LARGE_IMG(大图样式落地页广告)
+		supportedLayoutSet.add(String.valueOf(Layout.LO30003.getValue()));// FEED_LANDING_PAGE_SMALL_IMG(三图样式落地页广告)
+		supportedLayoutSet.add(String.valueOf(Layout.LO30011.getValue())); // FEED_LANDING_PAGE_VIDEO(横版视频落地页广告)
+	}
+
+	/**
 	 * 上传物料
 	 */
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Momo upload material begin+++++++++++");
+
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.MOMO.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.MOMO.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.MOMO.getDescrip() + "没有未上传的素材");
-			LOGGER.info("++++++++++Momo upload material end+++++++++++");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
 			return;
 		}
 
@@ -76,6 +103,13 @@ public class MomoMaterialUploadApiTask {
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
+			// 校验广告形式是否支持 TODO
+			String size = material.getLayout().intValue() == 301 ? material.getSize() : "";
+			if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout()) + size))) {
+				LOGGER.error("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
+				continue;
+			}
+
 			MomoUploadRequest request = new MomoUploadRequest();
 			String errorMsg = buildUploadMaterialRequest(material, request);
 			if (!StringUtils.isBlank(errorMsg)) {
@@ -83,7 +117,7 @@ public class MomoMaterialUploadApiTask {
 				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 				rejuseItem.setId(String.valueOf(material.getId()));
 				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-				rejuseItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
+				rejuseItem.setMediaIds(mediaIds);
 				rejuseItem.setErrorMessage(errorMsg);
 				rejusedMaterials.add(rejuseItem);
 				continue;
@@ -104,7 +138,7 @@ public class MomoMaterialUploadApiTask {
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 					rejuseItem.setId(String.valueOf(material.getId()));
 					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-					rejuseItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
+					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(response.getEm());
 					rejusedMaterials.add(rejuseItem);
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + response.getEm());
@@ -160,16 +194,35 @@ public class MomoMaterialUploadApiTask {
 		MomoUploadRequest.NativeCreativeBean.ImageBean imageBean = new MomoUploadRequest.NativeCreativeBean.ImageBean();
 		MomoUploadRequest.NativeCreativeBean.LogoBean logoBean = new MomoUploadRequest.NativeCreativeBean.LogoBean();
 		MomoUploadRequest.NativeCreativeBean.VideoBean videoBean = new MomoUploadRequest.NativeCreativeBean.VideoBean();
-		// 根据后缀判断是图片还是视频
-		if (!material.getAdMaterials().split("\\|")[0].endsWith("mp4")) {
-			// image
+		// 根据我方广告形式对应媒体的广告类型
+		if (material.getLayout().intValue() == Layout.LO30001.getValue()) {
+			// FEED_LANDING_PAGE_LARGE_IMG(大图样式落地页广告) or FEED_LANDING_PAGE_SQUARE_IMG(单图样式落地页广告)
 			imageBean.setUrl(material.getAdMaterials().split("\\|")[0]);
 			imageBean.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
 			imageBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 			creativeBean.setImage(Collections.singletonList(imageBean));
-			creativeBean.setNative_format("FEED_LANDING_PAGE_LARGE_IMG"); // 广告样式
-		} else {
-			// video
+
+			// 广告样式
+			if (MomoConstant.FEED_LANDING_PAGE_LARGE_IMG.getDescription().equals(material.getSize())) {
+				creativeBean.setNative_format("FEED_LANDING_PAGE_LARGE_IMG");
+			} else if (MomoConstant.FEED_LANDING_PAGE_SQUARE_IMG.getDescription().equals(material.getSize())) {
+				creativeBean.setNative_format("FEED_LANDING_PAGE_SQUARE_IMG");
+			}
+		} else if (material.getLayout().intValue() == Layout.LO30003.getValue()) {
+			// FEED_LANDING_PAGE_SMALL_IMG 三图样式落地页广告
+			List<MomoUploadRequest.NativeCreativeBean.ImageBean> imageBeans = new ArrayList<MomoUploadRequest.NativeCreativeBean.ImageBean>();
+			String[] adms = material.getAdMaterials().split("\\|");
+			for (String url : adms) {
+				MomoUploadRequest.NativeCreativeBean.ImageBean item = new MomoUploadRequest.NativeCreativeBean.ImageBean();
+				item.setUrl(url);
+				item.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
+				item.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
+				imageBeans.add(item);
+			}
+			creativeBean.setImage(imageBeans);
+			creativeBean.setNative_format("FEED_LANDING_PAGE_SMALL_IMG");
+		} else if (material.getLayout().intValue() == Layout.LO30011.getValue()) {
+			// FEED_LANDING_PAGE_VIDEO 横版视频落地页广告
 			imageBean.setUrl(material.getCover());
 			imageBean.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
 			imageBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));

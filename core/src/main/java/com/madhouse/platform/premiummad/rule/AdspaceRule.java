@@ -2,11 +2,9 @@ package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.madhouse.platform.premiummad.constant.AdspaceConstant;
 import com.madhouse.platform.premiummad.constant.Layout;
-import com.madhouse.platform.premiummad.entity.Adspace;
-import com.madhouse.platform.premiummad.entity.SysMedia;
+import com.madhouse.platform.premiummad.entity.AdspaceUnion;
 import com.madhouse.platform.premiummad.model.AdspaceModel;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -43,18 +41,22 @@ public class AdspaceRule {
 	 * @param logoMinesTypes
 	 * @return
 	 */
-	public static AdspaceModel buildAdspace(Adspace adspace, List<String> meterialMinesTypes, List<String> coverMinesTypes, List<String> logoMinesTypes, SysMedia media) {
+	public static AdspaceModel buildAdspace(AdspaceUnion adspace, List<String> meterialMinesTypes, List<String> coverMinesTypes, List<String> logoMinesTypes/*, SysMedia media, AdspaceMappingDsp adspaceMappingDsp*/) {
 		AdspaceModel adspaceModel = new AdspaceModel();
 		BeanUtils.copyProperties(adspace, adspaceModel);
 		// 平台类型
 		adspaceModel.setOsType(adspace.getTerminalOs());
-		// 媒体相关值返回名称
+		
+		/*// 媒体相关值返回名称
 		if (media != null) {
 			adspaceModel.setMediaName(media.getName());
 			adspaceModel.setAdvertiserAuditMode(media.getAdvertiserAuditMode());
 			adspaceModel.setMaterialAuditMode(media.getMaterialAuditMode());
 		}
 		
+		// DSP 映射到的广告位key
+		adspaceModel.setAdspaceKey(adspaceMappingDsp != null ? adspaceMappingDsp.getDspAdspaceKey() : null);*/
+
 		// 广告类型(1: 普通硬广, 2: 视频, 3: 原生)
 		switch (adspace.getAdType()) {
 		case AdspaceConstant.PlcmtType.BANNER:
@@ -129,7 +131,7 @@ public class AdspaceRule {
 	 * @param minesTypes
 	 * @return
 	 */
-	public static AdspaceModel.Image getImage(Adspace adspace, AdspaceModel adspaceModel, List<String> minesTypes) {
+	public static AdspaceModel.Image getImage(AdspaceUnion adspace, AdspaceModel adspaceModel, List<String> minesTypes) {
 		AdspaceModel.Image img = adspaceModel.new Image();
 		img.setSizes(getMaterialListSize(adspace.getMaterialSize(), adspaceModel));
 		adspaceModel.setSizes(getMaterialListSize(adspace.getMaterialSize(), adspaceModel));
@@ -145,7 +147,7 @@ public class AdspaceRule {
 	 * @param minesTypes
 	 * @return
 	 */
-	public static AdspaceModel.Video getVideo(Adspace adspace, AdspaceModel adspaceModel, List<String> minesTypes) {
+	public static AdspaceModel.Video getVideo(AdspaceUnion adspace, AdspaceModel adspaceModel, List<String> minesTypes) {
 		AdspaceModel.Video video = adspaceModel.new Video();
 		if (!adspace.getLayout().equals(Layout.LO20004.getValue())) {
 			video.setSizes(getMaterialListSize(adspace.getMaterialSize(), adspaceModel));
@@ -179,6 +181,7 @@ public class AdspaceRule {
 			AdspaceModel.Size metaDataSize = adspaceModel.new Size();
 			metaDataSize.setW(Integer.parseInt(sizes[0]));
 			metaDataSize.setH(Integer.parseInt(sizes[1]));
+			
 			list.add(metaDataSize);
 		}
 		return list;

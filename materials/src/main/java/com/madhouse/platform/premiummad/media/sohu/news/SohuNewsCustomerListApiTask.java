@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.sohu.response.SohuCustomerListDetail;
@@ -23,6 +24,7 @@ import com.madhouse.platform.premiummad.media.sohu.util.SohuNewsAuth;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
 public class SohuNewsCustomerListApiTask {
@@ -47,11 +49,18 @@ public class SohuNewsCustomerListApiTask {
 	public void list() {
 		LOGGER.info("++++++++++Sohu News get advertiser list begin+++++++++++");
 
-		// 获取我方媒体待审核的广告主
-		List<Advertiser> unAuditAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.SOHUNEWS.getValue(), AdvertiserStatusCode.ASC10003.getValue());
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.SOHUNEWS.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
 
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
+		// 获取我方媒体待审核的广告主
+		List<Advertiser> unAuditAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10003.getValue());
 		if (unAuditAdvertisers == null || unAuditAdvertisers.isEmpty()) {
-			LOGGER.info("++++++++++Sohu News no advertisers need to audit+++++++++++");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的广告主");
 			return;
 		}
 
@@ -124,7 +133,8 @@ public class SohuNewsCustomerListApiTask {
 				auditItem.setMediaAdvertiserKey(unauditAdvertiser.getMediaAdvertiserKey());
 				auditItem.setStatus(changedStatusNet);
 				auditItem.setErrorMessage(sohuCustomerDetail.getAudit_info());
-				auditItem.setMediaId(String.valueOf(MediaMapping.SOHUNEWS.getValue()));
+				int[] mediaIds = {unauditAdvertiser.getMediaId().intValue()};
+				auditItem.setMediaIds(mediaIds);
 				auditResults.add(auditItem);
 			}
 		} else {

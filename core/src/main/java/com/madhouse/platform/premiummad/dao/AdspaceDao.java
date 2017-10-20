@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
+import com.madhouse.platform.premiummad.entity.AdspaceUnion;
 import com.madhouse.platform.premiummad.entity.DspMapping;
 
 public interface AdspaceDao {
@@ -53,5 +54,5 @@ public interface AdspaceDao {
 	 * 
 	 * @return
 	 */
-	List<Adspace> selectAuditedAdspaces();
+	List<AdspaceUnion> selectAuditedAdspaces(@Param("dspId") Integer dspId);
 }

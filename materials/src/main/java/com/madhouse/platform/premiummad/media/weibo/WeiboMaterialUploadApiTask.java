@@ -1,15 +1,17 @@
 package com.madhouse.platform.premiummad.media.weibo;
 
-/*import java.io.File;
+import java.io.File;
 import java.io.FileOutputStream;
-import java.io.PrintStream;*/
+import java.io.PrintStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -27,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -90,13 +93,41 @@ public class WeiboMaterialUploadApiTask {
 
 	private static HttpClient httpClient = new HttpClient();
 
+	/**
+	 * 支持的广告形式
+	 */
+	private static Set<Integer> supportedLayoutSet;
+
+	static {
+		supportedLayoutSet = new HashSet<Integer>();
+		//supportedLayoutSet.add(Integer.valueOf(Layout.LO10001.getValue()));// banner 媒体1.2.0版本取消
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()));// 图文信息流1图
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30002.getValue()));// 图文信息流2图
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30003.getValue()));// 图文信息流3图
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30004.getValue()));// 图文信息流4图
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30005.getValue()));// 图文信息流5图
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30006.getValue()));// 图文信息流6图
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30007.getValue()));// 图文信息流7图
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30008.getValue()));// 图文信息流8图
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30009.getValue()));// 图文信息流9图
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30011.getValue()));// 视频信息流
+	}
+	
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Weibo upload material begin+++++++++++");
+
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.WEIBO.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info("新浪微博没有未上传的物料");
-			LOGGER.info("++++++++++Weibo upload material end+++++++++++");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
 			return;
 		}
 
@@ -106,7 +137,14 @@ public class WeiboMaterialUploadApiTask {
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		for (Material material : unSubmitMaterials) {
+			// 校验广告形式是否支持 TODO
+			if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout())))) {
+				LOGGER.error("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
+				continue;
+			}
+
 			String creativeType = getCreateType(material.getLayout());
+
 			// 视频的话需要先上传视频到媒体 - 视频上传成功但是素材上传失败的时候不需要再上传视频
 			if (CREATIVE_FEED_VIDEO.equals(creativeType) && (StringUtils.isBlank(material.getMediaMaterialUrl()) || !StringUtils.isBlank(material.getMediaQueryKey()))) {
 				StringBuilder mediaMaterialUrl = new StringBuilder();
@@ -116,7 +154,7 @@ public class WeiboMaterialUploadApiTask {
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 					rejuseItem.setId(String.valueOf(material.getId()));
 					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-					rejuseItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
+					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(uploadMaterialErrorMsg.toString());
 					rejusedMaterials.add(rejuseItem);
 					LOGGER.error("素材关联的视频上传到媒体失败[materialId=" + material.getId() + "]-" + uploadMaterialErrorMsg.toString());
@@ -140,7 +178,7 @@ public class WeiboMaterialUploadApiTask {
 			WeiboMaterialUploadRequest uploadRequest = new WeiboMaterialUploadRequest();
 			String errorMsg = buildRequest(material, uploadRequest);
 			if (!StringUtils.isBlank(errorMsg)) {
-				continue;
+				continue; // TODO
 			}
 			
 			// 请求接口
@@ -175,7 +213,7 @@ public class WeiboMaterialUploadApiTask {
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 					rejuseItem.setId(String.valueOf(material.getId()));
 					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-					rejuseItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
+					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(WeiboErrorCode.getDescrip(weiboMaterialUploadErrorResponse.getRet_msg().get(0).getErr_code()));
 					rejusedMaterials.add(rejuseItem);
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + WeiboErrorCode.getDescrip(weiboMaterialUploadResponse.getErr_code().intValue()));
@@ -326,16 +364,16 @@ public class WeiboMaterialUploadApiTask {
 	 */
 	private String getCreateType(int layout) {
 		// Banner
-		if (layout >= Layout.LO10001.getValue() && layout <= Layout.LO10007.getValue()) {
+		if (layout == Layout.LO10001.getValue()) {
 			return CREATIVE_BANNER;
 		}
 
 		// 视频信息流
-		if (layout >= Layout.LO20001.getValue() && layout <= Layout.LO20007.getValue() || layout == Layout.LO30011.getValue()) {
+		if (layout == Layout.LO30011.getValue()) {
 			return CREATIVE_FEED_VIDEO;
 		}
 
-		// 图文信息流
+		// 图文信息流,对多支持9张
 		if (layout >= Layout.LO30001.getValue() && layout <= Layout.LO30009.getValue()) {
 			return CREATIVE_FEED;
 		}
@@ -373,8 +411,8 @@ public class WeiboMaterialUploadApiTask {
 		inputStream = getStreamContent(filePath);
 		int totalTime = (md5LenghtLength.entrySet().iterator().next().getValue() - 1) / weiboData.getLength() + 1;
 		try {
-			/*File file = new File("D:\\response.txt");
-			PrintStream ps = new PrintStream(new FileOutputStream(file));*/
+			File file = new File("D:\\response.txt");
+			PrintStream ps = new PrintStream(new FileOutputStream(file));
 			for (int partNumber = 0; partNumber < totalTime; partNumber ++) {
 				int subLength = 0;
 				for (subLength = 0; subLength < weiboData.getLength();) {
@@ -384,7 +422,7 @@ public class WeiboMaterialUploadApiTask {
 					}
 					subLength += readlen;
 				}
-				String result = uploadMedia(weiboData.getUploadId(), partNumber, subLength, buffer/*, ps*/);
+				String result = uploadMedia(weiboData.getUpload_id(), partNumber, subLength, buffer, md5LenghtLength.entrySet().iterator().next().getKey(), weiboData.getLength(), ps);
 				if (!StringUtils.isBlank(result)) {
 					mediaMaterialUrl = mediaMaterialUrl.append(result);
 				}
@@ -404,24 +442,27 @@ public class WeiboMaterialUploadApiTask {
 	 * @param content
 	 * @param result
 	 */
-	private String uploadMedia(String uploadId, int partNumber, int length, byte[] wholeContent/*, PrintStream ps*/) {
+	private String uploadMedia(String uploadId, int partNumber, int fileLength, byte[] wholeContent, String check, int maxLength, PrintStream ps) {
 		// 构造请求对象
 		WeiboMediaUploadRequest weiboMediaUploadRequest = new WeiboMediaUploadRequest();
 		weiboMediaUploadRequest.setDspid(dspid);
 		weiboMediaUploadRequest.setToken(token);
-		weiboMediaUploadRequest.setUploadId(uploadId);
-		weiboMediaUploadRequest.setPartNumber(partNumber);
-		weiboMediaUploadRequest.setSliceCheck(StringUtils.getMD5(wholeContent, 0, length));
-		weiboMediaUploadRequest.setContent(Base64.byteArrayToBase64(Arrays.copyOfRange(wholeContent, 0, length)));
+		weiboMediaUploadRequest.setUpload_id(uploadId);
+		weiboMediaUploadRequest.setPart_number(partNumber);
+		weiboMediaUploadRequest.setSlice_check(StringUtils.getMD5(wholeContent, 0, fileLength));
+		weiboMediaUploadRequest.setContent(Base64.byteArrayToBase64(Arrays.copyOfRange(wholeContent, 0, fileLength)));
+		weiboMediaUploadRequest.setCheck(check);
+		weiboMediaUploadRequest.setFile_length(fileLength);
+		weiboMediaUploadRequest.setLength(maxLength);
 
 		// 发送请求
 		String requestJson = JSON.toJSONString(weiboMediaUploadRequest);
 		LOGGER.info("WeiboMediaUploadRequest: " + requestJson);
 		String responseJson = HttpUtils.post(mediaUploadUrl, requestJson);
 		LOGGER.info("WeiboMediaUploadResponse: " + responseJson);
-		/*ps.append("partNumber-" + weiboMediaUploadRequest.getPartNumber() + ",md5-" + weiboMediaUploadRequest.getSliceCheck());
-		ps.append("length-" + length + "-");
-		ps.append(responseJson);*/
+		ps.append("partNumber-" + weiboMediaUploadRequest.getPart_number() + ",md5-" + weiboMediaUploadRequest.getSlice_check());
+		ps.append("length-" + fileLength + "-");
+		ps.append(responseJson);
 		// 处理返回的结果
 		if (!StringUtils.isBlank(responseJson)) {
 			WeiboResponse weiboResponse = JSON.parseObject(responseJson, WeiboResponse.class);

@@ -13,11 +13,10 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
 import com.madhouse.platform.premiummad.dao.MimesDao;
-import com.madhouse.platform.premiummad.dao.SysMediaMapper;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
+import com.madhouse.platform.premiummad.entity.AdspaceUnion;
 import com.madhouse.platform.premiummad.entity.DspMapping;
-import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.AdspaceModel;
 import com.madhouse.platform.premiummad.rule.AdspaceRule;
@@ -35,8 +34,11 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	@Autowired
 	private MimesDao mimesDao;
 	
-	@Autowired
-	private SysMediaMapper mediaDao; 
+//	@Autowired
+//	private SysMediaMapper mediaDao; 
+
+//	@Autowired
+//	private AdspaceMappingDspMapper adspaceMappingDspDao;
 
 	@Override
 	public List<Adspace> queryAllByParams(List<Integer> mediaIdList, Integer status) {
@@ -208,23 +210,26 @@ public class AdspaceServiceImpl implements IAdspaceService {
 
 	/**
 	 * 获取已启用的广告位，并封装
+	 * 
+	 * @param dspId
 	 */
 	@Override
-	public List<AdspaceModel> getAuditedAdspaces() {
+	public List<AdspaceModel> getAuditedAdspaces(String dspId) {
 		List<AdspaceModel> adspaces = new ArrayList<AdspaceModel>();
 		// 获取已启用的广告位
-		List<Adspace> auditedAdspaces = adspaceDao.selectAuditedAdspaces();
+		List<AdspaceUnion> auditedAdspaces = adspaceDao.selectAuditedAdspaces(Integer.valueOf(dspId));
 		if (auditedAdspaces == null || auditedAdspaces.isEmpty()) {
 			return adspaces;
 		}
 
 		// 封装返回对象
-		for (Adspace adspace : auditedAdspaces) {
+		for (AdspaceUnion adspace : auditedAdspaces) {
 			List<String> meterialMinesTypes = mimesDao.queryMimesById(AdspaceRule.getTypes(adspace.getMaterialType()));
 			List<String> coverMinesTypes = mimesDao.queryMimesById(AdspaceRule.getTypes(adspace.getCoverType()));
 			List<String> logoMinesTypes = mimesDao.queryMimesById(AdspaceRule.getTypes(adspace.getLogoType()));
-			SysMedia media = mediaDao.selectByPrimaryKey(adspace.getMediaId());
-			AdspaceModel adspaceModel = AdspaceRule.buildAdspace(adspace, meterialMinesTypes, coverMinesTypes, logoMinesTypes, media);
+//			SysMedia media = mediaDao.selectByPrimaryKey(adspace.getMediaId());
+//			AdspaceMappingDsp adspaceMappingDsp = adspaceMappingDspDao.selectByAdspaceIdAndDspId(adspace.getId(), Integer.valueOf(dspId));
+			AdspaceModel adspaceModel = AdspaceRule.buildAdspace(adspace, meterialMinesTypes, coverMinesTypes, logoMinesTypes/*, media, adspaceMappingDsp*/);
 			adspaces.add(adspaceModel);
 		}
 

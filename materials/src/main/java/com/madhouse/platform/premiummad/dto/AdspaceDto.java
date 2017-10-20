@@ -17,6 +17,7 @@ public class AdspaceDto {
     private Native natives;
 
     private boolean enableHttps;
+    // DSP广告位Key
     private String adspaceKey;
     private Integer status;
 	private Integer osType;
