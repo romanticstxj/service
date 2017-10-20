@@ -70,8 +70,9 @@ public class MomoMaterialUploadApiTask {
 
 	static {
 		supportedLayoutSet = new HashSet<String>();
-		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + MomoConstant.FEED_LANDING_PAGE_LARGE_IMG.getDescription()); // FEED_LANDING_PAGE_LARGE_IMG(大图样式落地页广告)
-		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + MomoConstant.FEED_LANDING_PAGE_SQUARE_IMG.getDescription()); // FEED_LANDING_PAGE_LARGE_IMG(大图样式落地页广告)
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + MomoConstant.FEED_LANDING_PAGE_LARGE_IMG.getDescription() + ")"); // FEED_LANDING_PAGE_LARGE_IMG(大图样式落地页广告)
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + MomoConstant.FEED_LANDING_PAGE_SQUARE_IMG.getDescription() + ")"); // FEED_LANDING_PAGE_LARGE_IMG(大图样式落地页广告)
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + MomoConstant.NEARBY_LANDING_PAGE_NO_IMG.getDescription() + ")"); // NEARBY_LANDING_PAGE_NO_IMG(图标样式落地页广告)
 		supportedLayoutSet.add(String.valueOf(Layout.LO30003.getValue()));// FEED_LANDING_PAGE_SMALL_IMG(三图样式落地页广告)
 		supportedLayoutSet.add(String.valueOf(Layout.LO30011.getValue())); // FEED_LANDING_PAGE_VIDEO(横版视频落地页广告)
 	}
@@ -103,17 +104,23 @@ public class MomoMaterialUploadApiTask {
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
-			// 校验广告形式是否支持 TODO
-			String size = material.getLayout().intValue() == 301 ? material.getSize() : "";
+			// 校验广告形式是否支持,不支持自动驳回
+			String size = material.getLayout().intValue() == 301 ? "(" + material.getSize() +")" : "";
 			if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout()) + size))) {
-				LOGGER.error("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
+				rejusedMaterials.add(rejuseItem);
+				LOGGER.error(rejuseItem.getErrorMessage());
 				continue;
 			}
 
 			MomoUploadRequest request = new MomoUploadRequest();
 			String errorMsg = buildUploadMaterialRequest(material, request);
 			if (!StringUtils.isBlank(errorMsg)) {
-				// 广告主不存在自动驳回
+				// 构建请求异常情况自动驳回
 				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 				rejuseItem.setId(String.valueOf(material.getId()));
 				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
@@ -194,6 +201,7 @@ public class MomoMaterialUploadApiTask {
 		MomoUploadRequest.NativeCreativeBean.ImageBean imageBean = new MomoUploadRequest.NativeCreativeBean.ImageBean();
 		MomoUploadRequest.NativeCreativeBean.LogoBean logoBean = new MomoUploadRequest.NativeCreativeBean.LogoBean();
 		MomoUploadRequest.NativeCreativeBean.VideoBean videoBean = new MomoUploadRequest.NativeCreativeBean.VideoBean();
+		
 		// 根据我方广告形式对应媒体的广告类型
 		if (material.getLayout().intValue() == Layout.LO30001.getValue()) {
 			// FEED_LANDING_PAGE_LARGE_IMG(大图样式落地页广告) or FEED_LANDING_PAGE_SQUARE_IMG(单图样式落地页广告)
@@ -212,12 +220,16 @@ public class MomoMaterialUploadApiTask {
 			// FEED_LANDING_PAGE_SMALL_IMG 三图样式落地页广告
 			List<MomoUploadRequest.NativeCreativeBean.ImageBean> imageBeans = new ArrayList<MomoUploadRequest.NativeCreativeBean.ImageBean>();
 			String[] adms = material.getAdMaterials().split("\\|");
-			for (String url : adms) {
+			for (int i = 0; i < adms.length; i++) {
 				MomoUploadRequest.NativeCreativeBean.ImageBean item = new MomoUploadRequest.NativeCreativeBean.ImageBean();
-				item.setUrl(url);
+				item.setUrl(adms[i]);
 				item.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
 				item.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 				imageBeans.add(item);
+				// 三图只取三张
+				if (imageBeans.size() == 3) {
+					break;
+				}
 			}
 			creativeBean.setImage(imageBeans);
 			creativeBean.setNative_format("FEED_LANDING_PAGE_SMALL_IMG");
@@ -244,11 +256,19 @@ public class MomoMaterialUploadApiTask {
 		creativeBean.setTitle(material.getBrand());
 		creativeBean.setDesc(material.getContent());
 
-		// logo
-		logoBean.setUrl(material.getIcon());
-		logoBean.setHeight(150);
-		logoBean.setWidth(150);
+		// LOGO (图标样式落地页广告 LOGO 从 素材URL获取)
+		if (material.getLayout().intValue() == Layout.LO30001.getValue() && MomoConstant.NEARBY_LANDING_PAGE_NO_IMG.getDescription().equals(material.getSize())) {
+			creativeBean.setNative_format("NEARBY_LANDING_PAGE_NO_IMG");
+			logoBean.setUrl(material.getIcon());
+			logoBean.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
+			logoBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
+		} else {
+			logoBean.setUrl(material.getIcon());
+			logoBean.setHeight(150);
+			logoBean.setWidth(150);
+		}
 		creativeBean.setLogo(logoBean);
+
 		request.setNative_creative(creativeBean);
 		request.setUptime(System.currentTimeMillis() / 1000);
 		request.setExpiry_date(get120DaysLater());

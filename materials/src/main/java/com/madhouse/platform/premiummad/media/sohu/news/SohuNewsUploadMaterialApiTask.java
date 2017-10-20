@@ -8,11 +8,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
@@ -139,8 +141,15 @@ public class SohuNewsUploadMaterialApiTask {
 			// 上传到媒体
 			StringBuilder errMsg = new StringBuilder();
 			Map<String, Object> paramMap = buildMaterialRequest(material, errMsg);
-			if (paramMap == null) {
-				continue; // TODO
+			if (!StringUtils.isBlank(errMsg)) {
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage(errMsg.toString());
+				rejusedMaterials.add(rejuseItem);
+				LOGGER.error(rejuseItem.getErrorMessage());
+				continue; 
 			}
 			
 			String request = sohuAuth.setHttpMethod("POST").setApiUrl(materialCreateUrl).setParamMap(paramMap).buildRequest();
