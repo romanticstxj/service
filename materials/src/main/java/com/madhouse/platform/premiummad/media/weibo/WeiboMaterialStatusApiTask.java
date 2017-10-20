@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
@@ -47,10 +49,18 @@ public class WeiboMaterialStatusApiTask {
 	public void getStatus() {
 		LOGGER.info("++++++++++Weibo get material status begin+++++++++++");
 
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
+		if (com.madhouse.platform.premiummad.util.StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = com.madhouse.platform.premiummad.util.StringUtils.splitToIntArray(value);
 		// 我方系统未审核的素材
-		List<Material> unAuditMaterials = materialDao.selectMediaMaterials(MediaMapping.WEIBO.getValue(), MaterialStatusCode.MSC10003.getValue());
+		List<Material> unAuditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unAuditMaterials == null || unAuditMaterials.isEmpty()) {
-			LOGGER.info("新浪微博没有素材需要审核");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有素材需要审核");
 			return;
 		}
 
@@ -75,7 +85,7 @@ public class WeiboMaterialStatusApiTask {
 			WeiboMaterialStatusResponse weiboMaterialStatusResponse = JSON.parseObject(responseJson, WeiboMaterialStatusResponse.class);
 			Integer retCode = weiboMaterialStatusResponse.getRet_code();
 			if (WeiboConstant.RESPONSE_SUCCESS.getValue() == retCode) {
-				handleSuccessResult(weiboMaterialStatusResponse);
+				handleSuccessResult(weiboMaterialStatusResponse, mediaIds);
 			} else {
 				LOGGER.info("新浪微博获取状态失败-" + responseJson);
 			}
@@ -91,7 +101,7 @@ public class WeiboMaterialStatusApiTask {
 	 * 
 	 * @param weiboMaterialStatusResponse
 	 */
-	private void handleSuccessResult(WeiboMaterialStatusResponse weiboMaterialStatusResponse) {
+	private void handleSuccessResult(WeiboMaterialStatusResponse weiboMaterialStatusResponse, int[] mediaIds) {
 		// 请求成功物料状态明细列表
 		List<WeiboMaterialStatusMessageDetail> weiboMaterialStatusMessageDetails = weiboMaterialStatusResponse.getRet_msg().getRecords();
 
@@ -103,7 +113,7 @@ public class WeiboMaterialStatusApiTask {
 
 			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 			auditItem.setMediaQueryKey(crid);
-			auditItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
+			auditItem.setMediaIds(mediaIds);
 
 			// 根据返回的物料状态明细的materialId,遍历物料任务列表找到有响应物料的物料任务进行处理
 			if (WeiboConstant.M_STATUS_APPROVED.getDescription().equals(status)) { // 审核通过

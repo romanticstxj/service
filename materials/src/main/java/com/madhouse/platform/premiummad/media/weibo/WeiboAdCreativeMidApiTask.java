@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
@@ -46,10 +47,18 @@ public class WeiboAdCreativeMidApiTask {
 	public void getMid(String[] creativeIds) {
 		LOGGER.info("++++++++++Weibo get material mid begin+++++++++++");
 
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
 		// 获取审核通过，mid没有回写的素材
-		List<Material> noMidMaterials = materialDao.selectMaterials(creativeIds, MediaMapping.WEIBO.getValue());
+		List<Material> noMidMaterials = materialDao.selectMaterials(creativeIds, mediaIds);
 		if (noMidMaterials == null || noMidMaterials.isEmpty()) {
-			LOGGER.info("新浪微博没有需要获取 Mid 的素材");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有需要获取 Mid 的素材");
 			return;
 		}
 
@@ -74,9 +83,9 @@ public class WeiboAdCreativeMidApiTask {
 		if (!StringUtils.isBlank(responseJson)) {
 			WeiboAdCreativeCreateResponse weiboAdCreativeCreateResponse = JSON.parseObject(responseJson, WeiboAdCreativeCreateResponse.class);
 			if (WeiboConstant.RESPONSE_SUCCESS.getValue() == weiboAdCreativeCreateResponse.getRet_code().intValue() && WeiboErrorCode.WEC000.getValue() == weiboAdCreativeCreateResponse.getErr_code().intValue()) {
-				handleSuccessResult(weiboAdCreativeCreateResponse);
+				handleSuccessResult(weiboAdCreativeCreateResponse, mediaIds);
 			} else {
-				handleErrorResult(weiboAdCreativeCreateResponse);
+				handleErrorResult(weiboAdCreativeCreateResponse, mediaIds);
 			}
 		} else {
 			LOGGER.info("新浪微博获取Mid失败");
@@ -91,7 +100,7 @@ public class WeiboAdCreativeMidApiTask {
 	 * @param dataSource
 	 * @param weiboAdCreativeCreateResponse
 	 */
-	private void handleSuccessResult(WeiboAdCreativeCreateResponse weiboAdCreativeCreateResponse) {
+	private void handleSuccessResult(WeiboAdCreativeCreateResponse weiboAdCreativeCreateResponse, int[] mediaIds) {
 		// 请求成功物料状态明细列表
 		List<WeiboAdCreativeDetail> weiboAdCreativeDetails = weiboAdCreativeCreateResponse.getRet_msg();
 
@@ -103,7 +112,7 @@ public class WeiboAdCreativeMidApiTask {
 
 			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 			auditItem.setMediaQueryKey(crid);
-			auditItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
+			auditItem.setMediaIds(mediaIds);
 			// 获取 mid 后审核通过
 			auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
 			if (!StringUtils.isBlank(mid)) {
@@ -126,7 +135,7 @@ public class WeiboAdCreativeMidApiTask {
 	 * @param dataSource
 	 * @param weiboAdCreativeCreateResponse
 	 */
-	private void handleErrorResult(WeiboAdCreativeCreateResponse weiboAdCreativeCreateResponse) {
+	private void handleErrorResult(WeiboAdCreativeCreateResponse weiboAdCreativeCreateResponse, int[] mediaIds) {
 		List<WeiboAdCreativeDetail> details = weiboAdCreativeCreateResponse.getRet_msg();
 		if (details == null || details.isEmpty()) {
 			LOGGER.info("新浪微博获取Mid失败-" + JSON.toJSONString(weiboAdCreativeCreateResponse));
@@ -149,7 +158,7 @@ public class WeiboAdCreativeMidApiTask {
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 		rejuseItem.setMediaQueryKey(details.get(0).getCreative_id());
-		rejuseItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
+		rejuseItem.setMediaIds(mediaIds);
 		rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
 		rejuseItem.setErrorMessage(details.get(0).getErr_msg());
 		rejusedMaterials.add(rejuseItem);

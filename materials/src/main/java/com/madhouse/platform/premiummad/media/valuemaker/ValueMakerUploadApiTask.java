@@ -5,9 +5,12 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -58,16 +62,36 @@ public class ValueMakerUploadApiTask {
 	private AdvertiserMapper advertiserDao;
 	
 	/**
+	 * 支持的广告形式
+	 */
+	private static Set<Integer> supportedLayoutSet;
+
+	static {
+		supportedLayoutSet = new HashSet<Integer>();
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO10001.getValue()));// banner
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO10005.getValue()));// 开屏
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO10003.getValue()));// 插屏
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()));// 图文信息流
+	}
+
+	/**
 	 * 万流客物料上传
 	 */
 	public void uploadValueMakerMaterial() {
 		LOGGER.info("++++++++++ValueMaker upload material begin+++++++++++");
 
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.VALUEMAKER.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
+				
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.VALUEMAKER.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info("万流客没有未上传的广告主");
-			LOGGER.info("++++++++++ValueMaker upload material end+++++++++++");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
 			return;
 		}
 
@@ -76,6 +100,12 @@ public class ValueMakerUploadApiTask {
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
+			// 校验广告形式是否支持 TODO
+			if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout())))) {
+				LOGGER.error("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
+				continue;
+			}
+						
 			// 上传过媒体，更新
 			String url = uploadMaterialUrl;
 			if (!StringUtils.isBlank(material.getMediaQueryKey())) {
@@ -90,7 +120,7 @@ public class ValueMakerUploadApiTask {
 				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 				rejuseItem.setId(String.valueOf(material.getId()));
 				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-				rejuseItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
+				rejuseItem.setMediaIds(mediaIds);
 				rejuseItem.setErrorMessage(errorMsg);
 				rejusedMaterials.add(rejuseItem);
 				continue;
@@ -113,7 +143,7 @@ public class ValueMakerUploadApiTask {
 						MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 						rejuseItem.setId(String.valueOf(material.getId()));
 						rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-						rejuseItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
+						rejuseItem.setMediaIds(mediaIds);
 						rejuseItem.setErrorMessage(ValueMakerConstant.getErrorMessage(resposne.getStatus()));
 						rejusedMaterials.add(rejuseItem);
 					}

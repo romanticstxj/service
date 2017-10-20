@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
@@ -26,6 +27,7 @@ import com.madhouse.platform.premiummad.media.tencent.util.TencentHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 /**
  * 批量获取广告的审核状态(物料审核)
@@ -58,17 +60,27 @@ public class TencentMaterialStatusApiTask {
 	public void getMaterialStatus() {
 		// TENCENT 对应两个媒体 OTV 和 非 OTV
 		for (int mediaType = 0; mediaType < ITERATOR_TIMES; mediaType++) {
-			int mediaId = 0;
+			int mediaIdGroup = 0;
 			if (mediaType != TECENT_OTV_ITERATOR) {
-				mediaId = MediaMapping.TENCENT_NOT_OTV.getValue();
+				mediaIdGroup = MediaTypeMapping.TENCENT_NOT_OTV.getGroupId();
 			} else {
-				mediaId = MediaMapping.TENCENT.getValue();
+				mediaIdGroup = MediaTypeMapping.TENCENT.getGroupId();
 			}
-			LOGGER.info(MediaMapping.getDescrip(mediaId) + " TencentMaterialStatusApiTask-getMaterialStatus start");
+
+			// 媒体组没有映射到具体的媒体不处理
+			String value = MediaTypeMapping.getValue(mediaIdGroup);
+			if (StringUtils.isBlank(value)) {
+				return;
+			}
+
+			// 获取媒体组下的具体媒体
+			int[] mediaIds = StringUtils.splitToIntArray(value);
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + " TencentMaterialStatusApiTask-getMaterialStatus start");
+			
 			// 获取审核中的素材
-			List<Material> unauditMaterials = materialDao.selectMediaMaterials(mediaId, MaterialStatusCode.MSC10003.getValue());
+			List<Material> unauditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 			if (unauditMaterials == null || unauditMaterials.isEmpty()) {
-				LOGGER.info(MediaMapping.getDescrip(mediaId) + "无需要审核的素材");
+				LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的素材");
 				continue;
 			}
 
@@ -97,7 +109,7 @@ public class TencentMaterialStatusApiTask {
 						MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 						int status = item.getStatus();
 						auditItem.setMediaQueryKey(item.getDsp_order_id());
-						auditItem.setMediaId(String.valueOf(mediaId));
+						auditItem.setMediaIds(mediaIds);
 						if (TencentMaterialAduitStatus.AUDITED.getValue() == status) { // 审核通过
 							auditItem.setStatus(AdvertiserStatusCode.ASC10004.getValue());
 							auditResults.add(auditItem);
@@ -117,7 +129,7 @@ public class TencentMaterialStatusApiTask {
 				}
 			}
 
-			LOGGER.info(MediaMapping.getDescrip(mediaId) + " TencentMaterialStatusApiTask-getMaterialStatus end");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + " TencentMaterialStatusApiTask-getMaterialStatus end");
 		}
 	}
 }

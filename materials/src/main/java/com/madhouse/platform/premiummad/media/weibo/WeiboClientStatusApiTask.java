@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
@@ -46,10 +47,18 @@ public class WeiboClientStatusApiTask {
 	public void getStatus() {
 		LOGGER.info("++++++++++Weibo get client status begin+++++++++++");
 
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
+		if (com.madhouse.platform.premiummad.util.StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds =com.madhouse.platform.premiummad.util.StringUtils.splitToIntArray(value);
 		// 获取我方媒体待审核的广告主
-		List<Advertiser> unAuditAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.WEIBO.getValue(), AdvertiserStatusCode.ASC10003.getValue());
+		List<Advertiser> unAuditAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10003.getValue());
 		if (unAuditAdvertisers == null || unAuditAdvertisers.isEmpty()) {
-			LOGGER.info("++++++++++Weibo no clients need to audit+++++++++++");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的广告主");
 			return;
 		}
 
@@ -83,7 +92,7 @@ public class WeiboClientStatusApiTask {
 				for (WeiboClientStatusDetail weiboClientStatusDetail : weiboClientStatusDetails) {
 					AdvertiserAuditResultModel auditItem = new AdvertiserAuditResultModel();
 					auditItem.setMediaAdvertiserKey(String.valueOf(weiboClientStatusDetail.getClient_id()));
-					auditItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
+					auditItem.setMediaIds(mediaIds);
 
 					String status = weiboClientStatusDetail.getVerify_status();
 					if (WeiboConstant.C_STATUS_APPROVED.getDescription().equals(status)) { // 审核通过

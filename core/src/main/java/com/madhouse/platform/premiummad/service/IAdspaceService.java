@@ -16,7 +16,7 @@ public interface IAdspaceService extends IBaseService<Adspace>{
 
     /**
      * 新建广告位
-     * @param Adspace 广告位对象
+     * @param AdspaceDspModel 广告位对象
      */
     Integer insert(Adspace adspace, String xFrom);
 
@@ -36,7 +36,8 @@ public interface IAdspaceService extends IBaseService<Adspace>{
 	/**
 	 * 获取已启用的广告位
 	 * 
+	 * @param dspId
 	 * @return
 	 */
-	List<AdspaceModel> getAuditedAdspaces();
+	List<AdspaceModel> getAuditedAdspaces(String dspId);
 }

@@ -33,7 +33,7 @@ public class AdspaceController {
 	@TokenFilter
 	@RequestMapping("/list")
 	public ResponseDto<AdspaceDto> list(@RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
-		List<AdspaceModel> modelResults = adspaceService.getAuditedAdspaces();
+		List<AdspaceModel> modelResults = adspaceService.getAuditedAdspaces(dspId);
 		List<AdspaceDto> dtoResults = convert(modelResults);
 		return ResponseUtils.response(StatusCode.SC200, dtoResults);
 	}

@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.madhouse.platform.premiummad.constant.AdvertiserAuditMode;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -20,6 +22,7 @@ import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.model.AdvertiserModel;
+import com.madhouse.platform.premiummad.model.MediaAuditAdvertiserModel;
 import com.madhouse.platform.premiummad.rule.AdvertiserRule;
 import com.madhouse.platform.premiummad.rule.MediaRule;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
@@ -57,11 +60,11 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 			}
 
 			// 更新审核状态
-			Advertiser updateItem = new Advertiser();
+			MediaAuditAdvertiserModel updateItem = new MediaAuditAdvertiserModel();
 			updateItem.setStatus(Byte.valueOf(item.getStatus().toString()));
 			updateItem.setUpdatedTime(new Date());
 			updateItem.setMediaAdvertiserKey(item.getMediaAdvertiserKey());
-			updateItem.setMediaId(Integer.valueOf(item.getMediaId()));
+			updateItem.setMediaIds(item.getMediaIds());
 			updateItem.setReason(item.getErrorMessage());
 
 			int effortRows = advertiserDao.updateByMediaAndMediaAdKey(updateItem);

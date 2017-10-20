@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.valuemaker.constant.ValueMakerConstant;
@@ -19,6 +20,7 @@ import com.madhouse.platform.premiummad.media.valuemaker.response.ValueMakerMate
 import com.madhouse.platform.premiummad.media.valuemaker.util.ValueMakerHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
 public class ValueMakerStatusApiTask {
@@ -42,10 +44,18 @@ public class ValueMakerStatusApiTask {
 	public void getValueMakerMaterialStatus() {
 		LOGGER.info("++++++++++ValueMaker get material status begin+++++++++++");
 
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.VALUEMAKER.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
+		
 		// 获取审核中的素材
-		List<Material> unauditMaterials = materialDao.selectMediaMaterials(MediaMapping.VALUEMAKER.getValue(), MaterialStatusCode.MSC10003.getValue());
+		List<Material> unauditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unauditMaterials == null || unauditMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.VALUEMAKER.getDescrip() + "无需要审核的素材");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的素材");
 			return;
 		}
 
@@ -60,7 +70,7 @@ public class ValueMakerStatusApiTask {
 				List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 				MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 				auditItem.setMediaQueryKey(String.valueOf(id));
-				auditItem.setMediaId(String.valueOf(MediaMapping.VALUEMAKER.getValue()));
+				auditItem.setMediaIds(mediaIds);
 				if (status == ValueMakerConstant.M_STATUS_UNAUDITED.getValue()) {// 待审核
 					LOGGER.info("ValueMakerMaterialStatus--materialId=" + item.getId() + "|创意id=" + item.getMediaQueryKey() + "|status=" + status);
 				} else if (status == ValueMakerConstant.M_STATUS_APPROVED.getValue()) {// 审核通过}

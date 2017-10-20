@@ -17,13 +17,14 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.tencent.constant.TencentErrorCode;
-import com.madhouse.platform.premiummad.media.tencent.request.TencentUploadMaterialData;
 import com.madhouse.platform.premiummad.media.tencent.request.TencentCommonRequest;
+import com.madhouse.platform.premiummad.media.tencent.request.TencentUploadMaterialData;
 import com.madhouse.platform.premiummad.media.tencent.response.TencentUploadMaterialResponse;
 import com.madhouse.platform.premiummad.media.tencent.response.TencentUploadMaterialReturnMessage;
 import com.madhouse.platform.premiummad.media.tencent.util.TencentHttpUtil;
@@ -140,18 +141,27 @@ public class TencentUploadMaterialApiTask {
 	public void uploadMaterial() {
 		// TENCENT 对应两个媒体 OTV 和 非 OT
 		for (int mediaType = 0; mediaType < ITERATOR_TIMES; mediaType++) {
-			int mediaId = 0;
+			int mediaIdGroup = 0;
 			if (mediaType != TECENT_OTV_ITERATOR) {
-				mediaId = MediaMapping.TENCENT_NOT_OTV.getValue();
+				mediaIdGroup = MediaTypeMapping.TENCENT_NOT_OTV.getGroupId();
 			} else {
-				mediaId = MediaMapping.TENCENT.getValue();
+				mediaIdGroup = MediaTypeMapping.TENCENT.getGroupId();
 			}
-			LOGGER.info(MediaMapping.getDescrip(mediaId) + " AdvertUploadApiTask-advertUpload start");
+			
+			// 媒体组没有映射到具体的媒体不处理
+			String value = MediaTypeMapping.getValue(mediaIdGroup);
+			if (StringUtils.isBlank(value)) {
+				return;
+			}
+			
+			// 获取媒体组下的具体媒体
+			int[] mediaIds = StringUtils.splitToIntArray(value);
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + " AdvertUploadApiTask-advertUpload start");
  
 			// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-			List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(mediaId, MaterialStatusCode.MSC10002.getValue());
+			List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 			if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-				LOGGER.info(MediaMapping.getDescrip(mediaId) + "没有未上传的素材");
+				LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
 				continue;
 			}
 
@@ -183,7 +193,7 @@ public class TencentUploadMaterialApiTask {
 								MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 								rejuseItem.setId(item.getDsp_order_id());
 								rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-								rejuseItem.setMediaId(String.valueOf(mediaId));
+								rejuseItem.setMediaIds(mediaIds);
 								rejuseItem.setErrorMessage(TencentErrorCode.getDescrip(Integer.valueOf(item.getErr_code())) + "[" + item.getErr_msg() + "]");
 								rejusedMaterials.add(rejuseItem);
 							}
@@ -215,7 +225,7 @@ public class TencentUploadMaterialApiTask {
 					LOGGER.info("Tencent上传广告返回解析出错 : " + e.getMessage());
 				}
 			}
-			LOGGER.info(MediaMapping.getDescrip(mediaId) + " AdvertUploadApiTask-advertUpload end");
+			LOGGER.info(MediaMapping.getDescrip(mediaIds) + " AdvertUploadApiTask-advertUpload end");
 		}
 	}
 

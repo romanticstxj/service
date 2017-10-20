@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.model.MaterialModel;
+import com.madhouse.platform.premiummad.model.MediaAuditMaterialModel;
 
 public interface MaterialMapper {
 
@@ -95,7 +96,7 @@ public interface MaterialMapper {
 	List<Material> selectByIds(List<Integer> list);
 	
 	/**
-	 * 获取需要审核媒体的广告主
+	 * 获取需要审核媒体的素材
 	 * 
 	 * @param mediaId
 	 * @return
@@ -107,7 +108,7 @@ public interface MaterialMapper {
 	 * @param record
 	 * @return
 	 */
-	int updateByMediaAndMediaQueryKey(Material record);
+	int updateByMediaAndMediaQueryKey(MediaAuditMaterialModel record);
 	
 	/**
 	 * 查询所有素材
@@ -124,13 +125,13 @@ public interface MaterialMapper {
 	Material queryById(Integer id);
 
 	/**
-	 * 根据媒体key和媒体素材key查询
+	 * 根据媒体ID组和媒体素材key查询
 	 * 
 	 * @param mediaQueryKeys
-	 * @param mediaId
+	 * @param mediaIds
 	 * @return
 	 */
-	List<Material> selectMaterials(@Param("mediaQueryKeys") String[] mediaQueryKeys, @Param("mediaId")Integer mediaId);
+	List<Material> selectMaterials(@Param("mediaQueryKeys") String[] mediaQueryKeys, @Param("mediaIds")int[] mediaIds);
 
 	void auditMaterial(@Param("ids") String[] ids, @Param("status") Integer status, 
 			@Param("reason") String reason, @Param("userId") Integer userId);
@@ -138,4 +139,14 @@ public interface MaterialMapper {
 	int judgeWhetherCanAudit(@Param("ids") String[] ids);
 	
 	List<String> selectAuditableMaterials(@Param("ids") String[] ids);
+	
+	/**
+	 * 获取需要审核媒体的素材
+	 * 
+	 * @param mediaIds
+	 * @param auditStatus
+	 * @return
+	 */
+	List<Material> selectMaterialsByMeidaIds(@Param("mediaIds")int[] mediaIds, @Param("auditStatus")Integer auditStatus);
+
 }
