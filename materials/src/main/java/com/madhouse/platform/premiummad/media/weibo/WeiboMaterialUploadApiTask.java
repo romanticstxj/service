@@ -137,9 +137,15 @@ public class WeiboMaterialUploadApiTask {
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		for (Material material : unSubmitMaterials) {
-			// 校验广告形式是否支持 TODO
+			// 校验广告形式是否支持
 			if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout())))) {
-				LOGGER.error("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
+				rejusedMaterials.add(rejuseItem);
+				LOGGER.error(rejuseItem.getErrorMessage());
 				continue;
 			}
 

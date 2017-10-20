@@ -54,11 +54,12 @@ public class ToutiaoMaterialUploadApiTask {
 	/**
 	 * 支持的广告形式
 	 */
-	private static Set<Integer> supportedLayoutSet;
+	private static Set<String> supportedLayoutSet;
 
 	static {
-		supportedLayoutSet = new HashSet<Integer>();
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()));// 图文信息流
+		supportedLayoutSet = new HashSet<String>();
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + ToutiaoConstant.TOUTIAO_FEED_LP_LARGE.getDescription() + ")");// 图文信息流大图落地页
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + ToutiaoConstant.OUTIAO_FEED_LP_SMALL.getDescription() + ")");// 图文信息流小图落地页
 	}
 	
 	public void uploadMaterial() {
@@ -85,9 +86,15 @@ public class ToutiaoMaterialUploadApiTask {
 	    List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		for (Material material : unSubmitMaterials) {
-			// 校验广告形式是否支持 TODO
-			if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout())))) {
-				LOGGER.error("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
+			// 校验广告形式是否支持
+			if (!(supportedLayoutSet.contains(String.valueOf(material.getLayout()) + "(" + material.getSize() + ")"))) {
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
+				rejusedMaterials.add(rejuseItem);
+				LOGGER.error(rejuseItem.getErrorMessage());
 				continue;
 			}
 
