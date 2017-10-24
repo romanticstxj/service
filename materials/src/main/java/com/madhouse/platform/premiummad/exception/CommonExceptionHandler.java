@@ -27,7 +27,7 @@ public class CommonExceptionHandler {
 		if (ex instanceof BusinessException) {
 			return ResponseUtils.response(((BusinessException) ex).getStatusCode(), null, ex.getMessage());
 		} else {
-			if (ex.getMessage() != null && ex.getMessage().contains("class com.madhouse.platform.premiummad.dto.AdvertiserDto")) {
+			if (ex.getMessage() != null && (ex.getMessage().contains("class com.madhouse.platform.premiummad.dto.AdvertiserDto") || ex.getMessage().contains("class com.madhouse.platform.premiummad.dto.MaterialDto"))) {
 				return ResponseUtils.response(StatusCode.SC400);
 			}
 			return ResponseUtils.response(StatusCode.SC500, null, ex.getMessage());
