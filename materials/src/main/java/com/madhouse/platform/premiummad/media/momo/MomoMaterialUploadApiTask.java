@@ -259,7 +259,7 @@ public class MomoMaterialUploadApiTask {
 		// LOGO (图标样式落地页广告 LOGO 从 素材URL获取)
 		if (material.getLayout().intValue() == Layout.LO30001.getValue() && MomoConstant.NEARBY_LANDING_PAGE_NO_IMG.getDescription().equals(material.getSize())) {
 			creativeBean.setNative_format("NEARBY_LANDING_PAGE_NO_IMG");
-			logoBean.setUrl(material.getIcon());
+			logoBean.setUrl(material.getAdMaterials().split("\\|")[0]);
 			logoBean.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
 			logoBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 		} else {
