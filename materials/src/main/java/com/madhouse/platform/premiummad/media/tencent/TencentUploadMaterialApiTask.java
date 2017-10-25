@@ -6,18 +6,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
-import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -30,6 +27,7 @@ import com.madhouse.platform.premiummad.media.tencent.response.TencentUploadMate
 import com.madhouse.platform.premiummad.media.tencent.util.TencentHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.util.MacroReplaceUtil;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -99,6 +97,18 @@ public class TencentUploadMaterialApiTask {
 	@Value("${tencent_md_qqlive_appweb_ios_img}")
 	private String tencent_md_qqlive_appweb_ios_img;// Tencent-腾讯视频APP-Phone版_信息流广告_ios
 
+	@Value("${imp.url}")
+	private String impUrl;
+
+	@Value("${clk.url}")
+	private String clkUrl;
+
+	@Value("${material_meidaGroupMapping_tencentNotOtv}")
+	private String mediaNotOtvGroupStr;
+	
+	@Value("${material_meidaGroupMapping_tencentOtv}")
+	private String mediaOtvGroupStr;
+	
 	@Autowired
 	private TencentHttpUtil tencentHttpUtil;
 
@@ -114,12 +124,9 @@ public class TencentUploadMaterialApiTask {
 	@Autowired
 	private AdvertiserMapper advertiserDao;
 
-	@Value("${imp.url}")
-	private String impUrl;
-
-	@Value("${clk.url}")
-	private String clkUrl;
-
+	@Autowired
+	private IMediaService mediaService;
+	
 	/**
 	 * 宏替换替换映射
 	 */
@@ -141,6 +148,7 @@ public class TencentUploadMaterialApiTask {
 	public void uploadMaterial() {
 		// TENCENT 对应两个媒体 OTV 和 非 OT
 		for (int mediaType = 0; mediaType < ITERATOR_TIMES; mediaType++) {
+			/*代码配置处理方式
 			int mediaIdGroup = 0;
 			if (mediaType != TECENT_OTV_ITERATOR) {
 				mediaIdGroup = MediaTypeMapping.TENCENT_NOT_OTV.getGroupId();
@@ -156,12 +164,22 @@ public class TencentUploadMaterialApiTask {
 			
 			// 获取媒体组下的具体媒体
 			int[] mediaIds = StringUtils.splitToIntArray(value);
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + " AdvertUploadApiTask-advertUpload start");
- 
+			*/
+
+			String mediaGroupStr = "";
+			if (mediaType != TECENT_OTV_ITERATOR) {
+				mediaGroupStr = mediaNotOtvGroupStr;
+			} else {
+				mediaGroupStr = mediaOtvGroupStr;
+			}
+			// 根据媒体组ID和审核对象获取具体的媒体ID
+			int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
 			// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 			List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 			if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-				LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
+				/* LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材"); */
+				LOGGER.info("Tencent" + mediaIds + "没有未上传的素材");
 				continue;
 			}
 
@@ -225,7 +243,7 @@ public class TencentUploadMaterialApiTask {
 					LOGGER.info("Tencent上传广告返回解析出错 : " + e.getMessage());
 				}
 			}
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + " AdvertUploadApiTask-advertUpload end");
+			LOGGER.info("Tencent" + mediaIds + " AdvertUploadApiTask-advertUpload end");
 		}
 	}
 

@@ -7,19 +7,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
-import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.toutiao.constant.ToutiaoConstant;
@@ -28,6 +25,7 @@ import com.madhouse.platform.premiummad.media.toutiao.response.ToutiaoMaterialUp
 import com.madhouse.platform.premiummad.media.toutiao.util.ToutiaoHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
@@ -42,6 +40,9 @@ public class ToutiaoMaterialUploadApiTask {
 	@Value("${toutiao_logickey_ios_2}")
 	private String toutiao_logickey_ios_2;
 
+	@Value("${material_meidaGroupMapping_toutiao}")
+	private String mediaGroupStr;
+	
 	@Autowired
     private ToutiaoHttpUtil toutiaoHttpUtil;
 	
@@ -50,7 +51,10 @@ public class ToutiaoMaterialUploadApiTask {
 	
 	@Autowired
 	private IMaterialService materialService;	
-	
+
+	@Autowired
+	private IMediaService mediaService;
+
 	/**
 	 * 支持的广告形式
 	 */
@@ -65,6 +69,7 @@ public class ToutiaoMaterialUploadApiTask {
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Toutiao upload material begin+++++++++++");
 		
+		/* 代码配置处理方式
 		// 媒体组没有映射到具体的媒体不处理
 		String value = MediaTypeMapping.getValue(MediaTypeMapping.TOUTIAO.getGroupId());
 		if (StringUtils.isBlank(value)) {
@@ -73,10 +78,21 @@ public class ToutiaoMaterialUploadApiTask {
 
 		// 获取媒体组下的具体媒体
 		int[] mediaIds = StringUtils.splitToIntArray(value);
+		*/
+
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");*/
+			LOGGER.info("ValueMaker没有未上传的素材");
 			return;
 		}
 		

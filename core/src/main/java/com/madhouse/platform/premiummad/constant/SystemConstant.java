@@ -108,4 +108,10 @@ public interface SystemConstant {
 		
 		String impUrlsDelimiter = "`";
 	}
+	
+	/* 媒体审核对象 */
+	interface MediaAuditObject {
+		Byte MATERIAL = 1;
+		Byte ADVERTISER = 2;
+	}
 }

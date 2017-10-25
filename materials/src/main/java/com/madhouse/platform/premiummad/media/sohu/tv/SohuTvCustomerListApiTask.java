@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
-import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.sohu.response.SohuCustomerListDetail;
@@ -23,8 +22,8 @@ import com.madhouse.platform.premiummad.media.sohu.response.SohuResponse;
 import com.madhouse.platform.premiummad.media.sohu.util.SohuNewsAuth;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
-import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
 public class SohuTvCustomerListApiTask {
@@ -34,6 +33,9 @@ public class SohuTvCustomerListApiTask {
 	@Value("${sohu.customer.list}")
 	private String cutomerListUrl;
 
+	@Value("${advertier_meidaGroupMapping_sohuTV}")
+	private String mediaGroupStr;
+	
 	@Autowired
 	private SohuNewsAuth sohuAuth;
 
@@ -43,12 +45,16 @@ public class SohuTvCustomerListApiTask {
 	@Autowired
 	private IAdvertiserService advertiserService;
 
+	@Autowired
+	private IMediaService mediaService;
+	
 	/**
 	 * 查询搜狐TV广告主审核状态
 	 */
 	public void list() {
 		LOGGER.info("++++++++++Sohu TV get advertiser list begin+++++++++++");
 
+		/* 代码配置处理方式
 		// 媒体组没有映射到具体的媒体不处理
 		String value = MediaTypeMapping.getValue(MediaTypeMapping.SOHUTV.getGroupId());
 		if (StringUtils.isBlank(value)) {
@@ -57,11 +63,21 @@ public class SohuTvCustomerListApiTask {
 
 		// 获取媒体组下的具体媒体
 		int[] mediaIds = StringUtils.splitToIntArray(value);
+		*/
+
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
 		// 获取我方媒体待审核的广告主
 		List<Advertiser> unAuditAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10003.getValue());
 
 		if (unAuditAdvertisers == null || unAuditAdvertisers.isEmpty()) {
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的广告主");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的广告主");*/
+			LOGGER.info("Sohu TV无需要审核的广告主");
 			return;
 		}
 
