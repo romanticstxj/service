@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONException;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
@@ -26,10 +27,9 @@ public class CommonExceptionHandler {
 		logger.error(LogUtils.getDetailException(ex));
 		if (ex instanceof BusinessException) {
 			return ResponseUtils.response(((BusinessException) ex).getStatusCode(), null, ex.getMessage());
+		} else if (ex instanceof JSONException) {
+			return ResponseUtils.response(StatusCode.SC400);
 		} else {
-			if (ex.getMessage() != null && ex.getMessage().contains("class com.madhouse.platform.premiummad.dto.AdvertiserDto")) {
-				return ResponseUtils.response(StatusCode.SC400);
-			}
 			return ResponseUtils.response(StatusCode.SC500, null, ex.getMessage());
 		}
 	}

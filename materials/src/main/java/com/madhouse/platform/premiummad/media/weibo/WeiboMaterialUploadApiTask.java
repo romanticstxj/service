@@ -2,17 +2,17 @@ package com.madhouse.platform.premiummad.media.weibo;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -28,8 +28,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
-import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -51,6 +50,7 @@ import com.madhouse.platform.premiummad.media.weibo.response.WeiboMaterialUpload
 import com.madhouse.platform.premiummad.media.weibo.response.WeiboResponse;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -82,6 +82,9 @@ public class WeiboMaterialUploadApiTask {
 	@Value("${weibo.uid}")
 	private String uid;
 
+	@Value("${material_meidaGroupMapping_weibo}")
+	private String mediaGroupStr;
+	
 	@Autowired
 	private MaterialMapper materialDao;
 
@@ -91,6 +94,9 @@ public class WeiboMaterialUploadApiTask {
 	@Autowired
 	private AdvertiserMapper advertiserDao;
 
+	@Autowired
+	private IMediaService mediaService;
+	
 	private static HttpClient httpClient = new HttpClient();
 
 	/**
@@ -116,6 +122,7 @@ public class WeiboMaterialUploadApiTask {
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Weibo upload material begin+++++++++++");
 
+		/* 代码配置处理方式
 		// 媒体组没有映射到具体的媒体不处理
 		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
 		if (StringUtils.isBlank(value)) {
@@ -124,10 +131,21 @@ public class WeiboMaterialUploadApiTask {
 
 		// 获取媒体组下的具体媒体
 		int[] mediaIds = StringUtils.splitToIntArray(value);
+		*/
+
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");*/
+			LOGGER.info("Weibo没有未上传的素材");
 			return;
 		}
 
@@ -184,7 +202,14 @@ public class WeiboMaterialUploadApiTask {
 			WeiboMaterialUploadRequest uploadRequest = new WeiboMaterialUploadRequest();
 			String errorMsg = buildRequest(material, uploadRequest);
 			if (!StringUtils.isBlank(errorMsg)) {
-				continue; // TODO
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage(errorMsg.toString());
+				rejusedMaterials.add(rejuseItem);
+				LOGGER.error(rejuseItem.getErrorMessage());
+				continue;
 			}
 			
 			// 请求接口

@@ -5,19 +5,19 @@ package com.madhouse.platform.premiummad.constant;
  * 一个媒体类型可能对应多个具体的媒体ID，多个用，隔开
  */
 public enum MediaTypeMapping {
-	SOHUNEWS(1001, "100227"), 
-	SOHUTV(1002, ""),
-	TENCENT_NOT_OTV(1003, "100233"),
-	TENCENT(1004, ""),
-	DIANPING(1005, "100126"),
-	MOJI(1006, "100104"),
-	IQYI(1007, "100133"),
-	LETV(1008, "100199"),
-	MOMO(1009, "100131"),
-	TOUTIAO(1010, "100106"),
-	VALUEMAKER(1011, "100156"),
-	FUNADX(1012, "100198"),
-	WEIBO(1013, "100226");
+	SOHUNEWS(1, "100227"), 
+	SOHUTV(2, ""),
+	TENCENT_NOT_OTV(3, "100233"),
+	TENCENT(4, ""),
+	WEIBO(5, "100226"),
+	MOMO(6, "100131"),
+	MOJI(7, "100104"),
+	VALUEMAKER(8, "100156"),
+	TOUTIAO(9, "100106"),
+	LETV(10, "100199"),
+	IQYI(11, "100133"),
+	FUNADX(12, "100198"),
+	DIANPING(13, "100126");
 
 	int groupId;
 	String value;

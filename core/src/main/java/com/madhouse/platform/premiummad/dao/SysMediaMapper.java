@@ -58,4 +58,23 @@ public interface SysMediaMapper {
 	 * @return
 	 */
 	public List<SysMedia> selectAuditedMedias();
+
+	/**
+	 * 根据媒体组及广告主审核方式获取媒体
+	 *
+	 * @param apiTypes
+	 * @param advertiserAuditMode
+	 * @return
+	 */
+	public List<SysMedia> selectByApiTypeAndAdAuditMode(@Param("apiTypes")int[] apiTypes, @Param("advertiserAuditMode")Integer advertiserAuditMode);
+
+	/**
+	 * 根据媒体组及素材审核方式获取媒体
+	 *
+	 * @param apiTypes
+	 * @param materialAuditMode
+	 * @return
+	 */
+	public List<SysMedia> selectByApiTypeAndMaterialAuditMode(@Param("apiTypes")int[] apiTypes, @Param("materialAuditMode")Integer materialAuditMode);
+
 }

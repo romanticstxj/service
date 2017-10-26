@@ -4,18 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
-import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -26,6 +23,7 @@ import com.madhouse.platform.premiummad.media.sohu.response.SohuStatusDetailResp
 import com.madhouse.platform.premiummad.media.sohu.util.SohuNewsAuth;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -36,6 +34,9 @@ public class SohuNewsStatusApiTask {
 
 	@Value("${sohu.material.list}")
 	private String materialListUrl;
+	
+	@Value("${material_meidaGroupMapping_sohuNews}")
+	private String mediaGroupStr;
 	
 	@Autowired
 	private SohuNewsAuth sohuAuth;
@@ -48,6 +49,9 @@ public class SohuNewsStatusApiTask {
 	
 	@Autowired
 	private AdvertiserMapper advertiserDao;
+
+	@Autowired
+	private IMediaService mediaService;
 	
 	/**
 	 * 获取素材审核结果
@@ -55,6 +59,7 @@ public class SohuNewsStatusApiTask {
 	public void getStatusDetail() {
 		LOGGER.info("++++++++++Sohu News get material list begin+++++++++++");
 
+		/* 代码配置处理方式
 		// 媒体组没有映射到具体的媒体不处理
 		String value = MediaTypeMapping.getValue(MediaTypeMapping.SOHUNEWS.getGroupId());
 		if (StringUtils.isBlank(value)) {
@@ -63,10 +68,21 @@ public class SohuNewsStatusApiTask {
 
 		// 获取媒体组下的具体媒体
 		int[] mediaIds = StringUtils.splitToIntArray(value);
+		*/
+
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 我方系统未审核的素材
 		List<Material> unAuditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unAuditMaterials == null || unAuditMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有素材需要审核");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有素材需要审核");*/
+			LOGGER.info("Sohu News没有素材需要审核");
 			return;
 		}
 		
