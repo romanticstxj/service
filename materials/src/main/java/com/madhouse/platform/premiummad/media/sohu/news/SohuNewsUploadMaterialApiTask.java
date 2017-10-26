@@ -81,8 +81,7 @@ public class SohuNewsUploadMaterialApiTask {
 	/**
 	 * 宏替换替换映射
 	 */
-	private static Map<String, String> macroClickMap;
-	private static Map<String, String> macroImageMap;
+	private static Map<String, String> macroMap;
 	
 	/**
 	 * 支持的广告形式
@@ -90,15 +89,10 @@ public class SohuNewsUploadMaterialApiTask {
 	private static Set<Integer> supportedLayoutSet;
 	
 	static {
-		macroClickMap = new HashMap<String, String>();
-		macroClickMap.put("__EXT1__", "%%EXT1%%");
-		macroClickMap.put("__EXT2__", "%%EXT2%%");
-		macroClickMap.put("__EXT3__", "%%EXT3%%");
-		
-		macroImageMap = new HashMap<String, String>();
-		macroImageMap.put("__EXT1__", "%%EXT1%%");
-		macroImageMap.put("__EXT2__", "%%EXT2%%");
-		macroImageMap.put("__EXT3__", "%%EXT3%%");
+		macroMap = new HashMap<String, String>();
+		macroMap.put("__EXT1__", "%%EXT1%%");
+		macroMap.put("__EXT2__", "%%EXT2%%");
+		macroMap.put("__EXT3__", "%%EXT3%%");
 		
 		supportedLayoutSet = new HashSet<Integer>();
 		supportedLayoutSet.add(Integer.valueOf(Layout.LO10005.getValue()));//开屏图片
@@ -276,7 +270,7 @@ public class SohuNewsUploadMaterialApiTask {
 			if (impTrackUrlArray != null) {
 				for (int i = 0; i < impTrackUrlArray.length; i++) {
 					String[] track = impTrackUrlArray[i].split("`");
-					impUrls.add(MacroReplaceUtil.macroReplaceImageUrl(macroImageMap, track[1])); // 宏替换
+					impUrls.add(MacroReplaceUtil.macroReplaceImageUrl(macroMap, track[1])); // 宏替换
 					// 媒体最多支持5个
 					if (impUrls.size() == 3) {
 						break;
@@ -294,7 +288,7 @@ public class SohuNewsUploadMaterialApiTask {
 			String[] clkTrackUrlArray = material.getClkUrls().split("\\|");
 			if (null != clkTrackUrlArray) {
 				for (int i = 0; i < clkTrackUrlArray.length; i++) {
-					clkTrackUrl.add(MacroReplaceUtil.macroReplaceImageUrl(macroClickMap, clkTrackUrlArray[i]));// 宏替换
+					clkTrackUrl.add(MacroReplaceUtil.macroReplaceImageUrl(macroMap, clkTrackUrlArray[i]));// 宏替换
 					// 媒体最多设置 5 个
 					if (i == 3) {
 						break;

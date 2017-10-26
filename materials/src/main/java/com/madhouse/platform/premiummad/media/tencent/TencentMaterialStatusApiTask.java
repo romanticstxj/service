@@ -90,8 +90,14 @@ public class TencentMaterialStatusApiTask {
 			} else {
 				mediaGroupStr = mediaOtvGroupStr;
 			}
+			
 			// 根据媒体组ID和审核对象获取具体的媒体ID
 			int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+			
+			// 根据媒体组ID和审核对象获取具体的媒体ID
+			if (mediaIds == null || mediaIds.length < 1) {
+				return ;
+			}
 			
 			// 获取审核中的素材
 			List<Material> unauditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());

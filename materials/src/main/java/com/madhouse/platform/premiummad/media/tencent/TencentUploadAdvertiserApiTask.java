@@ -90,8 +90,14 @@ public class TencentUploadAdvertiserApiTask {
 			} else {
 				mediaGroupStr = mediaOtvGroupStr;
 			}
+			
 			// 根据媒体组ID和审核对象获取具体的媒体ID
 			int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
+			
+			// 媒体组没有映射到具体的媒体不处理
+			if (mediaIds == null || mediaIds.length < 1) {
+				return ;
+			}
 			
 			// 查询所有待审核且媒体的广告主的审核状态是媒体审核的
 			List<Advertiser> unSubmitAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10002.getValue());

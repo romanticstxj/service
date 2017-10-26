@@ -81,9 +81,15 @@ public class TencentAdvertiserStatusApiTask {
 			} else {
 				mediaGroupStr = mediaOtvGroupStr;
 			}
+			
 			// 根据媒体组ID和审核对象获取具体的媒体ID
 			int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
-
+			
+			// 根据媒体组ID和审核对象获取具体的媒体ID
+			if (mediaIds == null || mediaIds.length < 1) {
+				return ;
+			}
+			
 			// 获取我方媒体待审核的广告主
 			List<Advertiser> unAuditAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10003.getValue());
 			if (unAuditAdvertisers == null || unAuditAdvertisers.isEmpty()) {
