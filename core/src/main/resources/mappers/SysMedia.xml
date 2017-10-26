@@ -19,4 +19,26 @@
         FROM mad_sys_media 
         WHERE status = 1
 	</select>
+	
+	<select id="selectByApiTypeAndAdAuditMode" resultMap="BaseResultMap">
+		SELECT 
+		<include refid="Base_Column_List"/>
+        FROM mad_sys_media m 
+       	WHERE m.api_type IN 
+        <foreach collection="apiTypes" item="apiType" index="index" open="(" close=")" separator=",">
+        	#{apiType,jdbcType=INTEGER}
+        </foreach>
+        and m.advertiser_audit_mode = #{advertiserAuditMode,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectByApiTypeAndMaterialAuditMode" resultMap="BaseResultMap">
+		SELECT 
+		<include refid="Base_Column_List"/>
+        FROM mad_sys_media m 
+       	WHERE m.api_type IN 
+        <foreach collection="apiTypes" item="apiType" index="index" open="(" close=")" separator=",">
+        	#{apiType,jdbcType=INTEGER}
+        </foreach>
+        and m.material_audit_mode = #{materialAuditMode,jdbcType=INTEGER}
+	</select>
 </mapper>

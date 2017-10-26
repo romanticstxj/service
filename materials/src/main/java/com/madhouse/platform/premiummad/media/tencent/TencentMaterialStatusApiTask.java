@@ -2,19 +2,16 @@ package com.madhouse.platform.premiummad.media.tencent;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
-import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
@@ -27,7 +24,7 @@ import com.madhouse.platform.premiummad.media.tencent.util.TencentHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.service.IMaterialService;
-import com.madhouse.platform.premiummad.util.StringUtils;
+import com.madhouse.platform.premiummad.service.IMediaService;
 
 /**
  * 批量获取广告的审核状态(物料审核)
@@ -41,6 +38,12 @@ public class TencentMaterialStatusApiTask {
 
 	@Value("${tencent.adcreativeList}")
 	private String advertStatusUrl;
+	
+	@Value("${material_meidaGroupMapping_tencentNotOtv}")
+	private String mediaNotOtvGroupStr;
+
+	@Value("${material_meidaGroupMapping_tencentOtv}")
+	private String mediaOtvGroupStr;
 	
 	@Autowired
 	private TencentHttpUtil tencentHttpUtil;
@@ -56,10 +59,14 @@ public class TencentMaterialStatusApiTask {
 
 	@Autowired
 	private IAdvertiserService advertiserService;
-	
+
+	@Autowired
+	private IMediaService mediaService;
+
 	public void getMaterialStatus() {
 		// TENCENT 对应两个媒体 OTV 和 非 OTV
 		for (int mediaType = 0; mediaType < ITERATOR_TIMES; mediaType++) {
+			/*代码配置处理方式
 			int mediaIdGroup = 0;
 			if (mediaType != TECENT_OTV_ITERATOR) {
 				mediaIdGroup = MediaTypeMapping.TENCENT_NOT_OTV.getGroupId();
@@ -75,12 +82,22 @@ public class TencentMaterialStatusApiTask {
 
 			// 获取媒体组下的具体媒体
 			int[] mediaIds = StringUtils.splitToIntArray(value);
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + " TencentMaterialStatusApiTask-getMaterialStatus start");
+			*/
+			
+			String mediaGroupStr = "";
+			if (mediaType != TECENT_OTV_ITERATOR) {
+				mediaGroupStr = mediaNotOtvGroupStr;
+			} else {
+				mediaGroupStr = mediaOtvGroupStr;
+			}
+			// 根据媒体组ID和审核对象获取具体的媒体ID
+			int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
 			
 			// 获取审核中的素材
 			List<Material> unauditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 			if (unauditMaterials == null || unauditMaterials.isEmpty()) {
-				LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的素材");
+				/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的素材");*/
+				LOGGER.info("Tencent" + mediaIds + "无需要审核的素材");
 				continue;
 			}
 
@@ -129,7 +146,7 @@ public class TencentMaterialStatusApiTask {
 				}
 			}
 
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + " TencentMaterialStatusApiTask-getMaterialStatus end");
+			LOGGER.info("Tencent" + mediaIds + " TencentMaterialStatusApiTask-getMaterialStatus end");
 		}
 	}
 }
