@@ -10,7 +10,7 @@ public interface IPolicyService extends IBaseService<Policy>{
 
 	int update(Policy policy, Integer userId);
 
-	int updateStatus(Policy policy, Integer userId);
+	int updateStatus(Policy policy);
 	
 	/**
 	 * 根据SSP的dealID和媒体ID获取媒体的DealId

@@ -35,7 +35,7 @@ public class PolicyServiceImpl implements IPolicyService {
 	
 	@Autowired
 	private IUserAuthService userAuthService;
-
+	
 	@Override
 	public int insert(Policy policy) {
 		int count = checkName(policy.getName().trim());
@@ -88,7 +88,7 @@ public class PolicyServiceImpl implements IPolicyService {
 	
 	@Override
 	public int update(Policy policy, Integer userId) {
-		Policy queryResult = queryPolicyById(policy.getId(), policy.getType(), userId);
+		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId(), policy.getType());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20003);
         if (!queryResult.getName().equals(policy.getName())) { //名称不相等,检查名称
@@ -108,9 +108,7 @@ public class PolicyServiceImpl implements IPolicyService {
         
 		policyDao.update(policy);
 		
-		List<Integer> adspaceIds = userAuthService.queryAdspaceIdList(userId, null);
-		policyAdspaceDao.deleteByPolicyId(policyId, adspaceIds);
-		policyAdspaceDao.batchInsert(policyAdspaces);
+		updatePolicyAdspaces(policyId, userId, policyAdspaces);
 		
 		//只有rtb模式下才可以修改dsp
 		if(policy.getType().intValue() == SystemConstant.OtherConstant.POLICY_TYPE_RTB){
@@ -127,6 +125,17 @@ public class PolicyServiceImpl implements IPolicyService {
 		
 		return 0;
 	}
+	
+	/**
+	 * 更新这个用户有权限的策略下的广告位
+	 * @param policyId
+	 * @param userId
+	 */
+	private void updatePolicyAdspaces(Integer policyId, Integer userId, List<PolicyAdspace> policyAdspaces){
+		List<Integer> adspaceIds = userAuthService.queryAdspaceIdList(userId, null);
+		policyAdspaceDao.deleteByPolicyId(policyId, adspaceIds);
+		policyAdspaceDao.batchInsert(policyAdspaces);
+	}
 
 	@Override
 	public List<Policy> queryAllByParams(List<Integer> policyIdList, Integer status, Integer type) {
@@ -134,8 +143,8 @@ public class PolicyServiceImpl implements IPolicyService {
 	}
 
 	@Override
-	public int updateStatus(Policy policy, Integer userId) {
-		Policy queryResult = queryPolicyById(policy.getId(), policy.getType(), userId);
+	public int updateStatus(Policy policy) {
+		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId(), policy.getType());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20003);
 		return policyDao.updateStatus(policy);
@@ -154,10 +163,6 @@ public class PolicyServiceImpl implements IPolicyService {
 		return policyAdspaces.get(0).getMediaDealId();
 	}
 
-	public Policy queryById(Integer id) {
-		return null;
-	}
-
 	@Override
 	public List<Policy> queryAll(List<Integer> ids) {
 		return null;
@@ -170,8 +175,9 @@ public class PolicyServiceImpl implements IPolicyService {
 	}
 
 	@Override
-	public int updateStatus(Policy t) {
+	public Policy queryById(Integer id) {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
+
 }

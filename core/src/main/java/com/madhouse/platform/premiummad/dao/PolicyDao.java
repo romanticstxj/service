@@ -59,6 +59,8 @@ public interface PolicyDao {
     
     Policy selectCascadedlyByPrimaryKey(@Param("id") Integer id, @Param("type") Integer type);
 
+    Policy selectByPrimaryKey(@Param("id") Integer id, @Param("type") Integer type);
+    
 	int update(Policy policy);
 	
 	List<Policy> queryAllByParams(@Param("idStrs") List<Integer> idStrs, @Param("status") Integer status, 
