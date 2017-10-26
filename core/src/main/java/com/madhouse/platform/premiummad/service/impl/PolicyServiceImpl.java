@@ -1,5 +1,6 @@
 package com.madhouse.platform.premiummad.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import com.madhouse.platform.premiummad.entity.PolicyAdspace;
 import com.madhouse.platform.premiummad.entity.PolicyDsp;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.service.IPolicyService;
+import com.madhouse.platform.premiummad.service.IUserAuthService;
 
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
@@ -30,7 +32,10 @@ public class PolicyServiceImpl implements IPolicyService {
 	
 	@Autowired
 	private PolicyDspDao policyDspDao;
-
+	
+	@Autowired
+	private IUserAuthService userAuthService;
+	
 	@Override
 	public int insert(Policy policy) {
 		int count = checkName(policy.getName().trim());
@@ -66,13 +71,24 @@ public class PolicyServiceImpl implements IPolicyService {
 	}
 	
 	@Override
-	public Policy queryPolicyById(Integer id, Integer type) {
-		return policyDao.selectCascadedlyByPrimaryKey(id, type);
+	public Policy queryPolicyById(Integer id, Integer type, Integer userId) {
+		List<Integer> adspaceIds = userAuthService.queryAdspaceIdList(userId, null);
+		Policy policy = policyDao.selectCascadedlyByPrimaryKey(id, type);
+		List<PolicyAdspace> policyAdspaces = policy.getPolicyAdspaces();
+		List<PolicyAdspace> newPolicyAdspaces = new ArrayList<PolicyAdspace>();
+		for(int i=0; i<policyAdspaces.size(); i++){
+			int adspaceId = policyAdspaces.get(i).getAdspace().getId();
+			if (adspaceIds.contains(adspaceId)) {
+				newPolicyAdspaces.add(policyAdspaces.get(i));
+			}
+		}
+		policy.setPolicyAdspaces(newPolicyAdspaces);
+		return policy;
 	}
 	
 	@Override
-	public int update(Policy policy) {
-		Policy queryResult = queryPolicyById(policy.getId(), policy.getType());
+	public int update(Policy policy, Integer userId) {
+		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId(), policy.getType());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20003);
         if (!queryResult.getName().equals(policy.getName())) { //名称不相等,检查名称
@@ -92,8 +108,7 @@ public class PolicyServiceImpl implements IPolicyService {
         
 		policyDao.update(policy);
 		
-		policyAdspaceDao.deleteByPolicyId(policyId);
-		policyAdspaceDao.batchInsert(policyAdspaces);
+		updatePolicyAdspaces(policyId, userId, policyAdspaces);
 		
 		//只有rtb模式下才可以修改dsp
 		if(policy.getType().intValue() == SystemConstant.OtherConstant.POLICY_TYPE_RTB){
@@ -110,6 +125,17 @@ public class PolicyServiceImpl implements IPolicyService {
 		
 		return 0;
 	}
+	
+	/**
+	 * 更新这个用户有权限的策略下的广告位
+	 * @param policyId
+	 * @param userId
+	 */
+	private void updatePolicyAdspaces(Integer policyId, Integer userId, List<PolicyAdspace> policyAdspaces){
+		List<Integer> adspaceIds = userAuthService.queryAdspaceIdList(userId, null);
+		policyAdspaceDao.deleteByPolicyId(policyId, adspaceIds);
+		policyAdspaceDao.batchInsert(policyAdspaces);
+	}
 
 	@Override
 	public List<Policy> queryAllByParams(List<Integer> policyIdList, Integer status, Integer type) {
@@ -118,7 +144,7 @@ public class PolicyServiceImpl implements IPolicyService {
 
 	@Override
 	public int updateStatus(Policy policy) {
-		Policy queryResult = queryPolicyById(policy.getId(), policy.getType());
+		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId(), policy.getType());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20003);
 		return policyDao.updateStatus(policy);
@@ -137,12 +163,21 @@ public class PolicyServiceImpl implements IPolicyService {
 		return policyAdspaces.get(0).getMediaDealId();
 	}
 
-	public Policy queryById(Integer id) {
-		return null;
-	}
-
 	@Override
 	public List<Policy> queryAll(List<Integer> ids) {
 		return null;
 	}
+
+	@Override
+	public int update(Policy t) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Policy queryById(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

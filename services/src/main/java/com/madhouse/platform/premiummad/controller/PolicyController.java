@@ -89,7 +89,7 @@ public class PolicyController {
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
-		Policy policy = policyService.queryPolicyById(id, type);
+		Policy policy = policyService.queryPolicyById(id, type, userId);
 		List<PolicyDto> result = PolicyRule.convertToDto(policy, new PolicyDto());
 		return ResponseUtils.response(StatusCode.SC20000, result);
 	}
@@ -100,10 +100,11 @@ public class PolicyController {
 	 * @return
 	 */
 	@RequestMapping("/update")
-    public ResponseDto<PolicyDto> updatePolicy(@RequestBody @Validated(Update.class) PolicyDto policyDto) {
+    public ResponseDto<PolicyDto> updatePolicy(@RequestBody @Validated(Update.class) PolicyDto policyDto,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
 		PolicyRule.validateDto(policyDto);
         Policy policy = PolicyRule.convertToModel(policyDto, new Policy(), false);
-        policyService.update(policy);
+        policyService.update(policy, userId);
         List<PolicyDto> result = PolicyRule.convertToDto(policy, new PolicyDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
     }
