@@ -230,9 +230,15 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   
-  <delete id="deleteByPolicyId" parameterType="java.lang.Integer">
+  <delete id="deleteByPolicyId" parameterType="string">
     delete from mad_sys_policy_adspace
     where policy_id = #{policyId,jdbcType=INTEGER}
+    <if test="adspaceIds != null and adspaceIds.size() > 0">
+		AND adspace_id IN 
+		<foreach collection="adspaceIds" item="adspaceId" index="index" open="(" close=")" separator=",">
+          	#{adspaceId,jdbcType=INTEGER}
+        </foreach>
+	</if>
   </delete>
   
   <select id="selectByPolicyIdAndMediaId" resultMap="BaseResultMap">
