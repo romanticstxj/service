@@ -12,18 +12,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
-import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -36,6 +33,7 @@ import com.madhouse.platform.premiummad.media.momo.response.MomoUploadResponse;
 import com.madhouse.platform.premiummad.media.momo.util.MomoHttpUtils;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
@@ -51,6 +49,9 @@ public class MomoMaterialUploadApiTask {
 	@Value("${momo_upload_appkey}")
 	private String appkey;
 
+	@Value("${material_meidaGroupMapping_momo}")
+	private String mediaGroupStr;
+	
 	@Autowired
 	private MomoHttpUtils momoHttpUtil;
 
@@ -63,6 +64,9 @@ public class MomoMaterialUploadApiTask {
 	@Autowired
 	private AdvertiserMapper advertiserDao;
 
+	@Autowired
+	private IMediaService mediaService;
+	
 	/**
 	 * 支持的广告形式
 	 */
@@ -83,6 +87,7 @@ public class MomoMaterialUploadApiTask {
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Momo upload material begin+++++++++++");
 
+		/* 代码处理方式
 		// 媒体组没有映射到具体的媒体不处理
 		String value = MediaTypeMapping.getValue(MediaTypeMapping.MOMO.getGroupId());
 		if (StringUtils.isBlank(value)) {
@@ -91,10 +96,21 @@ public class MomoMaterialUploadApiTask {
 
 		// 获取媒体组下的具体媒体
 		int[] mediaIds = StringUtils.splitToIntArray(value);
+		*/
+
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");*/
+			LOGGER.info("Momo没有未上传的素材");
 			return;
 		}
 
@@ -259,7 +275,7 @@ public class MomoMaterialUploadApiTask {
 		// LOGO (图标样式落地页广告 LOGO 从 素材URL获取)
 		if (material.getLayout().intValue() == Layout.LO30001.getValue() && MomoConstant.NEARBY_LANDING_PAGE_NO_IMG.getDescription().equals(material.getSize())) {
 			creativeBean.setNative_format("NEARBY_LANDING_PAGE_NO_IMG");
-			logoBean.setUrl(material.getIcon());
+			logoBean.setUrl(material.getAdMaterials().split("\\|")[0]);
 			logoBean.setHeight(Integer.valueOf(material.getSize().split("\\*")[1]));
 			logoBean.setWidth(Integer.valueOf(material.getSize().split("\\*")[0]));
 		} else {

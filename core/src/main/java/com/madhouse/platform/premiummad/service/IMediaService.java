@@ -1,6 +1,7 @@
 package com.madhouse.platform.premiummad.service;
 
 import java.util.List;
+
 import com.madhouse.platform.premiummad.entity.Media;
 import com.madhouse.platform.premiummad.model.MediaModel;
 
@@ -14,4 +15,13 @@ public interface IMediaService extends IBaseService<Media>{
 	 * @return
 	 */
 	List<MediaModel> getAuditedMedia();
+
+	/**
+	 * 通过媒体组ID列表及审核模式（素材/广告主）获取媒体ID
+	 * 
+	 * @param meidaGroupId
+	 * @param materialMeidaAuditMode
+	 * @return
+	 */
+	int[] getMeidaIds(String meidaGroups, Byte meidaAuditMode);
 }

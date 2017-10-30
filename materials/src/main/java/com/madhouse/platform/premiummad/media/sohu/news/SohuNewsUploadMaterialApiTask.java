@@ -8,18 +8,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
-import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -30,6 +27,7 @@ import com.madhouse.platform.premiummad.media.sohu.response.SohuResponse;
 import com.madhouse.platform.premiummad.media.sohu.util.SohuNewsAuth;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.util.DateUtils;
 import com.madhouse.platform.premiummad.util.HttpUtils;
@@ -59,6 +57,9 @@ public class SohuNewsUploadMaterialApiTask {
 	@Value("${clk.url}")
 	private String clkUrl;
 	
+	@Value("${material_meidaGroupMapping_sohuNews}")
+	private String mediaGroupStr;
+	
 	@Autowired
 	private SohuNewsAuth sohuAuth;
 	
@@ -73,12 +74,14 @@ public class SohuNewsUploadMaterialApiTask {
 	
 	@Autowired
 	private IPolicyService policyService;
+
+	@Autowired
+	private IMediaService mediaService;
 	
 	/**
 	 * 宏替换替换映射
 	 */
-	private static Map<String, String> macroClickMap;
-	private static Map<String, String> macroImageMap;
+	private static Map<String, String> macroMap;
 	
 	/**
 	 * 支持的广告形式
@@ -86,15 +89,10 @@ public class SohuNewsUploadMaterialApiTask {
 	private static Set<Integer> supportedLayoutSet;
 	
 	static {
-		macroClickMap = new HashMap<String, String>();
-		macroClickMap.put("__EXT1__", "%%EXT1%%");
-		macroClickMap.put("__EXT2__", "%%EXT2%%");
-		macroClickMap.put("__EXT3__", "%%EXT3%%");
-		
-		macroImageMap = new HashMap<String, String>();
-		macroImageMap.put("__EXT1__", "%%EXT1%%");
-		macroImageMap.put("__EXT2__", "%%EXT2%%");
-		macroImageMap.put("__EXT3__", "%%EXT3%%");
+		macroMap = new HashMap<String, String>();
+		macroMap.put("__EXT1__", "%%EXT1%%");
+		macroMap.put("__EXT2__", "%%EXT2%%");
+		macroMap.put("__EXT3__", "%%EXT3%%");
 		
 		supportedLayoutSet = new HashSet<Integer>();
 		supportedLayoutSet.add(Integer.valueOf(Layout.LO10005.getValue()));//开屏图片
@@ -108,6 +106,7 @@ public class SohuNewsUploadMaterialApiTask {
 	public void uploadSohuMaterial() {
 		LOGGER.info("++++++++++Sohu News upload material begin+++++++++++");
 		
+		/* 代码配置处理方式
 		// 媒体组没有映射到具体的媒体不处理
 		String value = MediaTypeMapping.getValue(MediaTypeMapping.SOHUNEWS.getGroupId());
 		if (StringUtils.isBlank(value)) {
@@ -116,10 +115,21 @@ public class SohuNewsUploadMaterialApiTask {
 
 		// 获取媒体组下的具体媒体
 		int[] mediaIds = StringUtils.splitToIntArray(value);
+		*/
+		
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");*/
+			LOGGER.info("Sohu News没有未上传的素材");
 			return;
 		}
 
@@ -260,7 +270,7 @@ public class SohuNewsUploadMaterialApiTask {
 			if (impTrackUrlArray != null) {
 				for (int i = 0; i < impTrackUrlArray.length; i++) {
 					String[] track = impTrackUrlArray[i].split("`");
-					impUrls.add(MacroReplaceUtil.macroReplaceImageUrl(macroImageMap, track[1])); // 宏替换
+					impUrls.add(MacroReplaceUtil.macroReplaceImageUrl(macroMap, track[1])); // 宏替换
 					// 媒体最多支持5个
 					if (impUrls.size() == 3) {
 						break;
@@ -278,7 +288,7 @@ public class SohuNewsUploadMaterialApiTask {
 			String[] clkTrackUrlArray = material.getClkUrls().split("\\|");
 			if (null != clkTrackUrlArray) {
 				for (int i = 0; i < clkTrackUrlArray.length; i++) {
-					clkTrackUrl.add(MacroReplaceUtil.macroReplaceImageUrl(macroClickMap, clkTrackUrlArray[i]));// 宏替换
+					clkTrackUrl.add(MacroReplaceUtil.macroReplaceImageUrl(macroMap, clkTrackUrlArray[i]));// 宏替换
 					// 媒体最多设置 5 个
 					if (i == 3) {
 						break;

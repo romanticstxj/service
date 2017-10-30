@@ -14,14 +14,14 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
-import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.sohu.response.SohuResponse;
 import com.madhouse.platform.premiummad.media.sohu.util.SohuNewsAuth;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -36,6 +36,9 @@ public class SohuNewsCustomerCreateApiTask {
 	@Value("${sohu.customer.update}")
 	private String customerUpdateUrl;
 
+	@Value("${advertier_meidaGroupMapping_sohuNews}")
+	private String mediaGroupStr;
+	
 	@Autowired
 	private SohuNewsAuth sohuAuth;
 
@@ -45,12 +48,16 @@ public class SohuNewsCustomerCreateApiTask {
 	@Autowired
 	private IAdvertiserService advertiserService;
 
+	@Autowired
+	private IMediaService mediaService;
+	
 	/**
 	 * 上传搜狐新闻广告主
 	 */
 	public void create() {
 		LOGGER.info("++++++++++Sohu News upload advertiser begin+++++++++++");
 
+		/* 代码配置处理方式
 		// 媒体组没有映射到具体的媒体不处理
 		String value = MediaTypeMapping.getValue(MediaTypeMapping.SOHUNEWS.getGroupId());
 		if (StringUtils.isBlank(value)) {
@@ -59,10 +66,20 @@ public class SohuNewsCustomerCreateApiTask {
 
 		// 获取媒体组下的具体媒体
 		int[] mediaIds = StringUtils.splitToIntArray(value);
+		*/
+
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
 		// 查询所有待审核且媒体的广告主的审核状态是媒体审核的
 		List<Advertiser> unSubmitAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10002.getValue());
 		if (unSubmitAdvertisers == null || unSubmitAdvertisers.isEmpty()) {
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的广告主");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的广告主");*/
+			LOGGER.info("Sohu News没有未上传的广告主");
 			return;
 		}
 

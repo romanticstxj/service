@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
-import com.madhouse.platform.premiummad.constant.MediaTypeMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
+import com.madhouse.platform.premiummad.media.tencent.constant.TencentConstant;
 import com.madhouse.platform.premiummad.media.tencent.constant.TencentErrorCode;
 import com.madhouse.platform.premiummad.media.tencent.request.TencentCommonRequest;
 import com.madhouse.platform.premiummad.media.tencent.request.TencentUploadMaterialData;
@@ -30,6 +30,7 @@ import com.madhouse.platform.premiummad.media.tencent.response.TencentUploadMate
 import com.madhouse.platform.premiummad.media.tencent.util.TencentHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.util.MacroReplaceUtil;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -54,51 +55,65 @@ public class TencentUploadMaterialApiTask {
 	private String tencentClkUrlSsp;
 
 	// 腾讯支持的广告样式
-	@Value("${tencent_displayId_md_app_stream_img}")
-	private String tencent_displayId_md_app_stream_img;
-	@Value("${tencent_displayId_md_app_stream_vedio}")
-	private String tencent_displayId_md_app_stream_vedio;
-	@Value("${tencent_displayId_md_app_stream_native}")
-	private String tencent_displayId_md_app_stream_native;
-	@Value("${tencent_displayId_md_app_stream_gif}")
-	private String tencent_displayId_md_app_stream_gif;
-	@Value("${tencent_displayId_md_app_stream_icon}")
-	private String tencent_displayId_md_app_stream_icon;
-	@Value("${tencent_displayId_md_qqlive_appweb_vedio}")
-	private String tencent_displayId_md_qqlive_appweb_vedio;
-	@Value("${tencent_displayId_md_qqlive_appweb_img}")
-	private String tencent_displayId_md_qqlive_appweb_img;
+	@Value("${tencent_displayId_app_stream_img}")
+	private String tencent_displayId_app_stream_img;
+	@Value("${tencent_displayId_app_stream_video}")
+	private String tencent_displayId_app_stream_video;
+	@Value("${tencent_displayId_app_stream_native}")
+	private String tencent_displayId_app_stream_native;
+	@Value("${tencent_displayId_app_stream_gif}")
+	private String tencent_displayId_app_stream_gif;
+	@Value("${tencent_displayId_app_stream_icon}")
+	private String tencent_displayId_app_stream_icon;
+	@Value("${tencent_displayId_qqlive_appweb_video}")
+	private String tencent_displayId_qqlive_appweb_video;
+	@Value("${tencent_displayId_qqlive_appweb_img}")
+	private String tencent_displayId_qqlive_appweb_img;
+	@Value("${tencent_displayId_qqlive_appweb_phone_splash_img}")
+	private String tencent_displayId_qqlive_appweb_phone_splash_img;
+	@Value("${tencent_displayId_qqlive_appweb_phone_splash_video}")
+	private String tencent_displayId_qqlive_appweb_phone_splash_video;
+	@Value("${tencent_displayId_app_kuaibao_splash_img}")
+	private String tencent_displayId_app_kuaibao_splash_img;
+	@Value("${tencent_displayId_app_kuaibao_splash_video}")
+	private String tencent_displayId_app_kuaibao_splash_video;
 
 	// SSP 广告位
-	@Value("${tencent_md_app_stream_android_img}")
-	private String tencent_md_app_stream_android_img;// MadMax-新闻客户端-原生信息流_android
-	@Value("${tencent_md_app_stream_ios_img}")
-	private String tencent_md_app_stream_ios_img;// MadMax-新闻客户端-原生信息流_ios
-	@Value("${tencent_md_app_stream_android_vedio}")
-	private String tencent_md_app_stream_android_vedio;// MadMax-新闻客户端-信息流GIF_android
-	@Value("${tencent_md_app_stream_ios_vedio}")
-	private String tencent_md_app_stream_ios_vedio;// MadMax-新闻客户端-信息流GIF_ios
-	@Value("${tencent_md_app_stream_android_native}")
-	private String tencent_md_app_stream_android_native;// MadMax-新闻客户端-信息流三小图_android
-	@Value("${tencent_md_app_stream_ios_native}")
-	private String tencent_md_app_stream_ios_native;// MadMax-新闻客户端-信息流三小图_ios
-	@Value("${tencent_md_app_stream_android_gif}")
-	private String tencent_md_app_stream_android_gif;// MadMax-腾讯视频-信息流视频_android
-	@Value("${tencent_md_app_stream_ios_gif}")
-	private String tencent_md_app_stream_ios_gif;// MadMax-腾讯视频-信息流视频_ios
-	@Value("${tencent_md_app_stream_android_icon}")
-	private String tencent_md_app_stream_android_icon;// MadMax-腾讯视频-信息流大图_android
-	@Value("${tencent_md_app_stream_ios_icon}")
-	private String tencent_md_app_stream_ios_icon;// MadMax-腾讯视频-信息流大图_ios
-	@Value("${tencent_md_qqlive_appweb_android_vedio}")
-	private String tencent_md_qqlive_appweb_android_vedio;// Tencent-新闻客户端-信息流广告_android
-	@Value("${tencent_md_qqlive_appweb_ios_vedio}")
-	private String tencent_md_qqlive_appweb_ios_vedio;// Tencent-新闻客户端-信息流广告_ios
-	@Value("${tencent_md_qqlive_appweb_android_img}")
-	private String tencent_md_qqlive_appweb_android_img;// Tencent-腾讯视频APP-Phone版_信息流广告_android
-	@Value("${tencent_md_qqlive_appweb_ios_img}")
-	private String tencent_md_qqlive_appweb_ios_img;// Tencent-腾讯视频APP-Phone版_信息流广告_ios
+	@Value("${tencent_md_app_stream_img}")
+	private String tencent_md_app_stream_img;// MadMax-新闻客户端-原生信息流
+	@Value("${tencent_md_app_stream_video}")
+	private String tencent_md_app_stream_video;// MadMax-新闻客户端-信息流GIF
+	@Value("${tencent_md_app_stream_native}")
+	private String tencent_md_app_stream_native;// MadMax-新闻客户端-信息流三小图
+	@Value("${tencent_md_app_stream_gif}")
+	private String tencent_md_app_stream_gif;// MadMax-腾讯视频-信息流视频
+	@Value("${tencent_md_app_stream_icon}")
+	private String tencent_md_app_stream_icon;// MadMax-腾讯视频-信息流大图
+	@Value("${tencent_md_qqlive_appweb_video}")
+	private String tencent_md_qqlive_appweb_video;// MadMax-新闻客户端-信息流广告
+	@Value("${tencent_md_qqlive_appweb_img}")
+	private String tencent_md_qqlive_appweb_img;// MadMax-腾讯视频APP-Phone版_信息流广告
+	@Value("${tencent_md_qqlive_appweb_phone_splash_img}")
+	private String tencent_md_qqlive_appweb_phone_splash_img;// MadMax-腾讯视频APP-Phone版-闪屏-静态展示
+	@Value("${tencent_md_qqlive_appweb_phone_splash_video}")
+	private String tencent_md_qqlive_appweb_phone_splash_video;// MadMax-腾讯视频APP-Phone版-闪屏-动态视频
+	@Value("${tencent_md_app_kuaibao_splash_img}")
+	private String tencent_md_app_kuaibao_splash_img;// MadMax-快播APP-闪屏-纯静态展示全屏点击
+	@Value("${tencent_md_app_kuaibao_splash_video}")
+	private String tencent_md_app_kuaibao_splash_video;// MadMax-快报APP-视频闪屏-动态展示全屏点击
 
+	@Value("${imp.url}")
+	private String impUrl;
+
+	@Value("${clk.url}")
+	private String clkUrl;
+
+	@Value("${material_meidaGroupMapping_tencentNotOtv}")
+	private String mediaNotOtvGroupStr;
+	
+	@Value("${material_meidaGroupMapping_tencentOtv}")
+	private String mediaOtvGroupStr;
+	
 	@Autowired
 	private TencentHttpUtil tencentHttpUtil;
 
@@ -114,33 +129,25 @@ public class TencentUploadMaterialApiTask {
 	@Autowired
 	private AdvertiserMapper advertiserDao;
 
-	@Value("${imp.url}")
-	private String impUrl;
-
-	@Value("${clk.url}")
-	private String clkUrl;
-
+	@Autowired
+	private IMediaService mediaService;
+	
 	/**
 	 * 宏替换替换映射
 	 */
-	private static Map<String, String> macroClickMap;
-	private static Map<String, String> macroImageMap;
+	private static Map<String, String> macroMap;
 
 	static {
-		macroClickMap = new HashMap<String, String>();
-		macroClickMap.put("__EXT1__", "${CLICK_EXT1}");
-		macroClickMap.put("__EXT2__", "${CLICK_EXT2}");
-		macroClickMap.put("__EXT3__", "${CLICK_EXT3}");
-
-		macroImageMap = new HashMap<String, String>();
-		macroImageMap.put("__EXT1__", "${DISPLAY_EXT1}");
-		macroImageMap.put("__EXT2__", "${DISPLAY_EXT2}");
-		macroImageMap.put("__EXT3__", "${DISPLAY_EXT3}");
+		macroMap = new HashMap<String, String>();
+		macroMap.put("__EXT1__", "${EXT}");
+		macroMap.put("__EXT2__", "${EXT2}");
+		macroMap.put("__EXT3__", "${EXT3}");
 	}
 
 	public void uploadMaterial() {
 		// TENCENT 对应两个媒体 OTV 和 非 OT
 		for (int mediaType = 0; mediaType < ITERATOR_TIMES; mediaType++) {
+			/*代码配置处理方式
 			int mediaIdGroup = 0;
 			if (mediaType != TECENT_OTV_ITERATOR) {
 				mediaIdGroup = MediaTypeMapping.TENCENT_NOT_OTV.getGroupId();
@@ -156,12 +163,28 @@ public class TencentUploadMaterialApiTask {
 			
 			// 获取媒体组下的具体媒体
 			int[] mediaIds = StringUtils.splitToIntArray(value);
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + " AdvertUploadApiTask-advertUpload start");
- 
+			*/
+
+			String mediaGroupStr = "";
+			if (mediaType != TECENT_OTV_ITERATOR) {
+				mediaGroupStr = mediaNotOtvGroupStr;
+			} else {
+				mediaGroupStr = mediaOtvGroupStr;
+			}
+			
+			// 根据媒体组ID和审核对象获取具体的媒体ID
+			int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+			
+			// 媒体组没有映射到具体的媒体不处理
+			if (mediaIds == null || mediaIds.length < 1) {
+				return;
+			}
+			
 			// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 			List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 			if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-				LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");
+				/* LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材"); */
+				LOGGER.info("Tencent" + mediaIds + "没有未上传的素材");
 				continue;
 			}
 
@@ -225,7 +248,7 @@ public class TencentUploadMaterialApiTask {
 					LOGGER.info("Tencent上传广告返回解析出错 : " + e.getMessage());
 				}
 			}
-			LOGGER.info(MediaMapping.getDescrip(mediaIds) + " AdvertUploadApiTask-advertUpload end");
+			LOGGER.info("Tencent" + mediaIds + " AdvertUploadApiTask-advertUpload end");
 		}
 	}
 
@@ -260,6 +283,20 @@ public class TencentUploadMaterialApiTask {
 	 * @return
 	 */
 	private TencentCommonRequest<List<TencentUploadMaterialData>> buildUploadRequest(int mediaType, List<Material> unSubmitMaterials) {
+		// 封装广告位集合
+		Map<Byte, Set<String>> map = new HashMap<>();
+		map.put(TencentConstant.TENCENT_APP_STREAM_IMG, covertToSet(tencent_md_app_stream_img));
+		map.put(TencentConstant.TENCENT_APP_STREAM_VIDEO, covertToSet(tencent_md_app_stream_video));
+		map.put(TencentConstant.TENCENT_APP_STREAM_NATIVE, covertToSet(tencent_md_app_stream_native));
+		map.put(TencentConstant.TENCENT_APP_STREAM_GIF, covertToSet(tencent_md_app_stream_gif));
+		map.put(TencentConstant.TENCENT_APP_STREAM_ICON, covertToSet(tencent_md_app_stream_icon));
+		map.put(TencentConstant.TENCENT_QQLIVE_APPWEB_VIDEO, covertToSet(tencent_md_qqlive_appweb_video));
+		map.put(TencentConstant.TENCENT_QQLIVE_APPWEB_IMG, covertToSet(tencent_md_qqlive_appweb_img));
+		map.put(TencentConstant.TENCENT_QQLIVE_APPWEB_PHONE_SPLASH_IMG, covertToSet(tencent_md_qqlive_appweb_phone_splash_img));
+		map.put(TencentConstant.TENCENT_QQLIVE_APPWEB_PHONE_SPLASH_VIDEO, covertToSet(tencent_md_qqlive_appweb_phone_splash_video));
+		map.put(TencentConstant.TENCENT_APP_KUAIBAO_SPLASH_IMG, covertToSet(tencent_md_app_kuaibao_splash_img));
+		map.put(TencentConstant.TENCENT_APP_KUAIBAO_SPLASH_VIDEO, covertToSet(tencent_md_app_kuaibao_splash_video));
+
 		TencentCommonRequest<List<TencentUploadMaterialData>> request = new TencentCommonRequest<List<TencentUploadMaterialData>>();
 		List<TencentUploadMaterialData> advertUploadRequestList = new ArrayList<>();
 
@@ -280,7 +317,7 @@ public class TencentUploadMaterialApiTask {
 			String advertiserName = advertisers.get(0).getAdvertiserName().replace("\\u005f", "_"); // 替换下划线
 			advertUploadRequest.setAdvertiser_name(advertiserName);
 			advertUploadRequest.setAdvertiser_id(advertisers.get(0).getMediaAdvertiserKey());
-			advertUploadRequest.setDisplay_id(getDisplayId(material.getAdspaceId()));
+			advertUploadRequest.setDisplay_id(getDisplayId(material.getAdspaceId(), map));
 			advertUploadRequest.setLanding_page(material.getLpgUrl()); // 静态落地页，腾讯必填
 																		// 用落地页
 
@@ -300,7 +337,7 @@ public class TencentUploadMaterialApiTask {
 				if (null != impTrackingUrlArray) {
 					for (int i = 0; i < impTrackingUrlArray.length; i++) {
 						String[] track = impTrackingUrlArray[i].split("`");
-						monitorList.add(MacroReplaceUtil.macroReplaceImageUrl(macroImageMap, track[1])); // 宏替换
+						monitorList.add(MacroReplaceUtil.macroReplaceImageUrl(macroMap, track[1])); // 宏替换
 					}
 				}
 			}
@@ -315,7 +352,7 @@ public class TencentUploadMaterialApiTask {
 				String[] clkTrackingUrlArray = clk.split("\\|");
 				if (null != clkTrackingUrlArray) {
 					for (int i = 0; i < clkTrackingUrlArray.length; i++) {
-						clkMonitorList.add(MacroReplaceUtil.macroReplaceClickUrl(macroClickMap, clkTrackingUrlArray[i]));
+						clkMonitorList.add(MacroReplaceUtil.macroReplaceClickUrl(macroMap, clkTrackingUrlArray[i]));
 					}
 				}
 			}
@@ -353,7 +390,7 @@ public class TencentUploadMaterialApiTask {
 	 */
 	private List<Map<String, String>> getAdContent(Material material, String advertiserName, int mediaDisplayId) {
 		List<Map<String, String>> adContents = new ArrayList<>();
-		if (Integer.valueOf(tencent_displayId_md_app_stream_img) == mediaDisplayId || Integer.valueOf(tencent_displayId_md_app_stream_gif) == mediaDisplayId) {
+		if (Integer.valueOf(tencent_displayId_app_stream_img) == mediaDisplayId || Integer.valueOf(tencent_displayId_app_stream_gif) == mediaDisplayId) {
 			// 广告标题
 			Map<String, String> adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
@@ -378,7 +415,7 @@ public class TencentUploadMaterialApiTask {
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_text", advertiserName);
 			adContents.add(adContentMap);
-		} else if (Integer.valueOf(tencent_displayId_md_app_stream_native) == mediaDisplayId) {
+		} else if (Integer.valueOf(tencent_displayId_app_stream_native) == mediaDisplayId) {
 			// 广告标题
 			Map<String, String> adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
@@ -403,7 +440,7 @@ public class TencentUploadMaterialApiTask {
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
 			adContents.add(adContentMap);
-		} else if (Integer.valueOf(tencent_displayId_md_app_stream_vedio) == mediaDisplayId) {
+		} else if (Integer.valueOf(tencent_displayId_app_stream_video) == mediaDisplayId) {
 			// 广告标题
 			Map<String, String> adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
@@ -433,7 +470,7 @@ public class TencentUploadMaterialApiTask {
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_text", advertiserName);
 			adContents.add(adContentMap);
-		} else if (Integer.valueOf(tencent_displayId_md_app_stream_icon) == mediaDisplayId) {
+		} else if (Integer.valueOf(tencent_displayId_app_stream_icon) == mediaDisplayId) {
 			// 广告标题
 			Map<String, String> adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
@@ -463,8 +500,8 @@ public class TencentUploadMaterialApiTask {
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getDescription());
 			adContents.add(adContentMap);
-		} else if (Integer.valueOf(tencent_displayId_md_qqlive_appweb_img) == mediaDisplayId) {
-			// 视频素材
+		} else if (Integer.valueOf(tencent_displayId_qqlive_appweb_img) == mediaDisplayId || Integer.valueOf(tencent_displayId_app_kuaibao_splash_img) == mediaDisplayId) {
+			// 图片素材
 			Map<String, String> adContentMap = new HashMap<>();
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
@@ -475,7 +512,7 @@ public class TencentUploadMaterialApiTask {
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
 			adContents.add(adContentMap);
-		} else if (Integer.valueOf(tencent_displayId_md_qqlive_appweb_vedio) == mediaDisplayId) {
+		} else if (Integer.valueOf(tencent_displayId_qqlive_appweb_video) == mediaDisplayId) {
 			// 文字标题
 			Map<String, String> adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
@@ -505,6 +542,56 @@ public class TencentUploadMaterialApiTask {
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getTitle());
 			adContents.add(adContentMap);
+		} else if (Integer.valueOf(tencent_displayId_qqlive_appweb_phone_splash_img) == mediaDisplayId) {
+			// 图片素材
+			Map<String, String> adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
+			adContents.add(adContentMap);
+
+			// 标题
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
+
+			// 摘要
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getDescription());
+			adContents.add(adContentMap);
+		} else if (Integer.valueOf(tencent_displayId_qqlive_appweb_phone_splash_video) == mediaDisplayId) {
+			// 图片素材
+			Map<String, String> adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getCover());
+			adContents.add(adContentMap);
+
+			// 视频素材
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
+			adContents.add(adContentMap);
+
+			// 标题
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
+
+			// 摘要
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getDescription());
+			adContents.add(adContentMap);
+		} else if (Integer.valueOf(tencent_displayId_app_kuaibao_splash_video) == mediaDisplayId) {
+			// 图片素材
+			Map<String, String> adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getCover());
+			adContents.add(adContentMap);
+
+			// 视频素材
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
+			adContents.add(adContentMap);
+
+			// 标题
+			adContentMap = new HashMap<>();
+			adContentMap.put("file_text", material.getTitle());
+			adContents.add(adContentMap);
 		}
 		return adContents;
 	}
@@ -515,31 +602,60 @@ public class TencentUploadMaterialApiTask {
 	 * @param adspaceID
 	 * @return
 	 */
-	private Integer getDisplayId(Integer adspaceId) {
+	private Integer getDisplayId(Integer adspaceId, Map<Byte, Set<String>> map) {
 		if (adspaceId == null) {
 			return null;
 		}
-		if (String.valueOf(adspaceId).equals(tencent_md_app_stream_android_img) || String.valueOf(adspaceId).equals(tencent_md_app_stream_ios_img)) {
-			return Integer.valueOf(tencent_displayId_md_app_stream_img);
+		if (map.get(TencentConstant.TENCENT_APP_STREAM_IMG).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_app_stream_img);
 		}
-		if (String.valueOf(adspaceId).equals(tencent_md_app_stream_android_vedio) || String.valueOf(adspaceId).equals(tencent_md_app_stream_ios_vedio)) {
-			return Integer.valueOf(tencent_displayId_md_app_stream_vedio);
+		if (map.get(TencentConstant.TENCENT_APP_STREAM_VIDEO).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_app_stream_video);
 		}
-		if (String.valueOf(adspaceId).equals(tencent_md_app_stream_android_native) || String.valueOf(adspaceId).equals(tencent_md_app_stream_ios_native)) {
-			return Integer.valueOf(tencent_displayId_md_app_stream_native);
+		if (map.get(TencentConstant.TENCENT_APP_STREAM_NATIVE).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_app_stream_native);
 		}
-		if (String.valueOf(adspaceId).equals(tencent_md_app_stream_android_gif) || String.valueOf(adspaceId).equals(tencent_md_app_stream_ios_gif)) {
-			return Integer.valueOf(tencent_displayId_md_app_stream_gif);
+		if (map.get(TencentConstant.TENCENT_APP_STREAM_GIF).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_app_stream_gif);
 		}
-		if (String.valueOf(adspaceId).equals(tencent_md_app_stream_android_icon) || String.valueOf(adspaceId).equals(tencent_md_app_stream_ios_icon)) {
-			return Integer.valueOf(tencent_displayId_md_app_stream_icon);
+		if (map.get(TencentConstant.TENCENT_APP_STREAM_ICON).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_app_stream_icon);
 		}
-		if (String.valueOf(adspaceId).equals(tencent_md_qqlive_appweb_android_vedio) || String.valueOf(adspaceId).equals(tencent_md_qqlive_appweb_ios_vedio)) {
-			return Integer.valueOf(tencent_displayId_md_qqlive_appweb_vedio);
+		if (map.get(TencentConstant.TENCENT_QQLIVE_APPWEB_VIDEO).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_qqlive_appweb_video);
 		}
-		if (String.valueOf(adspaceId).equals(tencent_md_qqlive_appweb_android_img) || String.valueOf(adspaceId).equals(tencent_md_qqlive_appweb_ios_img)) {
-			return Integer.valueOf(tencent_displayId_md_qqlive_appweb_img);
+		if (map.get(TencentConstant.TENCENT_QQLIVE_APPWEB_IMG).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_qqlive_appweb_img);
+		}
+		if (map.get(TencentConstant.TENCENT_QQLIVE_APPWEB_PHONE_SPLASH_IMG).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_qqlive_appweb_phone_splash_img);
+		}
+		if (map.get(TencentConstant.TENCENT_QQLIVE_APPWEB_PHONE_SPLASH_VIDEO).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_qqlive_appweb_phone_splash_video);
+		}
+		if (map.get(TencentConstant.TENCENT_APP_KUAIBAO_SPLASH_IMG).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_app_kuaibao_splash_img);
+		}
+		if (map.get(TencentConstant.TENCENT_APP_KUAIBAO_SPLASH_VIDEO).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_app_kuaibao_splash_video);
 		}
 		return Integer.valueOf(0);
+	}
+	
+	/**
+	 * 将字符串切分位集合返回
+	 * 
+	 * @param src
+	 * @return
+	 */
+	private static Set<String> covertToSet(String src) {
+		Set<String> set = new HashSet<String>();
+		if (!StringUtils.isBlank(src)) {
+			String[] array = src.split(",");
+			for (String item : array) {
+				set.add(item);
+			}
+		}
+		return set;
 	}
 }
