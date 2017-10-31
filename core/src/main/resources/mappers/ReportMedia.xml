@@ -95,37 +95,42 @@
   </select>
   
   <select id="queryMediaLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
-    SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include>,
-    m.name mediaName, rp.location, l.city_name cityName, l.province_name provinceName, l.country_name countryName
-    <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id, a.name adspaceName</if>
-    <if test="hasDate != null and hasDate == true"> ,rp.date </if>
-    <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
-    FROM mad_report_media_location rp
-    INNER JOIN mad_sys_media m ON rp.media_id = m.id
-    <if test="hasAdspace != null and hasAdspace == true">INNER JOIN mad_sys_adspace a ON rp.adspace_id = a.id</if>
-    INNER JOIN mad_dict_location l ON rp.location = l.code
-    WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
-    <include refid="mediaAuthCondition"/>
-    <if test="mediaId != null"> AND rp.media_id = #{mediaId} </if>
-    GROUP BY rp.media_id <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id</if>, rp.location 
-    <if test="hasDate != null and hasDate == true">, rp.date</if>
-    <if test="hasHour != null and hasHour == true">, rp.hour</if>
-    ORDER BY <choose>
-		        <when test="lastOrderPosition == DIM_SORTING_MEDIA">vimps1 DESC</when>
-	    		<otherwise>rp.media_id</otherwise>
-	    	</choose>
-	         <if test="hasAdspace != null and hasAdspace == true">
+    SELECT tmp.*, m.name mediaName
+    <if test="hasAdspace != null and hasAdspace == true">, a.name adspaceName</if> 
+    , l.city_name cityName, l.province_name provinceName, l.country_name countryName
+    FROM (
+	    SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include>,
+	    rp.location
+	    <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id</if>
+	    <if test="hasDate != null and hasDate == true"> ,rp.date </if>
+	    <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
+	    FROM mad_report_media_location rp
+	    WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+	    <include refid="mediaAuthCondition"/>
+	    <if test="mediaId != null"> AND rp.media_id = #{mediaId} </if>
+	    GROUP BY rp.media_id <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id</if>, rp.location 
+	    <if test="hasDate != null and hasDate == true">, rp.date</if>
+	    <if test="hasHour != null and hasHour == true">, rp.hour</if>
+	    ORDER BY <choose>
+			        <when test="lastOrderPosition == DIM_SORTING_MEDIA">vimps1 DESC</when>
+		    		<otherwise>rp.media_id</otherwise>
+		    	</choose>
+		         <if test="hasAdspace != null and hasAdspace == true">
+			         <choose>
+				        <when test="lastOrderPosition == DIM_SORTING_ADSPACE">, vimps1 DESC</when>
+			    		<otherwise>, rp.adspace_id</otherwise>
+			    	 </choose>
+		         </if>
 		         <choose>
-			        <when test="lastOrderPosition == DIM_SORTING_ADSPACE">, vimps1 DESC</when>
-		    		<otherwise>, rp.adspace_id</otherwise>
-		    	 </choose>
-	         </if>
-	         <choose>
-		        <when test="lastOrderPosition == DIM_SORTING_LOCATION">, vimps1 DESC</when>
-	    		<otherwise>, rp.location</otherwise>
-	    	</choose>
-    		 <if test="hasDate != null and hasDate == true">, rp.date</if>
-    		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
+			        <when test="lastOrderPosition == DIM_SORTING_LOCATION">, vimps1 DESC</when>
+		    		<otherwise>, rp.location</otherwise>
+		    	</choose>
+	    		 <if test="hasDate != null and hasDate == true">, rp.date</if>
+	    		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
+	) tmp
+    INNER JOIN mad_sys_media m ON tmp.media_id = m.id
+    <if test="hasAdspace != null and hasAdspace == true">INNER JOIN mad_sys_adspace a ON tmp.adspace_id = a.id</if>
+    INNER JOIN mad_dict_location l ON tmp.location = l.code		 		 
   </select>
   
   <select id="queryMediaReportDashboard" resultMap="BaseResultMap" parameterType="ReportCriterion" >
