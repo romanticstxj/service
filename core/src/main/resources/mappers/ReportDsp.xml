@@ -18,15 +18,12 @@
     <result column="vimps1" jdbcType="BIGINT" property="vimps" />
     <result column="vclks" jdbcType="BIGINT" property="vclks" />
     <result column="cost" jdbcType="DOUBLE" property="cost" />
-    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
   </resultMap>
   
   <sql id="Base_Column_List">
     ${alias}.id, ${alias}.dsp_id, SUM(${alias}.reqs) reqs, SUM(${alias}.bids) bids, SUM(${alias}.timeouts) timeouts, 
     SUM(${alias}.errs) errs, SUM(${alias}.wins) wins, SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, 
-    SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost,
-    ${alias}.created_time, ${alias}.updated_time
+    SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost
   </sql>
   
   <sql id="mediaAuthCondition">
