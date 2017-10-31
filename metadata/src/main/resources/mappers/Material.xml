@@ -64,7 +64,7 @@
 		mad_sys_material
 	WHERE
 		`status` = 2
-		<![CDATA[ AND start_date <= SYSDATE() AND end_date >= SYSDATE() ]]>  
+		<![CDATA[ AND start_date <=  DATE_FORMAT(SYSDATE(),'%Y-%m-%d') AND ( end_date IS NULL OR end_date >= DATE_FORMAT(SYSDATE(),'%Y-%m-%d')) ]]>  
   </select>
   
 </mapper>
