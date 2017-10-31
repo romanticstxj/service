@@ -66,11 +66,11 @@
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_POLICY">vimps1 DESC</when>
-	    		<otherwise>rp.policy_id</otherwise>
+	    		<otherwise>rp.policy_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_DSP">, vimps1 DESC</when>
-	    		<otherwise>, rp.dsp_id</otherwise>
+	    		<otherwise>, rp.dsp_id DESC</otherwise>
 	    	 </choose>
     		 <if test="hasDate != null and hasDate == true">, rp.date</if>
     		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -91,11 +91,11 @@
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_POLICY">vimps1 DESC</when>
-	    		<otherwise>rp.policy_id</otherwise>
+	    		<otherwise>rp.policy_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_DSP">, vimps1 DESC</when>
-	    		<otherwise>, rp.dsp_id</otherwise>
+	    		<otherwise>, rp.dsp_id DESC</otherwise>
 	    	 </choose>
     		 <if test="hasDate != null and hasDate == true">, rp.date</if>
     		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -121,20 +121,20 @@
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_POLICY">vimps1 DESC</when>
-	    		<otherwise>rp.policy_id</otherwise>
+	    		<otherwise>rp.policy_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_DSP">, vimps1 DESC</when>
-	    		<otherwise>, rp.dsp_id</otherwise>
+	    		<otherwise>, rp.dsp_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_MEDIA">, vimps1 DESC</when>
-	    		<otherwise>, rp.media_id</otherwise>
+	    		<otherwise>, rp.media_id DESC</otherwise>
 	    	 </choose>
 	    	 <if test="hasAdspace != null and hasAdspace == true">
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_ADSPACE">, vimps1 DESC</when>
-	    		<otherwise>, rp.adspace_id</otherwise>
+	    		<otherwise>, rp.adspace_id DESC</otherwise>
 	    	 </choose>
 	    	 </if>
     		 <if test="hasDate != null and hasDate == true">, rp.date</if>
@@ -158,11 +158,11 @@
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_POLICY">vimps1 DESC</when>
-	    		<otherwise>rp.policy_id</otherwise>
+	    		<otherwise>rp.policy_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_DSP">, vimps1 DESC</when>
-	    		<otherwise>, rp.dsp_id</otherwise>
+	    		<otherwise>, rp.dsp_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_LOCATION">, vimps1 DESC</when>
