@@ -24,15 +24,13 @@
     <result column="vclks" property="vclks" jdbcType="BIGINT" />
     <result column="income" property="income" jdbcType="DOUBLE" />
     <result column="cost" property="cost" jdbcType="DOUBLE" />
-    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
-    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
   </resultMap>
   
   <sql id="Base_Column_List" >
     ${alias}.id, ${alias}.policy_id, SUM(${alias}.reqs) reqs, SUM(${alias}.bids) bids, SUM(${alias}.timeouts) timeouts, 
     SUM(${alias}.errs) errs, SUM(${alias}.wins) wins, SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, 
     SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.income)/100000 as DECIMAL(15,2)) income, 
-    CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost, ${alias}.created_time, ${alias}.updated_time
+    CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost
   </sql>
   
   <sql id="mediaAuthCondition">
@@ -68,11 +66,11 @@
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_POLICY">vimps1 DESC</when>
-	    		<otherwise>rp.policy_id</otherwise>
+	    		<otherwise>rp.policy_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_DSP">, vimps1 DESC</when>
-	    		<otherwise>, rp.dsp_id</otherwise>
+	    		<otherwise>, rp.dsp_id DESC</otherwise>
 	    	 </choose>
     		 <if test="hasDate != null and hasDate == true">, rp.date</if>
     		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -93,11 +91,11 @@
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_POLICY">vimps1 DESC</when>
-	    		<otherwise>rp.policy_id</otherwise>
+	    		<otherwise>rp.policy_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_DSP">, vimps1 DESC</when>
-	    		<otherwise>, rp.dsp_id</otherwise>
+	    		<otherwise>, rp.dsp_id DESC</otherwise>
 	    	 </choose>
     		 <if test="hasDate != null and hasDate == true">, rp.date</if>
     		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -123,20 +121,20 @@
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_POLICY">vimps1 DESC</when>
-	    		<otherwise>rp.policy_id</otherwise>
+	    		<otherwise>rp.policy_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_DSP">, vimps1 DESC</when>
-	    		<otherwise>, rp.dsp_id</otherwise>
+	    		<otherwise>, rp.dsp_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_MEDIA">, vimps1 DESC</when>
-	    		<otherwise>, rp.media_id</otherwise>
+	    		<otherwise>, rp.media_id DESC</otherwise>
 	    	 </choose>
 	    	 <if test="hasAdspace != null and hasAdspace == true">
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_ADSPACE">, vimps1 DESC</when>
-	    		<otherwise>, rp.adspace_id</otherwise>
+	    		<otherwise>, rp.adspace_id DESC</otherwise>
 	    	 </choose>
 	    	 </if>
     		 <if test="hasDate != null and hasDate == true">, rp.date</if>
@@ -160,11 +158,11 @@
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_POLICY">vimps1 DESC</when>
-	    		<otherwise>rp.policy_id</otherwise>
+	    		<otherwise>rp.policy_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_DSP">, vimps1 DESC</when>
-	    		<otherwise>, rp.dsp_id</otherwise>
+	    		<otherwise>, rp.dsp_id DESC</otherwise>
 	    	 </choose>
 	    	 <choose>
 		        <when test="lastOrderPosition == DIM_SORTING_LOCATION">, vimps1 DESC</when>
