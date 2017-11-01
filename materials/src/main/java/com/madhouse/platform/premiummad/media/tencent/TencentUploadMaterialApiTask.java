@@ -316,7 +316,7 @@ public class TencentUploadMaterialApiTask {
 			// 广告主名称
 			String advertiserName = advertisers.get(0).getAdvertiserName().replace("\\u005f", "_"); // 替换下划线
 			advertUploadRequest.setAdvertiser_name(advertiserName);
-			advertUploadRequest.setAdvertiser_id(advertisers.get(0).getMediaAdvertiserKey());
+			//advertUploadRequest.setAdvertiser_id(advertisers.get(0).getMediaAdvertiserKey());
 			advertUploadRequest.setDisplay_id(getDisplayId(material.getAdspaceId(), map));
 			advertUploadRequest.setLanding_page(material.getLpgUrl()); // 静态落地页，腾讯必填
 																		// 用落地页
@@ -341,8 +341,7 @@ public class TencentUploadMaterialApiTask {
 					}
 				}
 			}
-			monitorList.add(MacroReplaceUtil.getStr(impUrl, "?", "${EXT}")); // SSP
-																				// 宏替换
+			monitorList.add(MacroReplaceUtil.getStr(impUrl, "?", "${DISPLAY_EXT}")); // SSP 宏替换
 			advertUploadRequest.setMonitor_url(monitorList);
 
 			// 点击监播
@@ -356,8 +355,7 @@ public class TencentUploadMaterialApiTask {
 					}
 				}
 			}
-			clkMonitorList.add(MacroReplaceUtil.getStr(clkUrl, "?", "${EXT}"));// SSP
-																				// 宏替换
+			clkMonitorList.add(MacroReplaceUtil.getStr(clkUrl, "?", "${CLICK_EXT1}"));// SSP 宏替换
 			advertUploadRequest.setClick_monitor_url(clkMonitorList);
 
 //			String encodeTargetUrl = "";

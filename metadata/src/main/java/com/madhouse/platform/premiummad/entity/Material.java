@@ -30,6 +30,8 @@ public class Material {
     
     private String cover;
     
+    private String content;
+    
     private int duration;
     
     private String lpgUrl;
@@ -259,6 +261,14 @@ public class Material {
     public void setDuration(int duration) {
         this.duration = duration;
     }
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
     
     
 }

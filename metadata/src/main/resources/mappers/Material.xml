@@ -16,6 +16,7 @@
     <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="description" property="desc" jdbcType="VARCHAR" />
     <result column="cover" property="cover" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="duration" property="duration" jdbcType="INTEGER" />
     <result column="lpg_url" property="lpgUrl" jdbcType="VARCHAR" />
     <result column="active_type" property="actType" jdbcType="TINYINT" />
@@ -49,6 +50,7 @@
 		icon,
 		title,
 		description,
+		content,
 		cover,
 		duration,
 		lpg_url,

@@ -8,9 +8,12 @@
         http://www.springframework.org/schema/aop 
         http://www.springframework.org/schema/aop/spring-aop-4.0.xsd ">
 
-	<context:component-scan base-package="com.madhouse.platform.premiummad.controller" />
+	<context:component-scan base-package="com.madhouse.platform.premiummad" />
 	<context:annotation-config />
 
+	<context:property-placeholder location="classpath:jdbc.properties,classpath:middleware.properties"
+                                  ignore-unresolvable="true" file-encoding="UTF-8"/>
+                                  
 	<aop:aspectj-autoproxy proxy-target-class="true" /><!-- 要拦截controller需要再springmvc的配置文件中加这一行 -->
 
 	<!-- 启用默认配置 -->
