@@ -38,7 +38,7 @@ public class AdspaceController {
 	 * @throws Exception
 	 */
 	@TokenFilter
-	@RequestMapping("/list")
+	//@RequestMapping("/list")
 	public ResponseDto<AdspaceDto> list(@RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
 		// 校验DSP是否在白名单内
 		if (!validateWhiteList(dspId)) {
@@ -52,7 +52,7 @@ public class AdspaceController {
 	/**
 	 * 将 model 转换成 DTO
 	 * 
-	 * @param modelResults
+	 * @param source
 	 * @return
 	 */
 	private List<AdspaceDto> convert(List<AdspaceModel> source) {
@@ -117,6 +117,8 @@ public class AdspaceController {
 	
 	/**
 	 * 校验DSP是否在白名单内
+	 * 
+	 * @param dspId
 	 * @return
 	 */
 	private boolean validateWhiteList(String dspId) {

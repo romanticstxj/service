@@ -28,7 +28,10 @@ public class AdvertiserController {
 	/**
 	 * DSP端提交广告主
 	 * 
-	 * @return advertiserDto
+	 * @param advertiserDto
+	 * @param dspId
+	 * @param token
+	 * @return
 	 * @throws Exception
 	 */
 	@TokenFilter
@@ -44,9 +47,11 @@ public class AdvertiserController {
 	/**
 	 * DSP端查询广告主审核状态
 	 * 
-	 * @param ids
+	 * @param id
 	 *            DSP平台定义的广告主 ID ，多个 广告主 ID 可用半角 【,】间隔；
-	 * @return advertiserAuditResultDtos
+	 * @param dspId
+	 * @param token
+	 * @return
 	 * @throws Exception
 	 */
 	@TokenFilter
