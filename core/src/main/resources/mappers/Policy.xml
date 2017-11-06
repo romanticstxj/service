@@ -105,12 +105,17 @@
 	    from mad_sys_policy p
 	    where p.id = #{id}
   	</select>
+  	
+  	<select id="selectPolicy" parameterType="java.lang.Integer" resultMap="baseCascadedMappingResult">
+	    select <include refid="Base_Column_List"><property name="alias" value="p" /></include>
+	    from mad_sys_policy p
+	    where p.id = #{id,jdbcType=INTEGER}
+	</select>
   
   	<select id="selectCascadedlyByPrimaryKey" parameterType="integer" resultMap="baseCascadedMappingResult">
 	    select <include refid="Base_Column_List"><property name="alias" value="p" /></include>
 	    from mad_sys_policy p
 	    where p.id = #{id}
-	    AND p.type = #{type}
   	</select>
   
   	<select id="getPolicyAdspace" parameterType="java.lang.Integer" resultMap="PolicyAdspaceResultMap">

@@ -57,7 +57,7 @@ public interface PolicyDao {
     
     int checkName(String name);
     
-    Policy selectCascadedlyByPrimaryKey(@Param("id") Integer id, @Param("type") Integer type);
+    Policy selectCascadedlyByPrimaryKey(Integer id);
 
 	int update(Policy policy);
 	
@@ -65,4 +65,6 @@ public interface PolicyDao {
 			@Param("type") Integer type);
 
 	int updateStatus(Policy policy);
+	
+	Policy selectPolicy(Integer id);
 }
