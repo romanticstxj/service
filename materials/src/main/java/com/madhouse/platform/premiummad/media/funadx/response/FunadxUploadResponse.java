@@ -1,8 +1,10 @@
 package com.madhouse.platform.premiummad.media.funadx.response;
 
+import java.util.List;
+
 public class FunadxUploadResponse {
 	private Integer result;
-	private Object message;
+	private List<FunadxDetailResponse> message;
 
 	public Integer getResult() {
 		return result;
@@ -12,11 +14,11 @@ public class FunadxUploadResponse {
 		this.result = result;
 	}
 
-	public Object getMessage() {
+	public List<FunadxDetailResponse> getMessage() {
 		return message;
 	}
 
-	public void setMessage(Object message) {
+	public void setMessage(List<FunadxDetailResponse> message) {
 		this.message = message;
 	}
 }

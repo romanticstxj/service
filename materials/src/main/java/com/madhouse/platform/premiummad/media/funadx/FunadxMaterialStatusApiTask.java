@@ -14,7 +14,7 @@ import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.funadx.constant.IFunadxConstant;
+import com.madhouse.platform.premiummad.media.funadx.constant.IFunadxEnum;
 import com.madhouse.platform.premiummad.media.funadx.request.FunadxStatusRequest;
 import com.madhouse.platform.premiummad.media.funadx.response.FunadxDetailResponse;
 import com.madhouse.platform.premiummad.media.funadx.response.FunadxStatusResponse;
@@ -75,7 +75,7 @@ public class FunadxMaterialStatusApiTask {
 		FunadxStatusResponse funadxStatusResponse = JSON.parseObject(responseJson, FunadxStatusResponse.class);
 		Integer result = funadxStatusResponse.getResult();
 		// 如果返回的result==0，说明接口调用成功
-		if (IFunadxConstant.RESPONSE_SUCCESS.getValue() == result) {
+		if (IFunadxEnum.RESPONSE_SUCCESS.getValue() == result) {
 			FunadxStatusSuccessResponse funadxStatusSuccessResponse = JSON.parseObject(responseJson, FunadxStatusSuccessResponse.class);
 			LOGGER.info("FunadxStatus Api success: " + funadxStatusSuccessResponse.getResult());
 			FunadxStatusSuccessDetailResponse funadxStatusSuccessDetailResponse = funadxStatusSuccessResponse.getMessage();
@@ -91,14 +91,14 @@ public class FunadxMaterialStatusApiTask {
 					auditItem.setMediaQueryKey(crid);
 					auditItem.setMediaId(String.valueOf(MediaMapping.FUNADX.getValue()));
 
-					if (IFunadxConstant.M_STATUS_APPROVED.getValue() == status) { // 审核已通过
+					if (IFunadxEnum.M_STATUS_APPROVED.getValue() == status) { // 审核已通过
 						auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
 						auditResults.add(auditItem);
-					} else if (IFunadxConstant.M_STATUS_REFUSED.getValue() == status) { // 审核未通过
+					} else if (IFunadxEnum.M_STATUS_REFUSED.getValue() == status) { // 审核未通过
 						auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
 						auditItem.setErrorMessage(funadxDetailResponse.getReason());
 						auditResults.add(auditItem);
-					} else if (IFunadxConstant.M_STATUS_UNAUDITED.getValue() == status) { // 待审核
+					} else if (IFunadxEnum.M_STATUS_UNAUDITED.getValue() == status) { // 待审核
 						LOGGER.info("FunadxMaterialStatus:materialID=" + crid + " " + status);
 					}
 				}
