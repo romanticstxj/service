@@ -13,6 +13,7 @@ import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.PolicyAdspaceDao;
 import com.madhouse.platform.premiummad.dao.PolicyDao;
 import com.madhouse.platform.premiummad.dao.PolicyDspDao;
+import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.Policy;
 import com.madhouse.platform.premiummad.entity.PolicyAdspace;
 import com.madhouse.platform.premiummad.entity.PolicyDsp;
@@ -77,9 +78,12 @@ public class PolicyServiceImpl implements IPolicyService {
 		List<PolicyAdspace> policyAdspaces = policy.getPolicyAdspaces();
 		List<PolicyAdspace> newPolicyAdspaces = new ArrayList<PolicyAdspace>();
 		for(int i=0; i<policyAdspaces.size(); i++){
-			int adspaceId = policyAdspaces.get(i).getAdspace().getId();
-			if (adspaceIds.contains(adspaceId)) {
-				newPolicyAdspaces.add(policyAdspaces.get(i));
+			Adspace adspace = policyAdspaces.get(i).getAdspace();
+			if(adspace != null){
+				int adspaceId = adspace.getId();
+				if (adspaceIds.contains(adspaceId)) {
+					newPolicyAdspaces.add(policyAdspaces.get(i));
+				}
 			}
 		}
 		policy.setPolicyAdspaces(newPolicyAdspaces);
@@ -88,7 +92,7 @@ public class PolicyServiceImpl implements IPolicyService {
 	
 	@Override
 	public int update(Policy policy, Integer userId) {
-		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId(), policy.getType());
+		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20003);
         if (!queryResult.getName().equals(policy.getName())) { //名称不相等,检查名称
@@ -144,7 +148,7 @@ public class PolicyServiceImpl implements IPolicyService {
 
 	@Override
 	public int updateStatus(Policy policy) {
-		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId(), policy.getType());
+		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20003);
 		return policyDao.updateStatus(policy);
