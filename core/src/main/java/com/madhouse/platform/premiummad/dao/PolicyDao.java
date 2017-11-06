@@ -65,4 +65,6 @@ public interface PolicyDao {
 			@Param("type") Integer type);
 
 	int updateStatus(Policy policy);
+	
+	Policy selectPolicy(Integer id);
 }
