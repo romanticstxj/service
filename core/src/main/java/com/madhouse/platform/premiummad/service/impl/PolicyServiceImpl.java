@@ -92,7 +92,7 @@ public class PolicyServiceImpl implements IPolicyService {
 	
 	@Override
 	public int update(Policy policy, Integer userId) {
-		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId(), policy.getType());
+		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20003);
         if (!queryResult.getName().equals(policy.getName())) { //名称不相等,检查名称
@@ -148,7 +148,7 @@ public class PolicyServiceImpl implements IPolicyService {
 
 	@Override
 	public int updateStatus(Policy policy) {
-		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId(), policy.getType());
+		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20003);
 		return policyDao.updateStatus(policy);

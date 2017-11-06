@@ -100,22 +100,10 @@
 	    ${alias}.end_date, ${alias}.status
   	</sql>
   
-  	<sql id="Policy_Adspace_Column_List">
-	    ${alias}.id, ${alias}.policy_id, ${alias}.adspace_id, ${alias}.media_deal_id, ${alias}.bid_type, 
-	    ${alias}.bid_floor, ${alias}.limit_reqs, ${alias}.status, ${alias}.created_user, 
-	    ${alias}.created_time, ${alias}.updated_user, ${alias}.updated_time
-  	</sql>
-  	
-  	<sql id="Policy_Dsp_Column_List" >
-	    ${alias}.id, ${alias}.policy_id, ${alias}.dsp_id, ${alias}.weight, ${alias}.status, ${alias}.created_user, 
-	    ${alias}.created_time, ${alias}.updated_user, ${alias}.updated_time
-  	</sql>
-  	
   	<select id="selectByPrimaryKey" parameterType="integer" resultMap="baseResultMap">
 	    select p.id, p.name
 	    from mad_sys_policy p
 	    where p.id = #{id}
-	    AND p.type = #{type}
   	</select>
   
   	<select id="selectCascadedlyByPrimaryKey" parameterType="integer" resultMap="baseCascadedMappingResult">
@@ -144,7 +132,8 @@
   	</select>
   
   	<select id="getPolicyDsp" parameterType="java.lang.Integer" resultMap="PolicyDspResultMap">
-	    select <include refid="Policy_Dsp_Column_List"><property name="alias" value="pd" /></include>
+	    select <include refid="com.madhouse.platform.premiummad.dao.PolicyDspDao.PolicyDspColumns">
+	    <property name="alias" value="pd" /></include>
 	    , p.name dsp_name
 	    FROM mad_sys_policy_dsp pd
 	    INNER JOIN mad_sys_dsp p ON pd.dsp_id = p.id
