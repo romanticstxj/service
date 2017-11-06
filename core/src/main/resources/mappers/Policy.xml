@@ -65,6 +65,7 @@
 	    <result column="media_deal_id" jdbcType="VARCHAR" property="mediaDealId" />
 	    <result column="bid_type" jdbcType="BIT" property="bidType" />
 	    <result column="bid_floor" jdbcType="INTEGER" property="bidFloor" />
+	    <result column="limit_reqs" jdbcType="INTEGER" property="limitReqs" />
 	    <result column="status" jdbcType="BIT" property="status" />
 	    <result column="created_user" jdbcType="INTEGER" property="createdUser" />
 	    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -101,7 +102,7 @@
   
   	<sql id="Policy_Adspace_Column_List">
 	    ${alias}.id, ${alias}.policy_id, ${alias}.adspace_id, ${alias}.media_deal_id, ${alias}.bid_type, 
-	    ${alias}.bid_floor, ${alias}.status, ${alias}.created_user, 
+	    ${alias}.bid_floor, ${alias}.limit_reqs, ${alias}.status, ${alias}.created_user, 
 	    ${alias}.created_time, ${alias}.updated_user, ${alias}.updated_time
   	</sql>
   	
@@ -125,7 +126,8 @@
   	</select>
   
   	<select id="getPolicyAdspace" parameterType="java.lang.Integer" resultMap="PolicyAdspaceResultMap">
-	    select <include refid="Policy_Adspace_Column_List"><property name="alias" value="pa"/></include>
+	    select <include refid="com.madhouse.platform.premiummad.dao.PolicyAdspaceDao.PolicyAdspaceColumns">
+	    <property name="alias" value="pa"/></include>
 	    from mad_sys_policy_adspace pa
 	    where pa.policy_id = #{id,jdbcType=INTEGER}
   	</select>
