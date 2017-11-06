@@ -232,7 +232,7 @@ public class MaterialServiceImpl implements IMaterialService {
 
 		// 判断提交DealID，是否存在且类型为1、2并且与deliveryType一致
 		if (!StringUtils.isBlank(entity.getDealId())) {
-			Policy policy = policyDao.selectByPrimaryKey(Integer.valueOf(entity.getDealId()));
+			Policy policy = policyDao.selectPolicy(Integer.valueOf(entity.getDealId()));
 			MaterialRule.validatePolicy(policy, entity);
 		}
 		
