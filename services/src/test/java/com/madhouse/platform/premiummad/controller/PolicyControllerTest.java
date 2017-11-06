@@ -21,7 +21,7 @@ public class PolicyControllerTest {
 	@Test
 	public void add() throws ParseException{
 		PolicyDto policyDto = new PolicyDto();
-		policyDto.setName("PdbPolicy11");
+		policyDto.setName("PdbPolicy12");
 		policyDto.setWeight(10);
 		policyDto.setStartDate(DateUtils.getFormatDateByPattern("yyyyMMdd", "20170804"));
 		policyDto.setIsEndDate(1);
@@ -42,7 +42,7 @@ public class PolicyControllerTest {
 		policyDto.setPolicyAdspaces(policyAdspaceDtos);
 		PolicyAdspaceDto policyAdspaceDto = new PolicyAdspaceDto();
 		AdspaceDto adspaceDto = new AdspaceDto();
-		policyAdspaceDto.setAdspaceId(200006);
+		policyAdspaceDto.setAdspaceId(200036);
 		policyAdspaceDto.setBidType((byte) 1);
 		policyAdspaceDto.setBidFloor(1.50);
 		policyAdspaceDto.setMediaDealId("1000001");
@@ -53,7 +53,7 @@ public class PolicyControllerTest {
 		policyAdspaceDtos.add(policyAdspaceDto);
 		policyAdspaceDto = new PolicyAdspaceDto();
 		adspaceDto = new AdspaceDto();
-		policyAdspaceDto.setAdspaceId(200007);
+		policyAdspaceDto.setAdspaceId(200037);
 		policyAdspaceDto.setBidType((byte) 2);
 		policyAdspaceDto.setBidFloor(2.50);
 		policyAdspaceDto.setMediaDealId("1000002");
@@ -82,7 +82,7 @@ public class PolicyControllerTest {
 	@Test
 	public void detail(){
 //		String link = "http://172.16.25.48:8080/services/policy/detail?id=500112&type=2";
-		String link = "http://localhost:8080/services/policy/detail?id=500032&type=1";
+		String link = "http://localhost:8080/services/policy/detail?id=500033";
 		HttpUtilTest.httpGet(link);
 		
 	}
@@ -97,7 +97,7 @@ public class PolicyControllerTest {
 	@Test
 	public void updateStatus() throws ParseException{
 		PolicyDto policyDto = new PolicyDto();
-		policyDto.setId(500021);
+		policyDto.setId(500033);
 		policyDto.setType(2);
 		policyDto.setStatus((byte) 0); 
 		policyDto.setLocationTargeting("333");
