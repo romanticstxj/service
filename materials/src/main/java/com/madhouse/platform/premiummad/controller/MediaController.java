@@ -31,7 +31,7 @@ public class MediaController {
 	 * @throws Exception
 	 */
 	@TokenFilter
-	@RequestMapping("/list")
+	//@RequestMapping("/list")
 	public ResponseDto<MediaDto> list(@RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
 		List<MediaModel> modelResults = mediaService.getAuditedMedia();
 		List<MediaDto> dtoResults = new ArrayList<MediaDto>();
