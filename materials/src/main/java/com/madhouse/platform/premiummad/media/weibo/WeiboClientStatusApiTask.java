@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
@@ -21,6 +21,7 @@ import com.madhouse.platform.premiummad.media.weibo.response.WeiboClientStatusDe
 import com.madhouse.platform.premiummad.media.weibo.response.WeiboClientStatusResponse;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 
 @Component
@@ -37,19 +38,45 @@ public class WeiboClientStatusApiTask {
 	@Value("${weibo.token}")
 	private String token;
 
+	@Value("${advertier_meidaGroupMapping_weibo}")
+	private String mediaGroupStr;
+	
 	@Autowired
 	private AdvertiserMapper advertiserDao;
 
 	@Autowired
 	private IAdvertiserService advertiserService;
 
+	@Autowired
+	private IMediaService mediaService;
+	
 	public void getStatus() {
 		LOGGER.info("++++++++++Weibo get client status begin+++++++++++");
 
+		/* 代码配置处理方式
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
+		if (com.madhouse.platform.premiummad.util.StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds =com.madhouse.platform.premiummad.util.StringUtils.splitToIntArray(value);
+		*/
+
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 获取我方媒体待审核的广告主
-		List<Advertiser> unAuditAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.WEIBO.getValue(), AdvertiserStatusCode.ASC10003.getValue());
+		List<Advertiser> unAuditAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10003.getValue());
 		if (unAuditAdvertisers == null || unAuditAdvertisers.isEmpty()) {
-			LOGGER.info("++++++++++Weibo no clients need to audit+++++++++++");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的广告主");*/
+			LOGGER.info("Weibo无需要审核的广告主");
 			return;
 		}
 
@@ -83,7 +110,7 @@ public class WeiboClientStatusApiTask {
 				for (WeiboClientStatusDetail weiboClientStatusDetail : weiboClientStatusDetails) {
 					AdvertiserAuditResultModel auditItem = new AdvertiserAuditResultModel();
 					auditItem.setMediaAdvertiserKey(String.valueOf(weiboClientStatusDetail.getClient_id()));
-					auditItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
+					auditItem.setMediaIds(mediaIds);
 
 					String status = weiboClientStatusDetail.getVerify_status();
 					if (WeiboConstant.C_STATUS_APPROVED.getDescription().equals(status)) { // 审核通过

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.madhouse.platform.premiummad.dao.PolicyDao">
+	<resultMap id="baseResultMap" type="com.madhouse.platform.premiummad.entity.Policy">
+    	<id column="id" jdbcType="INTEGER" property="id" />
+	    <result column="name" jdbcType="VARCHAR" property="name" />
+  	</resultMap>
+
   	<resultMap id="baseListResultMap" type="com.madhouse.platform.premiummad.entity.Policy">
     	<id column="id" jdbcType="INTEGER" property="id" />
 	    <result column="deal_id" jdbcType="INTEGER" property="dealId" />
@@ -94,26 +99,27 @@
 	    ${alias}.end_date, ${alias}.status
   	</sql>
   
-  	<sql id="Policy_Adspace_Column_List">
-	    ${alias}.id, ${alias}.policy_id, ${alias}.adspace_id, ${alias}.media_deal_id, ${alias}.bid_type, 
-	    ${alias}.bid_floor, ${alias}.status, ${alias}.created_user, 
-	    ${alias}.created_time, ${alias}.updated_user, ${alias}.updated_time
-  	</sql>
+  	<select id="selectByPrimaryKey" parameterType="integer" resultMap="baseResultMap">
+	    select p.id, p.name
+	    from mad_sys_policy p
+	    where p.id = #{id}
+  	</select>
   	
-  	<sql id="Policy_Dsp_Column_List" >
-	    ${alias}.id, ${alias}.policy_id, ${alias}.dsp_id, ${alias}.weight, ${alias}.status, ${alias}.created_user, 
-	    ${alias}.created_time, ${alias}.updated_user, ${alias}.updated_time
-  	</sql>
+  	<select id="selectPolicy" parameterType="java.lang.Integer" resultMap="baseCascadedMappingResult">
+	    select <include refid="Base_Column_List"><property name="alias" value="p" /></include>
+	    from mad_sys_policy p
+	    where p.id = #{id,jdbcType=INTEGER}
+	</select>
   
   	<select id="selectCascadedlyByPrimaryKey" parameterType="integer" resultMap="baseCascadedMappingResult">
 	    select <include refid="Base_Column_List"><property name="alias" value="p" /></include>
 	    from mad_sys_policy p
 	    where p.id = #{id}
-	    AND p.type = #{type}
   	</select>
   
   	<select id="getPolicyAdspace" parameterType="java.lang.Integer" resultMap="PolicyAdspaceResultMap">
-	    select <include refid="Policy_Adspace_Column_List"><property name="alias" value="pa"/></include>
+	    select <include refid="com.madhouse.platform.premiummad.dao.PolicyAdspaceDao.PolicyAdspaceColumns">
+	    <property name="alias" value="pa"/></include>
 	    from mad_sys_policy_adspace pa
 	    where pa.policy_id = #{id,jdbcType=INTEGER}
   	</select>
@@ -130,18 +136,13 @@
   	</select>
   
   	<select id="getPolicyDsp" parameterType="java.lang.Integer" resultMap="PolicyDspResultMap">
-	    select <include refid="Policy_Dsp_Column_List"><property name="alias" value="pd" /></include>
+	    select <include refid="com.madhouse.platform.premiummad.dao.PolicyDspDao.PolicyDspColumns">
+	    <property name="alias" value="pd" /></include>
 	    , p.name dsp_name
 	    FROM mad_sys_policy_dsp pd
 	    INNER JOIN mad_sys_dsp p ON pd.dsp_id = p.id
 	    where policy_id = #{id,jdbcType=INTEGER}
   	</select>
-  
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="baseCascadedMappingResult">
-    select <include refid="Base_Column_List"><property name="alias" value="p" /></include>
-    from mad_sys_policy p
-    where p.id = #{id,jdbcType=INTEGER}
-  </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--

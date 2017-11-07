@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.madhouse.platform.premiummad.constant.MaterialAuditMode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -24,6 +26,7 @@ import com.madhouse.platform.premiummad.entity.SysMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.model.MaterialModel;
+import com.madhouse.platform.premiummad.model.MediaAuditMaterialModel;
 import com.madhouse.platform.premiummad.rule.MaterialRule;
 import com.madhouse.platform.premiummad.rule.MediaRule;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
@@ -71,7 +74,7 @@ public class MaterialServiceImpl implements IMaterialService {
 			}
 
 			// 更新审核状态
-			Material updateItem = new Material();
+			MediaAuditMaterialModel updateItem = new MediaAuditMaterialModel();
 			updateItem.setStatus(Byte.valueOf(item.getStatus().toString()));
 			updateItem.setUpdatedTime(new Date());
 			updateItem.setReason(item.getErrorMessage());
@@ -79,7 +82,7 @@ public class MaterialServiceImpl implements IMaterialService {
 			// 部分媒体审核成功后会生产一个新的key作为投放时候使用，此处做更新
 			updateItem.setMediaMaterialKey(item.getMediaMaterialKey());
 			updateItem.setMediaMaterialUrl(item.getMediaMaterialUrl());
-			updateItem.setMediaId(Integer.valueOf(item.getMediaId()));
+			updateItem.setMediaIds(item.getMediaIds());
 			
 			int effortRows = materialDao.updateByMediaAndMediaQueryKey(updateItem);
 			if (effortRows != 1) {
@@ -229,7 +232,7 @@ public class MaterialServiceImpl implements IMaterialService {
 
 		// 判断提交DealID，是否存在且类型为1、2并且与deliveryType一致
 		if (!StringUtils.isBlank(entity.getDealId())) {
-			Policy policy = policyDao.selectByPrimaryKey(Integer.valueOf(entity.getDealId()));
+			Policy policy = policyDao.selectPolicy(Integer.valueOf(entity.getDealId()));
 			MaterialRule.validatePolicy(policy, entity);
 		}
 		

@@ -20,6 +20,7 @@ public class AdspaceModel {
 	private Integer bidType;
 
 	private boolean enableHttps;
+	// DSP广告位Key
 	private String adspaceKey;
 	private Integer status;
 	private Integer osType;

@@ -53,6 +53,7 @@ public enum WeiboErrorCode {
 	WEC437(437, "九宫格-h5_url错误"),
 	WEC438(438, "九宫格-转换内联失败"),
 	WEC439(439, "九宫格-deeplink_url错误"),
+	WEC441(441, "button_type错误"),
 	WEC446(446, "obj_id校验失败"),
 	WEC461(461, "应用类型错误"),
 	WEC462(462, "应用参数错误"),

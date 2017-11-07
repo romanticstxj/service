@@ -37,7 +37,7 @@ public class PolicyController {
 	@RequestMapping("/list")
     public ResponseDto<PolicyDto> list(@RequestParam(value="ids", required=false) String policyIds,
     		@RequestParam(value="status", required=false) Integer status,
-    		@RequestParam(value="type", required=true) Integer type,
+    		@RequestParam(value="type", required=false) Integer type,
     		@RequestParam(value="userId", required=false) Integer userIdByGet,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		PolicyRule.checkStatus(status);
@@ -82,14 +82,14 @@ public class PolicyController {
 	 */
 	@RequestMapping("/detail")
     public ResponseDto<PolicyDto> getPolicy(@RequestParam(value="id", required=true) Integer id,
-    		@RequestParam(value="type", required=true) Integer type,
+    		@RequestParam(value="type", required=false) Integer type,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
 		List<Integer> policyIdList = userAuthService.queryPolicyIdList(userId, String.valueOf(id));
 		if(userId == null || ObjectUtils.isEmpty(policyIdList) || policyIdList.get(0).intValue() != id.intValue()){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
-		Policy policy = policyService.queryPolicyById(id, type);
+		Policy policy = policyService.queryPolicyById(id, type, userId);
 		List<PolicyDto> result = PolicyRule.convertToDto(policy, new PolicyDto());
 		return ResponseUtils.response(StatusCode.SC20000, result);
 	}
@@ -100,10 +100,11 @@ public class PolicyController {
 	 * @return
 	 */
 	@RequestMapping("/update")
-    public ResponseDto<PolicyDto> updatePolicy(@RequestBody @Validated(Update.class) PolicyDto policyDto) {
+    public ResponseDto<PolicyDto> updatePolicy(@RequestBody @Validated(Update.class) PolicyDto policyDto,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
 		PolicyRule.validateDto(policyDto);
         Policy policy = PolicyRule.convertToModel(policyDto, new Policy(), false);
-        policyService.update(policy);
+        policyService.update(policy, userId);
         List<PolicyDto> result = PolicyRule.convertToDto(policy, new PolicyDto());
         return ResponseUtils.response(StatusCode.SC20000, result);
     }

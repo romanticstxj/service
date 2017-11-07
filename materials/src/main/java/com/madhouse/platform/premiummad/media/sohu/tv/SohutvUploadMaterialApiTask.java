@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -24,6 +24,7 @@ import com.madhouse.platform.premiummad.media.sohu.response.SohuResponse;
 import com.madhouse.platform.premiummad.media.sohu.util.SohuAuth;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.util.DateUtils;
 import com.madhouse.platform.premiummad.util.HttpUtils;
@@ -44,6 +45,9 @@ public class SohutvUploadMaterialApiTask {
 	@Value("${clk.url}")
 	private String clkUrl;
 
+	@Value("${material_meidaGroupMapping_sohuTV}")
+	private String mediaGroupStr;
+	
 	@Autowired
 	private SohuAuth sohuAuth;
 
@@ -58,6 +62,9 @@ public class SohutvUploadMaterialApiTask {
 	
 	@Autowired
 	private IPolicyService policyService;
+
+	@Autowired
+	private IMediaService mediaService;
 	
 	/**
 	 * 宏替换替换映射
@@ -81,13 +88,32 @@ public class SohutvUploadMaterialApiTask {
 	 * 上传广告物料
 	 */
 	public void uploadSohuMaterial() {
-		LOGGER.info("++++++++++Sohu News upload material begin+++++++++++");
+		LOGGER.info("++++++++++Sohu TV upload material begin+++++++++++");
+		
+		/* 代码配置处理方式
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.SOHUNEWS.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
 
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
+		*/
+		
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+		
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.SOHUTV.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info("搜狐TV没有未上传的物料");
-			LOGGER.info("++++++++++Sohu TV upload material end+++++++++++");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");*/
+			LOGGER.info("Sohu TV没有未上传的素材");
 			return;
 		}
 
@@ -120,7 +146,7 @@ public class SohutvUploadMaterialApiTask {
 						MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 						rejuseItem.setId(String.valueOf(material.getId()));
 						rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-						rejuseItem.setMediaId(String.valueOf(MediaMapping.SOHUNEWS.getValue()));
+						rejuseItem.setMediaIds(mediaIds);
 						rejuseItem.setErrorMessage(sohutvResponse.getMessage());
 						rejusedMaterials.add(rejuseItem);
 						LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + result);
@@ -141,7 +167,7 @@ public class SohutvUploadMaterialApiTask {
 			materialService.updateStatusToMediaByMaterialId(rejusedMaterials);
 		}
 
-		LOGGER.info("++++++++++Sohu News upload material end+++++++++++");
+		LOGGER.info("++++++++++Sohu TV upload material end+++++++++++");
 	}
 	
 	/**

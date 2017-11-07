@@ -2,7 +2,6 @@ package com.madhouse.platform.premiummad.media.tencent;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.tencent.constant.TencentAdvertiserAduitStatus;
@@ -21,6 +20,7 @@ import com.madhouse.platform.premiummad.media.tencent.response.TencentAdvertiser
 import com.madhouse.platform.premiummad.media.tencent.util.TencentHttpUtil;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 /**
@@ -36,6 +36,12 @@ public class TencentAdvertiserStatusApiTask {
 	@Value("${tencent.advertiserList}")
 	private String advertiserListUrl;
 
+	@Value("${advertier_meidaGroupMapping_tencentNotOtv}")
+	private String mediaNotOtvGroupStr;
+	
+	@Value("${advertier_meidaGroupMapping_tencentOtv}")
+	private String mediaOtvGroupStr;
+	
 	@Autowired
 	private TencentHttpUtil tencentHttpUtil;
 
@@ -45,21 +51,50 @@ public class TencentAdvertiserStatusApiTask {
 	@Autowired
 	private IAdvertiserService advertiserService;
 
+	@Autowired
+	private IMediaService mediaService;
+	
 	public void getAdvertiserStatus() {
 		// TENCENT 对应两个媒体 OTV 和 非 OTV
 		for (int mediaType = 0; mediaType < ITERATOR_TIMES; mediaType++) {
-			int mediaId = 0;
+			/*代码配置处理方式
+			int mediaIdGroup = 0;
 			if (mediaType != TECENT_OTV_ITERATOR) {
-				mediaId = MediaMapping.TENCENT_NOT_OTV.getValue();
+				mediaIdGroup = MediaTypeMapping.TENCENT_NOT_OTV.getGroupId();
 			} else {
-				mediaId = MediaMapping.TENCENT.getValue();
+				mediaIdGroup = MediaTypeMapping.TENCENT.getGroupId();
 			}
-			LOGGER.info(MediaMapping.getDescrip(mediaId) + " TencentAdvertiserStatusApiTask-getAdvertiserStatus start");
+			
+			// 媒体组没有映射到具体的媒体不处理
+			String value = MediaTypeMapping.getValue(mediaIdGroup);
+			if (StringUtils.isBlank(value)) {
+				return;
+			}
 
+			// 获取媒体组下的具体媒体
+			int[] mediaIds = StringUtils.splitToIntArray(value);
+			*/
+			
+			String mediaGroupStr = "";
+			if (mediaType != TECENT_OTV_ITERATOR) {
+				mediaGroupStr = mediaNotOtvGroupStr;
+			} else {
+				mediaGroupStr = mediaOtvGroupStr;
+			}
+			
+			// 根据媒体组ID和审核对象获取具体的媒体ID
+			int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
+			
+			// 根据媒体组ID和审核对象获取具体的媒体ID
+			if (mediaIds == null || mediaIds.length < 1) {
+				return ;
+			}
+			
 			// 获取我方媒体待审核的广告主
-			List<Advertiser> unAuditAdvertisers = advertiserDao.selectMediaAdvertisers(mediaId, AdvertiserStatusCode.ASC10003.getValue());
+			List<Advertiser> unAuditAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10003.getValue());
 			if (unAuditAdvertisers == null || unAuditAdvertisers.isEmpty()) {
-				LOGGER.info(MediaMapping.getDescrip(mediaId) + "无需要审核的广告主");
+				/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的广告主");*/
+				LOGGER.info("Tencent" + mediaIds + "无需要审核的广告主");
 				return;
 			}
 
@@ -86,7 +121,7 @@ public class TencentAdvertiserStatusApiTask {
 								AdvertiserAuditResultModel auditItem = new AdvertiserAuditResultModel();
 								int status = item.getStatus();
 								auditItem.setMediaAdvertiserKey(String.valueOf(item.getId()));
-								auditItem.setMediaId(String.valueOf(mediaId));
+								auditItem.setMediaIds(mediaIds);
 								if (TencentAdvertiserAduitStatus.AUDITED.getValue() == status) { // 审核通过
 									auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
 									auditResults.add(auditItem);
@@ -107,7 +142,7 @@ public class TencentAdvertiserStatusApiTask {
 					}
 				}
 			}
-			LOGGER.info(MediaMapping.getDescrip(mediaId) + " TencentAdvertiserStatusApiTask-getAdvertiserStatus end");
+			LOGGER.info("Tencent" + mediaIds + " TencentAdvertiserStatusApiTask-getAdvertiserStatus end");
 		}
 	}
 

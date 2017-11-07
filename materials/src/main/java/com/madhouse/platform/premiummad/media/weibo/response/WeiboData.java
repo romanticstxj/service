@@ -2,7 +2,7 @@ package com.madhouse.platform.premiummad.media.weibo.response;
 
 public class WeiboData {
 
-	private String uploadId;
+	private String upload_id;
 
 	private int length;
 
@@ -10,12 +10,12 @@ public class WeiboData {
 
 	private String url;
 
-	public String getUploadId() {
-		return uploadId;
+	public String getUpload_id() {
+		return upload_id;
 	}
 
-	public void setUploadId(String uploadId) {
-		this.uploadId = uploadId;
+	public void setUpload_id(String upload_id) {
+		this.upload_id = upload_id;
 	}
 
 	public int getLength() {

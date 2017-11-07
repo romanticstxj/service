@@ -315,8 +315,18 @@
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where media_id = #{mediaId,jdbcType=INTEGER}
-      and media_advertiser_key = #{mediaAdvertiserKey,jdbcType=VARCHAR}
+    where media_advertiser_key = #{mediaAdvertiserKey,jdbcType=VARCHAR}
+      <!-- 媒体组 -->
+      <if test="mediaIds != null and mediaIds.length > 0" >
+    	and media_id in
+	    <foreach collection="mediaIds" item="id" index="index" open="(" close=")" separator=",">
+	        #{id,jdbcType=INTEGER}
+	    </foreach>
+      </if>
+      <!-- 具体媒体 -->
+      <if test="mediaId != null" >
+      	and media_id = #{mediaId,jdbcType=INTEGER}
+      </if>
   </update>
   
   <select id="selectAuditableAdvertisers" resultType="string" parameterType="string">
@@ -341,5 +351,20 @@
 	        #{id,jdbcType=INTEGER}
 	    </foreach>
     </if>
+  </select>
+  
+  <select id="selectAdvertisersByMedias" resultMap="BaseResultMap">
+    select 
+    <include refid="baseColumns">
+    	<property name="alias" value="ad" />
+    </include>
+    from mad_sys_advertiser ad
+    left join mad_sys_media me on ad.media_id = me.id
+	where me.advertiser_audit_mode = 2
+	  and ad.media_id IN
+	    <foreach collection="mediaIds" item="id" index="index" open="(" close=")" separator=",">
+	        #{id,jdbcType=INTEGER}
+	    </foreach>
+	  and ad.status = #{auditStatus,jdbcType=INTEGER}
   </select>
 </mapper>

@@ -12,6 +12,11 @@ public class AdvertiserAuditResultModel {
 	private String mediaId;
 	
 	/**
+	 * 在同一个组的媒体ID
+	 */
+	private int[] mediaIds;
+	
+	/**
 	 * 审核状态
 	 * -1：审核未通过；0：待审核；1：第三方媒体审核中；2：审核通过
 	 */
@@ -41,6 +46,14 @@ public class AdvertiserAuditResultModel {
 
 	public void setMediaId(String mediaId) {
 		this.mediaId = mediaId;
+	}
+
+	public int[] getMediaIds() {
+		return mediaIds;
+	}
+
+	public void setMediaIds(int[] mediaIds) {
+		this.mediaIds = mediaIds;
 	}
 
 	public Integer getStatus() {

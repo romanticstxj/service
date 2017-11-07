@@ -33,7 +33,10 @@ public class MaterialController {
 	/**
 	 * DSP端提交素材
 	 * 
-	 * @return materialDto
+	 * @param materialDto
+	 * @param dspId
+	 * @param token
+	 * @return
 	 * @throws Exception
 	 */
 	@TokenFilter
@@ -48,9 +51,11 @@ public class MaterialController {
 	/**
 	 * DSP端查询素材审核状态
 	 * 
-	 * @param ids
+	 * @param id
 	 *            DSP平台定义的素材 ID ，多个素材 ID 可用半角 【,】间隔；
-	 * @return materialAuditResultDto
+	 * @param dspId
+	 * @param token
+	 * @return
 	 * @throws Exception
 	 */
 	@TokenFilter
@@ -63,7 +68,7 @@ public class MaterialController {
 	}
 
 	/**
-	 * 上传素材对象转换
+	 * 传素材对象转换
 	 * 
 	 * @param materialDto
 	 * @return

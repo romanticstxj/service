@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -25,6 +25,7 @@ import com.madhouse.platform.premiummad.media.sohu.response.SohuStatusDetailResp
 import com.madhouse.platform.premiummad.media.sohu.util.SohuAuth;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -39,6 +40,9 @@ public class SohutvStatusApiTask {
 	@Value("#{'${sohu.material.pageList}'.split(',')}")
 	private List<String> pageList;
 
+	@Value("${material_meidaGroupMapping_sohuTV}")
+	private String mediaGroupStr;
+	
 	@Autowired
 	private SohuAuth sohuAuth;
 
@@ -51,13 +55,36 @@ public class SohutvStatusApiTask {
 	@Autowired
 	private AdvertiserMapper advertiserDao;
 
+	@Autowired
+	private IMediaService mediaService;
+	
 	public void getStatusDetail() {
-		LOGGER.info("++++++++++Sohu Tv get material list begin+++++++++++");
+		LOGGER.info("++++++++++Sohu TV get material list begin+++++++++++");
 
+		/* 代码配置处理方式
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.SOHUNEWS.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
+		*/
+		
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+		
 		// 我方系统未审核的素材
-		List<Material> unAuditMaterials = materialDao.selectMediaMaterials(MediaMapping.SOHUTV.getValue(), MaterialStatusCode.MSC10003.getValue());
+		List<Material> unAuditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unAuditMaterials == null || unAuditMaterials.isEmpty()) {
-			LOGGER.info("++++++++++Sohu Tv no materials need to audit+++++++++++");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有素材需要审核");*/
+			LOGGER.info("Sohu TV没有素材需要审核");
 			return;
 		}
 
@@ -126,7 +153,9 @@ public class SohutvStatusApiTask {
 		if (statusDetail.getFile_source().equals(auditMaterial.getMediaQueryKey())) {
 			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 			auditItem.setId(auditMaterial.getId().toString());
-			auditItem.setMediaId(auditMaterial.getMediaId().toString());
+			//auditItem.setMediaId(auditMaterial.getMediaId().toString());
+			int[] mediaIds = {auditMaterial.getMediaId().intValue()};
+			auditItem.setMediaIds(mediaIds);
 			auditItem.setMediaQueryKey(auditMaterial.getMediaQueryKey());
 
 			// 根据返回的审核结果设置内容

@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.tencent.constant.TencentErrorCode;
@@ -25,6 +27,7 @@ import com.madhouse.platform.premiummad.media.tencent.response.TencentUploadAdve
 import com.madhouse.platform.premiummad.media.tencent.util.TencentHttpUtil;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
@@ -39,6 +42,12 @@ public class TencentUploadAdvertiserApiTask {
 	@Value("${tencent.advertiserUpdate}")
 	private String advertiserUpdateUrl;
 
+	@Value("${advertier_meidaGroupMapping_tencentNotOtv}")
+	private String mediaNotOtvGroupStr;
+	
+	@Value("${advertier_meidaGroupMapping_tencentOtv}")
+	private String mediaOtvGroupStr;
+	
 	@Autowired
 	private TencentHttpUtil tencentHttpUtil;
 
@@ -48,25 +57,53 @@ public class TencentUploadAdvertiserApiTask {
 	@Autowired
 	private IAdvertiserService advertiserService;
 
+	@Autowired
+	private IMediaService mediaService;
+	
 	/**
 	 * RTB 上传广告主
 	 */
 	public void uploadAdvertiser() {
 		// TENCENT 对应两个媒体 OTV 和 非 OTV
 		for (int mediaType = 0; mediaType < ITERATOR_TIMES; mediaType++) {
-			int mediaId = 0;
+			/*代码配置处理方式
+			int mediaIdGroup = 0;
 			if (mediaType != TECENT_OTV_ITERATOR) {
-				mediaId = MediaMapping.TENCENT_NOT_OTV.getValue();
+				mediaIdGroup = MediaTypeMapping.TENCENT_NOT_OTV.getGroupId();
 			} else {
-				mediaId = MediaMapping.TENCENT.getValue();
+				mediaIdGroup = MediaTypeMapping.TENCENT.getGroupId();
 			}
-			LOGGER.info(MediaMapping.getDescrip(mediaId) + " TencentUploadAdvertiserApiTask-uploadAdvertiser start");
+			
+			// 媒体组没有映射到具体的媒体不处理
+			String value = MediaTypeMapping.getValue(mediaIdGroup);
+			if (StringUtils.isBlank(value)) {
+				return;
+			}
 
+			// 获取媒体组下的具体媒体
+			int[] mediaIds = StringUtils.splitToIntArray(value);
+			*/
+			
+			String mediaGroupStr = "";
+			if (mediaType != TECENT_OTV_ITERATOR) {
+				mediaGroupStr = mediaNotOtvGroupStr;
+			} else {
+				mediaGroupStr = mediaOtvGroupStr;
+			}
+			
+			// 根据媒体组ID和审核对象获取具体的媒体ID
+			int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
+			
+			// 媒体组没有映射到具体的媒体不处理
+			if (mediaIds == null || mediaIds.length < 1) {
+				return ;
+			}
+			
 			// 查询所有待审核且媒体的广告主的审核状态是媒体审核的
-			List<Advertiser> unSubmitAdvertisers = advertiserDao.selectMediaAdvertisers(mediaId, AdvertiserStatusCode.ASC10002.getValue());
+			List<Advertiser> unSubmitAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10002.getValue());
 			if (unSubmitAdvertisers == null || unSubmitAdvertisers.isEmpty()) {
-				LOGGER.info(MediaMapping.getDescrip(mediaId) + "没有未上传的广告主");
-				LOGGER.info("++++++++++tencent upload advertiser end+++++++++++");
+				/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的广告主");*/
+				LOGGER.info("Tencent" + mediaIds + "没有未上传的广告主");
 				return;
 			}
 
@@ -102,7 +139,8 @@ public class TencentUploadAdvertiserApiTask {
 									AdvertiserAuditResultModel rejuseItem = new AdvertiserAuditResultModel();
 									rejuseItem.setId(String.valueOf(advertiserNameIdMap.get(item.getName())));
 									rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-									rejuseItem.setMediaId(String.valueOf(mediaId));
+									//rejuseItem.setMediaId(String.valueOf(mediaId));
+									rejuseItem.setMediaIds(mediaIds);
 									rejuseItem.setErrorMessage(TencentErrorCode.getDescrip(Integer.valueOf(item.getErr_code())) + "[" + item.getErr_msg() + "]");
 									rejusedAdvertisers.add(rejuseItem);
 								}
@@ -128,7 +166,7 @@ public class TencentUploadAdvertiserApiTask {
 				LOGGER.info("Tencent上传广告主返回出错 : TencentUploadAdvertiserResponse is null");
 			}
 
-			LOGGER.info(MediaMapping.getDescrip(mediaId) + " TencentUploadAdvertiserApiTask-uploadAdvertiser end");
+			LOGGER.info("Tencent" + mediaIds + " TencentUploadAdvertiserApiTask-uploadAdvertiser end");
 		}
 	}
 

@@ -2,7 +2,6 @@ package com.madhouse.platform.premiummad.media.weibo;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
@@ -20,6 +19,7 @@ import com.madhouse.platform.premiummad.media.weibo.response.WeiboMaterialStatus
 import com.madhouse.platform.premiummad.media.weibo.response.WeiboMaterialStatusResponse;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 
 @Component
@@ -35,6 +35,10 @@ public class WeiboMaterialStatusApiTask {
 	@Value("${weibo.token}")
 	private String token;
 
+	@Value("${material_meidaGroupMapping_weibo}")
+	private String mediaGroupStr;
+
+	
 	@Autowired
 	private MaterialMapper materialDao;
 
@@ -43,14 +47,37 @@ public class WeiboMaterialStatusApiTask {
 	
 	@Autowired
 	private WeiboAdCreativeMidApiTask weiboAdCreativeMidApiTask;
-
+	
+	@Autowired
+	private IMediaService mediaService;
+	
 	public void getStatus() {
 		LOGGER.info("++++++++++Weibo get material status begin+++++++++++");
 
+		/* 代码配置处理方式
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
+		if (com.madhouse.platform.premiummad.util.StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = com.madhouse.platform.premiummad.util.StringUtils.splitToIntArray(value);
+		*/
+		
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 我方系统未审核的素材
-		List<Material> unAuditMaterials = materialDao.selectMediaMaterials(MediaMapping.WEIBO.getValue(), MaterialStatusCode.MSC10003.getValue());
+		List<Material> unAuditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unAuditMaterials == null || unAuditMaterials.isEmpty()) {
-			LOGGER.info("新浪微博没有素材需要审核");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有素材需要审核");*/
+			LOGGER.info("Weibo没有素材需要审核");
 			return;
 		}
 
@@ -75,7 +102,7 @@ public class WeiboMaterialStatusApiTask {
 			WeiboMaterialStatusResponse weiboMaterialStatusResponse = JSON.parseObject(responseJson, WeiboMaterialStatusResponse.class);
 			Integer retCode = weiboMaterialStatusResponse.getRet_code();
 			if (WeiboConstant.RESPONSE_SUCCESS.getValue() == retCode) {
-				handleSuccessResult(weiboMaterialStatusResponse);
+				handleSuccessResult(weiboMaterialStatusResponse, mediaIds);
 			} else {
 				LOGGER.info("新浪微博获取状态失败-" + responseJson);
 			}
@@ -91,7 +118,7 @@ public class WeiboMaterialStatusApiTask {
 	 * 
 	 * @param weiboMaterialStatusResponse
 	 */
-	private void handleSuccessResult(WeiboMaterialStatusResponse weiboMaterialStatusResponse) {
+	private void handleSuccessResult(WeiboMaterialStatusResponse weiboMaterialStatusResponse, int[] mediaIds) {
 		// 请求成功物料状态明细列表
 		List<WeiboMaterialStatusMessageDetail> weiboMaterialStatusMessageDetails = weiboMaterialStatusResponse.getRet_msg().getRecords();
 
@@ -103,7 +130,7 @@ public class WeiboMaterialStatusApiTask {
 
 			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 			auditItem.setMediaQueryKey(crid);
-			auditItem.setMediaId(String.valueOf(MediaMapping.WEIBO.getValue()));
+			auditItem.setMediaIds(mediaIds);
 
 			// 根据返回的物料状态明细的materialId,遍历物料任务列表找到有响应物料的物料任务进行处理
 			if (WeiboConstant.M_STATUS_APPROVED.getDescription().equals(status)) { // 审核通过

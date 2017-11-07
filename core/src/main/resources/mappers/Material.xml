@@ -505,7 +505,10 @@
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where media_id = #{mediaId,jdbcType=INTEGER}
+    where media_id IN
+	    <foreach collection="mediaIds" item="item" index="index" open="(" close=")" separator=",">
+	        #{item,jdbcType=INTEGER}
+	    </foreach>
       and media_query_key = #{mediaQueryKey,jdbcType=VARCHAR}
   </update>
   
@@ -558,7 +561,10 @@
 	    <foreach collection="mediaQueryKeys" item="mediaQueryKey" index="index" open="(" close=")" separator=",">
 	        #{mediaQueryKey,jdbcType=VARCHAR}
 	    </foreach>
-    and media_id = #{mediaId,jdbcType=INTEGER}
+    and media_id in
+	    <foreach collection="mediaIds" item="id" index="index" open="(" close=")" separator=",">
+	        #{id,jdbcType=INTEGER}
+	    </foreach>
   </select>
   
   <select id="selectAuditableMaterials" resultType="string" parameterType="string">
@@ -585,4 +591,18 @@
     </if>
   </select>
   
+  <select id="selectMaterialsByMeidaIds" resultMap="BaseResultMap">
+    select 
+    <include refid="materialBaseColumns">
+    	<property name="alias" value="ma" />
+    </include>
+    from mad_sys_material ma
+    left join mad_sys_media me on ma.media_id = me.id
+    where me.material_audit_mode = 2
+	  and ma.media_id in
+	    <foreach collection="mediaIds" item="id" index="index" open="(" close=")" separator=",">
+	        #{id,jdbcType=INTEGER}
+	    </foreach>
+	  and ma.status = #{auditStatus,jdbcType=INTEGER}
+  </select>
 </mapper>

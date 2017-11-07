@@ -2,7 +2,6 @@ package com.madhouse.platform.premiummad.entity;
 
 import java.util.List;
 
-
 public class MaterialMetaData {
     public class Monitor {
         public class Track {
@@ -54,6 +53,7 @@ public class MaterialMetaData {
             this.secUrls = secUrls;
         }
     }
+
     private long id;
     private long dspId;
     private String materialId;
@@ -71,24 +71,15 @@ public class MaterialMetaData {
     private String title;
     private String desc;
     private String cover;
+    private String content;
     private List<String> adm;
     private int duration;
     private int actType;
     private String lpgUrl;
     private Monitor monitor;
-    
     private String mediaQueryKey;
     private String mediaMaterialKey;
     private String mediaMaterialUrl;
-
-    
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public Monitor getMonitor() {
         return monitor;
@@ -154,6 +145,14 @@ public class MaterialMetaData {
         this.title = title;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public String getIcon() {
         return icon;
     }
@@ -177,7 +176,7 @@ public class MaterialMetaData {
     public void setW(int w) {
         this.w = w;
     }
-    
+
     public long getAdspaceId() {
         return adspaceId;
     }
@@ -258,6 +257,14 @@ public class MaterialMetaData {
         this.mediaQueryKey = mediaQueryKey;
     }
 
+    public String getMediaMaterialUrl() {
+        return mediaMaterialUrl;
+    }
+
+    public void setMediaMaterialUrl(String mediaMaterialUrl) {
+        this.mediaMaterialUrl = mediaMaterialUrl;
+    }
+
     public String getMediaMaterialKey() {
         return mediaMaterialKey;
     }
@@ -266,12 +273,12 @@ public class MaterialMetaData {
         this.mediaMaterialKey = mediaMaterialKey;
     }
 
-    public String getMediaMaterialUrl() {
-        return mediaMaterialUrl;
+    public long getId() {
+        return id;
     }
 
-    public void setMediaMaterialUrl(String mediaMaterialUrl) {
-        this.mediaMaterialUrl = mediaMaterialUrl;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getBrand() {
@@ -281,7 +288,6 @@ public class MaterialMetaData {
     public void setBrand(String brand) {
         this.brand = brand;
     }
-    
     
 }
 

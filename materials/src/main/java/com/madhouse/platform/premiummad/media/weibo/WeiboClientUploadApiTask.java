@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
@@ -25,6 +25,7 @@ import com.madhouse.platform.premiummad.media.weibo.request.WeiboQualificationFi
 import com.madhouse.platform.premiummad.media.weibo.response.WeiboClientUploadResponse;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -42,20 +43,45 @@ public class WeiboClientUploadApiTask {
 	@Value("${weibo.token}")
 	private String token;
 
+	@Value("${advertier_meidaGroupMapping_weibo}")
+	private String mediaGroupStr;
+	
 	@Autowired
 	private AdvertiserMapper advertiserDao;
 
 	@Autowired
 	private IAdvertiserService advertiserService;
 
+	@Autowired
+	private IMediaService mediaService;
+	
 	public void uploadClient() {
 		LOGGER.info("++++++++++Weibo upload client begin+++++++++++");
 
+		/* 代码配置处理方式
+		// 媒体组没有映射到具体的媒体不处理
+		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
+		if (StringUtils.isBlank(value)) {
+			return;
+		}
+
+		// 获取媒体组下的具体媒体
+		int[] mediaIds = StringUtils.splitToIntArray(value);
+		*/
+		
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 查询所有待审核且媒体的广告主的审核状态是媒体审核的
-		List<Advertiser> unSubmitAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.WEIBO.getValue(), AdvertiserStatusCode.ASC10002.getValue());
+		List<Advertiser> unSubmitAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10002.getValue());
 		if (unSubmitAdvertisers == null || unSubmitAdvertisers.isEmpty()) {
-			LOGGER.info(MediaMapping.WEIBO.getDescrip() + "没有未上传的广告主");
-			LOGGER.info("++++++++++Weibo upload client end+++++++++++");
+			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的广告主");*/
+			LOGGER.info("Weibo没有未上传的广告主");
 			return;
 		}
 
@@ -81,7 +107,7 @@ public class WeiboClientUploadApiTask {
 					AdvertiserAuditResultModel rejuseItem = new AdvertiserAuditResultModel();
 					rejuseItem.setId(String.valueOf(advertiser.getId()));
 					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-					rejuseItem.setMediaId(String.valueOf(MediaMapping.SOHUNEWS.getValue()));
+					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(weiboClientUploadResponse.getRet_msg());
 					rejusedAdvertisers.add(rejuseItem);
 					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败-" + requestJson);
