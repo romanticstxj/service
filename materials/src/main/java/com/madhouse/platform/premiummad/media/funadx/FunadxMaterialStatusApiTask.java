@@ -2,16 +2,13 @@ package com.madhouse.platform.premiummad.media.funadx;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
@@ -65,7 +62,7 @@ public class FunadxMaterialStatusApiTask {
 		// 获取审核中的素材
 		List<Material> unauditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unauditMaterials == null || unauditMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.FUNADX.getDescrip() + "无需要审核的素材");
+			LOGGER.info("Funadx 无需要审核的素材");
 			return;
 		}
 
@@ -105,7 +102,7 @@ public class FunadxMaterialStatusApiTask {
 
 					MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 					auditItem.setMediaQueryKey(crid);
-					auditItem.setMediaId(String.valueOf(MediaMapping.FUNADX.getValue()));
+					auditItem.setMediaIds(mediaIds);
 
 					if (IFunadxEnum.M_STATUS_APPROVED.getValue() == status) { // 审核已通过
 						auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
@@ -117,6 +114,11 @@ public class FunadxMaterialStatusApiTask {
 					} else if (IFunadxEnum.M_STATUS_UNAUDITED.getValue() == status) { // 待审核
 						LOGGER.info("FunadxMaterialStatus:materialID=" + crid + " " + status);
 					}
+				}
+				
+				// 更新数据库
+				if (!auditResults.isEmpty()) {
+					materialService.updateStatusToMedia(auditResults);
 				}
 			} else {
 				LOGGER.info("++++++++++Funadx get material status failed+++++++++++");
