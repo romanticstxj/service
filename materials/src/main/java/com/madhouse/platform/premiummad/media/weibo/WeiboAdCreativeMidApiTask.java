@@ -91,9 +91,9 @@ public class WeiboAdCreativeMidApiTask {
 
 		// 向媒体发送请求
 		String requestJson = JSON.toJSONString(weiboAdCreativeCreateRequest);
-		LOGGER.info("WeiboAdCreativeMidApiRequestJson: " + requestJson);
+		LOGGER.info("request: " + requestJson);
 		String responseJson = HttpUtils.post(adcreativeUrl, requestJson);
-		LOGGER.info("WeiboAdCreativeMidApiResponseJson: " + responseJson);
+		LOGGER.info("response: " + responseJson);
 
 		// 处理我方数据
 		if (!StringUtils.isBlank(responseJson)) {

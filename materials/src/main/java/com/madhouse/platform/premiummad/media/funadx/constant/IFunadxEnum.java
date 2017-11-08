@@ -41,13 +41,4 @@ public enum IFunadxEnum{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	public static String getDescription(int value) {
-		for (IFunadxEnum item : IFunadxEnum.values()) {
-			if (item.getValue() == value) {
-				return item.getDescription();
-			}
-		}
-		return null;
-	}
 }

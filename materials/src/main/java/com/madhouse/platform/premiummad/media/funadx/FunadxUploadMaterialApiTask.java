@@ -2,14 +2,17 @@ package com.madhouse.platform.premiummad.media.funadx;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -104,6 +107,18 @@ public class FunadxUploadMaterialApiTask {
 
 			// 处理返回的结果
 			if (!StringUtils.isEmpty(responseJson)) {
+				Map<String, Object> maps = (Map<String, Object>)JSON.parse(responseJson); 
+				if (!"0".equals(maps.get("result").toString())) {
+					if (!StringUtils.isBlank(maps.get("message").toString())) {
+						MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+						rejuseItem.setId(String.valueOf(material.getId()));
+						rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+						rejuseItem.setMediaIds(mediaIds);
+						rejuseItem.setErrorMessage(maps.get("message").toString());
+						rejusedMaterials.add(rejuseItem);
+						continue;
+					}
+				}
 				FunadxUploadResponse uploadResponse = JSON.parseObject(responseJson, FunadxUploadResponse.class);
 				Integer result = uploadResponse.getResult();
 				LOGGER.info("FunadxUpload api result: " + result);
@@ -130,12 +145,12 @@ public class FunadxUploadMaterialApiTask {
 						rejuseItem.setId(String.valueOf(material.getId()));
 						rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
 						rejuseItem.setMediaIds(mediaIds);
-						rejuseItem.setErrorMessage(IFunadxEnum.getDescription(uploadResult.intValue()));
+						rejuseItem.setErrorMessage(uploadResponse.getMessage().get(0).getReason());
 						rejusedMaterials.add(rejuseItem);
 						continue;
 					} else if (IFunadxEnum.UPLOAD_UNKNOW_ERROR.getValue() == uploadResult.intValue()) {
 						// 未知错误
-						LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + IFunadxEnum.getDescription(uploadResult.intValue()));
+						LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + uploadResponse.getMessage().get(0).getReason());
 					}
 				} else {
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + result + " " + uploadResponse.getMessage());
@@ -171,12 +186,10 @@ public class FunadxUploadMaterialApiTask {
 		
 		List<FunadxMaterialRequest> materialRequests = new ArrayList<>();
 		FunadxMaterialRequest materialRequest = new FunadxMaterialRequest();
+		
 		materialRequest.setCrid(String.valueOf(material.getId()));
-		
 		// 素材 URL
-		materialRequest.setAdm(material.getAdMaterials().split("\\|")[0]);
-		materialRequest.setDuration(material.getDuration());
-		
+		materialRequest.setAdm(material.getAdMaterials().split("\\|")[0]);		
 		// 获取该素材的广告主
 		String[] advertiserKeys = { material.getAdvertiserKey() };
 		List<Advertiser> advertisers = advertiserDao.selectByAdvertiserKeysAndDspId(advertiserKeys, String.valueOf(material.getDspId()), material.getMediaId());
@@ -185,10 +198,16 @@ public class FunadxUploadMaterialApiTask {
 		}
 		materialRequest.setAdvertiser(advertisers.get(0).getAdvertiserName());
 		
-		// 点击检测也可以多个，以换行符分割
-		String clkUrl = material.getClkUrls() == null ? "" : material.getClkUrls();
-		materialRequest.setCm(Arrays.asList(clkUrl.split("\\|")));
-		
+		// 落地页
+		materialRequest.setLandingpage(material.getLpgUrl());
+
+		// 开始、结束日期
+		materialRequest.setStartdate(DateUtils.getFormatStringByPattern("yyyy-MM-dd", material.getStartDate() != null ? material.getStartDate() : new Date()));
+		materialRequest.setEnddate(material.getEndDate() != null ? DateUtils.getFormatStringByPattern("yyyy-MM-dd", material.getEndDate()) : null);
+
+		// 贴片时长（单位s）
+		materialRequest.setDuration(material.getDuration());
+
 		// 展示检测可以多个，以换行符分割
 		String impUrl = material.getImpUrls() == null ? "" : material.getImpUrls();
 		String[] impTrackUrlArray = impUrl.split("\\|");
@@ -201,13 +220,14 @@ public class FunadxUploadMaterialApiTask {
 				// 监测时间点
 				pmRequest.setPoint(covertToMeidaTime(Integer.valueOf(track[0]), material.getDuration()));
 				pmRequest.setUrl(track[1]);
+				pmRequests.add(pmRequest);
 			}
 		}
 		materialRequest.setPm(pmRequests);
 
-		// 开始、结束日期
-		materialRequest.setStartdate(material.getStartDate() != null ? DateUtils.getFormatStringByPattern("yyyy-MM-dd", material.getStartDate()) : null);
-		materialRequest.setEnddate(material.getEndDate() != null ? DateUtils.getFormatStringByPattern("yyyy-MM-dd", material.getEndDate()) : null);
+		// 点击检测也可以多个，以换行符分割
+		String clkUrl = material.getClkUrls() == null ? "" : material.getClkUrls();
+		materialRequest.setCm(Arrays.asList(clkUrl.split("\\|")));
 
 		// 物料类型：必填，图片（image）、视频（video）、Flash（flash）
 		String type = getMaterialType(materialRequest.getAdm());
@@ -215,9 +235,6 @@ public class FunadxUploadMaterialApiTask {
 			return "不支持的文件格式,目前支持的文件格式：jpg,gif,png,swf,flv,mp4";
 		}
 		materialRequest.setType(type);
-		
-		// 落地页
-		materialRequest.setLandingpage(material.getLpgUrl());
 		
 		materialRequests.add(materialRequest);
 		uploadRequest.setMaterial(materialRequests);

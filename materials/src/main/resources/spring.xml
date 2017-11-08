@@ -183,9 +183,9 @@
         <task:scheduled ref="valueMakerUploadApiTask" method="uploadValueMakerMaterial" cron="${cron.valuemakerMaterialUploadApiTask}"/> 
         <task:scheduled ref="valueMakerStatusApiTask" method="getValueMakerMaterialStatus" cron="${cron.valuemakerMaterialStatusApiTask}"/>
 	
-		<!-- funsion 产品确认接的是MadMax， 和 PremiumMad 没关系
+		<!-- funsion -->
         <task:scheduled ref="funadxMaterialStatusApiTask" method="getStatus" cron="${cron.funadxMaterialStatusApiTask}"/>
-        <task:scheduled ref="funadxUploadMaterialApiTask" method="uploadMaterial" cron="${cron.funadxUploadMaterialApiTask}"/>-->
+        <task:scheduled ref="funadxUploadMaterialApiTask" method="uploadMaterial" cron="${cron.funadxUploadMaterialApiTask}"/>
 	
 		<!-- sina -->
 		<task:scheduled ref="weiboMaterialUploadApiTask" method="uploadMaterial" cron="${cron.weiboMaterialUploadApiTask}"/>

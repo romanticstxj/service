@@ -94,9 +94,9 @@ public class WeiboClientStatusApiTask {
 
 		// 向媒体发送请求
 		String requestJson = JSON.toJSONString(request);
-		LOGGER.info("WeiboClientStatusApiTask request:" + requestJson);
+		LOGGER.info("request:" + requestJson);
 		String responseJson = HttpUtils.post(clientStatusUrl, requestJson);
-		LOGGER.info("WeiboClientStatusApiTask response:" + JSON.toJSONString(responseJson));
+		LOGGER.info("response:" + JSON.toJSONString(responseJson));
 
 		// 处理我方数据
 		if (!StringUtils.isEmpty(requestJson)) {

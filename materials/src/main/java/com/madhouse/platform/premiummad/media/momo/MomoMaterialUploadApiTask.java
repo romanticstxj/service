@@ -149,7 +149,9 @@ public class MomoMaterialUploadApiTask {
 			// 向媒体发请求
 			Map<String, String> paramMap = new HashMap<String, String>();
 			paramMap.put("data", JSON.toJSONString(request));
+			LOGGER.info("Request: " + JSON.toJSONString(request));
 			String responseJson = momoHttpUtil.post(uploadMaterialUrl, paramMap);
+			LOGGER.info("Response: " + responseJson);
 			if (!StringUtils.isEmpty(responseJson)) {
 				MomoUploadResponse response = JSON.parseObject(responseJson, MomoUploadResponse.class);
 				// 200：成功

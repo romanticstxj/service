@@ -11,11 +11,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
@@ -148,8 +151,10 @@ public class ValueMakerUploadApiTask {
 				continue;
 			}
 			
+			LOGGER.info("request: " + JSON.toJSONString(request));
 			Map<String, String> responseMap = valueMakerHttpUtil.post(url, request);
-
+			LOGGER.info("response: " + JSON.toJSONString(responseMap));
+			
 			// 处理结果
 			int responseStatus = responseMap.get("responseStatus").equals("") ? 0 : Integer.parseInt(responseMap.get("responseStatus"));
 			if (responseStatus == ValueMakerConstant.RESPONSE_STATUS_200.getValue()) {// 上传成功

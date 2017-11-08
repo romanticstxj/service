@@ -89,11 +89,13 @@ public class SohuNewsCustomerListApiTask {
 			paramMap.put("perpage", 50);
 			paramMap.put("page", 1);
 			String request = sohuAuth.setHttpMethod("GET").setApiUrl(cutomerListUrl).setParamMap(paramMap).buildRequest();
-			LOGGER.info("SohuNewsCustomerListApiTask.list param request:{}", request);
+			
+			LOGGER.info("request: ", request);
 			String url = cutomerListUrl + "?" + request;
 			Map<String, Object> getMap = HttpUtils.get(url);
+			LOGGER.info("response: ", JSONObject.toJSONString(getMap));
+			
 			String result = (String) getMap.get("responseBody");
-			LOGGER.info("SohuNewsCustomerListApiTask.list http get:{}. result json: {}", url, result);
 			SohuResponse sohutvResponse = JSONObject.parseObject(result, SohuResponse.class);
 
 			if (sohutvResponse != null) {

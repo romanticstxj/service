@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.funadx.constant.IFunadxEnum;
@@ -22,6 +23,7 @@ import com.madhouse.platform.premiummad.media.funadx.response.FunadxStatusSucces
 import com.madhouse.platform.premiummad.media.funadx.response.FunadxStatusSuccessResponse;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 
 @Component
@@ -43,10 +45,25 @@ public class FunadxMaterialStatusApiTask {
 	@Autowired
 	private IMaterialService materialService;
 
+	@Value("${material_meidaGroupMapping_funadx}")
+	private String mediaGroupStr;
+
+	@Autowired
+	private IMediaService mediaService;
+
 	public void getStatus() {
 		LOGGER.info("++++++++++Funadx get material status begin+++++++++++");
+
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 获取审核中的素材
-		List<Material> unauditMaterials = materialDao.selectMediaMaterials(MediaMapping.FUNADX.getValue(), MaterialStatusCode.MSC10003.getValue());
+		List<Material> unauditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unauditMaterials == null || unauditMaterials.isEmpty()) {
 			LOGGER.info(MediaMapping.FUNADX.getDescrip() + "无需要审核的素材");
 			return;
@@ -57,7 +74,6 @@ public class FunadxMaterialStatusApiTask {
 		for (Material material : unauditMaterials) {
 			crids.add(material.getMediaQueryKey());
 		}
-		LOGGER.info("风行获取审核审核状态信息的请求crid列表:{}", crids.toString());
 
 		// 设置request参数
 		FunadxStatusRequest funadxStatusRequest = new FunadxStatusRequest();
