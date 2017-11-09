@@ -1245,6 +1245,8 @@
                     	"id": "<*||integer||comment:媒体报表ID>",
 	                	"policyId": "<integer||comment:策略ID>",
 	                	"policyName": "<*||string||comment:策略名称>",
+	                	"policyType": "<*||integer||comment:策略类型>",
+	                	"policyTypeName": "<*||string||comment:策略类型名称>",
 	                	"dspId": "<integer||comment:DSP ID>",
 	                	"dspName": "<*||string||comment:DSP名称>",
 	                	"mediaId": "<*||string||comment:媒体ID>",

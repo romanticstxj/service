@@ -30,7 +30,8 @@
     ${alias}.id, ${alias}.policy_id, SUM(${alias}.reqs) reqs, SUM(${alias}.bids) bids, SUM(${alias}.timeouts) timeouts, 
     SUM(${alias}.errs) errs, SUM(${alias}.wins) wins, SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, 
     SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.income)/100000 as DECIMAL(15,2)) income, 
-    CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost
+    CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost,
+    p.name policyName, p.type policyType, dd.name policyTypeName, rp.dsp_id, d.name dspName
   </sql>
   
   <sql id="mediaAuthCondition">
@@ -53,11 +54,11 @@
   
   <select id="queryPolicyReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> 
-    ,p.name policyName, rp.dsp_id, d.name dspName
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_policy rp
     INNER JOIN mad_sys_policy p ON rp.policy_id = p.id
+    INNER JOIN mad_dict_deliverytype dd ON p.type = dd.code
     INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="policyAuthCondition"/>
@@ -78,11 +79,11 @@
   
   <select id="queryRtPolicyReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> 
-    , p.name policyName, rp.dsp_id, d.name dspName
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_policy_rt rp
     INNER JOIN mad_sys_policy p ON rp.policy_id = p.id
+    INNER JOIN mad_dict_deliverytype dd ON p.type = dd.code
     INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="policyAuthCondition"/>
@@ -103,12 +104,13 @@
   
   <select id="queryPolicyMediaReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include>
-    ,p.name policyName, rp.dsp_id, d.name dspName, rp.media_id, m.name mediaName
+    , rp.media_id, m.name mediaName
     <if test="hasAdspace != null and hasAdspace == true"> ,rp.adspace_id, a.name adspaceName </if>
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_policy_media rp
     INNER JOIN mad_sys_policy p ON rp.policy_id = p.id
+    INNER JOIN mad_dict_deliverytype dd ON p.type = dd.code
     INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     INNER JOIN mad_sys_media m ON rp.media_id = m.id
     <if test="hasAdspace != null and hasAdspace == true"> INNER JOIN mad_sys_adspace a ON rp.adspace_id = a.id </if>
@@ -143,12 +145,12 @@
   
   <select id="queryPolicyLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT <include refid="Base_Column_List"><property name="alias" value="rp" /></include> 
-    ,p.name policyName, rp.location, l.city_name cityName, l.province_name provinceName, l.country_name countryName
-    , rp.dsp_id, d.name dspName
+    , rp.location, l.city_name cityName, l.province_name provinceName, l.country_name countryName
     <if test="hasDate != null and hasDate == true"> ,rp.date </if>
     <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
     FROM mad_report_policy_location rp
     INNER JOIN mad_sys_policy p ON rp.policy_id = p.id
+    INNER JOIN mad_dict_deliverytype dd ON p.type = dd.code
     INNER JOIN mad_dict_location l ON rp.location = l.code
     INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
