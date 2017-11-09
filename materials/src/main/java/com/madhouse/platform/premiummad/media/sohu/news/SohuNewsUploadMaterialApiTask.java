@@ -176,7 +176,7 @@ public class SohuNewsUploadMaterialApiTask {
 			}
 			
 			String request = sohuAuth.setHttpMethod("POST").setApiUrl(materialCreateUrl).setParamMap(paramMap).buildRequest();
-			LOGGER.info("request: " + JSON.toJSONString(paramMap));
+			LOGGER.info("request: " + request);
 			String result = HttpUtils.post(materialCreateUrl, request);
 			LOGGER.info("response: " + result);
 			if (!StringUtils.isEmpty(result)) {
