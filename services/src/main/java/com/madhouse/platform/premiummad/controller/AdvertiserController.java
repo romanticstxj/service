@@ -15,6 +15,7 @@ import com.madhouse.platform.premiummad.dto.AuditDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.rule.AdvertiserAuditRule;
+import com.madhouse.platform.premiummad.rule.MaterialAuditRule;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
@@ -62,6 +63,7 @@ public class AdvertiserController {
 	@RequestMapping("/audit")
     public ResponseDto<Advertiser> audit(@RequestBody AuditDto dto,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
+		MaterialAuditRule.validateDto(dto);
 		String idsStr = dto.getIds();
 		Integer status = dto.getStatus();
 		String reason = dto.getReason();
