@@ -65,7 +65,6 @@
 	    <result column="media_deal_id" jdbcType="VARCHAR" property="mediaDealId" />
 	    <result column="bid_type" jdbcType="BIT" property="bidType" />
 	    <result column="bid_floor" jdbcType="INTEGER" property="bidFloor" />
-	    <result column="limit_reqs" jdbcType="INTEGER" property="limitReqs" />
 	    <result column="status" jdbcType="BIT" property="status" />
 	    <result column="created_user" jdbcType="INTEGER" property="createdUser" />
 	    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
