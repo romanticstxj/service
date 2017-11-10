@@ -41,14 +41,41 @@
     
     <select id="queryAll" resultMap="baseResult">
 		SELECT
-            t1.*
-        FROM
-            mad_sys_adspace t1,
-            mad_sys_media t2
-        WHERE
-            t1.media_id = t2.id
-        AND t1. STATUS > 0
-        AND t2. STATUS > 0
+			t1.id,
+			t1.name,
+			t1.adspace_key,
+			t1.media_id,
+			t1.adblock_id,
+			t1.terminal_type,
+			t1.terminal_os,
+			t1.support_https,
+			bid_type,
+			t1.bid_floor,
+			CONVERT ((layout / 100), signed) AS adtype,
+			t1.layout,
+			t1.material_type,
+			t1.material_size,
+			t1.material_max_kbyte,
+			t1.material_count,
+			material_duration,
+			t1.logo_type,
+			t1.logo_size,
+			t1.logo_max_kbyte,
+			t1.cover_type,
+			t1.cover_size,
+			t1.cover_max_kbyte,
+			t1.title_max_length,
+			t1.desc_max_length,
+			t1.content_max_length,
+			t1. STATUS,
+			t1.description
+		FROM
+			mad_sys_adspace t1,
+			mad_sys_media t2
+		WHERE
+			t1.media_id = t2.id
+		AND t1. STATUS > 0
+		AND t2. STATUS > 0
 	</select>
 	<select id="queryMediaMappingMetaData" resultMap="mediaMappingResult">
 		SELECT
