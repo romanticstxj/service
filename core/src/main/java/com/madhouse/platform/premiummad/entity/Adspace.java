@@ -16,6 +16,7 @@ public class Adspace extends BaseEntity{
 	private Integer bidType;
 	private Integer bidFloor;
 	private Integer adType;	//广告类型
+	private String adTypeName; //广告位类型名称
 	private Integer layout;	//广告形式
 	private String layoutName;
 	private Integer materialType;
@@ -294,5 +295,13 @@ public class Adspace extends BaseEntity{
 
 	public void setContentMaxLength(Integer contentMaxLength) {
 		this.contentMaxLength = contentMaxLength;
+	}
+
+	public String getAdTypeName() {
+		return adTypeName;
+	}
+
+	public void setAdTypeName(String adTypeName) {
+		this.adTypeName = adTypeName;
 	}
 }

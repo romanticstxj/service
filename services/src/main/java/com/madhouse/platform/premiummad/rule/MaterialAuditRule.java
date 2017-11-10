@@ -33,9 +33,11 @@ public class MaterialAuditRule extends BaseRule{
 	 * @param entity
 	 */
 	private static void convertMaterialAuditMode(Material entity) {
-		String impUrls = entity.getImpUrls();
-		String formalizedImpUrls = StringUtils.formalizeUrls(impUrls);
-		entity.setImpUrls(formalizedImpUrls);
+		if(entity != null){
+			String impUrls = entity.getImpUrls();
+			String formalizedImpUrls = StringUtils.formalizeUrls(impUrls);
+			entity.setImpUrls(formalizedImpUrls);
+		}
 	}
 	
 	/**
