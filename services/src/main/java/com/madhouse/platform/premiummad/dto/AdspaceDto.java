@@ -42,7 +42,7 @@ public class AdspaceDto implements Serializable{
 	@NotNullAndBlank
 	private Integer adType;	//广告类型
 	
-	private Integer adTypeName;	//广告类型
+	private String adTypeName;	//广告类型
 	@NotNullAndBlank
 	private Integer layout;	//广告形式
 	
@@ -330,11 +330,11 @@ public class AdspaceDto implements Serializable{
 		this.contentMaxLength = contentMaxLength;
 	}
 
-	public Integer getAdTypeName() {
+	public String getAdTypeName() {
 		return adTypeName;
 	}
 
-	public void setAdTypeName(Integer adTypeName) {
+	public void setAdTypeName(String adTypeName) {
 		this.adTypeName = adTypeName;
 	}
 
