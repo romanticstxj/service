@@ -105,12 +105,12 @@ public class SohuNewsUploadMaterialApiTask {
 		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoBigPicTxtSize.size640_396 + ")");//大图信息流 640*396
 		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoBigPicTxtSize.size644_322 + ")");//大图信息流 644*322
 
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size140_112 + ")");//小图信息流 140*112
-		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size360_234 + ")");//小图信息流 360*234
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size140_112 + ")");//小图信息流 140*112
-		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size360_234 + ")");//小图信息流 360*234
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size140_112 + ")");//小图信息流 140*112
-		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size360_234 + ")");//小图信息流 360*234
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size600_88 + ")");//文章页底部信息流尺寸 600*88
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size460_69 + ")");//文章页底部信息流尺寸 460*69
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size1020_150 + ")");//文章页底部信息流尺寸 1020*150
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size480_104 + ")");//文章页底部信息流尺寸 480*104
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size640_139 + ")");//文章页底部信息流尺寸 640*139
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size1080_234 + ")");//文章页底部信息流尺寸 1080*234
 	}
 	
 	/**
