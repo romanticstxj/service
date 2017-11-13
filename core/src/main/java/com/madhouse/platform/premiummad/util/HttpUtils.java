@@ -112,12 +112,12 @@ public class HttpUtils {
 		return map;
 	}
 
-	public static String post(String url, String date) {
+	public static String post(String url, String data) {
 		String result = null;
 		CloseableHttpResponse response = null;
 		try {
 			httpClient = HttpClients.createDefault();
-			StringEntity stringEntity = new StringEntity(date, Consts.UTF_8);
+			StringEntity stringEntity = new StringEntity(data, Consts.UTF_8);
 			HttpPost post = new HttpPost(url);
 			post.setConfig(requestConfig);
 			post.setHeader(getHeaderByUrl(url));
