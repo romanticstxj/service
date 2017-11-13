@@ -21,6 +21,7 @@
 	    <result column="limit_type" jdbcType="TINYINT" property="limitType" />
 	    <result column="limit_reqs" jdbcType="INTEGER" property="limitReqs" />
 	    <result column="limit_speed" jdbcType="BIT" property="limitSpeed" />
+	    <result column="returned_quantity_ratio" jdbcType="INTEGER" property="returnedQuantityRatio" />
 	    <result column="status" jdbcType="BIT" property="status" />
 	    <result column="description" jdbcType="VARCHAR" property="description" />
 	    <result column="created_user" jdbcType="INTEGER" property="createdUser" />
@@ -46,6 +47,7 @@
 	    <result column="limit_type" jdbcType="TINYINT" property="limitType" />
 	    <result column="limit_reqs" jdbcType="INTEGER" property="limitReqs" />
 	    <result column="limit_speed" jdbcType="BIT" property="limitSpeed" />
+	    <result column="returned_quantity_ratio" jdbcType="INTEGER" property="returnedQuantityRatio" />
 	    <result column="status" jdbcType="BIT" property="status" />
 	    <result column="description" jdbcType="VARCHAR" property="description" />
 	    <result column="created_user" jdbcType="INTEGER" property="createdUser" />
@@ -58,16 +60,17 @@
 	        column="id" select="com.madhouse.platform.premiummad.dao.PolicyAdspaceDao.getPolicyAdspace"/>  
     </resultMap>
     
+    <sql id="Base_List">
+	    ${alias}.id, ${alias}.id deal_id, ${alias}.name, ${alias}.type, ${alias}.weight, ${alias}.start_date, 
+	    ${alias}.end_date, ${alias}.status
+  	</sql>
+    
   	<sql id="Base_Column_List">
 	    ${alias}.id, ${alias}.id deal_id, ${alias}.name, ${alias}.type, ${alias}.weight, ${alias}.start_date, ${alias}.end_date, 
 	    ${alias}.time_targeting, ${alias}.location_targeting, ${alias}.os_targeting, ${alias}.conn_targeting, 
-	    ${alias}.limit_type, ${alias}.limit_reqs, ${alias}.limit_speed, ${alias}.status, ${alias}.description, ${alias}.created_user, ${alias}.created_time, 
+	    ${alias}.limit_type, ${alias}.limit_reqs, ${alias}.limit_speed, ${alias}.returned_quantity_ratio, 
+	    ${alias}.status, ${alias}.description, ${alias}.created_user, ${alias}.created_time, 
 	    ${alias}.updated_user, ${alias}.updated_time
-  	</sql>
-  	
-  	<sql id="Base_List">
-	    ${alias}.id, ${alias}.id deal_id, ${alias}.name, ${alias}.type, ${alias}.weight, ${alias}.start_date, 
-	    ${alias}.end_date, ${alias}.status
   	</sql>
   
   	<select id="selectByPrimaryKey" parameterType="integer" resultMap="baseResultMap">
@@ -136,6 +139,9 @@
       <if test="limitSpeed != null">
         limit_speed,
       </if>
+      <if test="limitSpeed != null">
+        returned_quantity_ratio,
+      </if>
       <if test="description != null">
         description,
       </if>
@@ -190,6 +196,9 @@
       <if test="limitSpeed != null">
         #{limitSpeed,jdbcType=BIT},
       </if>
+      <if test="limitSpeed != null">
+        #{returnedQuantityRatio,jdbcType=INTEGER},
+      </if>
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
       </if>
@@ -223,6 +232,7 @@
         limit_type = #{limitType,jdbcType=TINYINT},
         limit_reqs = #{limitReqs,jdbcType=INTEGER},
         limit_speed = #{limitSpeed,jdbcType=BIT},
+        returned_quantity_ratio = #{returnedQuantityRatio,jdbcType=INTEGER},
         description = #{description,jdbcType=VARCHAR},
         updated_user = #{updatedUser,jdbcType=INTEGER},
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
