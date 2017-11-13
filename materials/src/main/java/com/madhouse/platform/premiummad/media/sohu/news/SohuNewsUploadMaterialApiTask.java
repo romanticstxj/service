@@ -366,7 +366,7 @@ public class SohuNewsUploadMaterialApiTask {
 				// 物料地址：slave:
 				// [{""source"":""示例广告标题"",""attr"":""title""},{""source"":""http://www.example.com/ad/video.mp4"",""attr"":""video""}]"
 				SohuSlave text = new SohuSlave();
-				text.setSource(StringUtils.isEmpty(material.getDescription()) ? " " : material.getAdMaterials());// 物料.mp4
+				text.setSource(material.getAdMaterials().split("\\|")[0]);// 物料.mp4
 				text.setAttr("video");
 				slave.add(text);
 				
@@ -375,7 +375,7 @@ public class SohuNewsUploadMaterialApiTask {
 				title.setAttr("title");
 				slave.add(title);
 				
-				String coverPath = StringUtils.isEmpty(material.getCover()) ? "" : material.getCover();
+				String coverPath = StringUtils.isEmpty(material.getCover()) ? " " : material.getCover();
 				uploadMaterialRequest.setFile_source(coverPath);// 重新赋值：图片封面地址
 				uploadMaterialRequest.setTemplate("info_video");
 				LOGGER.info("material-souhuNews:materialId:" + material.getId() + "非开屏:视频信息流");
@@ -438,7 +438,7 @@ public class SohuNewsUploadMaterialApiTask {
 		paramMap.put("expire", uploadMaterialRequest.getExpire());
 		paramMap.put("delivery_type", uploadMaterialRequest.getDelivery_type());
 		paramMap.put("campaign_id", uploadMaterialRequest.getCampaign_id());
-		paramMap.put("ad_source", uploadMaterialRequest.getAd_source());
+//		paramMap.put("ad_source", uploadMaterialRequest.getAd_source());
 		paramMap.put("slave", JSON.toJSONString(uploadMaterialRequest.getSlave()));
 		paramMap.put("material_type", uploadMaterialRequest.getMaterial_type());
 		if (null != uploadMaterialRequest.getTemplate()) {
