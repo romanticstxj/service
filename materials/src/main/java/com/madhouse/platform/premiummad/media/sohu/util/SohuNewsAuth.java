@@ -124,7 +124,7 @@ public class SohuNewsAuth {
 		for (Map.Entry<String, Object> entry : paramMap.entrySet()) {
 			String paramKey = entry.getKey();
 			Object paramValue = entry.getValue();
-			sb.append(paramKey).append(EQ).append(paramValue).append(AND);
+			sb.append(paramKey).append(EQ).append(paramValue == null ? "" : paramValue).append(AND);
 		}
 		return sb.toString().substring(0, sb.length() - 1);
 	}

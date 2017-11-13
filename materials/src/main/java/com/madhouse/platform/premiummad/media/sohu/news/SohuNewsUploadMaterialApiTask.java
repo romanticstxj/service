@@ -438,7 +438,7 @@ public class SohuNewsUploadMaterialApiTask {
 		paramMap.put("expire", uploadMaterialRequest.getExpire());
 		paramMap.put("delivery_type", uploadMaterialRequest.getDelivery_type());
 		paramMap.put("campaign_id", uploadMaterialRequest.getCampaign_id());
-//		paramMap.put("ad_source", uploadMaterialRequest.getAd_source());
+		paramMap.put("ad_source", uploadMaterialRequest.getAd_source());
 		paramMap.put("slave", JSON.toJSONString(uploadMaterialRequest.getSlave()));
 		paramMap.put("material_type", uploadMaterialRequest.getMaterial_type());
 		if (null != uploadMaterialRequest.getTemplate()) {
