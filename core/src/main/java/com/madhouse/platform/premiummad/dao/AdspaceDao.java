@@ -52,6 +52,7 @@ public interface AdspaceDao {
 	/**
 	 * 获取已启用的广告位
 	 * 
+	 * @param dspId
 	 * @return
 	 */
 	List<AdspaceUnion> selectAuditedAdspaces(@Param("dspId") Integer dspId);

@@ -8,13 +8,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
@@ -105,12 +103,12 @@ public class SohuNewsUploadMaterialApiTask {
 		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoBigPicTxtSize.size640_396 + ")");//大图信息流 640*396
 		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoBigPicTxtSize.size644_322 + ")");//大图信息流 644*322
 
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size140_112 + ")");//小图信息流 140*112
-		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size360_234 + ")");//小图信息流 360*234
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size140_112 + ")");//小图信息流 140*112
-		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size360_234 + ")");//小图信息流 360*234
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size140_112 + ")");//小图信息流 140*112
-		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size360_234 + ")");//小图信息流 360*234
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size600_88 + ")");//文章页底部信息流尺寸 600*88
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size460_69 + ")");//文章页底部信息流尺寸 460*69
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size1020_150 + ")");//文章页底部信息流尺寸 1020*150
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size480_104 + ")");//文章页底部信息流尺寸 480*104
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size640_139 + ")");//文章页底部信息流尺寸 640*139
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size1080_234 + ")");//文章页底部信息流尺寸 1080*234
 	}
 	
 	/**
@@ -287,7 +285,7 @@ public class SohuNewsUploadMaterialApiTask {
 					String[] track = impTrackUrlArray[i].split("`");
 					impUrls.add(MacroReplaceUtil.macroReplaceImageUrl(macroMap, track[1])); // 宏替换
 					// 媒体最多支持5个
-					if (impUrls.size() == 3) {
+					if (impUrls.size() == 4) {
 						break;
 					}
 				}
@@ -305,7 +303,7 @@ public class SohuNewsUploadMaterialApiTask {
 				for (int i = 0; i < clkTrackUrlArray.length; i++) {
 					clkTrackUrl.add(MacroReplaceUtil.macroReplaceImageUrl(macroMap, clkTrackUrlArray[i]));// 宏替换
 					// 媒体最多设置 5 个
-					if (i == 3) {
+					if (clkTrackUrl.size() == 4) {
 						break;
 					}
 				}
@@ -346,12 +344,12 @@ public class SohuNewsUploadMaterialApiTask {
 
 			List<SohuSlave> slave = new ArrayList<SohuSlave>();
 			SohuSlave title = new SohuSlave();
-			title.setSource(StringUtils.isEmpty(material.getTitle()) ? " " : material.getTitle());
+			title.setSource(getValueNoNull(material.getTitle()));
 			title.setAttr("ad_txt");
 			slave.add(title);
 			
 			SohuSlave text = new SohuSlave();
-			text.setSource(StringUtils.isEmpty(material.getDescription()) ? " " : material.getDescription());
+			text.setSource(getValueNoNull(material.getDescription()));
 			text.setAttr("share_txt");
 			slave.add(text);
 			uploadMaterialRequest.setSlave(slave);
@@ -366,29 +364,29 @@ public class SohuNewsUploadMaterialApiTask {
 				// 物料地址：slave:
 				// [{""source"":""示例广告标题"",""attr"":""title""},{""source"":""http://www.example.com/ad/video.mp4"",""attr"":""video""}]"
 				SohuSlave text = new SohuSlave();
-				text.setSource(StringUtils.isEmpty(material.getDescription()) ? " " : material.getAdMaterials());// 物料.mp4
+				
+				text.setSource(material.getAdMaterials().split("\\|")[0]);// 物料.mp4
 				text.setAttr("video");
 				slave.add(text);
 				
 				SohuSlave title = new SohuSlave();
-				title.setSource(StringUtils.isEmpty(material.getTitle()) ? " " : material.getTitle());
+				title.setSource(getValueNoNull(material.getTitle()));
 				title.setAttr("title");
 				slave.add(title);
-				
-				String coverPath = StringUtils.isEmpty(material.getCover()) ? "" : material.getCover();
-				uploadMaterialRequest.setFile_source(coverPath);// 重新赋值：图片封面地址
+
+				uploadMaterialRequest.setFile_source(getValueNoNull((material.getCover())));// 重新赋值：图片封面地址
 				uploadMaterialRequest.setTemplate("info_video");
 				LOGGER.info("material-souhuNews:materialId:" + material.getId() + "非开屏:视频信息流");
 			} else if (Layout.LO30001.getValue() == material.getLayout().intValue()) {
 				// 小图信息流
 				if (SohuConstant.InfoPicTxtSize.size140_112.equals(material.getSize()) || SohuConstant.InfoPicTxtSize.size360_234.equals(material.getSize())) {
 					SohuSlave text = new SohuSlave();
-					text.setSource(StringUtils.isEmpty(material.getDescription()) ? " " : material.getDescription());
+					text.setSource(getValueNoNull(material.getDescription()));
 					text.setAttr("summary");
 					slave.add(text);
 					
 					SohuSlave title = new SohuSlave();
-					title.setSource(StringUtils.isEmpty(material.getTitle()) ? " " : material.getTitle());
+					title.setSource(getValueNoNull(material.getTitle()));
 					title.setAttr("title");
 					slave.add(title);
 					
@@ -399,7 +397,7 @@ public class SohuNewsUploadMaterialApiTask {
 				// 大图信息流
 				if (SohuConstant.InfoBigPicTxtSize.size640_396.equals(material.getSize()) || SohuConstant.InfoBigPicTxtSize.size644_322.equals(material.getSize())) {
 					SohuSlave text = new SohuSlave();
-					text.setSource(StringUtils.isEmpty(material.getTitle()) ? " " : material.getTitle());
+					text.setSource(getValueNoNull(material.getTitle()));
 					text.setAttr("title");
 					slave.add(text);
 					uploadMaterialRequest.setTemplate("info_bigpictxt");
@@ -414,7 +412,7 @@ public class SohuNewsUploadMaterialApiTask {
 						SohuConstant.PicturetxtSize.size640_139.equals(material.getSize()) || 
 						SohuConstant.PicturetxtSize.size1080_234.equals(material.getSize())) {
 					SohuSlave text = new SohuSlave();
-					text.setSource(StringUtils.isEmpty(material.getTitle()) ? " " : material.getTitle());
+					text.setSource(getValueNoNull(material.getTitle()));
 					text.setAttr("txt");
 					slave.add(text);
 					uploadMaterialRequest.setTemplate("picturetxt");
@@ -493,5 +491,15 @@ public class SohuNewsUploadMaterialApiTask {
 			return 1;
 		}
 		return 0;
+	}
+	
+	/**
+	 * 为null时返回""
+	 * 
+	 * @param originValue
+	 * @return
+	 */
+	private String getValueNoNull(String originValue) {
+		return StringUtils.isEmpty(originValue) ? "" : originValue;
 	}
 }

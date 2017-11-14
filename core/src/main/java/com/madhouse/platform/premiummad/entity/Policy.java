@@ -32,6 +32,8 @@ public class Policy extends BaseEntity{
     private Integer limitReqs;
 
     private Byte limitSpeed; //投放速度(1:加速投放, 2:匀速投放)
+    
+    private Integer returnedQuantityRatio; //流量返还比（大于100的整数，为返还流量点数 + 购买流量）
 
     private Byte status;
 
@@ -391,6 +393,14 @@ public class Policy extends BaseEntity{
 
 	public void setDealId(Integer dealId) {
 		this.dealId = dealId;
+	}
+
+	public Integer getReturnedQuantityRatio() {
+		return returnedQuantityRatio;
+	}
+
+	public void setReturnedQuantityRatio(Integer returnedQuantityRatio) {
+		this.returnedQuantityRatio = returnedQuantityRatio;
 	}
 
 }

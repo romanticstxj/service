@@ -14,7 +14,6 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dto.AuditDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.rule.BaseRule;
 import com.madhouse.platform.premiummad.rule.MaterialAuditRule;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
@@ -63,7 +62,7 @@ public class MaterialController {
 	@RequestMapping("/audit")
     public ResponseDto<Material> audit(@RequestBody AuditDto dto,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
-		BaseRule.validateDto(dto);
+		MaterialAuditRule.validateDto(dto);
 		String idsStr = dto.getIds();
 		Integer status = dto.getStatus();
 		String reason = dto.getReason();

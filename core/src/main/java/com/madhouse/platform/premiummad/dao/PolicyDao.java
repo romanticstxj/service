@@ -57,14 +57,14 @@ public interface PolicyDao {
     
     int checkName(String name);
     
-    Policy selectCascadedlyByPrimaryKey(@Param("id") Integer id, @Param("type") Integer type);
+    Policy selectCascadedlyByPrimaryKey(Integer id);
 
-    Policy selectByPrimaryKey(@Param("id") Integer id, @Param("type") Integer type);
-    
 	int update(Policy policy);
 	
 	List<Policy> queryAllByParams(@Param("idStrs") List<Integer> idStrs, @Param("status") Integer status, 
 			@Param("type") Integer type);
 
 	int updateStatus(Policy policy);
+	
+	Policy selectPolicy(Integer id);
 }
