@@ -18,6 +18,8 @@ public class ReportPolicy extends BaseEntity{
      * @mbggenerated Fri Aug 04 10:22:25 CST 2017
      */
     private Integer policyId;
+
+    private Integer policyDealId;
     
     private String policyName;
     
@@ -749,6 +751,14 @@ public class ReportPolicy extends BaseEntity{
 
 	public void setPolicyTypeName(String policyTypeName) {
 		this.policyTypeName = policyTypeName;
+	}
+
+	public Integer getPolicyDealId() {
+		return policyDealId;
+	}
+
+	public void setPolicyDealId(Integer policyDealId) {
+		this.policyDealId = policyDealId;
 	}
 	
 }
