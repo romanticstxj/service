@@ -61,7 +61,7 @@ public class PolicyDto implements Serializable{
     private Integer limitReqs;
 
     private Byte limitSpeed; //投放速度(1:加速投放, 2:匀速投放)
-    @NotNullAndBlank
+    
     private Integer returnedQuantityRatio; //流量返还比（大于100的整数，为返还流量点数 + 购买流量）
 
     @NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_STATUS, groups=UpdateStatus.class)
