@@ -194,7 +194,7 @@ public class BeanUtils {
 	 * @param obj
 	 * @return
 	 */
-	public static String hasEmptyField1(Object obj) {
+	public static String processEmptyField(Object obj) {
 		if (obj != null) {
 			Class<?> clazz = obj.getClass();
 			Field[] fields = clazz.getDeclaredFields();

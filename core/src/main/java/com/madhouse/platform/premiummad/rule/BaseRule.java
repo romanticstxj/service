@@ -79,6 +79,12 @@ public class BaseRule {
         	throw new BusinessException(StatusCode.SC20002, FieldType.getChineseMessage(fieldName) + "不能为空");
 	}
 	
+	public static void validateAndProcessDto(Object dto){
+		String fieldName = BeanUtils.processEmptyField(dto);
+        if (fieldName != null)
+        	throw new BusinessException(StatusCode.SC20002, FieldType.getChineseMessage(fieldName) + "不能为空");
+	}
+	
 	/**
 	 * url 校验
 	 * 

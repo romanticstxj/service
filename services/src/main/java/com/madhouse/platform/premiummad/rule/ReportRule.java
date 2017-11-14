@@ -35,7 +35,6 @@ public class ReportRule extends BaseRule{
 	}
 	
 	public static void validateDashboardReportDto(ReportDto reportDto) throws ParseException{
-		reportDto.setType(SystemConstant.DB.TYPE_DEFAULT);
 		BaseRule.validateDto(reportDto);
         
         if(reportDto.getType() < SystemConstant.DB.TYPE_MIN_VAL || reportDto.getType() > SystemConstant.DB.TYPE_MAX_VAL){
@@ -61,7 +60,6 @@ public class ReportRule extends BaseRule{
 
 	public static ReportCriterion convertToModel(ReportDto dto, ReportCriterion entity) throws ParseException {
 		BeanUtils.copyProperties(dto, entity);
-        BeanUtils.setCreateParam(entity);
         
 		Date startDate = DateUtils.getFormatDateByPattern("yyyyMMdd", dto.getStartDate());
 		Date endDate = DateUtils.getFormatDateByPattern("yyyyMMdd", dto.getEndDate());
