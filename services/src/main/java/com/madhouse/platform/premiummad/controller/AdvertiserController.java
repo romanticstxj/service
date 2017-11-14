@@ -48,7 +48,6 @@ public class AdvertiserController {
 	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<Advertiser>());
 		} else{
 			List<Advertiser> advertisers = advertiserService.queryAll(mediaIdList);
-			AdvertiserAuditRule.convertToDtoList(advertisers);
 	        return ResponseUtils.response(StatusCode.SC20000,advertisers);
 		}
 	}

@@ -41,6 +41,8 @@ public class AdspaceDto implements Serializable{
 	private Double bidFloor;
 	@NotNullAndBlank
 	private Integer adType;	//广告类型
+	
+	private String adTypeName;	//广告类型
 	@NotNullAndBlank
 	private Integer layout;	//广告形式
 	
@@ -328,18 +330,27 @@ public class AdspaceDto implements Serializable{
 		this.contentMaxLength = contentMaxLength;
 	}
 
+	public String getAdTypeName() {
+		return adTypeName;
+	}
+
+	public void setAdTypeName(String adTypeName) {
+		this.adTypeName = adTypeName;
+	}
+
 	@Override
 	public String toString() {
 		return "AdspaceDto [id=" + id + ", status=" + status + ", name=" + name + ", adspaceKey=" + adspaceKey
 				+ ", mediaId=" + mediaId + ", mediaName=" + mediaName + ", mediaStatus=" + mediaStatus
 				+ ", terminalType=" + terminalType + ", terminalOs=" + terminalOs + ", supportHttps=" + supportHttps
-				+ ", bidType=" + bidType + ", bidFloor=" + bidFloor + ", adType=" + adType + ", layout=" + layout
-				+ ", layoutName=" + layoutName + ", materialType=" + materialType + ", materialSize=" + materialSize
-				+ ", materialMaxKbyte=" + materialMaxKbyte + ", materialCount=" + materialCount + ", materialDuration="
-				+ materialDuration + ", logoType=" + logoType + ", logoSize=" + logoSize + ", logoMaxKbyte="
-				+ logoMaxKbyte + ", titleMaxLength=" + titleMaxLength + ", descMaxLength=" + descMaxLength
-				+ ", contentMaxLength=" + contentMaxLength + ", coverType=" + coverType + ", coverSize=" + coverSize
-				+ ", coverMaxKbyte=" + coverMaxKbyte + ", description=" + description + ", createdTime=" + createdTime
-				+ "]";
+				+ ", bidType=" + bidType + ", bidFloor=" + bidFloor + ", adType=" + adType + ", adTypeName="
+				+ adTypeName + ", layout=" + layout + ", layoutName=" + layoutName + ", materialType=" + materialType
+				+ ", materialSize=" + materialSize + ", materialMaxKbyte=" + materialMaxKbyte + ", materialCount="
+				+ materialCount + ", materialDuration=" + materialDuration + ", logoType=" + logoType + ", logoSize="
+				+ logoSize + ", logoMaxKbyte=" + logoMaxKbyte + ", titleMaxLength=" + titleMaxLength
+				+ ", descMaxLength=" + descMaxLength + ", contentMaxLength=" + contentMaxLength + ", coverType="
+				+ coverType + ", coverSize=" + coverSize + ", coverMaxKbyte=" + coverMaxKbyte + ", description="
+				+ description + ", createdTime=" + createdTime + "]";
 	}
+
 }

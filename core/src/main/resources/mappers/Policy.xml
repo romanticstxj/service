@@ -21,6 +21,7 @@
 	    <result column="limit_type" jdbcType="TINYINT" property="limitType" />
 	    <result column="limit_reqs" jdbcType="INTEGER" property="limitReqs" />
 	    <result column="limit_speed" jdbcType="BIT" property="limitSpeed" />
+	    <result column="returned_quantity_ratio" jdbcType="INTEGER" property="returnedQuantityRatio" />
 	    <result column="status" jdbcType="BIT" property="status" />
 	    <result column="description" jdbcType="VARCHAR" property="description" />
 	    <result column="created_user" jdbcType="INTEGER" property="createdUser" />
@@ -28,7 +29,7 @@
 	    <result column="updated_user" jdbcType="INTEGER" property="updatedUser" />
 	    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
     	<collection property="policyDsps" ofType="com.madhouse.platform.premiummad.entity.PolicyDsp" 
-        	column="id" select="getPolicyDsp" />
+        	column="id" select="com.madhouse.platform.premiummad.dao.PolicyDspDao.getPolicyDsp" />
   	</resultMap>
   
   	<resultMap id="baseCascadedMappingResult" type="com.madhouse.platform.premiummad.entity.Policy">
@@ -46,6 +47,7 @@
 	    <result column="limit_type" jdbcType="TINYINT" property="limitType" />
 	    <result column="limit_reqs" jdbcType="INTEGER" property="limitReqs" />
 	    <result column="limit_speed" jdbcType="BIT" property="limitSpeed" />
+	    <result column="returned_quantity_ratio" jdbcType="INTEGER" property="returnedQuantityRatio" />
 	    <result column="status" jdbcType="BIT" property="status" />
 	    <result column="description" jdbcType="VARCHAR" property="description" />
 	    <result column="created_user" jdbcType="INTEGER" property="createdUser" />
@@ -53,50 +55,22 @@
 	    <result column="updated_user" jdbcType="INTEGER" property="updatedUser" />
 	    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
         <collection property="policyDsps" ofType="com.madhouse.platform.premiummad.entity.PolicyDsp" 
-        	column="id" select="getPolicyDsp" />
+        	column="id" select="com.madhouse.platform.premiummad.dao.PolicyDspDao.getPolicyDsp" />
 	    <collection property="policyAdspaces" ofType="com.madhouse.platform.premiummad.entity.PolicyAdspace" 
-	        column="id" select="getPolicyAdspace"/>  
+	        column="id" select="com.madhouse.platform.premiummad.dao.PolicyAdspaceDao.getPolicyAdspace"/>  
     </resultMap>
     
-   	<resultMap id="PolicyAdspaceResultMap" type="com.madhouse.platform.premiummad.entity.PolicyAdspace">
-   		<id column="id" jdbcType="INTEGER" property="id" />
-	    <result column="policy_id" jdbcType="INTEGER" property="policyId" />
-	    <result column="adspace_id" jdbcType="INTEGER" property="adspaceId" />
-	    <result column="media_deal_id" jdbcType="VARCHAR" property="mediaDealId" />
-	    <result column="bid_type" jdbcType="BIT" property="bidType" />
-	    <result column="bid_floor" jdbcType="INTEGER" property="bidFloor" />
-	    <result column="status" jdbcType="BIT" property="status" />
-	    <result column="created_user" jdbcType="INTEGER" property="createdUser" />
-	    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
-	    <result column="updated_user" jdbcType="INTEGER" property="updatedUser" />
-	    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-	    <association property="adspace" javaType="com.madhouse.platform.premiummad.entity.Adspace" 
-        	column="adspace_id" select="getPolicyAdspaceAdspace" />
-  	</resultMap>
-  	
-  	<resultMap id="PolicyDspResultMap" type="com.madhouse.platform.premiummad.entity.PolicyDsp" >
-	  	<id column="id" property="id" jdbcType="INTEGER" />
-	    <result column="policy_id" property="policyId" jdbcType="INTEGER" />
-	    <result column="dsp_id" property="dspId" jdbcType="INTEGER" />
-	    <result column="dsp_name" property="dspName" jdbcType="VARCHAR" />
-	    <result column="weight" property="weight" jdbcType="SMALLINT" />
-	    <result column="status" property="status" jdbcType="BIT" />
-	    <result column="created_user" property="createdUser" jdbcType="INTEGER" />
-	    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
-	    <result column="updated_user" property="updatedUser" jdbcType="INTEGER" />
-	    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
-  	</resultMap>
+    <sql id="Base_List">
+	    ${alias}.id, ${alias}.id deal_id, ${alias}.name, ${alias}.type, ${alias}.weight, ${alias}.start_date, 
+	    ${alias}.end_date, ${alias}.status
+  	</sql>
     
   	<sql id="Base_Column_List">
 	    ${alias}.id, ${alias}.id deal_id, ${alias}.name, ${alias}.type, ${alias}.weight, ${alias}.start_date, ${alias}.end_date, 
 	    ${alias}.time_targeting, ${alias}.location_targeting, ${alias}.os_targeting, ${alias}.conn_targeting, 
-	    ${alias}.limit_type, ${alias}.limit_reqs, ${alias}.limit_speed, ${alias}.status, ${alias}.description, ${alias}.created_user, ${alias}.created_time, 
+	    ${alias}.limit_type, ${alias}.limit_reqs, ${alias}.limit_speed, ${alias}.returned_quantity_ratio, 
+	    ${alias}.status, ${alias}.description, ${alias}.created_user, ${alias}.created_time, 
 	    ${alias}.updated_user, ${alias}.updated_time
-  	</sql>
-  	
-  	<sql id="Base_List">
-	    ${alias}.id, ${alias}.id deal_id, ${alias}.name, ${alias}.type, ${alias}.weight, ${alias}.start_date, 
-	    ${alias}.end_date, ${alias}.status
   	</sql>
   
   	<select id="selectByPrimaryKey" parameterType="integer" resultMap="baseResultMap">
@@ -115,33 +89,6 @@
 	    select <include refid="Base_Column_List"><property name="alias" value="p" /></include>
 	    from mad_sys_policy p
 	    where p.id = #{id}
-  	</select>
-  
-  	<select id="getPolicyAdspace" parameterType="java.lang.Integer" resultMap="PolicyAdspaceResultMap">
-	    select <include refid="com.madhouse.platform.premiummad.dao.PolicyAdspaceDao.PolicyAdspaceColumns">
-	    <property name="alias" value="pa"/></include>
-	    from mad_sys_policy_adspace pa
-	    where pa.policy_id = #{id,jdbcType=INTEGER}
-  	</select>
-  	
-  	<select id="getPolicyAdspaceAdspace" parameterType="java.lang.Integer" resultMap="com.madhouse.platform.premiummad.dao.AdspaceDao.baseResult">
-	    SELECT 
-		<include refid="com.madhouse.platform.premiummad.dao.AdspaceDao.baseColumns">
-            <property name="alias" value="a" />
-        </include>, l.name layoutName, m.name mediaName
-        FROM mad_sys_adspace a
-        INNER JOIN mad_dict_layout l ON a.layout = l.code AND a.adtype = l.ad_type AND a.terminal_type = l.terminal_type
-        INNER JOIN mad_sys_media m ON a.media_id = m.id
-        WHERE a.id = #{id,jdbcType=INTEGER}
-  	</select>
-  
-  	<select id="getPolicyDsp" parameterType="java.lang.Integer" resultMap="PolicyDspResultMap">
-	    select <include refid="com.madhouse.platform.premiummad.dao.PolicyDspDao.PolicyDspColumns">
-	    <property name="alias" value="pd" /></include>
-	    , p.name dsp_name
-	    FROM mad_sys_policy_dsp pd
-	    INNER JOIN mad_sys_dsp p ON pd.dsp_id = p.id
-	    where policy_id = #{id,jdbcType=INTEGER}
   	</select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -191,6 +138,9 @@
       </if>
       <if test="limitSpeed != null">
         limit_speed,
+      </if>
+      <if test="limitSpeed != null">
+        returned_quantity_ratio,
       </if>
       <if test="description != null">
         description,
@@ -246,6 +196,9 @@
       <if test="limitSpeed != null">
         #{limitSpeed,jdbcType=BIT},
       </if>
+      <if test="limitSpeed != null">
+        #{returnedQuantityRatio,jdbcType=INTEGER},
+      </if>
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
       </if>
@@ -279,6 +232,7 @@
         limit_type = #{limitType,jdbcType=TINYINT},
         limit_reqs = #{limitReqs,jdbcType=INTEGER},
         limit_speed = #{limitSpeed,jdbcType=BIT},
+        returned_quantity_ratio = #{returnedQuantityRatio,jdbcType=INTEGER},
         description = #{description,jdbcType=VARCHAR},
         updated_user = #{updatedUser,jdbcType=INTEGER},
         updated_time = #{updatedTime,jdbcType=TIMESTAMP},
