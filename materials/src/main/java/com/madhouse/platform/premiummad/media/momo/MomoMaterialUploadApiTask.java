@@ -152,6 +152,13 @@ public class MomoMaterialUploadApiTask {
 			LOGGER.info("Request: " + JSON.toJSONString(request));
 			String responseJson = momoHttpUtil.post(uploadMaterialUrl, paramMap);
 			LOGGER.info("Response: " + responseJson);
+			
+			// 502 Bad Gateway 异常处理
+			if (responseJson.contains("502 Bad Gateway")) {
+				LOGGER.error("服务器异常URL[" + uploadMaterialUrl + "]", responseJson);
+				return;
+			}
+
 			if (!StringUtils.isEmpty(responseJson)) {
 				MomoUploadResponse response = JSON.parseObject(responseJson, MomoUploadResponse.class);
 				// 200：成功

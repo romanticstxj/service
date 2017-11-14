@@ -100,6 +100,10 @@ public class MomoGetStatusApiTask {
 		LOGGER.info("Response: ", response);
 
 		// 处理返回的结果
+		if (response.contains("502 Bad Gateway")) {
+			LOGGER.error("服务器异常URL[" + statusUrl + "]", response);
+			return;
+		}
 		MomoGetStatusResponse statusResponse = JSON.parseObject(response, MomoGetStatusResponse.class);
 		List<MomoGetStatusResponse.DataBean> list = statusResponse.getData();
 		if (!StringUtils.isEmpty(list)) {
