@@ -72,7 +72,7 @@ public class PolicyServiceImpl implements IPolicyService {
 	}
 	
 	@Override
-	public Policy queryPolicyById(Integer id, Integer type, Integer userId) {
+	public Policy queryPolicyById(Integer id, Integer userId) {
 		List<Integer> adspaceIds = userAuthService.queryAdspaceIdList(userId, null);
 		Policy policy = policyDao.selectCascadedlyByPrimaryKey(id);
 		List<PolicyAdspace> policyAdspaces = policy.getPolicyAdspaces();
