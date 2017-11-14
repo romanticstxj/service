@@ -6,7 +6,7 @@ import com.madhouse.platform.premiummad.entity.Policy;
 
 public interface IPolicyService extends IBaseService<Policy>{
 	
-	Policy queryPolicyById(Integer id, Integer type, Integer userId);
+	Policy queryPolicyById(Integer id, Integer userId);
 
 	int update(Policy policy, Integer userId);
 

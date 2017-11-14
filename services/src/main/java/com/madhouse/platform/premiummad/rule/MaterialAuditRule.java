@@ -45,7 +45,7 @@ public class MaterialAuditRule extends BaseRule{
 	 * @param dto
 	 */
 	public static void validateDto(Object dto){
-		String fieldName = BeanUtils.hasEmptyField1(dto);
+		String fieldName = BeanUtils.processEmptyField(dto);
         if (fieldName != null)
         	throw new BusinessException(StatusCode.SC20002, FieldType.getChineseMessage(fieldName) + "不能为空");
 	}

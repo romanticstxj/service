@@ -42,6 +42,7 @@
     FROM mad_report_dsp rp
     INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <if test="dspId != null"> AND rp.dsp_id = #{dspId}</if>
     GROUP BY rp.dsp_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
@@ -64,6 +65,7 @@
     <if test="hasAdspace != null and hasAdspace == true"> INNER JOIN mad_sys_adspace a ON rp.adspace_id = a.id </if>
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="mediaAuthCondition"/>
+    <if test="dspId != null"> AND rp.dsp_id = #{dspId}</if>
     GROUP BY rp.dsp_id, rp.media_id 
     <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
@@ -95,6 +97,7 @@
     INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     INNER JOIN mad_dict_location l ON rp.location = l.code
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <if test="dspId != null"> AND rp.dsp_id = #{dspId}</if>
     GROUP BY rp.dsp_id, rp.location <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>
@@ -116,6 +119,7 @@
     FROM mad_report_dsp_rt rp
     INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <if test="dspId != null"> AND rp.dsp_id = #{dspId}</if>
     GROUP BY rp.dsp_id <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
     ORDER BY <choose>

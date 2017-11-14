@@ -89,7 +89,7 @@ public class PolicyController {
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
-		Policy policy = policyService.queryPolicyById(id, type, userId);
+		Policy policy = policyService.queryPolicyById(id, userId);
 		List<PolicyDto> result = PolicyRule.convertToDto(policy, new PolicyDto());
 		return ResponseUtils.response(StatusCode.SC20000, result);
 	}
