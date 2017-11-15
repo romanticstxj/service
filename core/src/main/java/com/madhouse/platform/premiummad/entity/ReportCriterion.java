@@ -26,6 +26,7 @@ public class ReportCriterion{
 	private Integer dspId; //Dsp filter条件
 	
 	private Integer policyId; //策略filter条件
+	private Integer policyType; //策略filter条件
 	
 	private Date startDate; //开始日期
 	
@@ -223,5 +224,13 @@ public class ReportCriterion{
 
 	public void setPolicyId(Integer policyId) {
 		this.policyId = policyId;
+	}
+
+	public Integer getPolicyType() {
+		return policyType;
+	}
+
+	public void setPolicyType(Integer policyType) {
+		this.policyType = policyType;
 	}
 }

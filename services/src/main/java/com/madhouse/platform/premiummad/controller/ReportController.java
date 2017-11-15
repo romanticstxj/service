@@ -108,12 +108,14 @@ public class ReportController {
     
     @RequestMapping("/policy")
     public ResponseDto<ReportPolicy> listPolicy(@RequestParam Integer type, @RequestParam Integer dims, 
-    		@RequestParam Integer realtime, @RequestParam String startDate, @RequestParam(required=false) Integer policyId,
+    		@RequestParam Integer realtime, @RequestParam String startDate, 
+    		@RequestParam(required=false) Integer policyId, @RequestParam(required=false) Integer policyType, 
     		@RequestParam String endDate, @RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, null);
 		List<Integer> policyList = userAuthService.queryPolicyIdList(userId, null);
 		ReportDto dto = new ReportDto.ReportDtoBuilder(type, dims, realtime, startDate, endDate)
-				.policyId(policyId).mediaIds(mediaIdList).policyIds(policyList).createNewReportDto();
+				.policyId(policyId).policyType(policyType).mediaIds(mediaIdList).policyIds(policyList)
+				.createNewReportDto();
 		return queryPolicyReport(dto);
     }
     
