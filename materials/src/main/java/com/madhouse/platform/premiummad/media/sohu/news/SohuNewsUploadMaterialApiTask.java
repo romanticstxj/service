@@ -21,6 +21,7 @@ import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
+import com.madhouse.platform.premiummad.media.sohu.constant.SohuConstant;
 import com.madhouse.platform.premiummad.media.sohu.request.SohuSlave;
 import com.madhouse.platform.premiummad.media.sohu.request.SohuUploadMaterialRequest;
 import com.madhouse.platform.premiummad.media.sohu.response.SohuResponse;
@@ -86,7 +87,7 @@ public class SohuNewsUploadMaterialApiTask {
 	/**
 	 * 支持的广告形式
 	 */
-	private static Set<Integer> supportedLayoutSet;
+	private static Set<String> supportedLayoutSet;
 	
 	static {
 		macroMap = new HashMap<String, String>();
@@ -94,10 +95,20 @@ public class SohuNewsUploadMaterialApiTask {
 		macroMap.put("__EXT2__", "%%EXT2%%");
 		macroMap.put("__EXT3__", "%%EXT3%%");
 		
-		supportedLayoutSet = new HashSet<Integer>();
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO10005.getValue()));//开屏图片
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()));//图文信息流
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30011.getValue()));//视频信息流
+		supportedLayoutSet = new HashSet<String>();
+		supportedLayoutSet.add(String.valueOf(Layout.LO10005.getValue()));//开屏图片
+		supportedLayoutSet.add(String.valueOf(Layout.LO30011.getValue()));//视频信息流
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size140_112 + ")");//小图信息流 140*112
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoPicTxtSize.size360_234 + ")");//小图信息流 360*234
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoBigPicTxtSize.size640_396 + ")");//大图信息流 640*396
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.InfoBigPicTxtSize.size644_322 + ")");//大图信息流 644*322
+
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size600_88 + ")");//文章页底部信息流尺寸 600*88
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size460_69 + ")");//文章页底部信息流尺寸 460*69
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size1020_150 + ")");//文章页底部信息流尺寸 1020*150
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size480_104 + ")");//文章页底部信息流尺寸 480*104
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size640_139 + ")");//文章页底部信息流尺寸 640*139
+		supportedLayoutSet.add(String.valueOf(Layout.LO30001.getValue()) + "(" + SohuConstant.PicturetxtSize.size1080_234 + ")");//文章页底部信息流尺寸 1080*234
 	}
 	
 	/**
@@ -163,8 +174,9 @@ public class SohuNewsUploadMaterialApiTask {
 			}
 			
 			String request = sohuAuth.setHttpMethod("POST").setApiUrl(materialCreateUrl).setParamMap(paramMap).buildRequest();
-			LOGGER.info("SoHuUploadMaterial-buildRequest info " + request);
+			LOGGER.info("request: " + request);
 			String result = HttpUtils.post(materialCreateUrl, request);
+			LOGGER.info("response: " + result);
 			if (!StringUtils.isEmpty(result)) {
 				SohuResponse sohutvResponse = JSON.parseObject(result, SohuResponse.class);
 				if (sohutvResponse != null) {
@@ -248,7 +260,8 @@ public class SohuNewsUploadMaterialApiTask {
 		}
 		
 		// 校验广告形式是否支持
-		if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout())))) {
+		String size = material.getLayout().intValue() == 301 ? "(" + material.getSize() +")" : "";
+		if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout()) + size))) {
 			errMsg.append("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
 			LOGGER.error(errMsg.toString());
 			return null;
@@ -272,7 +285,7 @@ public class SohuNewsUploadMaterialApiTask {
 					String[] track = impTrackUrlArray[i].split("`");
 					impUrls.add(MacroReplaceUtil.macroReplaceImageUrl(macroMap, track[1])); // 宏替换
 					// 媒体最多支持5个
-					if (impUrls.size() == 3) {
+					if (impUrls.size() == 4) {
 						break;
 					}
 				}
@@ -290,7 +303,7 @@ public class SohuNewsUploadMaterialApiTask {
 				for (int i = 0; i < clkTrackUrlArray.length; i++) {
 					clkTrackUrl.add(MacroReplaceUtil.macroReplaceImageUrl(macroMap, clkTrackUrlArray[i]));// 宏替换
 					// 媒体最多设置 5 个
-					if (i == 3) {
+					if (clkTrackUrl.size() == 4) {
 						break;
 					}
 				}
@@ -330,28 +343,15 @@ public class SohuNewsUploadMaterialApiTask {
 			uploadMaterialRequest.setMain_attr("loading_pic");
 
 			List<SohuSlave> slave = new ArrayList<SohuSlave>();
-			if (!StringUtils.isEmpty(material.getTitle())) {
-				SohuSlave title = new SohuSlave();
-				title.setSource(material.getTitle());
-				title.setAttr("ad_txt");
-				slave.add(title);
-			} else {
-				SohuSlave title = new SohuSlave();
-				title.setSource(" ");
-				title.setAttr("ad_txt");
-				slave.add(title);
-			}
-			if (!StringUtils.isEmpty(material.getDescription())) {
-				SohuSlave text = new SohuSlave();
-				text.setSource(material.getDescription());
-				text.setAttr("share_txt");
-				slave.add(text);
-			} else {
-				SohuSlave text = new SohuSlave();
-				text.setSource(" ");
-				text.setAttr("share_txt");
-				slave.add(text);
-			}
+			SohuSlave title = new SohuSlave();
+			title.setSource(getValueNoNull(material.getTitle()));
+			title.setAttr("ad_txt");
+			slave.add(title);
+			
+			SohuSlave text = new SohuSlave();
+			text.setSource(getValueNoNull(material.getDescription()));
+			text.setAttr("share_txt");
+			slave.add(text);
 			uploadMaterialRequest.setSlave(slave);
 
 			LOGGER.info("material-souhuNews:materialId:" + material.getId() + "开屏");
@@ -363,52 +363,63 @@ public class SohuNewsUploadMaterialApiTask {
 				// 1:file_source变为封面图片地址
 				// 物料地址：slave:
 				// [{""source"":""示例广告标题"",""attr"":""title""},{""source"":""http://www.example.com/ad/video.mp4"",""attr"":""video""}]"
-				// 图文信息流
-				if (!StringUtils.isEmpty(material.getDescription())) {
-					SohuSlave text = new SohuSlave();
-					text.setSource(material.getAdMaterials()
-							);// 物料.mp4
-					text.setAttr("video");
-					slave.add(text);
-				} else {
-					SohuSlave text = new SohuSlave();
-					text.setSource(" ");
-					text.setAttr("video");
-					slave.add(text);
-				}
-				String coverPath = StringUtils.isEmpty(material.getCover()) ? "" : material.getCover();
-				uploadMaterialRequest.setFile_source(coverPath);// 重新赋值：图片封面地址
+				SohuSlave text = new SohuSlave();
+				
+				text.setSource(material.getAdMaterials().split("\\|")[0]);// 物料.mp4
+				text.setAttr("video");
+				slave.add(text);
+				
+				SohuSlave title = new SohuSlave();
+				title.setSource(getValueNoNull(material.getTitle()));
+				title.setAttr("title");
+				slave.add(title);
+
+				uploadMaterialRequest.setFile_source(getValueNoNull((material.getCover())));// 重新赋值：图片封面地址
 				uploadMaterialRequest.setTemplate("info_video");
 				LOGGER.info("material-souhuNews:materialId:" + material.getId() + "非开屏:视频信息流");
 			} else if (Layout.LO30001.getValue() == material.getLayout().intValue()) {
-				// 图文信息流
-				if (!StringUtils.isEmpty(material.getDescription())) {
+				// 小图信息流
+				if (SohuConstant.InfoPicTxtSize.size140_112.equals(material.getSize()) || SohuConstant.InfoPicTxtSize.size360_234.equals(material.getSize())) {
 					SohuSlave text = new SohuSlave();
-					text.setSource(material.getDescription());
+					text.setSource(getValueNoNull(material.getDescription()));
 					text.setAttr("summary");
 					slave.add(text);
-				} else {
-					SohuSlave text = new SohuSlave();
-					text.setSource(" ");
-					text.setAttr("summary");
-					slave.add(text);
+					
+					SohuSlave title = new SohuSlave();
+					title.setSource(getValueNoNull(material.getTitle()));
+					title.setAttr("title");
+					slave.add(title);
+					
+					uploadMaterialRequest.setTemplate("info_pictxt");
+					LOGGER.info("material-souhuNews:materialId:" + material.getId() + "小图信息流");
 				}
-				uploadMaterialRequest.setTemplate("info_pictxt");
-				LOGGER.info("material-souhuNews:materialId:" + material.getId() + "非开屏:图文信息流");
+				
+				// 大图信息流
+				if (SohuConstant.InfoBigPicTxtSize.size640_396.equals(material.getSize()) || SohuConstant.InfoBigPicTxtSize.size644_322.equals(material.getSize())) {
+					SohuSlave text = new SohuSlave();
+					text.setSource(getValueNoNull(material.getTitle()));
+					text.setAttr("title");
+					slave.add(text);
+					uploadMaterialRequest.setTemplate("info_bigpictxt");
+					LOGGER.info("material-souhuNews:materialId:" + material.getId() + "大图信息流");
+				}
+				
+				// 文章页底部信息流
+				if (SohuConstant.PicturetxtSize.size600_88.equals(material.getSize()) || 
+						SohuConstant.PicturetxtSize.size460_69.equals(material.getSize()) || 
+						SohuConstant.PicturetxtSize.size1020_150.equals(material.getSize()) || 
+						SohuConstant.PicturetxtSize.size480_104.equals(material.getSize()) || 
+						SohuConstant.PicturetxtSize.size640_139.equals(material.getSize()) || 
+						SohuConstant.PicturetxtSize.size1080_234.equals(material.getSize())) {
+					SohuSlave text = new SohuSlave();
+					text.setSource(getValueNoNull(material.getTitle()));
+					text.setAttr("txt");
+					slave.add(text);
+					uploadMaterialRequest.setTemplate("picturetxt");
+					LOGGER.info("material-souhuNews:materialId:" + material.getId() + "文章页底部信息流");
+				}
 			}
 			
-			// 图片信息流和视频信息流 公共参数
-			if (!StringUtils.isEmpty(material.getTitle())) {
-				SohuSlave title = new SohuSlave();
-				title.setSource(material.getTitle());
-				title.setAttr("title");
-				slave.add(title);
-			} else {
-				SohuSlave title = new SohuSlave();
-				title.setSource(" ");
-				title.setAttr("title");
-				slave.add(title);
-			}
 			uploadMaterialRequest.setSlave(slave);
 			uploadMaterialRequest.setMain_attr("picture");
 		}
@@ -480,5 +491,15 @@ public class SohuNewsUploadMaterialApiTask {
 			return 1;
 		}
 		return 0;
+	}
+	
+	/**
+	 * 为null时返回""
+	 * 
+	 * @param originValue
+	 * @return
+	 */
+	private String getValueNoNull(String originValue) {
+		return StringUtils.isEmpty(originValue) ? "" : originValue;
 	}
 }
