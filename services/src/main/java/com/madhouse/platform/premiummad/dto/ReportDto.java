@@ -22,13 +22,14 @@ public class ReportDto {
 	private Integer dspId; //Dsp filter条件
 	
 	private Integer policyId; //策略filter条件
+	private Integer policyType; //策略类型filter条件
 	
 	private List<Integer> mediaIds;
 	
 	private List<Integer> policyIds;
 	
 	public ReportDto(Integer type, Integer dims, Integer realtime, String startDate, String endDate, Integer mediaId,
-			Integer dspId, Integer policyId, List<Integer> mediaIds, List<Integer> policyIds) {
+			Integer dspId, Integer policyId, Integer policyType, List<Integer> mediaIds, List<Integer> policyIds) {
 		this.type = type;
 		this.dims = dims;
 		this.realtime = realtime;
@@ -37,6 +38,7 @@ public class ReportDto {
 		this.mediaId = mediaId;
 		this.dspId = dspId;
 		this.policyId = policyId;
+		this.policyType = policyType;
 		this.mediaIds = mediaIds;
 		this.policyIds = policyIds;
 	}
@@ -51,6 +53,7 @@ public class ReportDto {
 		private Integer mediaId; //媒体filter条件
 		private Integer dspId; //Dsp filter条件
 		private Integer policyId; //策略filter条件
+		private Integer policyType; //策略类型filter条件
 		private List<Integer> mediaIds;
 		private List<Integer> policyIds;
 		
@@ -77,6 +80,11 @@ public class ReportDto {
 			return this;
 		}
 		
+		public ReportDtoBuilder policyType(Integer policyType){
+			this.policyType = policyType;
+			return this;
+		}
+		
 		public ReportDtoBuilder mediaIds(List<Integer> mediaIds){
 			this.mediaIds = mediaIds;
 			return this;
@@ -89,7 +97,7 @@ public class ReportDto {
 
 		public ReportDto createNewReportDto(){
 			return new ReportDto(type, dims, realtime, startDate, endDate,
-					mediaId, dspId, policyId, mediaIds, policyIds);
+					mediaId, dspId, policyId, policyType, mediaIds, policyIds);
 		}
 		
 	}
@@ -172,6 +180,14 @@ public class ReportDto {
 
 	public void setPolicyIds(List<Integer> policyIds) {
 		this.policyIds = policyIds;
+	}
+
+	public Integer getPolicyType() {
+		return policyType;
+	}
+
+	public void setPolicyType(Integer policyType) {
+		this.policyType = policyType;
 	}
 
 }
