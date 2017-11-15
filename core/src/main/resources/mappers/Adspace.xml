@@ -95,7 +95,7 @@
         FROM mad_sys_adspace a 
         INNER JOIN mad_sys_media m ON m.id = a.media_id
         LEFT JOIN mad_dict_layout_mapping l ON a.terminal_type = l.terminal_type AND a.layout = l.layout
-        LEFT JOIN mad_dict_layout_copy lc ON l.layout = lc.code
+        LEFT JOIN mad_dict_layout lc ON l.layout = lc.code
         LEFT JOIN mad_dict_adtype lt ON l.ad_type = lt.code
         WHERE 1=1
         <if test="idStrs != null and idStrs.size() > 0">
@@ -228,7 +228,7 @@
         </include>, lc.name layoutName, lt.code adType, lt.name adTypeName, m.name mediaName
         FROM mad_sys_adspace a
         LEFT JOIN mad_dict_layout_mapping l ON a.terminal_type = l.terminal_type AND a.layout = l.layout
-        LEFT JOIN mad_dict_layout_copy lc ON l.layout = lc.code
+        LEFT JOIN mad_dict_layout lc ON l.layout = lc.code
         LEFT JOIN mad_dict_adtype lt ON l.ad_type = lt.code
         INNER JOIN mad_sys_media m ON a.media_id = m.id
         WHERE a.id = #{id}

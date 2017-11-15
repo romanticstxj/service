@@ -94,6 +94,7 @@
     		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
   </select>
   
+  <!-- 用内存表来提高查询性能 -->
   <select id="queryMediaLocationReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
     SELECT tmp.*, m.name mediaName
     <if test="hasAdspace != null and hasAdspace == true">, a.name adspaceName</if> 
