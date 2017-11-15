@@ -4,7 +4,6 @@
   <resultMap id="BaseResultMap" type="com.madhouse.platform.premiummad.entity.ReportPolicy" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="policy_id" property="policyId" jdbcType="INTEGER" />
-    <result column="policy_deal_id" property="policyDealId" jdbcType="INTEGER" />
     <result column="dsp_id" property="dspId" jdbcType="INTEGER" />
     <result column="media_id" property="mediaId" jdbcType="INTEGER" />
     <result column="adspace_id" property="adspaceId" jdbcType="INTEGER" />
@@ -32,7 +31,7 @@
     SUM(${alias}.errs) errs, SUM(${alias}.wins) wins, SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, 
     SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.income)/100000 as DECIMAL(15,2)) income, 
     CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost, p.name policyName, p.type policyType, dd.name policyTypeName, 
-    rp.dsp_id, d.name dspName, IF(p.type IS NOT NULL AND p.type=8, NULL, ${alias}.policy_id) policy_deal_id
+    rp.dsp_id, d.name dspName, IF(p.type IS NOT NULL AND p.type=8, NULL, ${alias}.policy_id) policyDealId
   </sql>
   
   <sql id="mediaAuthCondition">
@@ -64,6 +63,7 @@
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="policyAuthCondition"/>
     <if test="policyId != null"> AND rp.policy_id = #{policyId}</if>
+    <if test="policyType != null"> AND p.type = #{policyType}</if>
     GROUP BY rp.policy_id , rp.dsp_id
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -90,6 +90,7 @@
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="policyAuthCondition"/>
     <if test="policyId != null"> AND rp.policy_id = #{policyId}</if>
+    <if test="policyType != null"> AND p.type = #{policyType}</if>
     GROUP BY rp.policy_id , rp.dsp_id
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
@@ -121,6 +122,7 @@
     <include refid="policyAuthCondition"/>
     <include refid="mediaAuthCondition"/>
     <if test="policyId != null"> AND rp.policy_id = #{policyId}</if>
+    <if test="policyType != null"> AND p.type = #{policyType}</if>
     GROUP BY rp.policy_id , rp.dsp_id, rp.media_id 
     <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id</if>
     <if test="hasDate != null and hasDate == true">, rp.date</if>
@@ -160,6 +162,7 @@
     WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
     <include refid="policyAuthCondition"/>
     <if test="policyId != null"> AND rp.policy_id = #{policyId}</if>
+    <if test="policyType != null"> AND p.type = #{policyType}</if>
     GROUP BY rp.policy_id , rp.dsp_id, rp.location 
     <if test="hasDate != null and hasDate == true">, rp.date</if>
     <if test="hasHour != null and hasHour == true">, rp.hour</if>
