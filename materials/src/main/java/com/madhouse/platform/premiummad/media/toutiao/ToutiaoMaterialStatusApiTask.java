@@ -86,8 +86,9 @@ public class ToutiaoMaterialStatusApiTask {
 			paramMap.put("adid", item.getMediaQueryKey());
 			paramMap.put("dspid", dspid);
 			// 返回结果
+			LOGGER.info("request: " + JSON.toJSONString(paramMap));
 			String getResult = toutiaoHttpUtil.get(getMaterialStatusUrl, paramMap);
-			LOGGER.info("ToutiaoMaterialStatus:getResult=" + getResult);
+			LOGGER.info("response: " + getResult);
 			if (getResult != null && !getResult.isEmpty()) {
 				ToutiaoMaterialStatusDetailResponse response = JSON.parseObject(getResult, ToutiaoMaterialStatusDetailResponse.class);
 				MaterialAuditResultModel auditItem = new MaterialAuditResultModel();

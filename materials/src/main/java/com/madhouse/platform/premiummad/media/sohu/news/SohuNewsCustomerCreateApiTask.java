@@ -92,9 +92,10 @@ public class SohuNewsCustomerCreateApiTask {
 			// 第一次上传用新增接口，已驳回的再次上传用 更新接口
 			String url = StringUtils.isBlank(advertiser.getMediaAdvertiserKey()) ? customerCreateUrl : customerUpdateUrl;
 			String request = sohuAuth.setHttpMethod("POST").setApiUrl(url).setParamMap(paramMap).buildRequest();
-			LOGGER.info("SohuNewsCustomerCreateApiTask.reqquest: {}", request);
+			LOGGER.info("request: ", request);
 			String result = HttpUtils.post(url, request);
-			LOGGER.info("SohuNewsCustomerCreateApiTask.udpate http post:{}. result json: {}", url, result);
+			LOGGER.info("response: ", result);
+			
 			SohuResponse sohutvResponse = JSONObject.parseObject(result, SohuResponse.class);
 			if (sohutvResponse != null) {
 				if (sohutvResponse.isStatus()) {

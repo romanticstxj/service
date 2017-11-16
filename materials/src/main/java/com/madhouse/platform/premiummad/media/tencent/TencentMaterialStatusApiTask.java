@@ -118,9 +118,9 @@ public class TencentMaterialStatusApiTask {
 			// 向腾讯发请求批量获取状态
 			TencentCommonRequest<List<TencentMaterialStatusData>> request = new TencentCommonRequest<List<TencentMaterialStatusData>>();
 			request.setData(dspOrderIds);
-			LOGGER.info("Tencent批量获取广告的审核请求：{}",  JSONObject.toJSONString(dspOrderIds));
+			LOGGER.info("request: ",  JSONObject.toJSONString(dspOrderIds));
 			String responseJson = tencentHttpUtil.post(advertStatusUrl, request);
-			LOGGER.info("Tencent批量获取广告的审核状态返回:{}", responseJson);
+			LOGGER.info("response: ", responseJson);
 
 			// 处理返回的结果
 			TencentMaterialStatusResponse advertBatchStatusResponse = JSON.parseObject(responseJson, TencentMaterialStatusResponse.class);

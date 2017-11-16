@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
@@ -190,8 +191,9 @@ public class TencentUploadMaterialApiTask {
 
 			// 构造请求对象
 			TencentCommonRequest<List<TencentUploadMaterialData>> request = buildUploadRequest(mediaType, unSubmitMaterials);
+			LOGGER.info("request: ", JSON.toJSONString(request));
 			String responseJson = tencentHttpUtil.post(adcreativeUploadUrl, request);
-			LOGGER.info("Tencent上传广告信息返回信息：{}", responseJson);
+			LOGGER.info("response: ", responseJson);
 			// 上传成功时,responseJson 为空字符串或者null
 			TencentUploadMaterialResponse advertUploadRsponse = null;
 			try {

@@ -75,8 +75,9 @@ public class ValueMakerStatusApiTask {
 
 		// 向媒体获取审核状态
 		for (Material item : unauditMaterials) {
+			LOGGER.info("request: " + item.getMediaQueryKey());
 			String result = valueMakerHttpUtil.get(getMaterialStatusUrl, item.getMediaQueryKey());
-			LOGGER.info("ValueMakerMaterialStatus:getResult=" + result);
+			LOGGER.info("Response: " + result);
 			ValueMakerMaterialStatusDetailResponse responseJson = JSON.parseObject(result, ValueMakerMaterialStatusDetailResponse.class);
 			String id = responseJson.getId();
 			int status = responseJson.getStatus();
