@@ -51,7 +51,7 @@
 	    where p.id = #{id}
   	</select>
   	
-  	<select id="selectPolicy" parameterType="java.lang.Integer" resultMap="baseCascadedMappingResult">
+  	<select id="selectPolicy" parameterType="java.lang.Integer" resultMap="baseListResultMap">
 	    select <include refid="Base_Column_List"><property name="alias" value="p" /></include>
 	    from mad_sys_policy p
 	    where p.id = #{id,jdbcType=INTEGER}

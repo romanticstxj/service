@@ -104,6 +104,7 @@ public class SohuNewsStatusApiTask {
 			
 			String request = sohuAuth.setHttpMethod("GET").setApiUrl(materialListUrl).setParamMap(paramMap).buildRequest();
 			String url = materialListUrl + "?" + request;
+			LOGGER.info("request:" + url);
 			Map<String, Object> objectMap = HttpUtils.get(url);
 
 			if (objectMap.get(HttpUtils.RESPONSE_BODY_KEY) == null) {
@@ -112,6 +113,7 @@ public class SohuNewsStatusApiTask {
 			}
 
 			String getResult = objectMap.get(HttpUtils.RESPONSE_BODY_KEY).toString();
+			LOGGER.info("response:" + getResult);
 			LOGGER.info("SoHuNewsMaterialStatus-responseJson info： " + getResult);
 
 			if (!StringUtils.isEmpty(getResult)) {
