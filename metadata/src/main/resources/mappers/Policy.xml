@@ -43,7 +43,7 @@
     <select id="queryAll" resultMap="baseResult">
     	<![CDATA[  
 			select DATE_FORMAT(start_date,'%Y-%m-%d') start_date , DATE_FORMAT(end_date,'%Y-%m-%d') end_date,
-				id,id deal_id,type,weight,time_targeting,location_targeting,os_targeting,conn_targeting ,limit_type,limit_reqs,limit_speed,status
+				id,id deal_id,type,weight,time_targeting,location_targeting,os_targeting,conn_targeting ,limit_type,limit_speed,CONVERT ((limit_reqs *push_ratio) /100, signed) AS limit_reqs,status
 	   		from mad_sys_policy  WHERE status >0 AND weight > 0 AND start_date <=  DATE_FORMAT(SYSDATE(),'%Y-%m-%d') AND ( end_date IS NULL OR end_date >= DATE_FORMAT(SYSDATE(),'%Y-%m-%d')) 
 		 ]]>  
 	</select>
