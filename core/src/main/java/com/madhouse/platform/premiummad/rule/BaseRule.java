@@ -1,5 +1,7 @@
 package com.madhouse.platform.premiummad.rule;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -94,6 +96,16 @@ public class BaseRule {
 	public static boolean isUrl(String url) {
 		if (url == null || url.isEmpty()) {
 			return false;
+		}
+		// URL encoder 为了支持中文文件名
+		try {
+			if (url.startsWith("https://")) {
+				url = "https://" + URLEncoder.encode(url.replace("https://", ""), "UTF-8");
+			} else if (url.startsWith("http://")) {
+				url = "http://" + URLEncoder.encode(url.replace("http://", ""), "UTF-8");
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 		Pattern pattern = Pattern.compile("^(https?):\\/\\/[\\w\\-]+(\\.[\\w\\-]+)+([\\w\\-\\.,@?^=%&:\\/~\\+#]*[\\w\\-\\@?^=%&\\/~\\+#])?$", Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(url);
