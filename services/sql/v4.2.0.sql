@@ -1,4 +1,8 @@
+/* #3772 添加推送流量比字段  */
 ALTER TABLE `mad_sys_policy` ADD COLUMN push_ratio INT(10) UNSIGNED NOT NULL DEFAULT 100 COMMENT '推送流量比(默认值100)' AFTER limit_speed;
+
+/* #3770 广告位adtype字段删除  begin*/
+ALTER TABLE `mad_sys_adspace` DROP COLUMN adtype;
 
 DROP TABLE IF EXISTS `mad_dict_layout`;
 CREATE TABLE `mad_dict_layout` (
@@ -27,3 +31,4 @@ CREATE TABLE `mad_dict_adtype` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*Data for the table `mad_dict_adtype` */
 insert  into `mad_dict_adtype`(`code`,`name`) values (1,'普通硬广'),(2,'OTV'),(3,'原生'),(4,'开关机图片'),(5,'开关机视频');
+/* #3770 广告位adtype字段删除  end*/
