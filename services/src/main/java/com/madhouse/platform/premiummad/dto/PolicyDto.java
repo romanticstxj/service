@@ -61,6 +61,8 @@ public class PolicyDto implements Serializable{
     private Integer limitReqs;
 
     private Byte limitSpeed; //投放速度(1:加速投放, 2:匀速投放)
+    
+    private Integer pushRatio = 100; //推送流量比（大于100的整数，为返还流量点数 + 购买流量）
 
     @NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_STATUS, groups=UpdateStatus.class)
     private Byte status;
@@ -261,6 +263,14 @@ public class PolicyDto implements Serializable{
 
 	public void setIsConnTargeting(Integer isConnTargeting) {
 		this.isConnTargeting = isConnTargeting;
+	}
+
+	public Integer getPushRatio() {
+		return pushRatio;
+	}
+
+	public void setPushRatio(Integer pushRatio) {
+		this.pushRatio = pushRatio;
 	}
 
 }

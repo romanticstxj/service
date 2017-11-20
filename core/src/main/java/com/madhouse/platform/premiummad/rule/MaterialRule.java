@@ -137,9 +137,9 @@ public class MaterialRule extends BaseRule {
 			if (!isDate(entity.getStartDate(), DateUtils.FORMATE_YYYY_MM_DD)) {
 				throw new BusinessException(StatusCode.SC400, "有效日期格式错误,必须为yyyy-MM-dd[startDate]");
 			}
-			if (entity.getStartDate().compareTo(todayStr) < 0) {
-				throw new BusinessException(StatusCode.SC400, "有效日期[startDate]无效，必须大于当前日期");
-			}
+//			if (entity.getStartDate().compareTo(todayStr) < 0) {
+//				throw new BusinessException(StatusCode.SC400, "有效日期[startDate]无效，必须大于当前日期");
+//			}
 		}
 		if (!StringUtils.isBlank(entity.getEndDate())) {
 			if (!isDate(entity.getEndDate(), DateUtils.FORMATE_YYYY_MM_DD)) {

@@ -12,6 +12,8 @@ public class Dict {
 	
 	private Integer adType;
 	
+	private String adTypeName;
+	
 	private String desc;	//描述
 
 	public Integer getId() {
@@ -60,5 +62,13 @@ public class Dict {
 
 	public void setAdType(Integer adType) {
 		this.adType = adType;
+	}
+
+	public String getAdTypeName() {
+		return adTypeName;
+	}
+
+	public void setAdTypeName(String adTypeName) {
+		this.adTypeName = adTypeName;
 	}
 }

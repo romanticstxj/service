@@ -893,7 +893,8 @@
 		                	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
 		                    "limitType": "<*||integer||comment:总量控制(0: 不限, 1: 每天, 2: 整单)>",
 		                    "limitReqs": "<integer||comment:请求量控制(DEPRECATED)>",
-		                	"limitQPS": "<integer||comment:QPS控制>",
+		                	"limitSpeed": "<integer||comment:投放速度(1:加速投放, 2:匀速投放)>",
+		                	"pushRatio": "<integer||comment:流量返还比(大于100的整数)>",
 		                	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
 		                	"bidFloor": "<double||comment:单价(页面以元为单位)>",
 		                	"description": "<string||comment:描述>",
@@ -929,8 +930,8 @@
                     "isQuantityLimit": "<*||integer||comment:总量限制(0：不限投放量，1：限制投放量)>",
                     "limitType": "<integer||comment:总量控制(1: 每天, 2: 整单)>",
                     "limitReqs": "<integer||comment:请求量控制(DEPRECATED)>",
-                	"limitQPS": "<integer||comment:QPS控制>",
                     "limitSpeed": "<integer||comment:投放速度(1:加速投放, 2:匀速投放)>",
+                    "pushRatio": "<*integer||comment:流量返还比(大于100的整数)>",
                 	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
                 	"bidFloor": "<double||comment:单价(页面以元为单位)>",
                 	"description": "<string||comment:描述>",
@@ -993,7 +994,8 @@
 		                	"connTargeting": "<*||integer||comment:连网方式定向(多个用半角逗号分隔, 0:未知, 1:WIFI, 2:2G, 3:3G, 4:4G)>",
 		                    "limitType": "<*||integer||comment:总量控制(0: 不限, 1: 每天, 2: 整单)>",
 		                    "limitReqs": "<integer||comment:请求量控制(DEPRECATED)>",
-		                	"limitQPS": "<integer||comment:QPS控制>",
+		                	"limitSpeed": "<integer||comment:投放速度(1:加速投放, 2:匀速投放)>",
+                    		"pushRatio": "<*integer||comment:流量返还比(大于100的整数)>",
 		                	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
 		                	"bidFloor": "<double||comment:单价(页面以元为单位)>",
 		                	"description": "<string||comment:描述>",
@@ -1045,8 +1047,8 @@
                     "isQuantityLimit": "<*||integer||comment:总量限制(0：不限投放量，1：限制投放量)>",
                     "limitType": "<integer||comment:总量控制(1: 每天, 2: 整单)>",
                     "limitReqs": "<integer||comment:请求量控制(DEPRECATED)>",
-                	"limitQPS": "<integer||comment:QPS控制>",
-                    "limitSpeed": "<integer||comment:投放速度(1:加速投放, 2:匀速投放)>",
+                	"limitSpeed": "<integer||comment:投放速度(1:加速投放, 2:匀速投放)>",
+                    "pushRatio": "<*integer||comment:流量返还比(大于100的整数)>",
                 	"bidType": "<integer||comment:结算方式(1:CPM,2:CPC)>",
                 	"bidFloor": "<double||comment:单价(页面以元为单位)>",
                 	"description": "<string||comment:描述>",
@@ -1191,6 +1193,7 @@
                     "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、需求方三个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上),32:媒体(同上)>",
                 	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,4:媒体,8:广告位,32:需求方>",
                 	"realTime": "<*||integer||comment:(单选)1 实时,0 离线>",
+                	"dspId": "<integer||comment:Dsp id(过滤)>",
                 	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
                 	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
                 }
@@ -1198,7 +1201,7 @@
             "responses": {
                 "200": {
                     "body": {
-                    	"id": "<*||integer||comment:媒体报表ID>",
+                    	"id": "<*||integer||comment:dsp报表ID>",
 	                	"dspId": "<integer||comment:DSP ID>",
 	                	"dspName": "<*||string||comment:DSP名称>",
 	                	"mediaId": "<*||string||comment:媒体ID>",
@@ -1235,6 +1238,7 @@
                     "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、策略、需求方四个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上),32:媒体(同上)>",
                 	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,4:媒体,8:广告位,16:策略,32:需求方>",
                 	"realTime": "<*||integer||comment:(单选)1 实时,0 离线>",
+                	"policyId": "<integer||comment:策略id(过滤)>",
                 	"startDate": "<*||string||comment:开始日期(格式:20170702)>",
                 	"endDate": "<*||string||comment:结束日期(格式:20170703)>"
                 }
@@ -1242,9 +1246,12 @@
             "responses": {
                 "200": {
                     "body": {
-                    	"id": "<*||integer||comment:媒体报表ID>",
+                    	"id": "<*||integer||comment:策略报表ID>",
 	                	"policyId": "<integer||comment:策略ID>",
+	                	"policyDealId": "<integer||comment:策略DEAL ID>",
 	                	"policyName": "<*||string||comment:策略名称>",
+	                	"policyType": "<*||integer||comment:策略类型>",
+	                	"policyTypeName": "<*||string||comment:策略类型名称>",
 	                	"dspId": "<integer||comment:DSP ID>",
 	                	"dspName": "<*||string||comment:DSP名称>",
 	                	"mediaId": "<*||string||comment:媒体ID>",

@@ -194,7 +194,7 @@ public class BeanUtils {
 	 * @param obj
 	 * @return
 	 */
-	public static String hasEmptyField1(Object obj) {
+	public static String processEmptyField(Object obj) {
 		if (obj != null) {
 			Class<?> clazz = obj.getClass();
 			Field[] fields = clazz.getDeclaredFields();
@@ -219,7 +219,7 @@ public class BeanUtils {
 					//否则，判断若为Null，则把此字段设为空字符串
 					if (value == null) {
 						try {
-							field.set(obj, "");
+							setFieldDefaultValue(field, obj);
 						} catch (IllegalArgumentException | IllegalAccessException e) {
 							throw new RuntimeException("field set invoke exception,please check field:" + field.getName());
 						}
@@ -233,6 +233,36 @@ public class BeanUtils {
 		}
 	}
 	
+	/**
+	 * 根据field的类型设置他们的默认值
+	 * @param field
+	 * @param obj
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	private static void setFieldDefaultValue(Field field, Object obj) throws IllegalArgumentException, IllegalAccessException {
+		Class<?> fieldClazz = field.getType();
+		if(fieldClazz.isAssignableFrom(String.class)){
+			field.set(obj, "");
+		} else if (fieldClazz.isAssignableFrom(Integer.class)){
+			field.set(obj, 0);
+		} else if(fieldClazz.isAssignableFrom(Float.class)){
+			field.set(obj, 0.0f);
+		} else if(fieldClazz.isAssignableFrom(Double.class)){
+			field.set(obj, 0.0d);
+		} else if(fieldClazz.isAssignableFrom(Long.class)){
+			field.set(obj, 0L);
+		} else if(fieldClazz.isAssignableFrom(Byte.class)){
+			field.set(obj, (byte) 0);
+		} else if(fieldClazz.isAssignableFrom(Short.class)){
+			field.set(obj, (short) 0);
+		} else if(fieldClazz.isAssignableFrom(Boolean.class)){
+			field.set(obj, false);
+		} else{
+			System.out.println(fieldClazz.getName());
+		}
+	}
+
 	/*
 	 * 判断list是否为null
 	 */

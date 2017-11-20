@@ -28,7 +28,7 @@
 	</sql>
 	
 	<sql id="adspaceLayoutList">
-		${alias}.code, ${alias}.name, ${alias}.terminal_type, ${alias}.ad_type
+		${alias}.layout code, ${alias}.terminal_type, ${alias}.ad_type
 	</sql>
 	
 	<sql id="locationList" >
@@ -48,12 +48,14 @@
 		SELECT 
 		<include refid="adspaceLayoutList">
             <property name="alias" value="l" />
-        </include>
-        FROM mad_dict_layout l 
+        </include>, lt.name adTypeName, lc.name name
+        FROM mad_dict_layout_mapping l 
+        INNER JOIN mad_dict_adtype lt ON l.ad_type = lt.code
+        INNER JOIN mad_dict_layout lc ON l.layout = lc.code
         WHERE 1 = 1
         <if test="terminalType != null">AND l.terminal_type = #{terminalType}</if>
         <if test="adType != null">AND l.ad_type = #{adType}</if>
-        ORDER BY l.code
+        ORDER BY l.terminal_type, l.layout
 	</select>
 	
 	<select id="queryAllLocations" resultMap="locationResultMap">

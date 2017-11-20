@@ -3,11 +3,15 @@ package com.madhouse.platform.premiummad.controller;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.annotation.TokenFilter;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dto.MaterialAuditResultDto;
@@ -27,6 +31,8 @@ import com.madhouse.platform.premiummad.util.ResponseUtils;
 @RequestMapping("/material")
 public class MaterialController {
 
+	private Logger LOGGER = LoggerFactory.getLogger(MaterialController.class);
+	
 	@Autowired
 	private MaterialServiceImpl materialService;
 
@@ -42,10 +48,14 @@ public class MaterialController {
 	@TokenFilter
 	@RequestMapping("/upload")
 	public ResponseDto<Void> upload(@RequestBody MaterialDto materialDto, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
+		LOGGER.info("DSP upload request[{}]-{}",materialDto.getId(), JSON.toJSONString(materialDto));
 		MaterialModel entity = convert(materialDto);
 		entity.setDspId(dspId);
 		materialService.upload(entity);
-		return ResponseUtils.response(StatusCode.SC200);
+		
+		ResponseDto<Void> response = ResponseUtils.response(StatusCode.SC200);
+		LOGGER.info("DSP upload response[{}]-{}",materialDto.getId(), JSON.toJSONString(response));
+		return response;
 	}
 
 	/**
@@ -61,10 +71,14 @@ public class MaterialController {
 	@TokenFilter
 	@RequestMapping("/status")
 	public ResponseDto<MaterialAuditResultDto> list(@RequestParam(value = "id", required = false) String id, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
+		LOGGER.info("DSP status request[{}]", id);
 		List<MaterialAuditResultModel> modelResults = materialService.getMaterialAuditResult(id, dspId);
 		List<MaterialAuditResultDto> dtoResults = new ArrayList<MaterialAuditResultDto>();
 		BeanUtils.copyList(modelResults, dtoResults, MaterialAuditResultDto.class);
-		return ResponseUtils.response(StatusCode.SC200, dtoResults);
+		
+		ResponseDto<MaterialAuditResultDto> response = ResponseUtils.response(StatusCode.SC200, dtoResults);
+		LOGGER.info("DSP status response[{}]-{}", id, JSON.toJSONString(response));
+		return response;
 	}
 
 	/**

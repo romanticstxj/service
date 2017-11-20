@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.ReportDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.ReportCriterion;
@@ -37,7 +38,8 @@ public class ReportController {
     		@RequestParam String startDate, @RequestParam String endDate,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, null);
-		ReportDto dto = new ReportDto(null, dims, realtime, null, startDate, endDate, mediaIdList, null);
+		ReportDto dto = new ReportDto.ReportDtoBuilder(SystemConstant.DB.TYPE_DEFAULT, dims, realtime, startDate, endDate)
+				.mediaIds(mediaIdList).createNewReportDto();
 		return queryMediaReportDashboard(dto);
     }
 	
@@ -62,7 +64,8 @@ public class ReportController {
     		@RequestParam String startDate, @RequestParam String endDate,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, null);
-		ReportDto dto = new ReportDto(type, dims, realtime, mediaId, startDate, endDate, mediaIdList, null);
+		ReportDto dto = new ReportDto.ReportDtoBuilder(type, dims, realtime, startDate, endDate)
+				.mediaId(mediaId).mediaIds(mediaIdList).createNewReportDto();
 		return queryMediaReport(dto);
     }
 	
@@ -81,10 +84,11 @@ public class ReportController {
     
     @RequestMapping("/dsp")
     public ResponseDto<ReportDsp> listDsp(@RequestParam Integer type, @RequestParam Integer dims, 
-    		@RequestParam Integer realtime, @RequestParam String startDate, 
+    		@RequestParam Integer realtime, @RequestParam String startDate, @RequestParam(required=false) Integer dspId,
     		@RequestParam String endDate, @RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, null);
-		ReportDto dto = new ReportDto(type, dims, realtime, null, startDate, endDate, mediaIdList, null);
+		ReportDto dto = new ReportDto.ReportDtoBuilder(type, dims, realtime, startDate, endDate)
+				.dspId(dspId).mediaIds(mediaIdList).createNewReportDto();
 		return queryDspReport(dto);
     }
 	
@@ -105,10 +109,13 @@ public class ReportController {
     @RequestMapping("/policy")
     public ResponseDto<ReportPolicy> listPolicy(@RequestParam Integer type, @RequestParam Integer dims, 
     		@RequestParam Integer realtime, @RequestParam String startDate, 
+    		@RequestParam(required=false) Integer policyId, @RequestParam(required=false) Integer policyType, 
     		@RequestParam String endDate, @RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, null);
 		List<Integer> policyList = userAuthService.queryPolicyIdList(userId, null);
-		ReportDto dto = new ReportDto(type, dims, realtime, null, startDate, endDate, mediaIdList, policyList);
+		ReportDto dto = new ReportDto.ReportDtoBuilder(type, dims, realtime, startDate, endDate)
+				.policyId(policyId).policyType(policyType).mediaIds(mediaIdList).policyIds(policyList)
+				.createNewReportDto();
 		return queryPolicyReport(dto);
     }
     

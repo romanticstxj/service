@@ -33,27 +33,11 @@ public class MaterialAuditRule extends BaseRule{
 	 * @param entity
 	 */
 	private static void convertMaterialAuditMode(Material entity) {
-//		int materialAuditMode = entity.getMaterialAuditMode();
-//        //根据不同的审核方式，来设置返回给前端的审核状态
-//        switch(materialAuditMode){
-//	        case SystemConstant.DB.NO_AUDIT:
-//	        	//若无需审核，则始终返回审核通过给前端
-//	        	entity.setStatus((byte)SystemConstant.DB.AUDIT_PASS);
-//	        	break;
-//	        case SystemConstant.DB.AUDIT_BY_SSP:
-//	        	//若由平台审核，则后端的待审核与前端的待审核一致
-//	        	if(entity.getStatus().intValue() == SystemConstant.DB.TO_BE_AUDIT_BE){
-//	        		entity.setStatus((byte) SystemConstant.DB.TO_BE_AUDIT_FE);
-//	        	}
-//	        	break;
-//	        case SystemConstant.DB.AUDIT_BY_MEDIA:
-//	        	break;
-//	        default:
-//        }
-		
-		String impUrls = entity.getImpUrls();
-		String formalizedImpUrls = StringUtils.formalizeUrls(impUrls);
-		entity.setImpUrls(formalizedImpUrls);
+		if(entity != null){
+			String impUrls = entity.getImpUrls();
+			String formalizedImpUrls = StringUtils.formalizeUrls(impUrls);
+			entity.setImpUrls(formalizedImpUrls);
+		}
 	}
 	
 	/**
@@ -61,7 +45,7 @@ public class MaterialAuditRule extends BaseRule{
 	 * @param dto
 	 */
 	public static void validateDto(Object dto){
-		String fieldName = BeanUtils.hasEmptyField1(dto);
+		String fieldName = BeanUtils.processEmptyField(dto);
         if (fieldName != null)
         	throw new BusinessException(StatusCode.SC20002, FieldType.getChineseMessage(fieldName) + "不能为空");
 	}

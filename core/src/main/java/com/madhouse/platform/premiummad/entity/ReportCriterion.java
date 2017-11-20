@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 
-public class ReportCriterion extends BaseEntity{
+public class ReportCriterion{
 	
 	public static final int DIM_SORTING_POLICY = SystemConstant.DB.DIM_SORTING_POLICY;
 	public static final int DIM_SORTING_DSP = SystemConstant.DB.DIM_SORTING_DSP;
@@ -22,6 +22,11 @@ public class ReportCriterion extends BaseEntity{
 	private Integer realtime; //1:实时,0:离线
 	
 	private Integer mediaId; //媒体filter条件
+	
+	private Integer dspId; //Dsp filter条件
+	
+	private Integer policyId; //策略filter条件
+	private Integer policyType; //策略filter条件
 	
 	private Date startDate; //开始日期
 	
@@ -203,5 +208,29 @@ public class ReportCriterion extends BaseEntity{
 
 	public void setLastOrderPosition(int lastOrderPosition) {
 		this.lastOrderPosition = lastOrderPosition;
+	}
+
+	public Integer getDspId() {
+		return dspId;
+	}
+
+	public void setDspId(Integer dspId) {
+		this.dspId = dspId;
+	}
+
+	public Integer getPolicyId() {
+		return policyId;
+	}
+
+	public void setPolicyId(Integer policyId) {
+		this.policyId = policyId;
+	}
+
+	public Integer getPolicyType() {
+		return policyType;
+	}
+
+	public void setPolicyType(Integer policyType) {
+		this.policyType = policyType;
 	}
 }

@@ -72,7 +72,7 @@
     
     <sql id="baseColumns">
 		${alias}.`id`,${alias}.`name`,${alias}.`adspace_key`,${alias}.`media_id`,${alias}.`terminal_type`,${alias}.`terminal_os`,${alias}.`support_https`,
-		${alias}.`bid_type`,${alias}.`bid_floor`,${alias}.`adtype`,${alias}.`layout`,${alias}.`material_type`,${alias}.`material_size`,${alias}.`material_max_kbyte`,
+		${alias}.`bid_type`,${alias}.`bid_floor`,${alias}.`layout`,${alias}.`material_type`,${alias}.`material_size`,${alias}.`material_max_kbyte`,
 		${alias}.`logo_type`,${alias}.`logo_size`,${alias}.`logo_max_kbyte`,${alias}.`title_max_length`,${alias}.`desc_max_length`,${alias}.`content_max_length`,${alias}.`material_count`,
 		${alias}.`cover_type`,${alias}.`cover_size`,${alias}.`cover_max_kbyte`,${alias}.`material_duration`,${alias}.`status`,${alias}.`description`,${alias}.`created_user`,
 		${alias}.`created_time`,${alias}.`updated_user`,${alias}.`updated_time`
@@ -91,10 +91,12 @@
 		SELECT 
 		<include refid="baseColumns">
             <property name="alias" value="a" />
-        </include>, m.name mediaName, m.status mediaStatus, l.name layoutName
+        </include>, m.name mediaName, m.status mediaStatus, lc.name layoutName, lt.code adType, lt.name adTypeName
         FROM mad_sys_adspace a 
         INNER JOIN mad_sys_media m ON m.id = a.media_id
-        INNER JOIN mad_dict_layout l ON a.layout = l.code AND a.adtype = l.ad_type AND a.terminal_type = l.terminal_type
+        LEFT JOIN mad_dict_layout_mapping l ON a.terminal_type = l.terminal_type AND a.layout = l.layout
+        LEFT JOIN mad_dict_layout lc ON l.layout = lc.code
+        LEFT JOIN mad_dict_adtype lt ON l.ad_type = lt.code
         WHERE 1=1
         <if test="idStrs != null and idStrs.size() > 0">
         	AND m.id IN 
@@ -123,7 +125,6 @@
               <if test="supportHttps != null">support_https,</if>
               <if test="bidType != null">bid_type,</if>
               <if test="bidFloor != null">bid_floor,</if>
-              <if test="adType != null">adtype,</if>
               <if test="layout != null">layout,</if>
               <if test="materialType != null">material_type,</if>
               <if test="materialSize != null">material_size,</if>
@@ -156,7 +157,6 @@
               <if test="supportHttps != null">#{supportHttps},</if>
               <if test="bidType != null">#{bidType},</if>
               <if test="bidFloor != null">#{bidFloor},</if>
-              <if test="adType != null">#{adType},</if>
               <if test="layout != null">#{layout},</if>
               <if test="materialType != null">#{materialType},</if>
               <if test="materialSize != null">#{materialSize},</if>
@@ -190,7 +190,6 @@
 	      support_https = #{supportHttps,jdbcType=BIT},
 	      bid_type = #{bidType,jdbcType=TINYINT},
 	      bid_floor = #{bidFloor,jdbcType=INTEGER},
-	      adtype = #{adType,jdbcType=TINYINT},
 	      layout = #{layout,jdbcType=SMALLINT},
 	      material_type = #{materialType,jdbcType=SMALLINT},
 	      material_size = #{materialSize,jdbcType=VARCHAR},
@@ -226,10 +225,12 @@
 		SELECT 
 		<include refid="baseColumns">
             <property name="alias" value="a" />
-        </include>, l.name layoutName, m.name mediaName
+        </include>, lc.name layoutName, lt.code adType, lt.name adTypeName, m.name mediaName
         FROM mad_sys_adspace a
-        LEFT JOIN mad_dict_layout l ON a.layout = l.code AND a.adtype = l.ad_type AND a.terminal_type = l.terminal_type
-        LEFT JOIN mad_sys_media m ON a.media_id = m.id
+        LEFT JOIN mad_dict_layout_mapping l ON a.terminal_type = l.terminal_type AND a.layout = l.layout
+        LEFT JOIN mad_dict_layout lc ON l.layout = lc.code
+        LEFT JOIN mad_dict_adtype lt ON l.ad_type = lt.code
+        INNER JOIN mad_sys_media m ON a.media_id = m.id
         WHERE a.id = #{id}
 	</select>
 	
@@ -335,7 +336,6 @@
 			ads.support_https supportHttps,
 			ads.bid_type bidType,
 			ads.bid_floor bidFloor,
-			ads.adtype adType,
 			ads.layout layout,
 			ads.material_type materialType,
 			ads.material_size materialSize,
