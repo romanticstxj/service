@@ -428,7 +428,7 @@ public class TencentUploadMaterialApiTask {
 
 			// 缩略图
 			adContentMap = new HashMap<>();
-			adContentMap.put("file_url", material.getIcon());
+			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
 			adContents.add(adContentMap);
 
 			// 客户名称
