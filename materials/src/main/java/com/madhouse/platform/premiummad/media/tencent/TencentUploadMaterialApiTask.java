@@ -436,9 +436,9 @@ public class TencentUploadMaterialApiTask {
 			adContentMap.put("file_text", advertiserName);
 			adContents.add(adContentMap);
 
-			// 长标题
+			// 长标题 使用信息流正文
 			adContentMap = new HashMap<>();
-			adContentMap.put("file_text", material.getTitle());
+			adContentMap.put("file_text", material.getContent());
 			adContents.add(adContentMap);
 		} else if (Integer.valueOf(tencent_displayId_app_stream_video) == mediaDisplayId) {
 			// 广告标题
