@@ -421,9 +421,9 @@ public class TencentUploadMaterialApiTask {
 			adContentMap.put("file_text", material.getTitle());
 			adContents.add(adContentMap);
 
-			// 摘要
+			// 摘要 使用信息流广告正文设值
 			adContentMap = new HashMap<>();
-			adContentMap.put("file_text", material.getDescription());
+			adContentMap.put("file_text", material.getContent());
 			adContents.add(adContentMap);
 
 			// 缩略图
@@ -436,9 +436,9 @@ public class TencentUploadMaterialApiTask {
 			adContentMap.put("file_text", advertiserName);
 			adContents.add(adContentMap);
 
-			// 长标题 使用信息流正文
+			// 长标题 使用信息流广告描述设值
 			adContentMap = new HashMap<>();
-			adContentMap.put("file_text", material.getContent());
+			adContentMap.put("file_text", material.getDescription());
 			adContents.add(adContentMap);
 		} else if (Integer.valueOf(tencent_displayId_app_stream_video) == mediaDisplayId) {
 			// 广告标题
