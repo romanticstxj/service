@@ -17,7 +17,6 @@ import com.madhouse.platform.premiummad.constant.DeliveryType;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialAuditMode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
 import com.madhouse.platform.premiummad.constant.MediaNeedAdspace;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.entity.Adspace;
@@ -154,13 +153,6 @@ public class MaterialRule extends BaseRule {
 				throw new BusinessException(StatusCode.SC400, "失效日期[endDate]必须大于有效日期[startDate]");
 			}
 		}
-		
-		// 媒体需要提交广告位时，需要校验广告位是否必须
-		if (MediaNeedAdspace.getValue(entity.getMediaId())) {
-			if (entity.getAdspaceId() == null || entity.getAdspaceId().isEmpty()) {
-				throw new BusinessException(StatusCode.SC400, MediaMapping.getDescrip(entity.getMediaId()) + "广告位必须");
-			}
-		}
 
 		// 校验URL合法性
 		if (!StringUtils.isBlank(entity.getIcon())) {
@@ -220,19 +212,19 @@ public class MaterialRule extends BaseRule {
 	 * @param materailKey
 	 * @return
 	 */
-	public static String validateMaterials(List<Map<Integer, Material>> classfiedMaps, String materailKey, Integer mediaId) {
+	public static String validateMaterials(List<Map<Integer, Material>> classfiedMaps, String materailKey, SysMedia media) {
 		StringBuilder errorMsg = new StringBuilder();
 		if (classfiedMaps.get(0) != null && classfiedMaps.get(0).size() > 0) {
-			errorMsg.append((MediaNeedAdspace.getValue(mediaId) ? "广告主" + Arrays.toString(classfiedMaps.get(0).keySet().toArray()) : "") + "重复提交，状态为待审核");
+			errorMsg.append((MediaNeedAdspace.getValue(media.getApiType().intValue()) ? "广告主" + Arrays.toString(classfiedMaps.get(0).keySet().toArray()) : "") + "重复提交，状态为待审核");
 		}
 		if (classfiedMaps.get(1) != null && classfiedMaps.get(1).size() > 0) {
-			errorMsg.append((MediaNeedAdspace.getValue(mediaId) ? "广告主" + Arrays.toString(classfiedMaps.get(1).keySet().toArray()) : "") + "重复提交，状态为审核中");
+			errorMsg.append((MediaNeedAdspace.getValue(media.getApiType().intValue()) ? "广告主" + Arrays.toString(classfiedMaps.get(1).keySet().toArray()) : "") + "重复提交，状态为审核中");
 		}
 		if (classfiedMaps.get(2) != null && classfiedMaps.get(2).size() > 0) {
-			errorMsg.append((MediaNeedAdspace.getValue(mediaId) ? "广告主" + Arrays.toString(classfiedMaps.get(2).keySet().toArray()) : "") + "重复提交，状态为审核通过");
+			errorMsg.append((MediaNeedAdspace.getValue(media.getApiType().intValue()) ? "广告主" + Arrays.toString(classfiedMaps.get(2).keySet().toArray()) : "") + "重复提交，状态为审核通过");
 		}
 		if (errorMsg.length() > 0) {
-			return "素材[" + materailKey + "]媒体[" + mediaId + "]" + errorMsg.toString();
+			return "素材[" + materailKey + "]媒体[" + media.getId() + "]" + errorMsg.toString();
 		}
 		return null;
 	}
@@ -255,7 +247,7 @@ public class MaterialRule extends BaseRule {
 		Integer mediaId = entity.getMediaId();
 		
 		// 不需要上传广告位的媒体设置一个默认值  为了循环一次
-		if (!MediaNeedAdspace.getValue(entity.getMediaId())) {
+		if (!MediaNeedAdspace.getValue(media.getApiType().intValue())) {
 			adspaceIds.clear();
 			adspaceIds.add(0);
 		}
@@ -272,7 +264,7 @@ public class MaterialRule extends BaseRule {
 
 			boolean record = false;
 			for (Material material : materials) {
-				if ((!MediaNeedAdspace.getValue(entity.getMediaId()) || material.getAdspaceId().intValue() == adspaceId.intValue()) && material.getMaterialKey().equals(entity.getId()) && material.getMediaId().intValue() == mediaId.intValue()) {
+				if ((!MediaNeedAdspace.getValue(media.getApiType().intValue()) || material.getAdspaceId().intValue() == adspaceId.intValue()) && material.getMaterialKey().equals(entity.getId()) && material.getMediaId().intValue() == mediaId.intValue()) {
 					// 已驳回
 					if (MaterialStatusCode.MSC10001.getValue() == material.getStatus().intValue()) {
 						material = buildMaterial(media, material, entity, adspaceId);
@@ -336,7 +328,7 @@ public class MaterialRule extends BaseRule {
 		}
 
 		// 媒体不需要广告主，则不保存广告主信息
-		material.setAdspaceId(!MediaNeedAdspace.getValue(entity.getMediaId()) ? null : adspaceId);
+		material.setAdspaceId(!MediaNeedAdspace.getValue(media.getApiType().intValue()) ? null : adspaceId);
 		material.setAdvertiserKey(entity.getAdvertiserId());
 		material.setActiveType(entity.getActType() != null ? Byte.valueOf(entity.getActType().toString()) : 0);
 		material.setAdMaterials(parseToString(entity.getAdm())); // 广告素材URL(多个用半角逗号分隔)
