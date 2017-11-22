@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.iqiyi.constant.IQiYiConstant;
@@ -22,6 +22,7 @@ import com.madhouse.platform.premiummad.media.iqiyi.response.IQiyiCustomerRespon
 import com.madhouse.platform.premiummad.media.iqiyi.util.IQiYiHttpUtils;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 
 @Component("iQiyiCustomerCreateOrUpdateApiTask")
 public class IQiyiCustomerCreateOrUpdateApiTask {
@@ -40,13 +41,27 @@ public class IQiyiCustomerCreateOrUpdateApiTask {
 	@Autowired
 	private IAdvertiserService advertiserService;
 
+	@Value("${advertier_meidaGroupMapping_iqyi}")
+	private String mediaGroupStr;
+
+	@Autowired
+	private IMediaService mediaService;
+
 	public void createOrUpadate() {
 		LOGGER.info("++++++++++iqiyi upload customer begin+++++++++++");
 
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 查询所有待审核且媒体的广告主的审核状态是媒体审核的
-		List<Advertiser> unSubmitAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.IQYI.getValue(), AdvertiserStatusCode.ASC10002.getValue());
+		List<Advertiser> unSubmitAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10002.getValue());
 		if (unSubmitAdvertisers == null || unSubmitAdvertisers.isEmpty()) {
-			LOGGER.info(MediaMapping.IQYI.getDescrip() + "没有未上传的广告主");
+			LOGGER.info("爱奇艺没有未上传的广告主");
 			LOGGER.info("++++++++++iqiyi upload advertiser end+++++++++++");
 			return;
 		}
@@ -74,7 +89,7 @@ public class IQiyiCustomerCreateOrUpdateApiTask {
 					AdvertiserAuditResultModel rejuseItem = new AdvertiserAuditResultModel();
 					rejuseItem.setId(String.valueOf(advertiser.getId()));
 					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-					rejuseItem.setMediaId(String.valueOf(MediaMapping.IQYI.getValue()));
+					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(iQiyiCustomerResponse.getDesc());
 					rejusedAdvertisers.add(rejuseItem);
 					LOGGER.error("广告主[advertiserId=" + advertiser.getId() + "]上传失败-" + result);

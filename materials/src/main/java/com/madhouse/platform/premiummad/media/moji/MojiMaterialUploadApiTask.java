@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.moji.constant.MojiConstant;
@@ -23,7 +23,7 @@ import com.madhouse.platform.premiummad.media.moji.util.MojiHttpUtil;
 import com.madhouse.platform.premiummad.media.sohu.util.Sha1;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
-import com.madhouse.platform.premiummad.service.IPolicyService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
@@ -75,14 +75,25 @@ public class MojiMaterialUploadApiTask {
 	@Autowired
 	private IMaterialService materialService;
 	
+	@Value("${material_meidaGroupMapping_moji}")
+	private String mediaGroupStr;
+	
 	@Autowired
-	private IPolicyService policyService;
+	private IMediaService mediaService;
 	
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++moji get material status begin+++++++++++");
 
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.MOJI.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
 			LOGGER.info("墨迹天气没有未上传的广告主");
 			LOGGER.info("++++++++++moji upload material end+++++++++++");
@@ -119,7 +130,7 @@ public class MojiMaterialUploadApiTask {
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 					rejuseItem.setId(String.valueOf(material.getId()));
 					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-					rejuseItem.setMediaId(String.valueOf(MediaMapping.MOMO.getValue()));
+					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(response.getMessage());
 					rejusedMaterials.add(rejuseItem);
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + response.getCode() + " " + response.getMessage());
