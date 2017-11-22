@@ -118,9 +118,9 @@ public class TencentMaterialStatusApiTask {
 			// 向腾讯发请求批量获取状态
 			TencentCommonRequest<List<TencentMaterialStatusData>> request = new TencentCommonRequest<List<TencentMaterialStatusData>>();
 			request.setData(dspOrderIds);
-			LOGGER.info("request: ",  JSONObject.toJSONString(dspOrderIds));
+			LOGGER.info("request:" + JSONObject.toJSONString(dspOrderIds));
 			String responseJson = tencentHttpUtil.post(advertStatusUrl, request);
-			LOGGER.info("response: ", responseJson);
+			LOGGER.info("response: " + responseJson);
 
 			// 处理返回的结果
 			TencentMaterialStatusResponse advertBatchStatusResponse = JSON.parseObject(responseJson, TencentMaterialStatusResponse.class);
