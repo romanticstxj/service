@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.media.iqiyi.constant.IQiYiConstant;
@@ -22,6 +22,7 @@ import com.madhouse.platform.premiummad.media.iqiyi.response.IQiyiCustomerStatus
 import com.madhouse.platform.premiummad.media.iqiyi.util.IQiYiHttpUtils;
 import com.madhouse.platform.premiummad.model.AdvertiserAuditResultModel;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 
 @Component("iQiyiCustomerStatusApiTask")
 public class IQiyiCustomerStatusApiTask {
@@ -40,11 +41,25 @@ public class IQiyiCustomerStatusApiTask {
 	@Autowired
 	private IAdvertiserService advertiserService;
 
+	@Value("${advertier_meidaGroupMapping_iqyi}")
+	private String mediaGroupStr;
+
+	@Autowired
+	private IMediaService mediaService;
+
 	public void batchStatus() {
 		LOGGER.info("++++++++++iqiyi get customer status begin+++++++++++");
 
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 获取我方媒体待审核的广告主
-		List<Advertiser> unAuditAdvertisers = advertiserDao.selectMediaAdvertisers(MediaMapping.IQYI.getValue(), AdvertiserStatusCode.ASC10003.getValue());
+		List<Advertiser> unAuditAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10003.getValue());
 		if (unAuditAdvertisers == null || unAuditAdvertisers.isEmpty()) {
 			LOGGER.info("++++++++++iqiyi no advertisers need to audit+++++++++++");
 			return;
@@ -55,12 +70,12 @@ public class IQiyiCustomerStatusApiTask {
 			// 设定每50条提交查询一次，避免超出浏览器地址对get请求大小限制，不超过规定侧一次发送，超过侧按照规定每50条广告主id提交一次
 			stringBuilder.append(unAuditAdvertisers.get(i).getId() + ",");
 			if (i != 0 && i % 50 == 0) {
-				executeNet(stringBuilder, unAuditAdvertisers);
+				executeNet(stringBuilder, unAuditAdvertisers, mediaIds);
 			}
 		}
 		// 分页不足规定的侧直接提交
 		if (stringBuilder.length() != 0) {
-			executeNet(stringBuilder, unAuditAdvertisers);
+			executeNet(stringBuilder, unAuditAdvertisers, mediaIds);
 		}
 
 		LOGGER.info("++++++++++iqiyi get customer status end+++++++++++");
@@ -72,7 +87,7 @@ public class IQiyiCustomerStatusApiTask {
 	 * @param stringBuilder
 	 * @param advertisers
 	 */
-	private void executeNet(StringBuilder stringBuilder, List<Advertiser> advertisers) {
+	private void executeNet(StringBuilder stringBuilder, List<Advertiser> advertisers, int[] mediaIds) {
 		String batchAid = stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1);
 		Map<String, String> param = new HashMap<>();
 		param.put("batch", batchAid);
@@ -86,7 +101,7 @@ public class IQiyiCustomerStatusApiTask {
 			// 0 代表返回成功
 			if (code.equals(String.valueOf(IQiYiConstant.RESPONSE_SUCCESS.getValue()))) {
 				List<IQiyiCustomerStatusDetail> iQiyiCustomerStatusDetails = iQiyiCustomerStatusResponse.getResults();
-				processResult(iQiyiCustomerStatusDetails);
+				processResult(iQiyiCustomerStatusDetails, mediaIds);
 			} else {
 				LOGGER.info("获取状态失败");
 			}
@@ -98,12 +113,12 @@ public class IQiyiCustomerStatusApiTask {
 	 * 
 	 * @param iQiyiCustomerStatusDetails
 	 */
-	private void processResult(List<IQiyiCustomerStatusDetail> iQiyiCustomerStatusDetails) {
+	private void processResult(List<IQiyiCustomerStatusDetail> iQiyiCustomerStatusDetails, int[] mediaIds) {
 		List<AdvertiserAuditResultModel> auditResults = new ArrayList<AdvertiserAuditResultModel>();
 		for (IQiyiCustomerStatusDetail iQiyiCustomerStatusDetail : iQiyiCustomerStatusDetails) {
 			AdvertiserAuditResultModel auditItem = new AdvertiserAuditResultModel();
 			auditItem.setMediaAdvertiserKey(String.valueOf(iQiyiCustomerStatusDetail.getAd_id()));
-			auditItem.setMediaId(String.valueOf(MediaMapping.IQYI.getValue()));
+			auditItem.setMediaIds(mediaIds);
 			// 审核通过
 			if ("PASS".equals(iQiyiCustomerStatusDetail.getStatus())) {
 				auditItem.setStatus(AdvertiserStatusCode.ASC10004.getValue());

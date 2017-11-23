@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.letv.constant.LetvConstant;
@@ -23,6 +23,7 @@ import com.madhouse.platform.premiummad.media.letv.response.LetvResponse;
 import com.madhouse.platform.premiummad.media.letv.response.LetvStatusDetailResponse;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
@@ -43,10 +44,25 @@ public class LetvStatusApiTask {
 	@Autowired
 	private IMaterialService materialService;
 	
+	@Value("${material_meidaGroupMapping_letv}")
+	private String mediaGroupStr;
+	
+	@Autowired
+	private IMediaService mediaService;
+	
 	public void getStatusDetail() {
 		LOGGER.info("++++++++++Letv get material status begin+++++++++++");
+
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 我方系统未审核的素材
-		List<Material> unAuditMaterials = materialDao.selectMediaMaterials(MediaMapping.LETV.getValue(), MaterialStatusCode.MSC10003.getValue());
+		List<Material> unAuditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unAuditMaterials == null || unAuditMaterials.isEmpty()) {
 			LOGGER.info("++++++++++Letv News no materials need to audit+++++++++++");
 			return;
@@ -71,7 +87,7 @@ public class LetvStatusApiTask {
 				for (LetvStatusDetailResponse statusDetail : letvStatusDetailResponse) {
 					MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 					auditItem.setMediaQueryKey(String.valueOf(statusDetail.getUrl()));
-					auditItem.setMediaId(String.valueOf(MediaMapping.LETV.getValue()));
+					auditItem.setMediaIds(mediaIds);
 					if (statusDetail.getResult().equals("通过")) {
 						auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
 						auditResults.add(auditItem);

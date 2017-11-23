@@ -191,9 +191,9 @@ public class TencentUploadMaterialApiTask {
 
 			// 构造请求对象
 			TencentCommonRequest<List<TencentUploadMaterialData>> request = buildUploadRequest(mediaType, unSubmitMaterials);
-			LOGGER.info("request: ", JSON.toJSONString(request));
+			LOGGER.info("request:{}", JSON.toJSONString(request));
 			String responseJson = tencentHttpUtil.post(adcreativeUploadUrl, request);
-			LOGGER.info("response: ", responseJson);
+			LOGGER.info("response:{}", responseJson);
 			// 上传成功时,responseJson 为空字符串或者null
 			TencentUploadMaterialResponse advertUploadRsponse = null;
 			try {

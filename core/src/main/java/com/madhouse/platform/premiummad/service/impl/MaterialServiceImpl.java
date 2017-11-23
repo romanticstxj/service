@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.madhouse.platform.premiummad.constant.MaterialAuditMode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
+import com.madhouse.platform.premiummad.constant.MediaNeedAdspace;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
@@ -224,6 +224,13 @@ public class MaterialServiceImpl implements IMaterialService {
 		List<SysMedia> uploadedMedias = mediaDao.selectMedias(distinctMediaIds);
 		MediaRule.checkMedias(distinctMediaIds, uploadedMedias);
 
+		// 媒体需要提交广告位时，需要校验广告位是否必须
+		if (MediaNeedAdspace.getValue(uploadedMedias.get(0).getApiType().intValue())) {
+			if (entity.getAdspaceId() == null || entity.getAdspaceId().isEmpty()) {
+				throw new BusinessException(StatusCode.SC400, "媒体[" + entity.getMediaId() + "广告位必须");
+			}
+		}
+		
 		// 如果传了广告位，校验其合法性
 		if (entity.getAdspaceId() != null && !entity.getAdspaceId().isEmpty()) {
 			List<Adspace> adspaces = adspaceDao.selectByIds(entity.getAdspaceId());
@@ -253,7 +260,7 @@ public class MaterialServiceImpl implements IMaterialService {
 		MaterialRule.classifyMaterials(uploadedMedias.get(0), adspaceIds, materials, entity, classfiedMaps);
 
 		// 存在待审核、审核中，审核通过的不允许推送，提示信息
-		errorMsg = MaterialRule.validateMaterials(classfiedMaps, entity.getId(), entity.getMediaId());
+		errorMsg = MaterialRule.validateMaterials(classfiedMaps, entity.getId(), uploadedMedias.get(0));
 		if (errorMsg != null) {
 			throw new BusinessException(StatusCode.SC411, errorMsg);
 		}
