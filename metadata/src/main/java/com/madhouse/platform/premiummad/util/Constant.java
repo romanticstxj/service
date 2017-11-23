@@ -77,4 +77,10 @@ public final class Constant {
         public static final int PMP = 4;
         public static final int RTB = 8;
     }
+    public static final class BlockType {
+        public static final int DID = 1;
+        public static final int DPID = 2;
+        public static final int IFA = 3;
+        public static final int IP = 4;
+    }
 }

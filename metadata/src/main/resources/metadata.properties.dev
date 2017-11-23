@@ -47,5 +47,16 @@ MEDIA_MAPPING_DATA = str:%s:media_mapping_info
 #广告位ID、DSP ID
 DSP_MAPPING_DATA = str:%s:%s:dsp_mapping_info
 
+#IP
+ALL_BLOCKED_DEVICE_IP = set:all_blocked_ip
+#IFA(IDFA\AAID)
+ALL_BLOCKED_DEVICE_IFA = set:all_blocked_ifa
+#DID(IMEI)
+ALL_BLOCKED_DEVICE_DIDMD5 = set:all_blocked_didmd5
+#DPID(AndroidId\OpenUDID)
+ALL_BLOCKED_DEVICE_DPIDMD5 = set:all_blocked_dpidmd5
+
+
+
 EXPIRATION_TIME = 180
 
