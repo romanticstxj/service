@@ -33,6 +33,7 @@ public interface SystemConstant {
 		int DICT_MEDIA_CATEGORY = 1;
 		int DICT_ADSPACE_LAYOUT = 2;
 		int DICT_LOCATION = 3;
+		int DICT_REQUEST_BLOCK_TYPE = 4;
 		
 		long WEEK = 1000L * 60L * 60L * 24L * 7L;
 		

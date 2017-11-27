@@ -133,7 +133,7 @@
             "_summary": "获取常量表数据，type是这些字典表的类型",
             "parameters": {
                 "query": {
-                	"type": "<*||integer||comment:查询的字典表类型(1:媒体分类, 2:广告形式, 。。。)>",
+                	"type": "<*||integer||comment:查询的字典表类型(1:媒体分类, 2:广告形式, 3:地域列表, 4:异常流量类型)>",
                 	"terminalType": "<integer||comment:查询广告形式时的额外参数>",
                 	"adType": "<integer||comment:查询广告形式时的额外参数>"
                 }

@@ -33,5 +33,10 @@ public class DictServiceImpl implements IDictService {
 		return dictDao.queryAllLocations();
 	}
 
+	@Override
+	public List<Dict> queryAllReqBlockTypeList() {
+		return dictDao.queryAllReqBlockTypeList();
+	}
+
 
 }
