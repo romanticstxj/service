@@ -210,7 +210,6 @@ private static final Logger LOGGER = LoggerFactory.getLogger("metadata");
             LOGGER.debug("------------PlcmtTask------adspaceMappingDsp-----start--");
             List<MediaMappingMetaData> lists = plcmtService.queryAdspaceMappingMedia();
             long begin = System.currentTimeMillis();
-            redisMaster.del(MEDIA_MAPPING_DATA);
             for (MediaMappingMetaData mappingMetaData : lists) {
                 redisMaster.setex(String.format(this.MEDIA_MAPPING_DATA, String.valueOf(mappingMetaData.getAdspaceId())), EXPIRATION_TIME, JSON.toJSONString(mappingMetaData));
             }
