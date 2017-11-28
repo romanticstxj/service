@@ -36,6 +36,12 @@
         <result property="updatedTime" column="updated_time" jdbcType="TIMESTAMP" />
     </resultMap>
     
+    <resultMap id="resultAdspacePolicies" type="com.madhouse.platform.premiummad.entity.Adspace">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <collection property="adspacePolicies" ofType="com.madhouse.platform.premiummad.entity.PolicyAdspace" 
+	        column="id" select="com.madhouse.platform.premiummad.dao.PolicyAdspaceDao.getAdspacePolicy"/>  
+    </resultMap>
+    
     <resultMap id="baseMappingResult" type="com.madhouse.platform.premiummad.entity.AdspaceMapping">
         <id property="id" column="id" jdbcType="INTEGER" />
         <result property="adspaceId" column="adspace_id" jdbcType="INTEGER" />
@@ -231,6 +237,15 @@
         LEFT JOIN mad_dict_layout lc ON l.layout = lc.code
         LEFT JOIN mad_dict_adtype lt ON l.ad_type = lt.code
         INNER JOIN mad_sys_media m ON a.media_id = m.id
+        WHERE a.id = #{id}
+	</select>
+	
+	<select id="queryAdspacePolicies" parameterType="integer" resultMap="resultAdspacePolicies">
+		SELECT 
+		<include refid="baseColumns">
+            <property name="alias" value="a" />
+        </include>
+        FROM mad_sys_adspace a
         WHERE a.id = #{id}
 	</select>
 	

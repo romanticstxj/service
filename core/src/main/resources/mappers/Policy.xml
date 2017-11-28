@@ -38,7 +38,8 @@
     </resultMap>
     
   	<sql id="Base_Column_List">
-	    ${alias}.id, ${alias}.id deal_id, ${alias}.name, ${alias}.type, ${alias}.weight, ${alias}.start_date, ${alias}.end_date, 
+	    ${alias}.id, IF(${alias}.type IS NOT NULL AND ${alias}.type=8, NULL, ${alias}.id) deal_id,
+	    ${alias}.name, ${alias}.type, ${alias}.weight, ${alias}.start_date, ${alias}.end_date, 
 	    ${alias}.time_targeting, ${alias}.location_targeting, ${alias}.os_targeting, ${alias}.conn_targeting, 
 	    ${alias}.limit_type, ${alias}.limit_reqs, ${alias}.limit_speed, ${alias}.push_ratio, 
 	    ${alias}.status, ${alias}.description, ${alias}.created_user, ${alias}.created_time, 
@@ -58,6 +59,12 @@
 	</select>
   
   	<select id="selectCascadedlyByPrimaryKey" parameterType="integer" resultMap="baseCascadedMappingResult">
+	    select <include refid="Base_Column_List"><property name="alias" value="p" /></include>
+	    from mad_sys_policy p
+	    where p.id = #{id}
+  	</select>
+  	
+  	<select id="selectAdspacePolicyByPrimaryKey" parameterType="integer" resultMap="baseListResultMap">
 	    select <include refid="Base_Column_List"><property name="alias" value="p" /></include>
 	    from mad_sys_policy p
 	    where p.id = #{id}

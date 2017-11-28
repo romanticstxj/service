@@ -6,6 +6,8 @@ import java.util.List;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.AdspaceDto;
+import com.madhouse.platform.premiummad.dto.PolicyAdspaceDto;
+import com.madhouse.platform.premiummad.dto.PolicyDto;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
@@ -70,6 +72,21 @@ public class AdspaceRule extends BaseRule{
         
         convertToDtoSpecifically(adspace, adspaceDto);
 		return adspaceDtos;
+	}
+	
+	public static List<PolicyAdspaceDto> convertToDtoOnlyWithPolicies(Adspace adspace, List<PolicyAdspaceDto> adspacePolicyDtos) {
+    	//复制广告位里的广告位策略关联信息
+    	BeanUtils.copyList(adspace.getAdspacePolicies(), adspacePolicyDtos, PolicyAdspaceDto.class);
+    	if(adspacePolicyDtos != null){
+    		for(int i=0; i<adspacePolicyDtos.size(); i++){
+				//设置广告位关联的策略列表里的每个具体策略的信息
+				PolicyDto policyDto = new PolicyDto();
+				BeanUtils.copyProperties(adspace.getAdspacePolicies().get(i).getPolicy(), policyDto);
+				adspacePolicyDtos.get(i).setPolicy(policyDto);
+			}
+    	}
+        
+		return adspacePolicyDtos;
 	}
 	
 	public static List<AdspaceDto> convertToDtoList(List<Adspace> entities, ArrayList<AdspaceDto> dtos) {
