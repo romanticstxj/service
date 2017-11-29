@@ -18,6 +18,8 @@ public interface AdspaceDao {
 	Integer update(Adspace adspace);
 
 	Adspace queryAdspaceById(Integer adspaceId);
+	
+	Adspace queryAdspacePolicies(Integer adspaceId);
 
 	Integer updateStatus(Adspace adspace);
 

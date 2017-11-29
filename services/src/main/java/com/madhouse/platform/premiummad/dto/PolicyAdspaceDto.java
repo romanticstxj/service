@@ -3,7 +3,6 @@ package com.madhouse.platform.premiummad.dto;
 import java.io.Serializable;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
-import com.madhouse.platform.premiummad.entity.Adspace;
 
 public class PolicyAdspaceDto implements Serializable{
 	
@@ -18,6 +17,8 @@ public class PolicyAdspaceDto implements Serializable{
      * @mbggenerated Wed Jul 19 17:12:16 CST 2017
      */
     private Integer policyId;
+    
+    private PolicyDto policy;
 
     @NotNullAndBlank
     private Integer adspaceId;
@@ -123,5 +124,13 @@ public class PolicyAdspaceDto implements Serializable{
 
 	public void setLimitReqs(Integer limitReqs) {
 		this.limitReqs = limitReqs;
+	}
+
+	public PolicyDto getPolicy() {
+		return policy;
+	}
+
+	public void setPolicy(PolicyDto policy) {
+		this.policy = policy;
 	}
 }
