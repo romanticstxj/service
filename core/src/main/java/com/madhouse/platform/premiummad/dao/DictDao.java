@@ -12,4 +12,6 @@ public interface DictDao {
 	List<Dict> queryAllAdspaceLayout(Dict dict);
 
 	List<Location> queryAllLocations();
+
+	List<Dict> queryAllReqBlockTypeList();
 }

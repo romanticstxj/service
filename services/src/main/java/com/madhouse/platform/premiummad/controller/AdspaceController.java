@@ -16,6 +16,7 @@ import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.AdspaceDto;
 import com.madhouse.platform.premiummad.dto.AdspaceMappingDto;
 import com.madhouse.platform.premiummad.dto.DspMappingDto;
+import com.madhouse.platform.premiummad.dto.PolicyAdspaceDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
@@ -111,6 +112,24 @@ public class AdspaceController {
 		
 		Adspace adspace = adspaceService.queryById(id);
 		List<AdspaceDto> result = AdspaceRule.convertToDto(adspace, new AdspaceDto());
+        return ResponseUtils.response(StatusCode.SC20000,result);
+    }
+	
+	/**
+	 * 根据广告位id查询和其关联的策略列表
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/detail/policyList")
+    public ResponseDto<PolicyAdspaceDto> getAdspacePolicies(@RequestParam(value="id", required=true) Integer id,
+    		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
+		List<Integer> adspaceIdList = userAuthService.queryAdspaceIdList(userId, String.valueOf(id));
+		if(userId == null || ObjectUtils.isEmpty(adspaceIdList) || adspaceIdList.get(0).intValue() != id.intValue()){
+			return ResponseUtils.response(StatusCode.SC20001, null);
+		}
+		
+		Adspace adspace = adspaceService.queryAdspacePolicies(id);
+		List<PolicyAdspaceDto> result = AdspaceRule.convertToDtoOnlyWithPolicies(adspace, new ArrayList<PolicyAdspaceDto>());
         return ResponseUtils.response(StatusCode.SC20000,result);
     }
 	

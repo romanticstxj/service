@@ -1,5 +1,7 @@
 package com.madhouse.platform.premiummad.entity;
 
+import java.util.List;
+
 public class Adspace extends BaseEntity{
 	
 	private Integer id;
@@ -48,6 +50,8 @@ public class Adspace extends BaseEntity{
 	private Integer updateType;
 	
 	private Integer status;
+	
+	private List<PolicyAdspace> adspacePolicies;
 
 	public Integer getId() {
 		return id;
@@ -304,4 +308,13 @@ public class Adspace extends BaseEntity{
 	public void setAdTypeName(String adTypeName) {
 		this.adTypeName = adTypeName;
 	}
+
+	public List<PolicyAdspace> getAdspacePolicies() {
+		return adspacePolicies;
+	}
+
+	public void setAdspacePolicies(List<PolicyAdspace> adspacePolicies) {
+		this.adspacePolicies = adspacePolicies;
+	}
+
 }
