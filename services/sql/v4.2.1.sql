@@ -1,5 +1,3 @@
-USE `premiummad_dev`;
-
 /*Table structure for table `mad_dict_reqblocktype` */
 DROP TABLE IF EXISTS `mad_dict_reqblocktype`;
 CREATE TABLE `mad_dict_reqblocktype` (
@@ -8,7 +6,7 @@ CREATE TABLE `mad_dict_reqblocktype` (
   PRIMARY KEY (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*Data for the table `mad_dict_reqblocktype` */
-insert  into `mad_dict_reqblocktype`(`code`,`name`) values (1,'DID(IMEI)'),(2,'DPID(AndroidId/OpenUDID)'),(3,'IFA(AAID/DIFA)'),(4,'IP\r\n');
+insert  into `mad_dict_reqblocktype`(`code`,`name`) values (1,'DID(IMEI)'),(2,'DPID(AndroidId/OpenUDID)'),(3,'IFA(AAID/DIFA)'),(4,'IP');
 
 /*Table structure for table `mad_sys_reqblock` */
 DROP TABLE IF EXISTS `mad_sys_reqblock`;
@@ -25,3 +23,5 @@ CREATE TABLE `mad_sys_reqblock` (
   PRIMARY KEY (`id`),
   KEY `type_code` (`status`,`type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*Data for the table `mad_sys_reqblock` */
+INSERT INTO `mad_sys_reqblock`(`code`,`type`,`status`,`description`) VALUES ('d41d8cd98f00b204e9800998ecf8427e',1,1,'空字符串MD5'),('5284047f4ffb4e04824a2fd1d1f0cd62',1,1,'明文为000000000000000'),('FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF',3,1,''),('00000000-0000-0000-0000-000000000000',3,1,'');
