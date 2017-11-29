@@ -115,8 +115,9 @@ public class ToutiaoMaterialUploadApiTask {
 			}
 
 			List<ToutiaoMaterialUploadRequest> list = buildMaterialRequest(material);
+			LOGGER.info("request: " + JSON.toJSONString(list));
 			String postResult = toutiaoHttpUtil.post(uploadMaterialUrl, list);
-			LOGGER.info("response:" + postResult);
+			LOGGER.info("response: " + postResult);
 			if (!StringUtils.isEmpty(postResult)) {
 				LOGGER.info("头条response{}",postResult);
 				Object object = JSON.parse(postResult);

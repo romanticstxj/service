@@ -1,10 +1,10 @@
 package com.madhouse.platform.premiummad.media.weibo;
 
-import java.io.File;
+/*import java.io.File;
 import java.io.FileOutputStream;
+import java.io.PrintStream;*/
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -214,9 +214,9 @@ public class WeiboMaterialUploadApiTask {
 			
 			// 请求接口
 			String requestJson = JSON.toJSONString(uploadRequest);
-			LOGGER.info("WeiboMaterialUpload request Info: " + requestJson);
+			LOGGER.info("upload material Request: " + requestJson);
 			String responseJson = HttpUtils.post(uploadMaterialUrl, requestJson);
-			LOGGER.info("WeiboMaterialUpload response Info: " + responseJson);
+			LOGGER.info("upload material Response: " + responseJson);
 
 			if (!StringUtils.isEmpty(responseJson)) {
 				WeiboMaterialUploadResponse weiboMaterialUploadResponse = JSON.parseObject(responseJson, WeiboMaterialUploadResponse.class);
@@ -442,8 +442,8 @@ public class WeiboMaterialUploadApiTask {
 		inputStream = getStreamContent(filePath);
 		int totalTime = (md5LenghtLength.entrySet().iterator().next().getValue() - 1) / weiboData.getLength() + 1;
 		try {
-			File file = new File("D:\\response.txt");
-			PrintStream ps = new PrintStream(new FileOutputStream(file));
+			/*File file = new File("D:\\response.txt");
+			PrintStream ps = new PrintStream(new FileOutputStream(file));*/
 			for (int partNumber = 0; partNumber < totalTime; partNumber ++) {
 				int subLength = 0;
 				for (subLength = 0; subLength < weiboData.getLength();) {
@@ -453,7 +453,7 @@ public class WeiboMaterialUploadApiTask {
 					}
 					subLength += readlen;
 				}
-				String result = uploadMedia(weiboData.getUpload_id(), partNumber, subLength, buffer, md5LenghtLength.entrySet().iterator().next().getKey(), weiboData.getLength(), ps);
+				String result = uploadMedia(weiboData.getUpload_id(), partNumber, subLength, buffer, md5LenghtLength.entrySet().iterator().next().getKey(), weiboData.getLength()/*, ps*/);
 				if (!StringUtils.isBlank(result)) {
 					mediaMaterialUrl = mediaMaterialUrl.append(result);
 				}
@@ -473,7 +473,7 @@ public class WeiboMaterialUploadApiTask {
 	 * @param content
 	 * @param result
 	 */
-	private String uploadMedia(String uploadId, int partNumber, int fileLength, byte[] wholeContent, String check, int maxLength, PrintStream ps) {
+	private String uploadMedia(String uploadId, int partNumber, int fileLength, byte[] wholeContent, String check, int maxLength/*, PrintStream ps*/) {
 		// 构造请求对象
 		WeiboMediaUploadRequest weiboMediaUploadRequest = new WeiboMediaUploadRequest();
 		weiboMediaUploadRequest.setDspid(dspid);
@@ -488,12 +488,12 @@ public class WeiboMaterialUploadApiTask {
 
 		// 发送请求
 		String requestJson = JSON.toJSONString(weiboMediaUploadRequest);
-		LOGGER.info("WeiboMediaUploadRequest: " + requestJson);
+		LOGGER.info("media upload video request: " + requestJson);
 		String responseJson = HttpUtils.post(mediaUploadUrl, requestJson);
-		LOGGER.info("WeiboMediaUploadResponse: " + responseJson);
-		ps.append("partNumber-" + weiboMediaUploadRequest.getPart_number() + ",md5-" + weiboMediaUploadRequest.getSlice_check());
+		LOGGER.info("media upload response: " + responseJson);
+		/*ps.append("partNumber-" + weiboMediaUploadRequest.getPart_number() + ",md5-" + weiboMediaUploadRequest.getSlice_check());
 		ps.append("length-" + fileLength + "-");
-		ps.append(responseJson);
+		ps.append(responseJson);*/
 		// 处理返回的结果
 		if (!StringUtils.isBlank(responseJson)) {
 			WeiboResponse weiboResponse = JSON.parseObject(responseJson, WeiboResponse.class);
@@ -532,9 +532,9 @@ public class WeiboMaterialUploadApiTask {
 
 		// 发送请求
 		String requestJson = JSON.toJSONString(weiboMediaInitRequest);
-		LOGGER.info("weiboMediaInitRequest: " + requestJson);
+		LOGGER.info("media init request: " + requestJson);
 		String responseJson = HttpUtils.post(meidaInitUrl, requestJson);
-		LOGGER.info("weiboMediaInitResponse Info: " + responseJson);
+		LOGGER.info("media init response: " + responseJson);
 
 		// 处理返回的结果
 		if (!StringUtils.isBlank(responseJson)) {

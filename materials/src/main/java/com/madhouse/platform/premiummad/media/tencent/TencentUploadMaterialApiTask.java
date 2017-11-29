@@ -6,14 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -190,10 +188,18 @@ public class TencentUploadMaterialApiTask {
 
 			// 构造请求对象
 			TencentCommonRequest<List<TencentUploadMaterialData>> request = buildUploadRequest(mediaType, unSubmitMaterials);
+			LOGGER.info("request:{}", JSON.toJSONString(request));
 			String responseJson = tencentHttpUtil.post(adcreativeUploadUrl, request);
-			LOGGER.info("Tencent上传广告信息返回信息：{}", responseJson);
+			LOGGER.info("response:{}", responseJson);
 			// 上传成功时,responseJson 为空字符串或者null
 			TencentUploadMaterialResponse advertUploadRsponse = null;
+			
+			// 返回异常
+			if (responseJson.contains("server is busy, 500 error")) {
+				LOGGER.info("Tencent服务器异常");
+				return;
+			}
+
 			try {
 				advertUploadRsponse = JSONObject.parseObject(responseJson, TencentUploadMaterialResponse.class);
 				if (!request.getData().isEmpty() && advertUploadRsponse != null) {
@@ -236,17 +242,7 @@ public class TencentUploadMaterialApiTask {
 					LOGGER.info("Tencent上传广告返回出错 : AdvertUploadRsponse is null");
 				}
 			} catch (Exception e) {
-				String message = "syntax error, expect {, actual EOF, pos 0";
-				if (e instanceof JSONException || e.getMessage().equals(message)) {
-					LOGGER.info("Tencent上传广告返回解析错误进入到JsonException中 :直接更新物料 task表为上传成功");
-					Set<String> successfulMaterialIds = new HashSet<String>();
-					for (Material material : unSubmitMaterials) {
-						successfulMaterialIds.add(String.valueOf(material.getId()));
-					}
-					handleSuccessResult(unSubmitMaterials, successfulMaterialIds);
-				} else {
-					LOGGER.info("Tencent上传广告返回解析出错 : " + e.getMessage());
-				}
+				LOGGER.info("Tencent上传广告返回解析出错 : " + e.getMessage());
 			}
 			LOGGER.info("Tencent" + mediaIds + " AdvertUploadApiTask-advertUpload end");
 		}
@@ -419,14 +415,14 @@ public class TencentUploadMaterialApiTask {
 			adContentMap.put("file_text", material.getTitle());
 			adContents.add(adContentMap);
 
-			// 摘要
+			// 摘要 使用信息流广告正文设值
 			adContentMap = new HashMap<>();
-			adContentMap.put("file_text", material.getDescription());
+			adContentMap.put("file_text", material.getContent());
 			adContents.add(adContentMap);
 
 			// 缩略图
 			adContentMap = new HashMap<>();
-			adContentMap.put("file_url", material.getIcon());
+			adContentMap.put("file_url", material.getAdMaterials().split("\\|")[0]);
 			adContents.add(adContentMap);
 
 			// 客户名称
@@ -434,9 +430,9 @@ public class TencentUploadMaterialApiTask {
 			adContentMap.put("file_text", advertiserName);
 			adContents.add(adContentMap);
 
-			// 长标题
+			// 长标题 使用信息流广告描述设值
 			adContentMap = new HashMap<>();
-			adContentMap.put("file_text", material.getTitle());
+			adContentMap.put("file_text", material.getDescription());
 			adContents.add(adContentMap);
 		} else if (Integer.valueOf(tencent_displayId_app_stream_video) == mediaDisplayId) {
 			// 广告标题

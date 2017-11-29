@@ -2,12 +2,15 @@ package com.madhouse.platform.premiummad.media.tencent;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdvertiserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -107,8 +110,9 @@ public class TencentAdvertiserStatusApiTask {
 				// 构造请求并获取
 				List<Advertiser> advertisers = unAuditAdvertisers.subList(i * PAGE_SIZE, endIndex);
 				TencentCommonRequest<List<TencentAdvertiserStatusData>> request = buildAdvertiserStatusRequest(i + 1, advertisers);
+				LOGGER.info("request: ",  JSONObject.toJSONString(request));
 				String responseJson = tencentHttpUtil.post(advertiserListUrl, request);
-				LOGGER.info("Tencent批量获取广告的审核状态返回:{}", responseJson);
+				LOGGER.info("response: ", responseJson);
 
 				// 解析结果
 				if (!StringUtils.isBlank(responseJson)) {

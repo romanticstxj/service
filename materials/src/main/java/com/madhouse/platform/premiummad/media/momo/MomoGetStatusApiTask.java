@@ -91,15 +91,19 @@ public class MomoGetStatusApiTask {
 
 		// 向陌陌发请求
 		Map<String, String> param = new HashMap<String, String>();
-		LOGGER.info("陌陌获取创意审核状态信息的请求crid列表:{}", crids.toString());
 		MomoGetStatusRequest reqParams = new MomoGetStatusRequest();
 		reqParams.setDspid(dspId);
 		reqParams.setCrids(new ArrayList<>(crids));
 		param.put("data", JSON.toJSONString(reqParams));
+		LOGGER.info("Request: " + JSON.toJSONString(reqParams));
 		String response = momoHttpUtil.post(statusUrl, param);
-		LOGGER.info("陌陌获取创意审核状态信息请求返回:{}", response);
+		LOGGER.info("Response: ", response);
 
 		// 处理返回的结果
+		if (response.contains("502 Bad Gateway")) {
+			LOGGER.error("服务器异常URL[" + statusUrl + "]", response);
+			return;
+		}
 		MomoGetStatusResponse statusResponse = JSON.parseObject(response, MomoGetStatusResponse.class);
 		List<MomoGetStatusResponse.DataBean> list = statusResponse.getData();
 		if (!StringUtils.isEmpty(list)) {

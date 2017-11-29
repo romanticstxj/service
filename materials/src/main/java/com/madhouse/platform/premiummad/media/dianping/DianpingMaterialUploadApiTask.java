@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.dianping.request.DianpingCreativeInfoRequest;
@@ -21,6 +21,7 @@ import com.madhouse.platform.premiummad.media.dianping.request.DianpingUploadCre
 import com.madhouse.platform.premiummad.media.dianping.response.DianpingUploadCreativeResponse;
 import com.madhouse.platform.premiummad.media.dianping.util.DianpingHttpUtil;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component
@@ -67,14 +68,28 @@ public class DianpingMaterialUploadApiTask {
 	@Autowired
 	private DianpingHttpUtil dianpingHttpUtil;
 	
+	@Value("${material_meidaGroupMapping_dianping}")
+	private String mediaGroupStr;
+	
+	@Autowired
+	private IMediaService mediaService;
+	
 	/**
 	 * 上传物料
 	 */
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Dianping upload material begin+++++++++++");
 
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.DIANPING.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
 			LOGGER.info("美团点评没有未上传的广告主");
 			LOGGER.info("++++++++++Dianping News upload material end+++++++++++");

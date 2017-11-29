@@ -364,7 +364,6 @@ public class SohuNewsUploadMaterialApiTask {
 				// 物料地址：slave:
 				// [{""source"":""示例广告标题"",""attr"":""title""},{""source"":""http://www.example.com/ad/video.mp4"",""attr"":""video""}]"
 				SohuSlave text = new SohuSlave();
-				
 				text.setSource(material.getAdMaterials().split("\\|")[0]);// 物料.mp4
 				text.setAttr("video");
 				slave.add(text);

@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
@@ -34,6 +34,7 @@ import com.madhouse.platform.premiummad.media.letv.request.LetvUploadMaterialReq
 import com.madhouse.platform.premiummad.media.letv.response.LetvResponse;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.DateUtils;
 import com.madhouse.platform.premiummad.util.HttpUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -58,16 +59,30 @@ public class LetvUploadMaterialApiTask {
 	@Autowired
 	private AdvertiserMapper advertiserDao;
 
+	@Value("${material_meidaGroupMapping_letv}")
+	private String mediaGroupStr;
+	
+	@Autowired
+	private IMediaService mediaService;
+	
 	/**
 	 * 上传广告物料
 	 */
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Letv upload material begin+++++++++++");
 
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
-		List<Material> unSubmitMaterials = materialDao.selectMediaMaterials(MediaMapping.LETV.getValue(), MaterialStatusCode.MSC10002.getValue());
+		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.LETV.getDescrip() + "没有未上传的素材");
+			LOGGER.info("乐视没有未上传的素材");
 			LOGGER.info("++++++++++Letv upload material end+++++++++++");
 			return;
 		}
@@ -123,7 +138,7 @@ public class LetvUploadMaterialApiTask {
 						MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 						rejuseItem.setId(materialKeyIdMap.get(next.getKey()));
 						rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-						rejuseItem.setMediaId(String.valueOf(MediaMapping.LETV.getValue()));
+						rejuseItem.setMediaIds(mediaIds);
 						rejuseItem.setErrorMessage(next.getValue().substring(1));
 						rejusedMaterials.add(rejuseItem);
 						LOGGER.error("素材[materialKey=" + materialKeyIdMap.get(next.getKey()) + "]上传失败-" + next.getValue().substring(1));

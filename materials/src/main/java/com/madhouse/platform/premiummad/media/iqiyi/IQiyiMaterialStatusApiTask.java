@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.iqiyi.constant.IQiYiConstant;
@@ -23,6 +23,7 @@ import com.madhouse.platform.premiummad.media.iqiyi.response.IQiyiMaterialStatus
 import com.madhouse.platform.premiummad.media.iqiyi.util.IQiYiHttpUtils;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 @Component("iQiyiMaterialStatusApiTask")
@@ -42,11 +43,25 @@ public class IQiyiMaterialStatusApiTask {
 	@Autowired
 	private IMaterialService materialService;
 
+	@Value("${material_meidaGroupMapping_iqyi}")
+	private String mediaGroupStr;
+	
+	@Autowired
+	private IMediaService mediaService;
+	
 	public void getStatusDetail() {
 		LOGGER.info("++++++++++iqiyi get material status begin+++++++++++");
 
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
 		// 我方系统未审核的素材
-		List<Material> unAuditMaterials = materialDao.selectMediaMaterials(MediaMapping.IQYI.getValue(), MaterialStatusCode.MSC10003.getValue());
+		List<Material> unAuditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unAuditMaterials == null || unAuditMaterials.isEmpty()) {
 			LOGGER.info("++++++++++IQYI no materials need to audit+++++++++++");
 			return;
@@ -76,7 +91,7 @@ public class IQiyiMaterialStatusApiTask {
 			// 成功
 			if (code.equals(IQiYiConstant.RESPONSE_SUCCESS.getValue() + "")) {
 				List<IQiyiMaterialStatusDetailResponse> results = response.getResults();
-				processResult(results);
+				processResult(results, mediaIds);
 			} else { // 查询失败
 				String message = "";
 				if (code.equals(String.valueOf(IQiYiConstant.RESPONSE_PARAM_FAIL.getValue()))) {
@@ -95,7 +110,7 @@ public class IQiyiMaterialStatusApiTask {
 					// 应用请求超过限制
 					message = IQiYiConstant.RESPONSE_MAX_REQUEST_SIZE_FAIL.getDescription();
 				}
-				LOGGER.info(MediaMapping.IQYI.getDescrip() + "获取状态失败-" + message);
+				LOGGER.info("爱奇艺获取状态失败-" + message);
 			}
 		}
 
@@ -107,13 +122,13 @@ public class IQiyiMaterialStatusApiTask {
 	 * 
 	 * @param results
 	 */
-	private void processResult(List<IQiyiMaterialStatusDetailResponse> results) {
+	private void processResult(List<IQiyiMaterialStatusDetailResponse> results, int[] mediaIds) {
 		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
 		for (IQiyiMaterialStatusDetailResponse item : results) {
 			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
 			// 媒体的素材id和我方一致
 			auditItem.setId(String.valueOf(item.getM_id()));
-			auditItem.setMediaId(String.valueOf(MediaMapping.IQYI.getValue()));
+			auditItem.setMediaIds(mediaIds);
 
 			// COMPLETE-通过
 			if ("COMPLETE".equals(item.getStatus())) {

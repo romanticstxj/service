@@ -93,9 +93,9 @@ public class WeiboMaterialStatusApiTask {
 
 		// 向媒体发送请求
 		String requestJson = JSON.toJSONString(weiboMaterialStatusRequest);
-		LOGGER.info("WeiboStatusApiRequestJson: " + requestJson);
+		LOGGER.info("request: " + requestJson);
 		String responseJson = HttpUtils.post(materialStatusUrl, requestJson);
-		LOGGER.info("WeiboStatusApiResponseJson: " + responseJson);
+		LOGGER.info("response: " + responseJson);
 
 		// 处理我方数据
 		if (!StringUtils.isEmpty(responseJson)) {

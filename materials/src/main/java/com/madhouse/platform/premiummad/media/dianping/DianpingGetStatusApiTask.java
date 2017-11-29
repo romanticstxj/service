@@ -14,13 +14,14 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
-import com.madhouse.platform.premiummad.constant.MediaMapping;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.dianping.response.DianpingGetStatusResponse;
 import com.madhouse.platform.premiummad.media.dianping.util.DianpingHttpUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
+import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 /**
@@ -43,19 +44,33 @@ public class DianpingGetStatusApiTask {
     @Autowired
     private IMaterialService materialService;
 
+    @Value("${material_meidaGroupMapping_dianping}")
+	private String mediaGroupStr;
+	
+	@Autowired
+	private IMediaService mediaService;
+	
 	public void getStatusResponse() throws Exception {
 		LOGGER.info("++++++++++Dianping get material status begin+++++++++++");
-		
-		// 获取审核中的素材
-		List<Material> unauditMaterials = materialDao.selectMediaMaterials(MediaMapping.DIANPING.getValue(), MaterialStatusCode.MSC10003.getValue());
-		if (unauditMaterials == null || unauditMaterials.isEmpty()) {
-			LOGGER.info(MediaMapping.DIANPING.getDescrip() + "无需要审核的素材");
+
+		// 根据媒体组ID和审核对象获取具体的媒体ID
+		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
+
+		// 媒体组没有映射到具体的媒体不处理
+		if (mediaIds == null || mediaIds.length < 1) {
+			return;
+		}
+
+		// 我方系统未审核的素材
+		List<Material> unAuditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
+		if (unAuditMaterials == null || unAuditMaterials.isEmpty()) {
+			LOGGER.info("点评无需要审核的素材");
 			return;
 		}
 		
 		// 获取媒体方的素材ID
 		List<String> creativeIdList = new ArrayList<String>();
-		for (Material material : unauditMaterials) {
+		for (Material material : unAuditMaterials) {
 			creativeIdList.add(material.getMediaQueryKey());
 		}
 		LOGGER.info("美团点评获取创意审核状态信息的请求创意ID列表:{}", creativeIdList.toString());
@@ -76,7 +91,7 @@ public class DianpingGetStatusApiTask {
     		for (DianpingGetStatusResponse.DataBean.ResultListBean item : list) {
     			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
     			auditItem.setMediaQueryKey(String.valueOf(item.getCreativeId()));
-    			auditItem.setMediaId(String.valueOf(MediaMapping.DIANPING.getValue()));
+    			auditItem.setMediaIds(mediaIds);
 				
     			// 1-通过
     			if (item.getStatus() == 1) {

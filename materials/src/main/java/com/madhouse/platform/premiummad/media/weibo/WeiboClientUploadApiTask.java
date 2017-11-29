@@ -93,9 +93,9 @@ public class WeiboClientUploadApiTask {
 		for (Advertiser advertiser : unSubmitAdvertisers) {
 			WeiboClientUploadRequest request = buildRequest(advertiser);
 			String requestJson = JSON.toJSONString(request);
-			LOGGER.info("WeiboClientUploadApiTask request:" + requestJson);
+			LOGGER.info("request:" + requestJson);
 			String responseJson = HttpUtils.post(clientUploadUrl, requestJson);
-			LOGGER.info("WeiboClientUploadApiTask response:" + responseJson);
+			LOGGER.info("response:" + responseJson);
 
 			// 更新我方信息
 			if (!StringUtils.isEmpty(requestJson)) {
