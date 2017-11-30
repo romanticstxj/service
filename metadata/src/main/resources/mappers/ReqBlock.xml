@@ -5,11 +5,11 @@
 	<resultMap id="baseResult" type="com.madhouse.platform.premiummad.entity.ReqBlock">
 		<id column="id" jdbcType="INTEGER" property="id" />
 		<result column="type" jdbcType="INTEGER" property="type" />
-		<result column="description" jdbcType="VARCHAR" property="description" />
+		<result column="code" jdbcType="VARCHAR" property="code" />
 	</resultMap>
 	
     <select id="queryAll" resultMap="baseResult">
-		select id,type,description from mad_sys_reqblock where `status`>0
+		select id,type,code from mad_sys_reqblock where `status`>0
 	</select>
 	
 	
