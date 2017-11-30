@@ -7,7 +7,7 @@ public class ReqBlock {
 	
 	private int type;
 	
-	private String description;
+	private String code;
 
 	public long getId() {
 		return id;
@@ -25,15 +25,12 @@ public class ReqBlock {
 		this.type = type;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getCode() {
+		return code;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setCode(String code) {
+		this.code = code;
 	}
-    
-    
-   
-
+	
 }

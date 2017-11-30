@@ -55,17 +55,17 @@ public class ReqBlockTask {
 	        for (ReqBlock reqBlock : list) {
 	        	try {
 		        	if(Constant.BlockType.IP == reqBlock.getType()){
-		        		redisMaster.sadd(this.ALL_BLOCKED_DEVICE_IP, reqBlock.getDescription());
+		        		redisMaster.sadd(this.ALL_BLOCKED_DEVICE_IP, reqBlock.getCode());
 	                    if (blockIps != null && blockIps.size() > 0) {
-	                    	blockIps.remove(reqBlock.getDescription());
+	                    	blockIps.remove(reqBlock.getCode());
 	                    }
 		        	} else if(Constant.BlockType.IFA == reqBlock.getType()){
-		        		redisMaster.sadd(this.ALL_BLOCKED_DEVICE_IFA, reqBlock.getDescription());
+		        		redisMaster.sadd(this.ALL_BLOCKED_DEVICE_IFA, reqBlock.getCode());
 		        		if (blockIfas != null && blockIfas.size() > 0) {
-		        			blockIfas.remove(reqBlock.getDescription());
+		        			blockIfas.remove(reqBlock.getCode());
 	                    }
 		        	} else if (Constant.BlockType.DID == reqBlock.getType()){
-		        		String did = reqBlock.getDescription().toLowerCase();
+		        		String did = reqBlock.getCode().toLowerCase();
 		        		if(did.length() < 20) {
 		        			did = StringUtil.getMD5(did);
 		        		}
@@ -74,7 +74,7 @@ public class ReqBlockTask {
 		        			blockDidmad5s.remove(did);
 	                    }
 		        	} else if (Constant.BlockType.DPID == reqBlock.getType()){
-		        		String dpid = reqBlock.getDescription().toLowerCase();
+		        		String dpid = reqBlock.getCode().toLowerCase();
 		        		if(dpid.length() < 20) {
 		        			dpid = StringUtil.getMD5(dpid);
 		        		}
