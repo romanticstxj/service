@@ -66,7 +66,7 @@ public class ReqBlockTask {
 	                    }
 		        	} else if (Constant.BlockType.DID == reqBlock.getType()){
 		        		String didMd5 = reqBlock.getCode().toLowerCase();
-		        		if(didMd5.length() > 20) {
+		        		if(didMd5.length() <= 20) {
 		        			didMd5 = StringUtil.getMD5(didMd5);
 		        		}
 		        		redisMaster.sadd(this.ALL_BLOCKED_DEVICE_DIDMD5, didMd5);
@@ -75,7 +75,7 @@ public class ReqBlockTask {
 	                    }
 		        	} else if (Constant.BlockType.DPID == reqBlock.getType()){
 		        		String dpidMd5 = reqBlock.getCode().toLowerCase();
-		        		if(dpidMd5.length() > 20) {
+		        		if(dpidMd5.length() <= 20) {
 		        			dpidMd5 = StringUtil.getMD5(dpidMd5);
 		        		}
 		        		redisMaster.sadd(this.ALL_BLOCKED_DEVICE_DPIDMD5, dpidMd5);
