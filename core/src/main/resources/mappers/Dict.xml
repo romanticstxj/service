@@ -34,6 +34,10 @@
 	<sql id="locationList" >
     	id, level, parent_code, code, name, domestic
   	</sql>
+  	
+  	<sql id="reqBlockTypeList">
+		${alias}.code, ${alias}.name
+	</sql>
 	
 	<select id="queryAllMediaCategories" resultMap="mediaResultMap">
 		SELECT 
@@ -64,6 +68,15 @@
         </include>
         FROM mad_dict_location l 
         ORDER BY l.code
+	</select>
+	
+	<select id="queryAllReqBlockTypeList" resultMap="mediaResultMap">
+		SELECT 
+		<include refid="reqBlockTypeList">
+            <property name="alias" value="rbt" />
+        </include>
+        FROM mad_dict_reqblocktype rbt 
+        ORDER BY rbt.code
 	</select>
 	
 </mapper>

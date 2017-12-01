@@ -73,6 +73,11 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	public Adspace queryById(Integer adspaceId) {
 		return adspaceDao.queryAdspaceById(adspaceId);
 	}
+	
+	@Override
+	public Adspace queryAdspacePolicies(Integer adspaceId) {
+		return adspaceDao.queryAdspacePolicies(adspaceId);
+	}
 
 	@Override
 	public int update(Adspace adspace) {

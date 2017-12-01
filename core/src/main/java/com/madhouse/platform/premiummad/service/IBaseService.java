@@ -14,5 +14,5 @@ public interface IBaseService<T> {
 	
 	List<T> queryAll(List<Integer> ids);
 	
-	int checkName(String mediaName);
+	int checkName(String name);
 }

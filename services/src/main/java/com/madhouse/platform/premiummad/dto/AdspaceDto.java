@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -80,6 +81,8 @@ public class AdspaceDto implements Serializable{
 	private String description;
 	
 	private Date createdTime;
+	
+	private List<PolicyAdspaceDto> adspacePolicies;
 	
 	public Integer getId() {
 		return id;
@@ -336,6 +339,14 @@ public class AdspaceDto implements Serializable{
 
 	public void setAdTypeName(String adTypeName) {
 		this.adTypeName = adTypeName;
+	}
+
+	public List<PolicyAdspaceDto> getAdspacePolicies() {
+		return adspacePolicies;
+	}
+
+	public void setAdspacePolicies(List<PolicyAdspaceDto> adspacePolicies) {
+		this.adspacePolicies = adspacePolicies;
 	}
 
 	@Override

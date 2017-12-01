@@ -39,8 +39,11 @@ public class DictionaryController {
 				result = listMediaCategories();
 				break;
 			case SystemConstant.OtherConstant.DICT_ADSPACE_LAYOUT: //广告位形式
-				result = listAdspaceLayout(terminalType, adType);
+				result = listAdspaceLayouts(terminalType, adType);
 				break;
+			case SystemConstant.OtherConstant.DICT_REQUEST_BLOCK_TYPE: //异常流量类型
+				result = listRequestBlockTypes();
+				break;	
 			default: 
 				result = ResponseUtils.response(StatusCode.SC20002, null);
 		}
@@ -62,18 +65,24 @@ public class DictionaryController {
 	}
 
 	private ResponseDto<DictDto> listMediaCategories(){
-		
 		List<Dict> dicts = dictService.queryAllMediaCategories();
 		List<DictDto> dictDtos = new ArrayList<>();
 		BeanUtils.copyList(dicts,dictDtos,DictDto.class);
 		return ResponseUtils.response(StatusCode.SC20000,dictDtos);
 	}
 	
-	private ResponseDto<DictDto> listAdspaceLayout(Integer terminalType, Integer adType) {
+	private ResponseDto<DictDto> listAdspaceLayouts(Integer terminalType, Integer adType) {
 		Dict dict = new Dict();
 		dict.setTerminalType(terminalType);
 		dict.setAdType(adType);
 		List<Dict> dicts = dictService.queryAllAdspaceLayout(dict);
+		List<DictDto> dictDtos = new ArrayList<>();
+		BeanUtils.copyList(dicts,dictDtos,DictDto.class);
+		return ResponseUtils.response(StatusCode.SC20000,dictDtos);
+	}
+	
+	private ResponseDto<DictDto> listRequestBlockTypes() {
+		List<Dict> dicts = dictService.queryAllReqBlockTypeList();
 		List<DictDto> dictDtos = new ArrayList<>();
 		BeanUtils.copyList(dicts,dictDtos,DictDto.class);
 		return ResponseUtils.response(StatusCode.SC20000,dictDtos);
