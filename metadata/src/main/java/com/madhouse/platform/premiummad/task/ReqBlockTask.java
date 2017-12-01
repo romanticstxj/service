@@ -65,22 +65,22 @@ public class ReqBlockTask {
 		        			blockIfas.remove(reqBlock.getCode());
 	                    }
 		        	} else if (Constant.BlockType.DID == reqBlock.getType()){
-		        		String did = reqBlock.getCode().toLowerCase();
-		        		if(did.length() < 20) {
-		        			did = StringUtil.getMD5(did);
+		        		String didMd5 = reqBlock.getCode().toLowerCase();
+		        		if(didMd5.length() <= 20) {
+		        			didMd5 = StringUtil.getMD5(didMd5);
 		        		}
-		        		redisMaster.sadd(this.ALL_BLOCKED_DEVICE_DIDMD5, did);
+		        		redisMaster.sadd(this.ALL_BLOCKED_DEVICE_DIDMD5, didMd5);
 		        		if (blockDidmad5s != null && blockDidmad5s.size() > 0) {
-		        			blockDidmad5s.remove(did);
+		        			blockDidmad5s.remove(didMd5);
 	                    }
 		        	} else if (Constant.BlockType.DPID == reqBlock.getType()){
-		        		String dpid = reqBlock.getCode().toLowerCase();
-		        		if(dpid.length() < 20) {
-		        			dpid = StringUtil.getMD5(dpid);
+		        		String dpidMd5 = reqBlock.getCode().toLowerCase();
+		        		if(dpidMd5.length() <= 20) {
+		        			dpidMd5 = StringUtil.getMD5(dpidMd5);
 		        		}
-		        		redisMaster.sadd(this.ALL_BLOCKED_DEVICE_DPIDMD5, dpid);
+		        		redisMaster.sadd(this.ALL_BLOCKED_DEVICE_DPIDMD5, dpidMd5);
 		        		if (blockDpidmad5s != null && blockDpidmad5s.size() > 0) {
-		        			blockDpidmad5s.remove(dpid);
+		        			blockDpidmad5s.remove(dpidMd5);
 	                    }
 		        	}
 	        	} catch (Exception e) {
