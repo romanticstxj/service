@@ -22,6 +22,7 @@
     , d.name typeName
     FROM mad_sys_reqblock rb LEFT JOIN mad_dict_reqblocktype d ON rb.type = d.code
     WHERE rb.status = 1 <if test="type != null">AND rb.type = #{type,jdbcType=TINYINT}</if>
+    ORDER BY rb.created_time
   </select>
   
   <select id="checkName" parameterType="string" resultType="integer">
