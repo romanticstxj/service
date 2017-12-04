@@ -11,6 +11,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,8 @@ import com.madhouse.platform.premiummad.util.StringUtils;
  */
 @Component
 public class TencentHttpUtil {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger("TENCENT");
 
 	@Value("${tencent.dsp_id}")
 	private String dsp_id;
@@ -40,6 +44,7 @@ public class TencentHttpUtil {
 	}
 	
 	public String post(String url, String paramStr) {
+		LOGGER.info("url:{},request:{}", url, paramStr);
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse response = null;
 		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(80000).setConnectionRequestTimeout(6000).build();
@@ -54,6 +59,7 @@ public class TencentHttpUtil {
 			response = httpClient.execute(httpPost);
 			HttpEntity responseEntity = response.getEntity();
 			result = EntityUtils.toString(responseEntity, Consts.UTF_8);
+			LOGGER.info("response:{}", result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
