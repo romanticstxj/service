@@ -23,7 +23,7 @@
   
   <resultMap id="AdspacePolicyResultMap" extends="BaseResultMap" type="com.madhouse.platform.premiummad.entity.PolicyAdspace">
 	    <association property="policy" javaType="com.madhouse.platform.premiummad.entity.Policy" 
-        	column="policy_id" select="com.madhouse.platform.premiummad.dao.PolicyDao.selectAdspacePolicyByPrimaryKey" />
+	    resultMap="com.madhouse.platform.premiummad.dao.PolicyDao.baseResultMap" />
   </resultMap>	
   	
   <sql id="Base_Column_List">
@@ -257,8 +257,11 @@
   	
   	<select id="getAdspacePolicy" parameterType="java.lang.Integer" resultMap="AdspacePolicyResultMap">
 	    SELECT <include refid="PolicyAdspaceColumns">
-	    <property name="alias" value="pa"/></include>
+	    <property name="alias" value="pa"/></include>,
+	    <include refid="com.madhouse.platform.premiummad.dao.PolicyDao.Base_Column_List">
+	    <property name="alias" value="p"/></include>
 	    FROM mad_sys_policy_adspace pa
+	    INNER JOIN mad_sys_policy p ON pa.policy_id = p.id
 	    WHERE pa.adspace_id = #{id,jdbcType=INTEGER}
   	</select>
   
