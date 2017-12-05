@@ -133,7 +133,7 @@
             "_summary": "获取常量表数据，type是这些字典表的类型",
             "parameters": {
                 "query": {
-                	"type": "<*||integer||comment:查询的字典表类型(1:媒体分类, 2:广告形式, 。。。)>",
+                	"type": "<*||integer||comment:查询的字典表类型(1:媒体分类, 2:广告形式, 3:地域列表, 4:异常流量类型)>",
                 	"terminalType": "<integer||comment:查询广告形式时的额外参数>",
                 	"adType": "<integer||comment:查询广告形式时的额外参数>"
                 }
@@ -196,6 +196,43 @@
                             "createdTime": "<||date||comment:创建时间>",
                             "status": "<integer||comment:状态(0:停用,1:启用)>",
                             "mediaStatus": "<integer||comment:媒体状态(0:停用,1:启用)>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/adspace/detail/policyList": {
+        "get": {
+            "_summary": "关联某个广告位的策略列表",
+            "parameters": {
+                "query": {
+                	"adspaceId": "<*||integer||comment:广告位ID>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"policyId": "<*||integer||comment:策略id>",
+		                	"status": "<*||integer||comment:策略内部的广告位状态状态(0:暂停, 1:启用)>",
+                            "policy": {
+                            	"policyId": "<*||integer||comment:策略id>",
+                            	"dealId": "<*||integer||comment:策略DEAL ID>",
+			                	"status": "<integer||comment:策略本身的状态状态>",
+			                	"createdTime": "<date||comment:策略的创建时间>",
+	                            "name": "<*||string||comment:策略名称>",
+			                	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>",
+			                	"weight": "<*||integer||comment:权重>",
+			                    "startDate": "<*||date||comment:开始日期>",
+			                    "endDate": "<*||date||comment:结束日期(为零值不限结束日期)>",
+			                	"description": "<string||comment:描述>",
+			                    "policyDsps": [{
+			                		"dspId": "<*||integer||comment:dsp id>",
+			                		"dspName": "<*||integer||comment:dsp名称>",
+			                		"status": "<*||integer||comment:状态(0:暂停, 1:启用)>"
+			                    }]
+                            }
                         }
                     ]
                 }
@@ -1098,6 +1135,74 @@
                     "body": [
                         {
                             "id": "<*||integer||comment:policy id>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/reqBlock/list": {
+        "get": {
+            "_summary": "黑名单流量列表",
+            "parameters": {
+                "query": {
+                	"type": "<||integer||comment:黑名单流量类型>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"id": "<*||integer||comment:黑名单流量ID>",
+		                	"code": "<*||string||comment:设备ID或IP>",
+                            "type": "<*||integer||comment:黑名单流量的类型>",
+		                	"status": "<*||integer||comment:状态(0:删除, 1:启用)>",
+		                	"description": "<string||comment:描述>",
+		                	"createdUser": "<integer||comment:创建者>",
+		                	"updatedUser": "<integer||comment:更新者>",
+		                	"createdTime": "<date||comment:更新时间>",
+		                	"updatedTime": "<date||comment:更新时间>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/reqBlock/create": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"code": "<*||string||comment:设备ID或IP>",
+                    "type": "<*||integer||comment:黑名单流量的类型>",
+                	"description": "<string||comment:描述>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/reqBlock/updateStatus": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"id": "<*||integer||comment:黑名单流量ID>",
+                	"status": "<*||integer||comment:状态(0:删除, 1:启用)>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
                         }
                     ]
                 }

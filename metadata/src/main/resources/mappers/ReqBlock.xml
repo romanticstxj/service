@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.madhouse.platform.premiummad.dao.ReqBlockDao">
+	<resultMap id="baseResult" type="com.madhouse.platform.premiummad.entity.ReqBlock">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="code" jdbcType="VARCHAR" property="code" />
+	</resultMap>
+	
+    <select id="queryAll" resultMap="baseResult">
+		select id,type,code from mad_sys_reqblock where `status`>0
+	</select>
+	
+	
+
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.madhouse.platform.premiummad.dao.RequestBlockDao" >
+  <resultMap id="BaseResultMap" type="com.madhouse.platform.premiummad.entity.RequestBlock" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="created_user" property="createdUser" jdbcType="INTEGER" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_user" property="updatedUser" jdbcType="INTEGER" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ${alias}.id, ${alias}.code, ${alias}.type, ${alias}.status, ${alias}.description, 
+    ${alias}.created_user, ${alias}.created_time, ${alias}.updated_user, ${alias}.updated_time
+  </sql>
+  
+  <select id="queryAllByParams" resultMap="BaseResultMap" parameterType="integer" >
+    SELECT <include refid="Base_Column_List" ><property name="alias" value="rb" /></include>
+    , d.name typeName
+    FROM mad_sys_reqblock rb LEFT JOIN mad_dict_reqblocktype d ON rb.type = d.code
+    WHERE rb.status = 1 <if test="type != null">AND rb.type = #{type,jdbcType=TINYINT}</if>
+    ORDER BY rb.id DESC
+  </select>
+  
+  <select id="checkName" parameterType="string" resultType="integer">
+		select count(0) from mad_sys_reqblock where code = #{code} AND status = 1
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="integer" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" ><property name="alias" value="rb" /></include>
+		from mad_sys_reqblock rb where id = #{id}
+  </select>
+	
+  <insert id="insertSelective" parameterType="com.madhouse.platform.premiummad.entity.RequestBlock" >
+    insert into mad_sys_reqblock
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="createdUser != null" >
+        created_user,
+      </if>
+      <if test="createdTime != null" >
+        created_time,
+      </if>
+      <if test="updatedUser != null" >
+        updated_user,
+      </if>
+      <if test="updatedTime != null" >
+        updated_time,
+      </if> 
+      status
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createdUser != null" >
+        #{createdUser,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedUser != null" >
+        #{updatedUser,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null" >
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      1
+    </trim>
+  </insert>
+  
+  <update id="updateStatus" parameterType="com.madhouse.platform.premiummad.entity.RequestBlock">
+    UPDATE mad_sys_reqblock
+    <set>
+        status = #{status,jdbcType=INTEGER},
+        updated_user = #{updatedUser,jdbcType=INTEGER},
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    </set>
+    WHERE id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

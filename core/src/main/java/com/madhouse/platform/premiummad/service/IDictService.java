@@ -12,4 +12,6 @@ public interface IDictService {
 	List<Dict> queryAllAdspaceLayout(Dict dict);
 
 	List<Location> queryAllLocations();
+	
+	List<Dict> queryAllReqBlockTypeList();
 }
