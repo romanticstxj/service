@@ -47,7 +47,7 @@ public class TencentHttpUtil {
 		LOGGER.info("url:{},request:{}", url, paramStr);
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse response = null;
-		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(10000).setSocketTimeout(80000).setConnectionRequestTimeout(6000).build();
+		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(30000).setSocketTimeout(80000).setConnectionRequestTimeout(30000).build();
 		HttpPost httpPost = new HttpPost(url);
 		httpPost.setConfig(requestConfig);
 
