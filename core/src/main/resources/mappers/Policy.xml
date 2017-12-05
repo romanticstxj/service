@@ -45,7 +45,7 @@
 	    ${alias}.status, ${alias}.description, ${alias}.created_user, ${alias}.created_time, 
 	    ${alias}.updated_user, ${alias}.updated_time
   	</sql>
-  
+  	
   	<select id="selectByPrimaryKey" parameterType="integer" resultMap="baseResultMap">
 	    select p.id, p.name
 	    from mad_sys_policy p
