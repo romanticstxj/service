@@ -46,12 +46,6 @@
 	    ${alias}.updated_user, ${alias}.updated_time
   	</sql>
   	
-  	<sql id="Base_Column_List_Prefix">
-	    ${alias}.id ${prefix}id, IF(${alias}.type IS NOT NULL AND ${alias}.type=8, NULL, ${alias}.id) ${prefix}deal_id,
-	    ${alias}.name ${prefix}name, ${alias}.type ${prefix}type, ${alias}.weight ${prefix}weight, 
-	    ${alias}.start_date ${prefix}start_date, ${alias}.end_date ${prefix}end_date, ${alias}.status ${prefix}status
-  	</sql>
-  
   	<select id="selectByPrimaryKey" parameterType="integer" resultMap="baseResultMap">
 	    select p.id, p.name
 	    from mad_sys_policy p
