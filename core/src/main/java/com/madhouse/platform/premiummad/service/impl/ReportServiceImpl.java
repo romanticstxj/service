@@ -13,7 +13,7 @@ import com.madhouse.platform.premiummad.dao.ReportMediaDao;
 import com.madhouse.platform.premiummad.dao.ReportPolicyDao;
 import com.madhouse.platform.premiummad.entity.ReportCriterion;
 import com.madhouse.platform.premiummad.entity.ReportDsp;
-import com.madhouse.platform.premiummad.entity.ReportMedia;
+import com.madhouse.platform.premiummad.entity.ReportMediaCsv;
 import com.madhouse.platform.premiummad.entity.ReportPolicy;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.service.IReportService;
@@ -32,10 +32,10 @@ public class ReportServiceImpl implements IReportService {
 	ReportPolicyDao reportPolicyDao;
 
 	@Override
-	public List<ReportMedia> queryMediaReport(ReportCriterion reportCriterion) {
+	public List<ReportMediaCsv> queryMediaReport(ReportCriterion reportCriterion) {
 		Integer realtime = reportCriterion.getRealtime();
 		Integer type = reportCriterion.getType();
-		List<ReportMedia> reportMedias = null;
+		List<ReportMediaCsv> reportMedias = null;
 		if(realtime.intValue() == SystemConstant.DB.IS_OFFLINE){ //根据实时与否决定查看离线或实时报表
 			if(type.intValue() == SystemConstant.DB.TYPE_DEFAULT){ //根据查询类型决定查询哪种离线报表
 				reportMedias = reportMediaDao.queryMediaReport(reportCriterion);
@@ -53,8 +53,8 @@ public class ReportServiceImpl implements IReportService {
 	}
 	
 	@Override
-	public List<ReportMedia> queryMediaReportDashboard(ReportCriterion reportCriterion) {
-		List<ReportMedia> reportMedias = null;
+	public List<ReportMediaCsv> queryMediaReportDashboard(ReportCriterion reportCriterion) {
+		List<ReportMediaCsv> reportMedias = null;
 		reportMedias = reportMediaDao.queryMediaReportDashboard(reportCriterion);
 		
 		if(reportMedias == null){ //查询参数错误，没查任何结果

@@ -44,6 +44,15 @@ public interface SystemConstant {
 		int HOUR_23 = 23;
 		
 		String URL_REGEX = "^(https?):\\/\\/[\\w\\-]+(\\.[\\w\\-]+)+([\\w\\-\\.,@?^=%&:\\/~\\+#]*[\\w\\-\\@?^=%&\\/~\\+#])?$";
+	
+		String SUFFIX_CSV = ".csv";
+		String PREFIX_REPORT_TASK_URI = "/report/";
+		String FILE_PATH_DILIMETER = "/";
+	}
+	
+	interface DatePattern{
+		String yyyyMMdd = "yyyyMMdd";
+		String yyyyMMdd_DISPLAY = "yyyy-MM-dd";
 	}
 	
 	interface ErrorMessage{
@@ -107,6 +116,14 @@ public interface SystemConstant {
 		int IN_AUDIT = 1; //审核中(后端)
 		int TO_BE_SUBMIT = 0; //待提交(前端)
 		
+		int REPORT_TASK_TYPE_MEDIA_ADSPACE = 1;
+		
+		int REPORT_TASK_STATUS_PROCESSING = 0; //reporttask正在处理状态
+		int REPORT_TASK_STATUS_FINISHED = 1; //reporttask处理完成状态
+		
+		String ORDER_BY_ASC = "ASC";
+		String ORDER_BY_DESC = "DESC";
+		
 		String impUrlsDelimiter = "`";
 	}
 	
@@ -115,4 +132,6 @@ public interface SystemConstant {
 		Byte MATERIAL = 1;
 		Byte ADVERTISER = 2;
 	}
+	
+	
 }

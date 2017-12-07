@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.madhouse.platform.premiummad.dao.ReportMediaDao" >
-  <resultMap id="BaseResultMap" type="ReportMedia" >
+  <resultMap id="BaseResultMap" type="ReportMediaCsv" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="media_id" property="mediaId" jdbcType="INTEGER" />
     <result column="adspace_id" property="adspaceId" jdbcType="INTEGER" />
@@ -23,7 +23,12 @@
   <sql id="Base_Column_List" >
     ${alias}.id, ${alias}.media_id, SUM(${alias}.reqs) reqs, SUM(${alias}.bids) bids, SUM(${alias}.errs) errs, 
     SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, 
-    CAST(SUM(${alias}.income)/100000 as DECIMAL(15,2)) income1
+    CAST(SUM(${alias}.income)/100000 AS DECIMAL(15,2)) income1,
+    CONCAT(CONVERT(IFNULL(SUM(${alias}.bids)/SUM(${alias}.reqs)*100,0),DECIMAL(10,2)),'%') bidsRateStr,
+	CONCAT(CONVERT(IFNULL(SUM(${alias}.vclks)/SUM(${alias}.vimps)*100,0),DECIMAL(10,2)),'%') vclksRateStr,
+	CONCAT('￥',CAST(SUM(${alias}.income)/100000 AS DECIMAL(15,2))) incomeStr,
+	CONCAT('￥',IFNULL(CAST(CAST(SUM(${alias}.income)/100000 AS DECIMAL(15,2))/SUM(${alias}.vimps)*1000 AS DECIMAL(15,2)),0)) ecpmStr,
+	CONCAT('￥',IFNULL(CAST(CAST(SUM(${alias}.income)/100000 AS DECIMAL(15,2))/SUM(${alias}.vclks) AS DECIMAL(15,2)),0)) ecpcStr
   </sql>
   
   <sql id="mediaAuthCondition">

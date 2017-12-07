@@ -16,6 +16,7 @@ import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.ReportCriterion;
 import com.madhouse.platform.premiummad.entity.ReportDsp;
 import com.madhouse.platform.premiummad.entity.ReportMedia;
+import com.madhouse.platform.premiummad.entity.ReportMediaCsv;
 import com.madhouse.platform.premiummad.entity.ReportPolicy;
 import com.madhouse.platform.premiummad.rule.ReportRule;
 import com.madhouse.platform.premiummad.service.IReportService;
@@ -34,7 +35,7 @@ public class ReportController {
     private IUserAuthService userAuthService;
 	
 	@RequestMapping("/mediaDashboard")
-	public ResponseDto<ReportMedia> listMediaDashboard(@RequestParam Integer dims, @RequestParam Integer realtime,
+	public ResponseDto<ReportMediaCsv> listMediaDashboard(@RequestParam Integer dims, @RequestParam Integer realtime,
     		@RequestParam String startDate, @RequestParam String endDate,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, null);
@@ -43,23 +44,23 @@ public class ReportController {
 		return queryMediaReportDashboard(dto);
     }
 	
-	private ResponseDto<ReportMedia> queryMediaReportDashboard(ReportDto dto) throws Exception {
+	private ResponseDto<ReportMediaCsv> queryMediaReportDashboard(ReportDto dto) throws Exception {
     	List<Integer> mediaIds = dto.getMediaIds();
     	//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIds)){
-	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<ReportMedia>());
+	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<ReportMediaCsv>());
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			ReportRule.validateDashboardReportDto(dto);
 			ReportCriterion criterion = ReportRule.convertToModel(dto, new ReportCriterion());
-			List<ReportMedia> reportMedias = reportService.queryMediaReportDashboard(criterion);
-			List<ReportMedia> result =ReportRule.getPopulatedNullDateAndTime(reportMedias, criterion.getDims(), 
+			List<ReportMediaCsv> reportMedias = reportService.queryMediaReportDashboard(criterion);
+			List<ReportMediaCsv> result =ReportRule.getPopulatedNullDateAndTime(reportMedias, criterion.getDims(), 
 					criterion.getStartDate(), criterion.getEndDate());
 			return ResponseUtils.response(StatusCode.SC20000, result);
 		}
 	}
 	
 	@RequestMapping("/media")
-    public ResponseDto<ReportMedia> listMedia(@RequestParam Integer type, @RequestParam Integer dims, 
+    public ResponseDto<ReportMediaCsv> listMedia(@RequestParam Integer type, @RequestParam Integer dims, 
     		@RequestParam Integer realtime, @RequestParam(required=false) Integer mediaId, 
     		@RequestParam String startDate, @RequestParam String endDate,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
@@ -69,15 +70,15 @@ public class ReportController {
 		return queryMediaReport(dto);
     }
 	
-    private ResponseDto<ReportMedia> queryMediaReport(ReportDto dto) throws Exception {
+    private ResponseDto<ReportMediaCsv> queryMediaReport(ReportDto dto) throws Exception {
     	List<Integer> mediaIds = dto.getMediaIds();
     	//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIds)){
-	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<ReportMedia>());
+	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<ReportMediaCsv>());
 		} else{ // admin权限，查询所有媒体;非admin，有部分媒体权限
 			ReportRule.validateDto(dto);
 			ReportCriterion criterion = ReportRule.convertToModel(dto, new ReportCriterion());
-			List<ReportMedia> reportMedias = reportService.queryMediaReport(criterion);
+			List<ReportMediaCsv> reportMedias = reportService.queryMediaReport(criterion);
 			return ResponseUtils.response(StatusCode.SC20000, reportMedias);
 		}
 	}
