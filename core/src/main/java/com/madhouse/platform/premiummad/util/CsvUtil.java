@@ -17,9 +17,16 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CsvUtil {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CsvUtil.class);
+	
 	public static <T> File createCSVFile(List<T> exportData, List<String> headers, List<String> fileds,  
-			String outPutPath, String fileName, Class<?> T) {  
+			String outPutPath, String fileName, Class<?> T, boolean overlay) {  
+		//?提前判断exportData为空
         File csvFile = null;  
         BufferedWriter csvFileOutputStream = null;  
         try {  
@@ -28,9 +35,27 @@ public class CsvUtil {
                 file.mkdir();  
             }  
             // 定义文件名格式并创建  
-            csvFile = File.createTempFile(fileName, ".csv",  
-                    new File(outPutPath));  
-            System.out.println("csvFile：" + csvFile);  
+            String csvFileName = outPutPath+fileName;
+            csvFile = new File(csvFileName);
+            if(csvFile.exists()){ // 判断目标文件是否存在
+            	if(overlay){
+            		logger.debug(csvFileName + "已存在，准备删除它！");
+                    if (!csvFile.delete()) {
+                        logger.error("删除目标文件" + csvFileName + "失败！");
+                        return null;
+                    }
+            	} else{
+            		logger.error("目标文件" + csvFileName + "已存在！");
+                    return null;
+            	}
+            }
+            
+            if(!csvFile.createNewFile()){
+            	logger.error("创建csv文件" + csvFileName + "失败！");
+            	return null;
+            }
+            System.out.println("成功创建csv文件：" + csvFileName);  
+            
             // UTF-8使正确读取分隔符","  
             csvFileOutputStream = new BufferedWriter(new OutputStreamWriter(  
                     new FileOutputStream(csvFile), "UTF-8"), 1024);  
@@ -40,6 +65,7 @@ public class CsvUtil {
             	csvFileOutputStream  
                 .write(header != null ? new String(  
                         header.getBytes("UTF-8"), "UTF-8") : "");  
+            	csvFileOutputStream.write(",");  
             }
             csvFileOutputStream.write("\r\n");  
             // 写入文件内容,  
@@ -97,7 +123,7 @@ public class CsvUtil {
             // =================================  
             csvFileOutputStream.flush();  
         } catch (Exception e) {  
-            e.printStackTrace();  
+            return null;
         } finally {  
             try {  
                 csvFileOutputStream.close();  

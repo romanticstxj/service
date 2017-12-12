@@ -10,7 +10,7 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.ReportDto;
 import com.madhouse.platform.premiummad.entity.ReportCriterion;
-import com.madhouse.platform.premiummad.entity.ReportMediaCsv;
+import com.madhouse.platform.premiummad.entity.ReportMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.DateUtils;
@@ -145,18 +145,18 @@ public class ReportRule extends BaseRule{
 		entity.setLastOrderPosition(dimsSorting.last());
 	}
 
-	public static List<ReportMediaCsv> getPopulatedNullDateAndTime(List<ReportMediaCsv> reportMedias, Integer dims, 
+	public static List<ReportMedia> getPopulatedNullDateAndTime(List<ReportMedia> reportMedias, Integer dims, 
 			Date startDate, Date endDate) {
-		List<ReportMediaCsv> returnedReportMedias = new ArrayList<ReportMediaCsv>();
+		List<ReportMedia> returnedReportMedias = new ArrayList<ReportMedia>();
 		if(reportMedias == null){
 			return returnedReportMedias;
 		}
 		
 		int delta = (int) DateUtils.getDateSubtract(startDate, endDate);
-		ReportMediaCsv[][] processedReportMedias = new ReportMediaCsv[delta+1][SystemConstant.OtherConstant.ALL_HOURS];
+		ReportMedia[][] processedReportMedias = new ReportMedia[delta+1][SystemConstant.OtherConstant.ALL_HOURS];
 		for(int i=0; i<delta+1; i++){
 			for(int j=0; j<SystemConstant.OtherConstant.ALL_HOURS; j++){
-				ReportMediaCsv rm = new ReportMediaCsv();
+				ReportMedia rm = new ReportMedia();
 				byte regularHour = (byte) j;
 				Date regularDate = org.apache.commons.lang3.time.DateUtils.addDays(startDate, i);
 				
@@ -175,7 +175,7 @@ public class ReportRule extends BaseRule{
 			}
 		}
 		
-		for(ReportMediaCsv rm: reportMedias){
+		for(ReportMedia rm: reportMedias){
 			if(dims != null && dims.intValue() == SystemConstant.DB.DIM_DATE){ //仅仅有日期一个维度的情况下
 				Date date = rm.getDate();
 				if(date != null && (!date.before(startDate) && !date.after(endDate))){

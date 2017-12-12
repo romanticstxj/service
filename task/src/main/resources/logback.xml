@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<property name="LOG_ROOT_HOME" value="logs" />
-	<property name="APP_NAME" value="premiummad" />
+	<property name="LOG_ROOT_HOME" value="/services/logs" />
+	<property name="APP_NAME" value="service-task" />
 	<property name="LOG_HOME" value="${LOG_ROOT_HOME}/${APP_NAME}" />
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">

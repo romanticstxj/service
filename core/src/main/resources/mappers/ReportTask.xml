@@ -116,4 +116,11 @@
         AND rt.created_time >= TIMESTAMP(CURRENT_TIMESTAMP, '-24:00:00')
         ORDER BY rt.id ${sorting}
 	</select>
+	
+	<update id="updateStatus" parameterType="ReportTask">
+		UPDATE mad_report_task SET status = 1 WHERE id IN 
+   		<foreach collection="list" item="reportTask" index="index" open="(" close=")" separator=",">
+           	#{reportTask.id}
+        </foreach>
+	</update>
 </mapper>

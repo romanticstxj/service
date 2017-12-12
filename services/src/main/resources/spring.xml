@@ -88,7 +88,16 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSourcePremiummad"/>
     </bean>
-
+    
+    <bean id="reportTaskMapping" class="com.madhouse.platform.premiummad.util.ReportTaskMapping">
+        <property name="reportNameMapping" ref="reportNameMapping"/>  
+    </bean>
+    
+    <bean id="reportNameMapping" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="location" value="classpath:task.properties"/>
+        <property name="fileEncoding" value="UTF-8"/>
+    </bean>
+    
     <!-- 使用annotation注解方式配置事务 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 

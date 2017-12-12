@@ -48,11 +48,14 @@ public interface SystemConstant {
 		String SUFFIX_CSV = ".csv";
 		String PREFIX_REPORT_TASK_URI = "/report/";
 		String FILE_PATH_DILIMETER = "/";
+		
+		String REPORT_TASK_TYPE_PREFIX = "report.task.type.";
 	}
 	
 	interface DatePattern{
 		String yyyyMMdd = "yyyyMMdd";
 		String yyyyMMdd_DISPLAY = "yyyy-MM-dd";
+		String yyyyMMdd_DISPLAY_CSV = "yyyy/MM/dd";
 	}
 	
 	interface ErrorMessage{
@@ -117,6 +120,14 @@ public interface SystemConstant {
 		int TO_BE_SUBMIT = 0; //待提交(前端)
 		
 		int REPORT_TASK_TYPE_MEDIA_ADSPACE = 1;
+		int REPORT_TASK_TYPE_MEDIA_DATEHOUR = 2;
+		int REPORT_TASK_TYPE_MEDIA_ADSPACE_LOCATION = 3;
+		int REPORT_TASK_TYPE_DSP_DATEHOUR = 11;
+		int REPORT_TASK_TYPE_DSP_LOCATION = 12;
+		int REPORT_TASK_TYPE_DSP_ADSPACE = 13;
+		int REPORT_TASK_TYPE_POLICY_DATEHOUR = 21;
+		int REPORT_TASK_TYPE_POLICY_LOCATION = 22;
+		int REPORT_TASK_TYPE_POLICY_ADSPACE = 23;
 		
 		int REPORT_TASK_STATUS_PROCESSING = 0; //reporttask正在处理状态
 		int REPORT_TASK_STATUS_FINISHED = 1; //reporttask处理完成状态

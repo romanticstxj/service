@@ -10,8 +10,9 @@
   <modules>
     <module>core</module>
     <module>services</module>
-	<module>materials</module>
+		<module>materials</module>
     <module>metadata</module>
+    <module>task</module>
   </modules>
 
 </project>

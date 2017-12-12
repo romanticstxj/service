@@ -23,9 +23,6 @@
     <context:component-scan base-package="com.madhouse.platform.premiummad"/>
     <task:annotation-driven/>    
 
-    <!--proxy-target-class="true"强制使用cglib代理, 如果为false则spring会自动选择 -->
-    <aop:aspectj-autoproxy proxy-target-class="true"/>
-
     <context:property-placeholder location="classpath:jdbc.properties"
                                   ignore-unresolvable="true" file-encoding="UTF-8"/>
 
@@ -69,7 +66,7 @@
     
     <!-- 基于XML配置任务调度 -->
     <task:scheduled-tasks>
-        <task:scheduled ref="reportTaskTask" method="test" initial-delay="0" fixed-delay="300000"/>
+        <task:scheduled ref="reportProcessTask" method="process" initial-delay="0" fixed-delay="6000000"/>
 	</task:scheduled-tasks>
-
+	
 </beans>
