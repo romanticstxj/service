@@ -317,12 +317,10 @@ public class TencentUploadMaterialApiTask {
 			advertUploadRequest.setLanding_page(material.getLpgUrl()); // 静态落地页，腾讯必填
 																		// 用落地页
 
-			// 客户名称长度不能大于7
-			if (advertiserName.length() > 7) {
-				advertiserName = advertiserName.substring(0, 7);
-			}
+			// 弹出框的客户名称信息使用 品牌字段
+			String subAdvertiserName = material.getBrand();
 			// 创意素材内容
-			List<Map<String, String>> adContents = getAdContent(material, advertiserName, advertUploadRequest.getDisplay_id());
+			List<Map<String, String>> adContents = getAdContent(material, subAdvertiserName, advertUploadRequest.getDisplay_id());
 			advertUploadRequest.setAd_content(adContents);
 
 			// 展示监播
