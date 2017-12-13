@@ -16,4 +16,6 @@ public interface ReportTaskDao {
     		, @Param("userId")Integer userId, @Param("sorting") String sorting);
 
 	void updateStatus(List<ReportTask> reportTasks);
+
+	ReportTask queryById(Integer id);
 }

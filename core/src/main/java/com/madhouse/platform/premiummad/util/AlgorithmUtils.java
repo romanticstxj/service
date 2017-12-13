@@ -40,11 +40,6 @@ public class AlgorithmUtils {
 		return currencyStr;
 	}
 	
-	public static void main(String[] args) {
-		
-		
-		System.out.println(calPriceDiff(1, 100));
-	}
 
 	/**
 	 * ecpm=媒体收入/曝光数 * 1000

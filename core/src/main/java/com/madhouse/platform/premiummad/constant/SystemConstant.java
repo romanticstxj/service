@@ -46,10 +46,15 @@ public interface SystemConstant {
 		String URL_REGEX = "^(https?):\\/\\/[\\w\\-]+(\\.[\\w\\-]+)+([\\w\\-\\.,@?^=%&:\\/~\\+#]*[\\w\\-\\@?^=%&\\/~\\+#])?$";
 	
 		String SUFFIX_CSV = ".csv";
-		String PREFIX_REPORT_TASK_URI = "/report/";
+		
 		String FILE_PATH_DILIMETER = "/";
 		
+	}
+	
+	interface Properties{
 		String REPORT_TASK_TYPE_PREFIX = "report.task.type.";
+		String PREFIX_REPORT_TASK_URI = "report.task.uri.prefix";
+		String REPORT_FILE_OVERLAY = "overlay";
 	}
 	
 	interface DatePattern{
@@ -119,6 +124,7 @@ public interface SystemConstant {
 		int IN_AUDIT = 1; //审核中(后端)
 		int TO_BE_SUBMIT = 0; //待提交(前端)
 		
+		//报表任务管理
 		int REPORT_TASK_TYPE_MEDIA_ADSPACE = 1;
 		int REPORT_TASK_TYPE_MEDIA_DATEHOUR = 2;
 		int REPORT_TASK_TYPE_MEDIA_ADSPACE_LOCATION = 3;
@@ -128,7 +134,6 @@ public interface SystemConstant {
 		int REPORT_TASK_TYPE_POLICY_DATEHOUR = 21;
 		int REPORT_TASK_TYPE_POLICY_LOCATION = 22;
 		int REPORT_TASK_TYPE_POLICY_ADSPACE = 23;
-		
 		int REPORT_TASK_STATUS_PROCESSING = 0; //reporttask正在处理状态
 		int REPORT_TASK_STATUS_FINISHED = 1; //reporttask处理完成状态
 		

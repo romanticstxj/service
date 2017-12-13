@@ -11,11 +11,11 @@ public class ReportTaskMapping {
 	
 	public final static Map<Integer, List<String>> CSV_FIELD_MAPPING = new HashMap<>();
 	
-    public static Map<String, String> reportNameMapping;
+    public static Map<String, String> reportTaskProperties;
 	
     //为了service包中spring注入用
-	public void setReportNameMapping(Map<String, String> reportNameMapping) {
-		ReportTaskMapping.reportNameMapping = reportNameMapping;
+	public void setReportTaskProperties(Map<String, String> reportTaskProperties) {
+		ReportTaskMapping.reportTaskProperties = reportTaskProperties;
 	}
     
 	static {

@@ -123,4 +123,13 @@
            	#{reportTask.id}
         </foreach>
 	</update>
+	
+	<select id="queryById" parameterType="integer" resultMap="BaseResultMap">
+		SELECT 
+		<include refid="Base_Column_List">
+            <property name="alias" value="rt" />
+        </include>
+        FROM mad_report_task rt
+        WHERE rt.id = #{id, jdbcType=INTEGER}
+	</select>
 </mapper>

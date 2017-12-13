@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +13,9 @@ import com.madhouse.platform.premiummad.entity.ReportMediaCsv;
 import com.madhouse.platform.premiummad.entity.ReportPolicyCsv;
 import com.madhouse.platform.premiummad.entity.ReportTask;
 import com.madhouse.platform.premiummad.service.IReportTaskService;
-import com.madhouse.platform.premiummad.service.impl.ReportTaskServiceImpl;
 
 @Component
 public class ReportProcessTask {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ReportTaskServiceImpl.class);
 	
 	@Autowired
 	private IReportTaskService reportTaskService;

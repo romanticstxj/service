@@ -71,11 +71,6 @@ public class DateUtils {
 		return simpleDateFormat.format(date);
 	}
 	
-	public static void main(String[] args) {
-		String s = getFormatStringByPattern("yyyy-MM-dd", null);
-		System.out.println(s);
-	}
-	
 	public static Date getFormatDateByPattern(String pattern, Date date) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		simpleDateFormat.setLenient(false);

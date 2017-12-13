@@ -3,6 +3,8 @@ package com.madhouse.platform.premiummad.service;
 import java.io.File;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import com.madhouse.platform.premiummad.entity.ReportDspCsv;
 import com.madhouse.platform.premiummad.entity.ReportMediaCsv;
 import com.madhouse.platform.premiummad.entity.ReportPolicyCsv;
@@ -25,5 +27,7 @@ public interface IReportTaskService extends IBaseService<ReportTask>{
 	<T> File generateCsvReport(List<T> csvResult, ReportTask unfinishedReportTask, 
 			Class<?> T) throws NoSuchFieldException, SecurityException;
 
-	
+	ResponseEntity<byte[]> download(String reportUri);
+
+	ReportTask queryById(Integer id, Integer userId);
 }

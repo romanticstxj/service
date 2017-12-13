@@ -90,10 +90,10 @@
     </bean>
     
     <bean id="reportTaskMapping" class="com.madhouse.platform.premiummad.util.ReportTaskMapping">
-        <property name="reportNameMapping" ref="reportNameMapping"/>  
+        <property name="reportTaskProperties" ref="reportTaskProperties"/>  
     </bean>
     
-    <bean id="reportNameMapping" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <bean id="reportTaskProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="location" value="classpath:task.properties"/>
         <property name="fileEncoding" value="UTF-8"/>
     </bean>

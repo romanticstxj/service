@@ -13,29 +13,33 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Random;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.exception.BusinessException;
+
 public class CsvUtil {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CsvUtil.class);
 	
 	public static <T> File createCSVFile(List<T> exportData, List<String> headers, List<String> fileds,  
-			String outPutPath, String fileName, Class<?> T, boolean overlay) {  
+			String outPutPath, String csvFileName, Class<?> T, boolean overlay) {  
 		//?提前判断exportData为空
         File csvFile = null;  
         BufferedWriter csvFileOutputStream = null;  
         try {  
             File file = new File(outPutPath);  
-            if (!file.exists()) {  
-                file.mkdir();  
+            if (!file.exists()) { 
+            	if(!file.mkdirs()){
+            		logger.debug("创建文件夹" + outPutPath + "失败！");
+            		return null;
+            	}
             }  
             // 定义文件名格式并创建  
-            String csvFileName = outPutPath+fileName;
             csvFile = new File(csvFileName);
             if(csvFile.exists()){ // 判断目标文件是否存在
             	if(overlay){
@@ -54,12 +58,12 @@ public class CsvUtil {
             	logger.error("创建csv文件" + csvFileName + "失败！");
             	return null;
             }
-            System.out.println("成功创建csv文件：" + csvFileName);  
+            logger.debug("成功创建csv文件：" + csvFileName);  
             
             // UTF-8使正确读取分隔符","  
             csvFileOutputStream = new BufferedWriter(new OutputStreamWriter(  
                     new FileOutputStream(csvFile), "UTF-8"), 1024);  
-            System.out.println("csvFileOutputStream：" + csvFileOutputStream);  
+            logger.debug("csvFileOutputStream：" + csvFileOutputStream);  
             // 写入文件头部 
             for(String header: headers){
             	csvFileOutputStream  
@@ -126,7 +130,9 @@ public class CsvUtil {
             return null;
         } finally {  
             try {  
-                csvFileOutputStream.close();  
+            	if(csvFileOutputStream != null){
+            		csvFileOutputStream.close();  
+            	}
             } catch (IOException e) {  
                 e.printStackTrace();  
             }  
@@ -164,7 +170,7 @@ public class CsvUtil {
                 out.write(buffer, 0, len);  
             }  
         } catch (FileNotFoundException e) {  
-            System.out.println(e);  
+        	logger.error(e.getMessage());  
         } finally {  
             if (in != null) {  
                 try {  
@@ -218,66 +224,6 @@ public class CsvUtil {
     }  
   
     /** 
-     * 测试数据 
-     *  
-     * @param args 
-     */  
-    @SuppressWarnings({ "rawtypes", "unchecked" })  
-    public static void main(String[] args) {  
-    	
-    	Random r = new Random();
-        for (int i = 0; i < 100; i++) {
-            String n = System.nanoTime() + "" + r.nextInt();
-            System.out.println(n);
-        }
-//        // 获取农商银行的数据:true代表是农商  
-//        // =======改成list的格式，支持（Arraylist传入实体类的形式），改造的方法============  
-//        ArrayList<ReportMedia> bankWageList = new ArrayList<ReportMedia>();  
-//        ReportMedia bankWage = new ReportMedia();  
-////        bankWage.setId("123");  
-////        bankWage.setNumber("2016rz0001");  
-//  
-//        ReportMedia bankWage2 = new ReportMedia();  
-////        bankWage2.setId("124");  
-////        bankWage2.setNumber("2016rz0002");  
-//  
-//        bankWageList.add(bankWage);  
-//        bankWageList.add(bankWage2);  
-//  
-//        // =======改成list的格式(支持map的形式），原作者的方法============  
-//  
-//        // List exportData = new ArrayList<Map>();  
-//        // Map row1 = new LinkedHashMap<String, String>();  
-//        // row1.put("1", "11");  
-//        // row1.put("2", "12");  
-//        // row1.put("3", "13");  
-//        // row1.put("4", "14");  
-//        // exportData.add(row1);  
-//        // row1 = new LinkedHashMap<String, String>();  
-//        // row1.put("1", "21");  
-//        // row1.put("2", "22");  
-//        // row1.put("3", "23");  
-//        // row1.put("4", "24");  
-//        // exportData.add(row1);  
-//  
-//        // ++++++++++++++++++++++++++++++++++  
-//  
-//        LinkedHashMap map = new LinkedHashMap();  
-//        map.put("1", "第一列");  
-//        map.put("2", "第二列");  
-//        map.put("3", "第三列");  
-//        map.put("4", "第四列");  
-//  
-//        String path = "D://export//";  
-//        String fileName = "文件导出";  
-//        String fileds[] = new String[] { "id", "number" };// 设置列英文名（也就是实体类里面对应的列名）  
-//        File file = createCSVFile(bankWageList, fileds, map, path,  
-//                fileName);  
-//        String fileName2 = file.getName();  
-//        System.out.println("文件名称：" + fileName2);  
-    }  
-  
-    /** 
      * 将第一个字母转换为大写字母并和get拼合成方法 
      *  
      * @param origin 
@@ -290,11 +236,14 @@ public class CsvUtil {
         return sb.toString();  
     }  
     
-    public static ByteArrayOutputStream process()throws IOException{
-        File f = new File("D:/data/hello370882887353608534.csv");  
+    public static ByteArrayOutputStream process(String reportUri)throws IOException{
+        File f = new File(reportUri);  
         if (!f.exists()) {  
-            throw new FileNotFoundException("data/hello370882887353608534.csv");  
-        }  
+            throw new FileNotFoundException(reportUri);  
+        } 
+        if(!f.canRead()){
+        	throw new BusinessException(StatusCode.SC20705);
+        }
   
         ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length());  
         BufferedInputStream in = null;  
@@ -303,12 +252,9 @@ public class CsvUtil {
             int buf_size = 1024;  
             byte[] buffer = new byte[buf_size];  
             int len = 0;  
-            while(-1 != in.read(buffer, 0, buf_size)){
+            while(-1 != (len = in.read(buffer, 0, buf_size))){
             	bos.write(buffer, 0, len);
             }
-//            while (-1 != (len = in.read(buffer, 0, buf_size))) {  
-//                bos.write(buffer, 0, len);  
-//            }  
             return bos;  
         } catch (IOException e) {  
             e.printStackTrace();  
@@ -319,6 +265,7 @@ public class CsvUtil {
             } catch (IOException e) {  
                 e.printStackTrace();  
             }  
+            logger.debug("bos close()!");
             bos.close();  
         }  
     }

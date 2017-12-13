@@ -23,7 +23,7 @@
     <context:component-scan base-package="com.madhouse.platform.premiummad"/>
     <task:annotation-driven/>    
 
-    <context:property-placeholder location="classpath:jdbc.properties"
+    <context:property-placeholder location="classpath:jdbc.properties,classpath:task.properties"
                                   ignore-unresolvable="true" file-encoding="UTF-8"/>
 
     <!-- spring配置数据源  -->
@@ -60,13 +60,23 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSourceMetaData"/>
     </bean>
+    
+    <bean id="reportTaskMapping" class="com.madhouse.platform.premiummad.util.ReportTaskMapping">
+        <property name="reportTaskProperties" ref="reportTaskProperties"/>  
+    </bean>
+    
+    <bean id="reportTaskProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="location" value="classpath:task.properties"/>
+        <property name="fileEncoding" value="UTF-8"/>
+    </bean>
 
    <!--  使用annotation注解方式配置事务 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
     
     <!-- 基于XML配置任务调度 -->
     <task:scheduled-tasks>
-        <task:scheduled ref="reportProcessTask" method="process" initial-delay="0" fixed-delay="6000000"/>
+        <task:scheduled ref="reportProcessTask" method="process" 
+        	initial-delay="${task.initial.delay}" fixed-delay="${task.fixed.delay}"/>
 	</task:scheduled-tasks>
 	
 </beans>

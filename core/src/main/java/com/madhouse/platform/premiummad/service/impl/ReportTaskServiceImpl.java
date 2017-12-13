@@ -1,7 +1,10 @@
 package com.madhouse.platform.premiummad.service.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +13,10 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,9 +76,9 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 		String endDate = DateUtils.getFormatStringByPattern
 				(SystemConstant.DatePattern.yyyyMMdd, reportTask.getEndDate());
 		Integer type = reportTask.getType();
-		String typeStr = SystemConstant.OtherConstant.REPORT_TASK_TYPE_PREFIX + type;
-		String reportUri = SystemConstant.OtherConstant.PREFIX_REPORT_TASK_URI
-				+ ReportTaskMapping.reportNameMapping.get(typeStr) 
+		String typeStr = SystemConstant.Properties.REPORT_TASK_TYPE_PREFIX + type;
+		String reportUri = ReportTaskMapping.reportTaskProperties.get(SystemConstant.Properties.PREFIX_REPORT_TASK_URI)
+				+ ReportTaskMapping.reportTaskProperties.get(typeStr) 
 				+ "_" + startDate
 				+ "-" + endDate
 				+ "_" + id + SystemConstant.OtherConstant.SUFFIX_CSV;
@@ -91,35 +98,21 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 	}
 	
 	@Override
-	public int update(ReportTask t) {
-		// TODO Auto-generated method stub
-		return 0;
+	public ReportTask queryById(Integer id, Integer userId) {
+		ReportTask rt = reportTaskDao.queryById(id);
+		if(rt == null){ 
+			//报表任务不存在
+    		throw new BusinessException(StatusCode.SC20701);
+    	} else if(rt.getStatus().intValue() != SystemConstant.DB.REPORT_TASK_STATUS_FINISHED){
+    		//报表还未处理完成
+    		throw new BusinessException(StatusCode.SC20703);
+    	} else if(userId != null && !userId.equals(rt.getCreatedUser())){
+    		//当前用户无权下载此报表
+    		throw new BusinessException(StatusCode.SC20704);
+    	}
+		return rt;
 	}
-
-	@Override
-	public int updateStatus(ReportTask t) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public ReportTask queryById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<ReportTask> queryAll(List<Integer> ids) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int checkName(String name) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	
 	@Override
 	public List<ReportMediaCsv> buildMediaReport(ReportTask rt) {
 		Integer type = rt.getType();
@@ -136,7 +129,6 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 			transformDimensions(reportCriterion);
 			List<ReportMedia> result = reportService.queryMediaReport(reportCriterion);
 			csvResult = convertToMediaCsvReport(result, type);
-			System.out.println(JSON.toJSONString(csvResult));
 		} else if(type.intValue() == SystemConstant.DB.REPORT_TASK_TYPE_MEDIA_DATEHOUR){
 			reportCriterion.setType(SystemConstant.DB.TYPE_DEFAULT);
 			reportCriterion.setDims(SystemConstant.DB.DIM_DATE);
@@ -146,7 +138,6 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 			transformDimensions(reportCriterion);
 			List<ReportMedia> result = reportService.queryMediaReport(reportCriterion);
 			csvResult = convertToMediaCsvReport(result, type);
-			System.out.println(JSON.toJSONString(csvResult));
 		} else if(type.intValue() == SystemConstant.DB.REPORT_TASK_TYPE_MEDIA_ADSPACE_LOCATION){
 			reportCriterion.setType(SystemConstant.DB.TYPE_LOCATION);
 			reportCriterion.setDims(SystemConstant.DB.DIM_ADSPACE);
@@ -408,10 +399,22 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 		List<String> fields = new ArrayList<>(length);
 		List<String> columnTitles = new ArrayList<>(length);
 		populateColumnNames(fields, columnTitles, type, T);
-		String reportName = extractReportNameForDisplay(rt.getReportUri());
-		csvReport = CsvUtil.createCSVFile(csvResult, columnTitles, fields, "report/", reportName, T, true);
+//		String reportName = extractReportNameForDisplay(rt.getReportUri());
+		String outPutPath = ReportTaskMapping.reportTaskProperties.get(SystemConstant.Properties.PREFIX_REPORT_TASK_URI);
+		boolean overlay = getOverlay(ReportTaskMapping.reportTaskProperties.get(SystemConstant.Properties.REPORT_FILE_OVERLAY));
+		csvReport = CsvUtil.createCSVFile(csvResult, columnTitles, fields, outPutPath, rt.getReportUri(), T, overlay);
 		
 		return csvReport;
+	}
+	
+	/**
+	 * 判断是否要覆盖重名文件
+	 * @param overlayStr 从配置文件里得到的true/false
+	 * @return
+	 */
+	private boolean getOverlay(String overlayStr) {
+		boolean overlay = (overlayStr != null && overlayStr.equals("false")) ? false : true;
+		return overlay;
 	}
 	
 	/**
@@ -441,6 +444,59 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 		}
 	}
 	
+	@Override
+	public int update(ReportTask t) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int updateStatus(ReportTask t) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ReportTask queryById(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ReportTask> queryAll(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int checkName(String name) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ResponseEntity<byte[]> download(String reportUri) {
+		ByteArrayOutputStream baos = null;
+		HttpHeaders headers = new HttpHeaders();  
+		try {
+			baos = CsvUtil.process(reportUri);
+	        //下载显示的文件名，解决中文名称乱码问题 
+			String displayedFileName = extractReportNameForDisplay(reportUri);
+	        String encodedDisplayedFileName = URLEncoder.encode(displayedFileName, "UTF-8");
+			//通知浏览器以attachment（下载方式）打开图片
+	        headers.setContentDispositionFormData("attachment", encodedDisplayedFileName); 
+	        //application/octet-stream ： 二进制流数据（最常见的文件下载）。
+//	        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+	        headers.add("Content-Type", "application/octet-stream;charset=UTF-8");
+		} catch (IOException e) {
+			logger.error("下载报表异常: " + e.getMessage());
+			throw new BusinessException(StatusCode.SC20702);
+		} 
+        
+        return new ResponseEntity<byte[]>(baos.toByteArray(),    
+            headers, HttpStatus.CREATED);
+	}
+	
 	private String extractReportNameForDisplay(String reportUri) {
 		if(StringUtils.isEmpty(reportUri)){
 			throw new BusinessException(StatusCode.SC20701);
@@ -451,5 +507,4 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 		String reportName = reportUri.substring(beginIndex + 1);
 		return reportName;
 	}
-
 }
