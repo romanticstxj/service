@@ -75,6 +75,8 @@ public class TencentUploadMaterialApiTask {
 	private String tencent_displayId_app_kuaibao_splash_img;
 	@Value("${tencent_displayId_app_kuaibao_splash_video}")
 	private String tencent_displayId_app_kuaibao_splash_video;
+	@Value("${tencent_displayId_app_news_splash_clickable_img}")
+	private String tencent_displayId_app_news_splash_clickable_img;
 
 	// SSP 广告位
 	@Value("${tencent_md_app_stream_img}")
@@ -99,6 +101,8 @@ public class TencentUploadMaterialApiTask {
 	private String tencent_md_app_kuaibao_splash_img;// MadMax-快播APP-闪屏-纯静态展示全屏点击
 	@Value("${tencent_md_app_kuaibao_splash_video}")
 	private String tencent_md_app_kuaibao_splash_video;// MadMax-快报APP-视频闪屏-动态展示全屏点击
+	@Value("${tencent_md_app_news_splash_clickable_img}")
+	private String tencent_md_app_news_splash_clickable_img;// MadMax-新闻客户端-闪屏-纯静态展示全屏点击-外链
 
 	@Value("${imp.url}")
 	private String impUrl;
@@ -292,6 +296,7 @@ public class TencentUploadMaterialApiTask {
 		map.put(TencentConstant.TENCENT_QQLIVE_APPWEB_PHONE_SPLASH_VIDEO, covertToSet(tencent_md_qqlive_appweb_phone_splash_video));
 		map.put(TencentConstant.TENCENT_APP_KUAIBAO_SPLASH_IMG, covertToSet(tencent_md_app_kuaibao_splash_img));
 		map.put(TencentConstant.TENCENT_APP_KUAIBAO_SPLASH_VIDEO, covertToSet(tencent_md_app_kuaibao_splash_video));
+		map.put(TencentConstant.TENCENT_APP_NEWS_SPLASH_CLICKABLE_IMG, covertToSet(tencent_md_app_news_splash_clickable_img));
 
 		TencentCommonRequest<List<TencentUploadMaterialData>> request = new TencentCommonRequest<List<TencentUploadMaterialData>>();
 		List<TencentUploadMaterialData> advertUploadRequestList = new ArrayList<>();
@@ -332,6 +337,10 @@ public class TencentUploadMaterialApiTask {
 					for (int i = 0; i < impTrackingUrlArray.length; i++) {
 						String[] track = impTrackingUrlArray[i].split("`");
 						monitorList.add(MacroReplaceUtil.macroReplaceImageUrl(macroMap, track[1])); // 宏替换
+						// 腾讯只支持三条监测地址
+						if (monitorList.size() == 2) {
+							break;
+						}
 					}
 				}
 			}
@@ -346,6 +355,10 @@ public class TencentUploadMaterialApiTask {
 				if (null != clkTrackingUrlArray) {
 					for (int i = 0; i < clkTrackingUrlArray.length; i++) {
 						clkMonitorList.add(MacroReplaceUtil.macroReplaceClickUrl(macroMap, clkTrackingUrlArray[i]));
+						// 腾讯只支持三条监测地址
+						if (clkMonitorList.size() == 2) {
+							break;
+						}
 					}
 				}
 			}
@@ -492,7 +505,7 @@ public class TencentUploadMaterialApiTask {
 			adContentMap = new HashMap<>();
 			adContentMap.put("file_text", material.getDescription());
 			adContents.add(adContentMap);
-		} else if (Integer.valueOf(tencent_displayId_qqlive_appweb_img) == mediaDisplayId || Integer.valueOf(tencent_displayId_app_kuaibao_splash_img) == mediaDisplayId) {
+		} else if (Integer.valueOf(tencent_displayId_qqlive_appweb_img) == mediaDisplayId || Integer.valueOf(tencent_displayId_app_kuaibao_splash_img) == mediaDisplayId || Integer.valueOf(tencent_displayId_app_news_splash_clickable_img) == mediaDisplayId) {
 			// 图片素材
 			Map<String, String> adContentMap = new HashMap<>();
 			adContentMap = new HashMap<>();
@@ -630,6 +643,9 @@ public class TencentUploadMaterialApiTask {
 		}
 		if (map.get(TencentConstant.TENCENT_APP_KUAIBAO_SPLASH_VIDEO).contains(String.valueOf(adspaceId))) {
 			return Integer.valueOf(tencent_displayId_app_kuaibao_splash_video);
+		}
+		if (map.get(TencentConstant.TENCENT_APP_NEWS_SPLASH_CLICKABLE_IMG).contains(String.valueOf(adspaceId))) {
+			return Integer.valueOf(tencent_displayId_app_news_splash_clickable_img);
 		}
 		return Integer.valueOf(0);
 	}
