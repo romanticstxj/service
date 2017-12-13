@@ -335,7 +335,7 @@ public class TencentUploadMaterialApiTask {
 					}
 				}
 			}
-			monitorList.add(MacroReplaceUtil.getStr(impUrl, "?", "${DISPLAY_EXT}")); // SSP 宏替换
+			monitorList.add(MacroReplaceUtil.getStr(impUrl, "?", "${DISPLAY_EXT1}")); // SSP 宏替换
 			advertUploadRequest.setMonitor_url(monitorList);
 
 			// 点击监播
