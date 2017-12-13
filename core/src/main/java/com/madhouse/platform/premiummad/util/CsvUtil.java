@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.exception.BusinessException;
@@ -27,8 +28,12 @@ public class CsvUtil {
 	private static final Logger logger = LoggerFactory.getLogger(CsvUtil.class);
 	
 	public static <T> File createCSVFile(List<T> exportData, List<String> headers, List<String> fileds,  
-			String outPutPath, String csvFileName, Class<?> T, boolean overlay) {  
-		//?提前判断exportData为空
+			String outPutPath, String csvFileName, Class<?> T, boolean overlay) throws IOException {  
+		if(StringUtils.isEmpty(outPutPath) || StringUtils.isEmpty(csvFileName)){
+			logger.debug("Directory path or csv file name is not set");
+			return null;
+		}
+		
         File csvFile = null;  
         BufferedWriter csvFileOutputStream = null;  
         try {  
@@ -63,7 +68,6 @@ public class CsvUtil {
             // UTF-8使正确读取分隔符","  
             csvFileOutputStream = new BufferedWriter(new OutputStreamWriter(  
                     new FileOutputStream(csvFile), "UTF-8"), 1024);  
-            logger.debug("csvFileOutputStream：" + csvFileOutputStream);  
             // 写入文件头部 
             for(String header: headers){
             	csvFileOutputStream  
@@ -72,8 +76,7 @@ public class CsvUtil {
             	csvFileOutputStream.write(",");  
             }
             csvFileOutputStream.write("\r\n");  
-            // 写入文件内容,  
-            // ============ //第一种格式：Arraylist<实体类>填充实体类的基本信息==================  
+            // ============ //写入文件内容：Arraylist<实体类>填充实体类的基本信息==================  
             for (int j = 0; exportData != null && !exportData.isEmpty()  
                     && j < exportData.size(); j++) {  
             	T t = exportData.get(j);  
@@ -87,7 +90,6 @@ public class CsvUtil {
                     if (str == null || str.equals("null"))  
                         str = "";  
                     contents[i] = str;  
-  
                 }  
   
                 for (int n = 0; n < contents.length; n++) {  
@@ -99,46 +101,18 @@ public class CsvUtil {
                 csvFileOutputStream.write("\r\n");  
             }  
   
-            // ============ //第二种格式：Arraylist<map>填充实体类的基本信息==================  
-            // for (Iterator iterator = exportData.iterator();  
-            // iterator.hasNext();) {  
-            // Object row = (Object) iterator.next();  
-            // for (Iterator propertyIterator = map.entrySet().iterator();  
-            // propertyIterator  
-            // .hasNext();) {  
-            // java.util.Map.Entry propertyEntry = (java.util.Map.Entry)  
-            // propertyIterator  
-            // .next();  
-            // csvFileOutputStream  
-            // .write((String) BeanUtils.getProperty(  
-            // row,  
-            // ((String) propertyEntry.getKey()) != null ? (String)  
-            // propertyEntry  
-            // .getKey() : ""));  
-            // if (propertyIterator.hasNext()) {  
-            // csvFileOutputStream.write(",");  
-            // }  
-            // }  
-            // if (iterator.hasNext()) {  
-            // csvFileOutputStream.write("\r\n");  
-            // }  
-            // }  
-  
-            // =================================  
             csvFileOutputStream.flush();  
         } catch (Exception e) {  
             return null;
         } finally {  
-            try {  
-            	if(csvFileOutputStream != null){
-            		csvFileOutputStream.close();  
-            	}
-            } catch (IOException e) {  
-                e.printStackTrace();  
-            }  
+        	if(csvFileOutputStream != null){
+        		csvFileOutputStream.close();  
+        	}
         }  
         return csvFile;  
     }  
+	
+	
   
     /** 
      * 下载文件 

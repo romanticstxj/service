@@ -25,7 +25,7 @@ public interface IReportTaskService extends IBaseService<ReportTask>{
 	List<ReportPolicyCsv> buildPolicyReport(ReportTask unfinishedReportTask);
 
 	<T> File generateCsvReport(List<T> csvResult, ReportTask unfinishedReportTask, 
-			Class<?> T) throws NoSuchFieldException, SecurityException;
+			Class<?> T) throws Exception;
 
 	ResponseEntity<byte[]> download(String reportUri);
 
