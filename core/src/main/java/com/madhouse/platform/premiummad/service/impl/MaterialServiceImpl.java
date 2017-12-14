@@ -318,7 +318,7 @@ public class MaterialServiceImpl implements IMaterialService {
 	 */
 	private void processAdvertiserUser(MaterialModel entity, Advertiser relatedAdvertiser, List<Map<Integer, Material>> classfiedMaps) {
 		if (relatedAdvertiser == null) {
-			throw new BusinessException(StatusCode.SC421, "绑定广告主与用户关系时广告主为上传");// TODO
+			throw new BusinessException(StatusCode.SC414, "userId必须时广告主必须上传");
 		}
 
 		// 素材获取 广告主与用户绑定关系ID
