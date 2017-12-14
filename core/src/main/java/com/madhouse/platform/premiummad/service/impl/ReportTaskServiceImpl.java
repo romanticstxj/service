@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -486,8 +487,8 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 			//通知浏览器以attachment（下载方式）打开图片
 	        headers.setContentDispositionFormData("attachment", encodedDisplayedFileName); 
 	        //application/octet-stream ： 二进制流数据（最常见的文件下载）。
-//	        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-	        headers.add("Content-Type", "application/octet-stream;charset=UTF-8");
+	        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//	        headers.add("Content-Type", "application/octet-stream;charset=UTF-8");
 		} catch (IOException e) {
 			logger.error("下载报表异常: " + e.getMessage());
 			throw new BusinessException(StatusCode.SC20702);

@@ -218,6 +218,8 @@ public class CsvUtil {
         }
   
         ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length());  
+        //写入bom头，来解决老版的excel读csv文件乱码的问题
+        bos.write(new byte[]{(byte) 0xef, (byte) 0xbb, (byte) 0xbf}, 0, 3);
         BufferedInputStream in = null;  
         try {  
             in = new BufferedInputStream(new FileInputStream(f));  
