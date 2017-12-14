@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
+
 import com.madhouse.platform.premiummad.constant.ActiveType;
 import com.madhouse.platform.premiummad.constant.DeliveryType;
 import com.madhouse.platform.premiummad.constant.Layout;
@@ -203,6 +205,13 @@ public class MaterialRule extends BaseRule {
 				}
 			}
 		}
+		if (entity.getQualificationFile() != null && !entity.getQualificationFile().isEmpty()) {
+			for (String qualificationFile : entity.getQualificationFile()) {
+				if (!isUrl(qualificationFile)) {
+					throw new BusinessException(StatusCode.SC419, "用户资质文件URL格式错误[qualificationFile]");
+				}
+			}
+		}
 	}
 
 	/**
@@ -226,7 +235,7 @@ public class MaterialRule extends BaseRule {
 		if (errorMsg.length() > 0) {
 			return "素材[" + materailKey + "]媒体[" + media.getId() + "]" + errorMsg.toString();
 		}
-		return null;
+		return "";
 	}
 
 	/**

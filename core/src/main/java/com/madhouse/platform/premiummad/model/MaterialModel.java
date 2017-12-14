@@ -49,6 +49,16 @@ public class MaterialModel implements Serializable {
 	private String agency;
 	
 	/**
+	 * 用户ID
+	 */
+	private String userId;
+	
+	/**
+	 * 用户相关的认证文件，可多个
+	 */
+	private List<String> qualificationFile;
+	
+	/**
 	 * PremiumMAD 平台定义的Deal ID
 	 */
 	private String dealId;
@@ -179,6 +189,22 @@ public class MaterialModel implements Serializable {
 
 	public void setAgency(String agency) {
 		this.agency = agency;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public List<String> getQualificationFile() {
+		return qualificationFile;
+	}
+
+	public void setQualificationFile(List<String> qualificationFile) {
+		this.qualificationFile = qualificationFile;
 	}
 
 	public String getDealId() {
