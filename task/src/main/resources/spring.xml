@@ -61,6 +61,9 @@
         <property name="dataSource" ref="dataSourceMetaData"/>
     </bean>
     
+    <!--  使用annotation注解方式配置事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
     <bean id="reportTaskMapping" class="com.madhouse.platform.premiummad.util.ReportTaskMapping">
         <property name="reportTaskProperties" ref="reportTaskProperties"/>  
     </bean>
@@ -69,9 +72,6 @@
         <property name="location" value="classpath:task.properties"/>
         <property name="fileEncoding" value="UTF-8"/>
     </bean>
-
-   <!--  使用annotation注解方式配置事务 -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
     
     <!-- 基于XML配置任务调度 -->
     <task:scheduled-tasks>

@@ -14,7 +14,7 @@
 	<appender name="premiummadAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOG_HOME}/task.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${LOG_HOME}/services-%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>${LOG_HOME}/task-%d{yyyy-MM-dd}.log</fileNamePattern>
 			<maxHistory>90</maxHistory>
 		</rollingPolicy>
 		<encoder>

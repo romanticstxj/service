@@ -49,6 +49,8 @@ public interface SystemConstant {
 		
 		String FILE_PATH_DILIMETER = "/";
 		
+		int BUFFER_SIZE = 1024;
+		
 	}
 	
 	interface Properties{

@@ -323,15 +323,18 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 		return targetList;
 	}
 	
-	
+	/**
+	 * 报表查询的维度的勾选
+	 * @param entity
+	 */
 	private void transformDimensions(ReportCriterion entity) {
 		Integer dims = entity.getDims();
 		String dimsStr = StringUtils.convertSingleChoiceToMultiChoice(dims);
 		int[] dimsArray = StringUtils.splitToIntArray(dimsStr);
 		TreeSet<Integer> dimsSorting = new TreeSet<Integer>();
 		
-		/** dimsSorting�б��Ԫ�ػᰴ�ռȶ���ά��˳��������Ӧ��ά�ȣ�����policy�涨ʼ���Ƕ���ά�ȣ�ʱ��涨ʼ������ϸ�����ά��,
-		 * �˴������ǰ��ѡ��ı���type��dims����������������������ά��˳�� **/
+		/** dimsSorting列表的元素会按照既定的维度顺序，设置相应的维度，比如policy规定始终是顶层维度，时间规定始终是最细级别的维度,
+		 * 此处会根据前端选择的报表type和dims来设置这个报表分组和排序的维度顺序 **/
 		for(int dim: dimsArray){
 			switch (dim){
 			case SystemConstant.DB.DIM_DATE: 
@@ -362,7 +365,7 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 			}
 		}
 		
-		//���ݲ�ѯ�������ö���ά��
+		//根据查询类型设置额外维度
 		int type = entity.getType();
 		switch (type){
 			case SystemConstant.DB.TYPE_CARRIER: 
@@ -379,7 +382,7 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 				dimsSorting.add(SystemConstant.DB.DIM_SORTING_LOCATION);
 				break;
 			case SystemConstant.DB.TYPE_MEDIA: 
-				//typeΪý�壬��ֻ���ý�����ά�ȣ��Ա���ý��ά�����ϸ�Ĺ��λά���л�
+				//type为媒体，则只添加媒体这个维度，以备从媒体维度向更细的广告位维度切换
 				entity.setHasMedia(true);
 				dimsSorting.add(SystemConstant.DB.DIM_SORTING_MEDIA);
 				break;
@@ -397,7 +400,6 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 		List<String> fields = new ArrayList<>(length);
 		List<String> columnTitles = new ArrayList<>(length);
 		populateColumnNames(fields, columnTitles, type, T);
-//		String reportName = extractReportNameForDisplay(rt.getReportUri());
 		String outPutPath = ReportTaskMapping.reportTaskProperties.get(SystemConstant.Properties.PREFIX_REPORT_TASK_URI);
 		boolean overlay = getOverlay(ReportTaskMapping.reportTaskProperties.get(SystemConstant.Properties.REPORT_FILE_OVERLAY));
 		csvReport = CsvUtil.createCSVFile(csvResult, columnTitles, fields, outPutPath, rt.getReportUri(), T, overlay);

@@ -4,14 +4,14 @@
 
   <groupId>madhouse</groupId>
   <artifactId>task</artifactId>
-  <version>1.0.0</version>
+  <version>${release.version}</version>
 
   <name>task</name>
   <url>http://maven.apache.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <release.version>1.0.0</release.version>
+    <release.version>4.2.4</release.version>
   </properties>
   
   <dependencies>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.madhouse.platform</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0</version>
+            <version>${release.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>

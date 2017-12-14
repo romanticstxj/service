@@ -4,7 +4,7 @@
 
   <groupId>com.madhouse.platform</groupId>
   <artifactId>services</artifactId>
-  <version>1.0.0</version>
+  <version>${release.version}</version>
   <packaging>war</packaging>
 
   <name>services</name>
@@ -12,7 +12,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <release.version>1.0.0</release.version>
+    <release.version>4.2.4</release.version>
   </properties>
   
   <dependencies>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>com.madhouse.platform</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0</version>
+            <version>${release.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>

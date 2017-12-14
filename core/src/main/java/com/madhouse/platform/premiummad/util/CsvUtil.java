@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
+import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 
 public class CsvUtil {
@@ -30,7 +30,7 @@ public class CsvUtil {
 	public static <T> File createCSVFile(List<T> exportData, List<String> headers, List<String> fileds,  
 			String outPutPath, String csvFileName, Class<?> T, boolean overlay) throws IOException {  
 		if(StringUtils.isEmpty(outPutPath) || StringUtils.isEmpty(csvFileName)){
-			logger.debug("Directory path or csv file name is not set");
+			logger.debug("配置的报表文件夹和数据库里的报表名称不能为空");
 			return null;
 		}
 		
@@ -112,8 +112,6 @@ public class CsvUtil {
         return csvFile;  
     }  
 	
-	
-  
     /** 
      * 下载文件 
      *  
@@ -223,7 +221,7 @@ public class CsvUtil {
         BufferedInputStream in = null;  
         try {  
             in = new BufferedInputStream(new FileInputStream(f));  
-            int buf_size = 1024;  
+            int buf_size = SystemConstant.OtherConstant.BUFFER_SIZE;  
             byte[] buffer = new byte[buf_size];  
             int len = 0;  
             while(-1 != (len = in.read(buffer, 0, buf_size))){
@@ -231,7 +229,7 @@ public class CsvUtil {
             }
             return bos;  
         } catch (IOException e) {  
-            e.printStackTrace();  
+            logger.error(e.getMessage());
             throw e;  
         } finally {  
             try {  
@@ -239,7 +237,6 @@ public class CsvUtil {
             } catch (IOException e) {  
                 e.printStackTrace();  
             }  
-            logger.debug("bos close()!");
             bos.close();  
         }  
     }
