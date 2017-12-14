@@ -341,12 +341,12 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 	@Override
 	public boolean auditAdvertiser(String[] ids, Integer status, String reason, Integer userId) {
 		if(ids == null || ids.length == 0){
-			throw new BusinessException(StatusCode.SC422);
+			throw new BusinessException(StatusCode.SC20702);
 		}
 		
 		List<String> idList = advertiserDao.selectAuditableAdvertisers(ids);
 		if(idList == null || idList.size() == 0){ //请至少选择一个可以审核的记录
-			throw new BusinessException(StatusCode.SC421);
+			throw new BusinessException(StatusCode.SC20701);
 		}
 		String[] auditableIds = idList.toArray(new String[]{});
 		advertiserDao.auditAdvertiser(auditableIds, status, reason, userId);

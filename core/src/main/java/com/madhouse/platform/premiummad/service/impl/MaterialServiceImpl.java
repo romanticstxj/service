@@ -368,12 +368,12 @@ public class MaterialServiceImpl implements IMaterialService {
 	@Override
 	public boolean auditMaterial(String[] ids, Integer status, String reason, Integer userId) {
 		if(ids == null || ids.length == 0){
-			throw new BusinessException(StatusCode.SC422);
+			throw new BusinessException(StatusCode.SC20702);
 		}
 		
 		List<String> idList = materialDao.selectAuditableMaterials(ids);
 		if(idList == null || idList.size() == 0){ //请至少选择一个可以审核的记录
-			throw new BusinessException(StatusCode.SC421);
+			throw new BusinessException(StatusCode.SC20701);
 		}
 		String[] auditableIds = idList.toArray(new String[]{});
 		materialDao.auditMaterial(auditableIds, status, reason, userId);
