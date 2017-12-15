@@ -35,7 +35,7 @@ public class AlgorithmUtils {
 	
 	public static String convertCurrency(double currency){
 		DecimalFormat decimalFormat=new DecimalFormat();
-		decimalFormat.applyPattern("￥###########.##");
+		decimalFormat.applyPattern("¥###########.##");
 		String currencyStr = decimalFormat.format(currency);
 		return currencyStr;
 	}

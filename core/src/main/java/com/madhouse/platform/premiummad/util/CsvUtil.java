@@ -217,9 +217,10 @@ public class CsvUtil {
         	throw new BusinessException(StatusCode.SC20705);
         }
   
-        ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length());  
+        int bomLength = 3;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length() + bomLength);  
         //写入bom头，来解决老版的excel读csv文件乱码的问题
-        bos.write(new byte[]{(byte) 0xef, (byte) 0xbb, (byte) 0xbf}, 0, 3);
+        bos.write(new byte[]{(byte) 0xef, (byte) 0xbb, (byte) 0xbf}, 0, bomLength);
         BufferedInputStream in = null;  
         try {  
             in = new BufferedInputStream(new FileInputStream(f));  
