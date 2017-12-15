@@ -63,6 +63,9 @@ public class DateUtils {
 	 * @return String 日期
 	 */
 	public static String getFormatStringByPattern(String pattern, Date date) {
+		if(date == null){
+			return "";
+		}
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		simpleDateFormat.setLenient(false);
 		return simpleDateFormat.format(date);

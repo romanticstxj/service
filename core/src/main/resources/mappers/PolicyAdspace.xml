@@ -253,6 +253,7 @@
 	    <property name="alias" value="pa"/></include>
 	    FROM mad_sys_policy_adspace pa
 	    WHERE pa.policy_id = #{id,jdbcType=INTEGER}
+	    ORDER BY pa.adspace_id DESC
   	</select>
   	
   	<select id="getAdspacePolicy" parameterType="java.lang.Integer" resultMap="AdspacePolicyResultMap">
@@ -260,6 +261,7 @@
 	    <property name="alias" value="pa"/></include>
 	    FROM mad_sys_policy_adspace pa
 	    WHERE pa.adspace_id = #{id,jdbcType=INTEGER}
+	    ORDER BY pa.policy_id DESC
   	</select>
   
   <select id="selectByPolicyIdAndMediaId" resultMap="BaseResultMap">

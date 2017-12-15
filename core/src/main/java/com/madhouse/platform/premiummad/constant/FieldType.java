@@ -32,9 +32,4 @@ public enum FieldType {
 		
 		return chineseMessage;
 	}
-	
-	public static void main(String args[]){
-		String ft = FieldType.getChineseMessage("startDate");
-		System.out.println(ft);
-	}
 }
