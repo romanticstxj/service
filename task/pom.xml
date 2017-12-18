@@ -4,12 +4,13 @@
 
   <groupId>madhouse</groupId>
   <artifactId>task</artifactId>
-  <version>1.0.0</version>
+  <version>${dev.version}</version>
 
   <name>task</name>
   <url>http://maven.apache.org</url>
 
   <properties>
+  	<dev.version>1.0.0</dev.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   
