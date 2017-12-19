@@ -31,7 +31,7 @@ import com.madhouse.platform.premiummad.service.IReportTaskService;
 @Component
 public class ReportProcessAsyncTask {
 	
-	private static final Logger logger = LoggerFactory.getLogger("premiummad");
+	private static final Logger logger = LoggerFactory.getLogger(ReportProcessAsyncTask.class);
 	
 	@Autowired
 	private IReportTaskService reportTaskService;
