@@ -79,7 +79,10 @@ public class ReportProcessAsyncTask {
 		
 		latch.await();
 		//4.回写已完成任务的状态
+		logger.debug("total result count: " + resultList.size());
 		for(Future<List<ReportTask>> future: resultList){
+			logger.debug("future is done: " + future.isDone());
+			logger.debug("future is cancelled: " + future.isCancelled());
 			if(future.isDone() && !future.isCancelled()){
 				finishedReportTasks.addAll(future.get());
 			}
