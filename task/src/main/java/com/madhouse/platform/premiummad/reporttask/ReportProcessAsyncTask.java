@@ -43,6 +43,9 @@ public class ReportProcessAsyncTask {
 		//1.查询需要执行的报表任务
 		List<ReportTask> unfinishedReportTasks = reportTaskService.queryList(
 				SystemConstant.DB.REPORT_TASK_STATUS_PROCESSING, null, SystemConstant.DB.ORDER_BY_ASC);
+		if(unfinishedReportTasks == null || unfinishedReportTasks.size() == 0){
+			return;
+		}
 		logger.debug("total " + unfinishedReportTasks.size() + " report tasks for this time");
 		Map<Integer, List<ReportTask>> portionedTaskMap = new HashMap<>();
 		List<ReportTask> portionedTaskList = null;

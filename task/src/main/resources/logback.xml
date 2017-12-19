@@ -53,10 +53,6 @@
 		<appender-ref ref="premiummadAppender" />
 	</logger>
 	
-	<logger name="performance" level="DEBUG" additivity="false">
-		<appender-ref ref="performanceAppender" />
-	</logger>
-	
 	<logger name="premiummadError" level="ERROR" additivity="false">
 		<appender-ref ref="premiummadErrorAppender" />
 	</logger>
