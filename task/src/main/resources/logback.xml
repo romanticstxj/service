@@ -35,6 +35,7 @@
 
 	<root level="DEBUG">
 		<appender-ref ref="stdout" />
+		<appender-ref ref="premiummadAppender" />
 	</root>
 
 	<logger name="premiummad" level="DEBUG" additivity="false">

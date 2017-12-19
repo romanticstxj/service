@@ -31,7 +31,7 @@ import com.madhouse.platform.premiummad.service.IReportTaskService;
 @Component
 public class ReportProcessAsyncTask {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ReportProcessTask.class);
+	private static final Logger logger = LoggerFactory.getLogger("premiummad");
 	
 	@Autowired
 	private IReportTaskService reportTaskService;
@@ -40,7 +40,7 @@ public class ReportProcessAsyncTask {
 	private int SIZE;
 	
 	public void process() throws InterruptedException, ExecutionException, TimeoutException {
-		
+		logger.debug(Thread.currentThread() + " begin");
 		//1.查询需要执行的报表任务
 		List<ReportTask> unfinishedReportTasks = reportTaskService.queryList(
 				SystemConstant.DB.REPORT_TASK_STATUS_PROCESSING, null, SystemConstant.DB.ORDER_BY_ASC);
@@ -78,12 +78,14 @@ public class ReportProcessAsyncTask {
 		logger.debug("launched all tasks");
 		latch.await();
 		logger.debug("main thread await finished");
+		long beginTime = System.currentTimeMillis();
 		//4.回写已完成任务的状态
 		for(Future<List<ReportTask>> future: resultList){
 			if(future.isDone() && !future.isCancelled()){
 				finishedReportTasks.addAll(future.get());
 			}
 		}
+		logger.debug((System.currentTimeMillis() - beginTime) + "ms for " + Thread.currentThread());
 		reportTaskService.updateStatus(finishedReportTasks);
 		exec.shutdown();
 		
@@ -108,6 +110,7 @@ public class ReportProcessAsyncTask {
 
 		@Override
 		public List<ReportTask> call() {
+			long beginTime = System.currentTimeMillis();
 			List<ReportTask> finishedPortionedReportTasks = new ArrayList<>();
 			for(int i=0; i<portionedTaskList.size(); i++){
 				//2.对每个报表任务生成查询报表的条件,并查询报表结果
@@ -144,6 +147,7 @@ public class ReportProcessAsyncTask {
 			
 			logger.debug("thread " + this + "completed");
 			latch.countDown();
+			logger.debug((System.currentTimeMillis() - beginTime) + "ms for thread " + this);
 			return finishedPortionedReportTasks;
 		}
 		
