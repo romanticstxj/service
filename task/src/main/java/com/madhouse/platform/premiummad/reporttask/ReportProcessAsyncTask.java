@@ -31,7 +31,7 @@ import com.madhouse.platform.premiummad.service.IReportTaskService;
 @Component
 public class ReportProcessAsyncTask {
 	
-	private static final Logger logger = LoggerFactory.getLogger("performance");
+	private static final Logger logger = LoggerFactory.getLogger(ReportProcessAsyncTask.class);
 	
 	@Autowired
 	private IReportTaskService reportTaskService;
@@ -40,9 +40,11 @@ public class ReportProcessAsyncTask {
 	private int SIZE;
 	
 	public void process() throws InterruptedException, ExecutionException, TimeoutException {
+		logger.debug("begin Async task");
 		//1.查询需要执行的报表任务
 		List<ReportTask> unfinishedReportTasks = reportTaskService.queryList(
 				SystemConstant.DB.REPORT_TASK_STATUS_PROCESSING, null, SystemConstant.DB.ORDER_BY_ASC);
+		logger.debug("total " + unfinishedReportTasks.size() + " report tasks for this time");
 		Map<Integer, List<ReportTask>> portionedTaskMap = new HashMap<>();
 		List<ReportTask> portionedTaskList = null;
 		for(ReportTask rt: unfinishedReportTasks){
@@ -70,12 +72,12 @@ public class ReportProcessAsyncTask {
 			Entry<Integer, List<ReportTask>> entry = it.next();
 			int threadId = entry.getKey(); //线程id
 			portionedTaskList = entry.getValue(); //每个线程需要执行的task列表
+			logger.debug("thread " + threadId + " is assigned " + portionedTaskList.size() + " report tasks");
 			Future<List<ReportTask>> future = exec.submit(new ReportTaskPortion(threadId, portionedTaskList, latch, reportTaskService));
 			resultList.add(future);
 		}
 		
 		latch.await();
-		long beginTime = System.currentTimeMillis();
 		//4.回写已完成任务的状态
 		for(Future<List<ReportTask>> future: resultList){
 			if(future.isDone() && !future.isCancelled()){
@@ -114,6 +116,7 @@ public class ReportProcessAsyncTask {
 				//3.对每个报表条件生成Csv报表文件
 				File csvReport = null;
 				int taskId = unfinishedReportTask.getId();
+				logger.debug("thread " + taskMod + " with taskId " + taskId + " begin");
 				int type = unfinishedReportTask.getType() == null ? 0 : unfinishedReportTask.getType().intValue();
 				try{
 					if(type < SystemConstant.DB.REPORT_TASK_TYPE_DSP_DATEHOUR && type > 0){ //媒体报表
@@ -127,7 +130,7 @@ public class ReportProcessAsyncTask {
 						csvReport = reportTaskService.generateCsvReport(csvResult, unfinishedReportTask, ReportPolicyCsv.class);
 					}
 				} catch (Exception e){
-					logger.debug("report task " + taskId + " failed");
+					logger.debug("thread " + taskMod + " with taskId " + taskId + " failed");
 					logger.error(e.getMessage());
 					continue;
 				}
@@ -136,13 +139,13 @@ public class ReportProcessAsyncTask {
 					ReportTask finishedReportTask = new ReportTask();
 					finishedReportTask.setId(taskId);
 					finishedReportTask.setStatus((short) 1);
-					logger.debug("report task " + taskId + " succeeded");
+					logger.debug("thread " + taskMod + " with taskId " + taskId + " succeeded");
 					finishedPortionedReportTasks.add(finishedReportTask);
 				}
 			}
 			
 			latch.countDown();
-			logger.debug((System.currentTimeMillis() - beginTime) + "ms for thread " + this);
+			logger.debug((System.currentTimeMillis() - beginTime) + "ms for thread " + taskMod);
 			return finishedPortionedReportTasks;
 		}
 		
