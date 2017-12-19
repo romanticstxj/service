@@ -12,7 +12,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
@@ -61,33 +60,20 @@ public class ReportProcessAsyncTask {
 			portionedTaskList.add(rt);
 		}
 		
-		List<ReportTask> finishedReportTasks = new ArrayList<>();
 		ExecutorService exec = Executors.newCachedThreadPool();
 		//All must share a single Countdownlatch object
 		CountDownLatch latch = new CountDownLatch(portionedTaskMap.size());
 		//遍历所有的portion task，把相同id模的task分别分配给这些线程进行处理
-		List<Future<List<ReportTask>>> resultList = new ArrayList<>();
 		Iterator<Entry<Integer, List<ReportTask>>> it = portionedTaskMap.entrySet().iterator();
 		while(it.hasNext()){ //遍历查询出来的需要执行的task
 			Entry<Integer, List<ReportTask>> entry = it.next();
 			int threadId = entry.getKey(); //线程id
 			portionedTaskList = entry.getValue(); //每个线程需要执行的task列表
 			logger.debug("thread " + threadId + " is assigned " + portionedTaskList.size() + " report tasks");
-			Future<List<ReportTask>> future = exec.submit(new ReportTaskPortion(threadId, portionedTaskList, latch, reportTaskService));
-			resultList.add(future);
+			exec.submit(new ReportTaskPortion(threadId, portionedTaskList, latch, reportTaskService));
 		}
 		
 		latch.await();
-		//4.回写已完成任务的状态
-		logger.debug("total result count: " + resultList.size());
-		for(Future<List<ReportTask>> future: resultList){
-			logger.debug("future is done: " + future.isDone());
-			logger.debug("future is cancelled: " + future.isCancelled());
-			if(future.isDone() && !future.isCancelled()){
-				finishedReportTasks.addAll(future.get());
-			}
-		}
-		reportTaskService.updateStatus(finishedReportTasks);
 		exec.shutdown();
 		
 //		CompletionService<String> completionService = new ExecutorCompletionService<String>(exec);
@@ -147,8 +133,11 @@ public class ReportProcessAsyncTask {
 				}
 			}
 			
-			latch.countDown();
 			logger.debug((System.currentTimeMillis() - beginTime) + "ms for thread " + taskMod);
+			//4.回写已完成任务的状态
+			logger.debug("update Status for totally " + finishedPortionedReportTasks.size() + " tasks in thread " + taskMod);
+			reportTaskService.updateStatus(finishedPortionedReportTasks);
+			latch.countDown();
 			return finishedPortionedReportTasks;
 		}
 		
