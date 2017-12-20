@@ -2,16 +2,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.madhouse.platform</groupId>
-  <artifactId>services</artifactId>
+  <groupId>madhouse</groupId>
+  <artifactId>task</artifactId>
   <version>${dev.version}</version>
-  <packaging>war</packaging>
 
-  <name>services</name>
-  <url>http://www.madhouse.cn</url>
+  <name>task</name>
+  <url>http://maven.apache.org</url>
 
   <properties>
-  	<dev.version>2.0.0</dev.version>
+  	<dev.version>1.0.0</dev.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   
@@ -31,13 +30,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.0.1</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
             <version>2.2</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -58,10 +55,22 @@
 		   <artifactId>hibernate-validator</artifactId>
 		   <version>5.4.1.Final</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.github.agourlay</groupId>
+		    <artifactId>json-2-csv_2.12</artifactId>
+		    <version>0.3.0</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.opencsv</groupId>
+		    <artifactId>opencsv</artifactId>
+		    <version>4.1</version>
+		</dependency>
     </dependencies>
-    
-    <build>
-        <finalName>services</finalName>
+  
+  <build>
+        <finalName>task</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -88,6 +97,41 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.8</version>
             </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>com.madhouse.platform.premiummad.reporttask.MainTask</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/resources/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -117,5 +161,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

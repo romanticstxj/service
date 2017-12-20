@@ -19,37 +19,14 @@
         http://www.springframework.org/schema/task 
         http://www.springframework.org/schema/task/spring-task-4.0.xsd
         http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+        
+    <context:component-scan base-package="com.madhouse.platform.premiummad"/>
+    <task:annotation-driven/>    
 
-    <context:component-scan base-package="com.madhouse.platform.premiummad">
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-    </context:component-scan>
-
-    <!--proxy-target-class="true"强制使用cglib代理, 如果为false则spring会自动选择 -->
-    <aop:aspectj-autoproxy proxy-target-class="true"/>
-
-    <context:property-placeholder location="classpath:jdbc.properties"
+    <context:property-placeholder location="classpath:jdbc.properties,classpath:task.properties"
                                   ignore-unresolvable="true" file-encoding="UTF-8"/>
 
-    <bean id="druidStatInterceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor"/>
-
-    <bean id="druidStatPointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" scope="prototype">
-        <property name="patterns">
-            <list>
-                <value>com.madhouse.platform.premiummad.service.impl.*.*</value>
-            </list>
-        </property>
-    </bean>
-
-    <aop:config>
-        <aop:advisor advice-ref="druidStatInterceptor" pointcut-ref="druidStatPointcut"/>
-    </aop:config>
-
-    <bean id="statFilter" class="com.alibaba.druid.filter.stat.StatFilter">
-        <property name="slowSqlMillis" value="100000"/>
-        <property name="logSlowSql" value="true"/>
-        <property name="mergeSql" value="true"/>
-    </bean>
-    
+    <!-- spring配置数据源  -->
     <bean id="parentDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"
           abstract="true">
         <property name="maxActive" value="${jdbc.maxActive}"/>
@@ -61,21 +38,16 @@
         <property name="testWhileIdle" value="${jdbc.testWhileIdle}"/>
         <property name="maxPoolPreparedStatementPerConnectionSize"
                   value="${jdbc.maxPoolPreparedStatementPerConnectionSize}"/>
-        <property name="proxyFilters">
-            <list>
-                <ref bean="statFilter"/>
-            </list>
-        </property>
     </bean>
-
-    <bean id="dataSourcePremiummad" parent="parentDataSource">
+    
+    <bean id="dataSourceMetaData" parent="parentDataSource">
         <property name="url" value="${jdbc.premiummad.url}"/>
         <property name="username" value="${jdbc.premiummad.username}"/>
         <property name="password" value="${jdbc.premiummad.password}"/>
     </bean>
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSourcePremiummad"/>
+        <property name="dataSource" ref="dataSourceMetaData"/>
         <property name="configLocation" value="classpath:mybatis.xml"/>
         <property name="mapperLocations" value="classpath:mappers/*.xml"/>
     </bean>
@@ -84,21 +56,27 @@
         <property name="basePackage" value="com.madhouse.platform.premiummad.dao"/>
     </bean>
 
-    <!-- 事务配置 -->
+    <!-- 事务配置  -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSourcePremiummad"/>
+        <property name="dataSource" ref="dataSourceMetaData"/>
     </bean>
+    
+    <!--  使用annotation注解方式配置事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
     
     <bean id="reportTaskMapping" class="com.madhouse.platform.premiummad.util.ReportTaskMapping">
         <property name="reportTaskProperties" ref="reportTaskProperties"/>  
     </bean>
     
     <bean id="reportTaskProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="location" value="classpath:services.properties"/>
+        <property name="location" value="classpath:task.properties"/>
         <property name="fileEncoding" value="UTF-8"/>
     </bean>
     
-    <!-- 使用annotation注解方式配置事务 -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-
+    <!-- 基于XML配置任务调度 -->
+    <task:scheduled-tasks>
+        <task:scheduled ref="reportProcess${task.type}Task" method="process" 
+        	initial-delay="${task.initial.delay}" fixed-delay="${task.fixed.delay}"/>
+	</task:scheduled-tasks>
+	
 </beans>

@@ -9,11 +9,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-/**
- * created : heyin
- * date:2015/12/3.
- * desc:
- */
 public class HttpUtilTest {
 
 	public static void httpGet(String link) {
@@ -23,7 +18,8 @@ public class HttpUtilTest {
 			HttpGet get = new HttpGet(link);
 
 			get.setHeader("X-From", "exchange.dev.onemad.com");
-			get.setHeader("X-User-Id", "53");
+			get.setHeader("X-User-Id", "1303");
+			get.setHeader("Content-Disposition", "form-data; name='attachment;'");
 
 			CloseableHttpResponse response = httpclient.execute(get);
 			// 打印ResponseBody
@@ -45,10 +41,11 @@ public class HttpUtilTest {
 			HttpPost post = new HttpPost(link);
 			post.setHeader("X-From", "exchange.dev.onemad.com");
 			post.setHeader("X-User-Id", "1303");
-			post.setHeader("Content-Type", "application/json;charset=UTF-8");
+			post.setHeader("Content-Type", "application/json");
 
 			post.setEntity(stringEntity);
 			CloseableHttpResponse response = httpclient.execute(post);
+//			response.setHeader("Content-Type", "application/json");
 			// 打印ResponseBody
 			HttpEntity responseEntity = response.getEntity();
 			String result = EntityUtils.toString(responseEntity);

@@ -44,6 +44,25 @@ public interface SystemConstant {
 		int HOUR_23 = 23;
 		
 		String URL_REGEX = "^(https?):\\/\\/[\\w\\-]+(\\.[\\w\\-]+)+([\\w\\-\\.,@?^=%&:\\/~\\+#]*[\\w\\-\\@?^=%&\\/~\\+#])?$";
+	
+		String SUFFIX_CSV = ".csv";
+		
+		String FILE_PATH_DILIMETER = "/";
+		
+		int BUFFER_SIZE = 1024;
+		
+	}
+	
+	interface Properties{
+		String REPORT_TASK_TYPE_PREFIX = "report.task.type.";
+		String PREFIX_REPORT_TASK_URI = "report.task.uri.prefix";
+		String REPORT_FILE_OVERLAY = "overlay";
+	}
+	
+	interface DatePattern{
+		String yyyyMMdd = "yyyyMMdd";
+		String yyyyMMdd_DISPLAY = "yyyy-MM-dd";
+		String yyyyMMdd_DISPLAY_CSV = "yyyy/MM/dd";
 	}
 	
 	interface ErrorMessage{
@@ -107,6 +126,22 @@ public interface SystemConstant {
 		int IN_AUDIT = 1; //审核中(后端)
 		int TO_BE_SUBMIT = 0; //待提交(前端)
 		
+		//报表任务管理
+		int REPORT_TASK_TYPE_MEDIA_ADSPACE = 1;
+		int REPORT_TASK_TYPE_MEDIA_DATEHOUR = 2;
+		int REPORT_TASK_TYPE_MEDIA_ADSPACE_LOCATION = 3;
+		int REPORT_TASK_TYPE_DSP_DATEHOUR = 11;
+		int REPORT_TASK_TYPE_DSP_LOCATION = 12;
+		int REPORT_TASK_TYPE_DSP_ADSPACE = 13;
+		int REPORT_TASK_TYPE_POLICY_DATEHOUR = 21;
+		int REPORT_TASK_TYPE_POLICY_LOCATION = 22;
+		int REPORT_TASK_TYPE_POLICY_ADSPACE = 23;
+		int REPORT_TASK_STATUS_PROCESSING = 0; //reporttask正在处理状态
+		int REPORT_TASK_STATUS_FINISHED = 1; //reporttask处理完成状态
+		
+		String ORDER_BY_ASC = "ASC";
+		String ORDER_BY_DESC = "DESC";
+		
 		String impUrlsDelimiter = "`";
 	}
 	
@@ -115,4 +150,6 @@ public interface SystemConstant {
 		Byte MATERIAL = 1;
 		Byte ADVERTISER = 2;
 	}
+	
+	
 }

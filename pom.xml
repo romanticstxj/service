@@ -5,13 +5,14 @@
   <groupId>com.madhouse.platform</groupId>
   <artifactId>premiummad-service</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.0</version>
+  <version>4.2.4</version>
 
   <modules>
     <module>core</module>
     <module>services</module>
 	<module>materials</module>
     <module>metadata</module>
+    <module>task</module>
   </modules>
 
 </project>
