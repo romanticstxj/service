@@ -25,4 +25,12 @@ public enum AdvertiserUserStatusCode {
 		return descrip;
 	}
 
+	public static String getDescrip(int value) {
+		for (AdvertiserUserStatusCode item : AdvertiserUserStatusCode.values()) {
+			if (item.getValue() == value) {
+				return item.getDescrip();
+			}
+		}
+		return null;
+	}
 }

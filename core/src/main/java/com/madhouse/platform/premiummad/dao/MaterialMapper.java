@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.madhouse.platform.premiummad.entity.Material;
+import com.madhouse.platform.premiummad.entity.MaterialUnion;
 import com.madhouse.platform.premiummad.model.MaterialModel;
 import com.madhouse.platform.premiummad.model.MediaAuditMaterialModel;
 
@@ -149,4 +150,11 @@ public interface MaterialMapper {
 	 */
 	List<Material> selectMaterialsByMeidaIds(@Param("mediaIds")int[] mediaIds, @Param("auditStatus")Integer auditStatus);
 
+	/**
+	 * 根据素材ID列表查询素材，包含关联的 广告主和用户ID的绑定关系
+	 * 
+	 * @param ids
+	 * @return
+	 */
+	List<MaterialUnion> selectUnionByIds(@Param("ids") List<Integer> ids);
 }

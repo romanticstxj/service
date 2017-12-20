@@ -20,7 +20,7 @@ public class AdvertiserUserRule {
 		// 第一次新增
 		if (advertiserUser == null) {
 			advertiserUser = new AdvertiserUser();
-			advertiserUser.setAdversterId(advertiserId);
+			advertiserUser.setAdvertiserId(advertiserId);
 			advertiserUser.setUserId(entity.getUserId());
 			advertiserUser.setCreatedTime(new Date());
 		}
