@@ -94,7 +94,7 @@
     </bean>
     
     <bean id="reportTaskProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="location" value="classpath:task.properties"/>
+        <property name="location" value="classpath:services.properties"/>
         <property name="fileEncoding" value="UTF-8"/>
     </bean>
     
