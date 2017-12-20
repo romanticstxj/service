@@ -75,7 +75,7 @@
     
     <!-- 基于XML配置任务调度 -->
     <task:scheduled-tasks>
-        <task:scheduled ref="reportProcessTask" method="process" 
+        <task:scheduled ref="reportProcess${task.type}Task" method="process" 
         	initial-delay="${task.initial.delay}" fixed-delay="${task.fixed.delay}"/>
 	</task:scheduled-tasks>
 	

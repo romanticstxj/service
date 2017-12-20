@@ -1,0 +1,154 @@
+package com.madhouse.platform.premiummad.reporttask;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.madhouse.platform.premiummad.constant.SystemConstant;
+import com.madhouse.platform.premiummad.entity.ReportDspCsv;
+import com.madhouse.platform.premiummad.entity.ReportMediaCsv;
+import com.madhouse.platform.premiummad.entity.ReportPolicyCsv;
+import com.madhouse.platform.premiummad.entity.ReportTask;
+import com.madhouse.platform.premiummad.service.IReportTaskService;
+
+@Component
+public class ReportProcessAsyncTask {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ReportProcessAsyncTask.class);
+	
+	@Autowired
+	private IReportTaskService reportTaskService;
+	
+	@Value("${task.maxThreadCount}")
+	private int SIZE;
+	
+	public void process() throws InterruptedException, ExecutionException, TimeoutException {
+		logger.debug("begin Async task");
+		//1.查询需要执行的报表任务
+		List<ReportTask> unfinishedReportTasks = reportTaskService.queryList(
+				SystemConstant.DB.REPORT_TASK_STATUS_PROCESSING, null, SystemConstant.DB.ORDER_BY_ASC);
+		if(unfinishedReportTasks == null || unfinishedReportTasks.size() == 0){
+			return;
+		}
+		logger.debug("total " + unfinishedReportTasks.size() + " report tasks for this time");
+		Map<Integer, List<ReportTask>> portionedTaskMap = new HashMap<>();
+		List<ReportTask> portionedTaskList = null;
+		for(ReportTask rt: unfinishedReportTasks){
+			//计算每个需要执行的report任务的id的模
+			int id = rt.getId();
+			int mod = id % SIZE;
+			
+			//把相同模的task分配给相同的容器
+			portionedTaskList = portionedTaskMap.get(mod);
+			if(portionedTaskList == null){
+				portionedTaskList = new ArrayList<>();
+				portionedTaskMap.put(mod, portionedTaskList);
+			}
+			portionedTaskList.add(rt);
+		}
+		
+		ExecutorService exec = Executors.newCachedThreadPool();
+		//All must share a single Countdownlatch object
+		CountDownLatch latch = new CountDownLatch(portionedTaskMap.size());
+		//遍历所有的portion task，把相同id模的task分别分配给这些线程进行处理
+		Iterator<Entry<Integer, List<ReportTask>>> it = portionedTaskMap.entrySet().iterator();
+		while(it.hasNext()){ //遍历查询出来的需要执行的task
+			Entry<Integer, List<ReportTask>> entry = it.next();
+			int threadId = entry.getKey(); //线程id
+			portionedTaskList = entry.getValue(); //每个线程需要执行的task列表
+			logger.debug("thread " + threadId + " is assigned " + portionedTaskList.size() + " report tasks");
+			exec.submit(new ReportTaskPortion(threadId, portionedTaskList, latch, reportTaskService));
+		}
+		
+		latch.await();
+		exec.shutdown();
+		
+//		CompletionService<String> completionService = new ExecutorCompletionService<String>(exec);
+//		completionService.take();
+	}
+	
+	//Performs some portion of a task
+	static class ReportTaskPortion implements Callable<List<ReportTask>>{
+		private final CountDownLatch latch;
+		private final int taskMod;
+		private final List<ReportTask> portionedTaskList;
+		private final IReportTaskService reportTaskService;
+
+		public ReportTaskPortion(int taskMod, List<ReportTask> portionedTaskList, CountDownLatch latch,
+				IReportTaskService reportTaskService) {
+			this.taskMod = taskMod;
+			this.portionedTaskList = portionedTaskList;
+			this.latch = latch;
+			this.reportTaskService = reportTaskService;
+		}
+
+		@Override
+		public List<ReportTask> call() {
+			long beginTime = System.currentTimeMillis();
+			List<ReportTask> finishedPortionedReportTasks = new ArrayList<>();
+			for(int i=0; i<portionedTaskList.size(); i++){
+				//2.对每个报表任务生成查询报表的条件,并查询报表结果
+				ReportTask unfinishedReportTask = portionedTaskList.get(i);
+				//3.对每个报表条件生成Csv报表文件
+				File csvReport = null;
+				int taskId = unfinishedReportTask.getId();
+				logger.debug("thread " + taskMod + " with taskId " + taskId + " begin");
+				int type = unfinishedReportTask.getType() == null ? 0 : unfinishedReportTask.getType().intValue();
+				try{
+					if(type < SystemConstant.DB.REPORT_TASK_TYPE_DSP_DATEHOUR && type > 0){ //媒体报表
+						List<ReportMediaCsv> csvResult = reportTaskService.buildMediaReport(unfinishedReportTask);
+						csvReport = reportTaskService.generateCsvReport(csvResult, unfinishedReportTask, ReportMediaCsv.class);
+					} else if(type < SystemConstant.DB.REPORT_TASK_TYPE_POLICY_DATEHOUR){ //dsp报表
+						List<ReportDspCsv> csvResult = reportTaskService.buildDspReport(unfinishedReportTask);
+						csvReport = reportTaskService.generateCsvReport(csvResult, unfinishedReportTask, ReportDspCsv.class);
+					} else{ //policy报表
+						List<ReportPolicyCsv> csvResult = reportTaskService.buildPolicyReport(unfinishedReportTask);
+						csvReport = reportTaskService.generateCsvReport(csvResult, unfinishedReportTask, ReportPolicyCsv.class);
+					}
+				} catch (Exception e){
+					logger.debug("thread " + taskMod + " with taskId " + taskId + " failed");
+					logger.error(e.getMessage());
+					continue;
+				}
+				
+				if(csvReport != null){ //报表正常生成，记录下id
+					ReportTask finishedReportTask = new ReportTask();
+					finishedReportTask.setId(taskId);
+					finishedReportTask.setStatus((short) 1);
+					logger.debug("thread " + taskMod + " with taskId " + taskId + " succeeded");
+					finishedPortionedReportTasks.add(finishedReportTask);
+				}
+			}
+			
+			logger.debug((System.currentTimeMillis() - beginTime) + "ms for thread " + taskMod);
+			//4.回写已完成任务的状态
+			logger.debug("update Status for totally " + finishedPortionedReportTasks.size() + " tasks in thread " + taskMod);
+			reportTaskService.updateStatus(finishedPortionedReportTasks);
+			latch.countDown();
+			return finishedPortionedReportTasks;
+		}
+		
+		@Override
+		public String toString() {
+			return String.format("%1$-3d ", taskMod);
+		}
+	}
+}
+
+

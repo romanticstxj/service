@@ -2,10 +2,10 @@
 source /etc/profile
 
 BASE_DIR=/services/apps/service-task
-SYSTEM_LOG=/services/logs/service-task/console.log
-#SYSTEM_LOG=/dev/null
-SERVER_NAME="com.madhouse.platform.premiummad.reporttask.MainTask"
-STARTUP_CLASS="com.madhouse.platform.premiummad.reporttask.MainTask"
+#SYSTEM_LOG=/services/logs/service-task/console.log
+SYSTEM_LOG=/dev/null
+SERVER_NAME="com.madhouse.platform.premiummad.reporttask.MainReportTask"
+STARTUP_CLASS="com.madhouse.platform.premiummad.reporttask.MainReportTask"
 CHECK_PID=`ps -ef|grep $SERVER_NAME |grep -v grep | awk '{print $2}' `
 
 #JVM

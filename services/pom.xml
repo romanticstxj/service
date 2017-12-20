@@ -61,7 +61,7 @@
     </dependencies>
     
     <build>
-        <finalName>services-${dev.version}</finalName>
+        <finalName>services</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
