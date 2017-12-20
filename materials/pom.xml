@@ -4,7 +4,7 @@
 
   <groupId>com.madhouse.platform</groupId>
   <artifactId>materials</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
   <packaging>war</packaging>
 
   <name>materials</name>
@@ -13,6 +13,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <release.version>1.0.0</release.version>
+    <core.version>2.0.1</core.version>
   </properties>
   
   <dependencies>
@@ -24,7 +25,7 @@
         <dependency>
             <groupId>com.madhouse.platform</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.0</version>
+            <version>${core.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -55,7 +56,7 @@
     </dependencies>
     
     <build>
-        <finalName>materials</finalName>
+        <finalName>ROOT</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
@@ -122,14 +123,14 @@
         </plugins>
     </build>
     
-    <!-- 配置scm信息 -->
+    <!-- 配置scm信息
 	<scm>
 		<connection>scm:svn:http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-services</connection>
 		<developerConnection>scm:svn:http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-services</developerConnection>
 		<url>http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-services</url>
-	</scm>
+	</scm> -->
 	
-	<!-- 配置将build生成的jar包上传到nexus仓库 -->
+	<!-- 配置将build生成的jar包上传到nexus仓库 
 	<distributionManagement>
 		<repository>
 			<id>nexus-releases</id>
@@ -142,6 +143,6 @@
 			<name>Nexus Snapshots Repository</name>
 			<url>http://172.16.25.49:8081/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
-	</distributionManagement>
+	</distributionManagement>-->
 
 </project>
