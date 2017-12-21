@@ -17,9 +17,9 @@ import com.madhouse.platform.premiummad.entity.ReportTask;
 import com.madhouse.platform.premiummad.service.IReportTaskService;
 
 @Component
-public class ReportProcessTask {
+public class ReportProcessSyncTask {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ReportProcessTask.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReportProcessSyncTask.class);
 	
 	@Autowired
 	private IReportTaskService reportTaskService;
