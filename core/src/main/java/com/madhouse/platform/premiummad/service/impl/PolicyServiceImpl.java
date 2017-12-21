@@ -1,6 +1,7 @@
 package com.madhouse.platform.premiummad.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +21,7 @@ import com.madhouse.platform.premiummad.entity.PolicyDsp;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
+import com.madhouse.platform.premiummad.util.DateUtils;
 
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
@@ -42,6 +44,9 @@ public class PolicyServiceImpl implements IPolicyService {
 		int count = checkName(policy.getName().trim());
         if (count > 0) //检查名称
             throw new BusinessException(StatusCode.SC20401);
+        if(judgeOverdue(policy)){ //如果策略过期，返回错误信息
+        	throw new BusinessException(StatusCode.SC20402);
+        }
         
         policyDao.insertSelective(policy);
         
@@ -75,8 +80,10 @@ public class PolicyServiceImpl implements IPolicyService {
 	public Policy queryPolicyById(Integer id, Integer userId) {
 		List<Integer> adspaceIds = userAuthService.queryAdspaceIdList(userId, null);
 		Policy policy = policyDao.selectCascadedlyByPrimaryKey(id);
+		updateStatusForOverdue(policy);
 		List<PolicyAdspace> policyAdspaces = policy.getPolicyAdspaces();
 		List<PolicyAdspace> newPolicyAdspaces = new ArrayList<PolicyAdspace>();
+		//显示此用户有权限的策略中的广告位
 		for(int i=0; i<policyAdspaces.size(); i++){
 			Adspace adspace = policyAdspaces.get(i).getAdspace();
 			if(adspace != null){
@@ -90,6 +97,28 @@ public class PolicyServiceImpl implements IPolicyService {
 		return policy;
 	}
 	
+	/**
+	 * 如果策略的结束日期小于今天，那么返回状态码2，表示策略过期
+	 * @param policy
+	 */
+	private void updateStatusForOverdue(Policy policy) {
+		boolean overdue = judgeOverdue(policy);
+		if(overdue){
+			policy.setStatus((byte) SystemConstant.DB.POLICY_STATUS_OVERDUE); 
+		}
+	}
+	
+	/**
+	 * 判断策略是否过期
+	 * @param policy
+	 * @return
+	 */
+	private boolean judgeOverdue(Policy policy) {
+		Date endDate = policy.getEndDate();
+		long overdueDays = DateUtils.getDateSubtract(endDate, new Date());
+		return overdueDays > 0;
+	}
+
 	@Override
 	public int update(Policy policy, Integer userId) {
 		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId());
@@ -99,6 +128,9 @@ public class PolicyServiceImpl implements IPolicyService {
             Integer count = checkName(policy.getName().trim());
             if (count > 0)
             	throw new BusinessException(StatusCode.SC20401);
+        }
+        if(judgeOverdue(policy)){ //如果策略过期，返回错误信息
+        	throw new BusinessException(StatusCode.SC20402);
         }
         
         Integer policyId = policy.getId();
@@ -143,7 +175,12 @@ public class PolicyServiceImpl implements IPolicyService {
 
 	@Override
 	public List<Policy> queryAllByParams(List<Integer> policyIdList, Integer status, Integer type) {
-		return policyDao.queryAllByParams(policyIdList, status, type);
+		List<Policy> result= policyDao.queryAllByParams(policyIdList, status, type);
+		for(int i=0; i<result.size(); i++){
+			Policy policy = result.get(i);
+			updateStatusForOverdue(policy);
+		}
+		return result;
 	}
 
 	@Override
