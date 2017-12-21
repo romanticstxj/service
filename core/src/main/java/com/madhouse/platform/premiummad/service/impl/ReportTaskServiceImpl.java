@@ -453,8 +453,7 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 
 	@Override
 	public int updateStatus(ReportTask t) {
-		// TODO Auto-generated method stub
-		return 0;
+		return reportTaskDao.updateOneTaskStatus(t);
 	}
 
 	@Override

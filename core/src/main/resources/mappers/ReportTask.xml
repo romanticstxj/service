@@ -124,6 +124,10 @@
         </foreach>
 	</update>
 	
+	<update id="updateOneTaskStatus" parameterType="ReportTask">
+		UPDATE mad_report_task SET status = 1 WHERE id = #{id} 
+	</update>
+	
 	<select id="queryById" parameterType="integer" resultMap="BaseResultMap">
 		SELECT 
 		<include refid="Base_Column_List">
