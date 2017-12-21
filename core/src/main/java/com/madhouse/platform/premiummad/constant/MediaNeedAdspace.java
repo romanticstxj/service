@@ -16,6 +16,7 @@ public enum MediaNeedAdspace {
 	TOUTIAO(109, false),
 	VALUEMAKER(108, false),
 	FUNADX(112, false),
+	AUTOHOME(114, false),
 	WEIBO(105, false);
 
 	int key;
