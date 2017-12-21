@@ -144,12 +144,8 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 			reportCriterion.setStartDate(startDate);
 			reportCriterion.setEndDate(endDate);
 			transformDimensions(reportCriterion);
-			long beginTime = System.currentTimeMillis();
 			List<ReportMedia> result = reportService.queryMediaReport(reportCriterion);
-			logger.debug(rt.getReportUri() + "|queryReport: " + (System.currentTimeMillis() - beginTime) + "ms"); // 每次请求换行
-			beginTime = System.currentTimeMillis();
 			csvResult = convertToMediaCsvReport(result, type);
-			logger.debug(rt.getReportUri() + "|convertReport: " + (System.currentTimeMillis() - beginTime) + "ms"); // 每次请求换行
 		}
 		return csvResult;
 	}
@@ -213,12 +209,8 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 			transformDimensions(reportCriterion);
 		}
 		
-		long beginTime = System.currentTimeMillis();
 		List<ReportDsp> result = reportService.queryDspReport(reportCriterion);
-		logger.debug(rt.getReportUri() + "|queryReport: " + (System.currentTimeMillis() - beginTime) + "ms");
-		beginTime = System.currentTimeMillis();
 		List<ReportDspCsv> csvResult = convertToDspCsvReport(result, type);
-		logger.debug(rt.getReportUri() + "|convertReport: " + (System.currentTimeMillis() - beginTime) + "ms");
 		return csvResult;
 	}
 
@@ -281,12 +273,8 @@ public class ReportTaskServiceImpl implements IReportTaskService{
 			transformDimensions(reportCriterion);
 		}
 		
-		long beginTime = System.currentTimeMillis();
 		List<ReportPolicy> result = reportService.queryPolicyReport(reportCriterion);
-		logger.debug(rt.getReportUri() + "|queryReport: " + (System.currentTimeMillis() - beginTime) + "ms");
-		beginTime = System.currentTimeMillis();
 		List<ReportPolicyCsv> csvResult = convertToPolicyCsvReport(result, type);
-		logger.debug(rt.getReportUri() + "|convertReport: " + (System.currentTimeMillis() - beginTime) + "ms");
 		return csvResult;
 	}
 	
