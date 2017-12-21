@@ -91,9 +91,6 @@ public class ReportProcessAsyncTask {
 				if(csvReport != null){ //报表正常生成，直接更新状态
 					reportTask.setStatus((short) 1);
 					reportTaskService.updateStatus(reportTask);
-					if(taskId == 60){
-						throw new BusinessException(null);
-					}
 				}
 				logger.debug(threadName + " with taskId " + taskId + " succeeded");
 			} catch (Exception e){
