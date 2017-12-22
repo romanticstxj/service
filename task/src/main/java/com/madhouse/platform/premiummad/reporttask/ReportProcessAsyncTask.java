@@ -97,8 +97,8 @@ public class ReportProcessAsyncTask {
 				logger.error(e.getMessage());
 				return;
 			} finally{
-				latch.countDown();
 				logger.debug(threadName + " with taskId " + taskId + " takes " + (System.currentTimeMillis() - beginTime) + "ms");
+				latch.countDown();
 			}
 		}
 	}
