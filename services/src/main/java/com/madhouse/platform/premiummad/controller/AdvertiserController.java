@@ -71,6 +71,6 @@ public class AdvertiserController {
 		if(isAllAudited)
 			return ResponseUtils.response(StatusCode.SC20000, null);
 		else
-			return ResponseUtils.response(StatusCode.SC423, null);
+			return ResponseUtils.response(StatusCode.SC20703, null);
     }
 }

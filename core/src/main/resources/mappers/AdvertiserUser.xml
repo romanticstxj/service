@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.madhouse.platform.premiummad.dao.AdvertiserUserMapper" >
+  <select id="selectAdvertiserUser" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mad_sys_advertiser_user
+    where advertiser_id = #{advertiserId,jdbcType=INTEGER}
+    and user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  
+  <insert id="insertAdvertiserUser" parameterType="com.madhouse.platform.premiummad.entity.AdvertiserUser"
+  		  useGeneratedKeys="true" keyProperty="id" >
+    insert into mad_sys_advertiser_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="advertiserId != null" >
+        advertiser_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="qualificationFile != null" >
+        qualification_file,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="createdTime != null" >
+        created_time,
+      </if>
+      <if test="updatedTime != null" >
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="advertiserId != null" >
+        #{advertiserId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="qualificationFile != null" >
+        #{qualificationFile,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null" >
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="selectUnprocessAdUser" resultType="com.madhouse.platform.premiummad.entity.AdvertiserUserUnion"
+  		  parameterType="integer">
+    SELECT
+		t.id AS id,
+		t.advertiser_id AS advertiserId,
+		t.user_id AS userId,
+		t.qualification_file AS qualificationFile,
+		t.`status` AS STATUS,
+		t.reason AS reason,
+		ad.`status` AS advertiserStatus,
+		ad.advertiser_name AS advertiserName,
+		ad.media_advertiser_key AS mediaAdvertiserKey
+	FROM
+		mad_sys_advertiser_user t
+	LEFT JOIN mad_sys_advertiser ad ON ad.id = t.advertiser_id
+	WHERE
+		ad.`status` = 2
+	AND t.`status` = #{status,jdbcType=INTEGER}
+  </select>
+  
+  <update id="updateByBath" parameterType="com.madhouse.platform.premiummad.entity.AdvertiserUser" >
+  	<foreach collection="list" item="item" index="index" separator=";" open="" close="">
+	    update mad_sys_advertiser_user
+	    <set >
+	      <if test="item.qualificationFile != null" >
+	        qualification_file = #{item.qualificationFile,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.status != null" >
+	        status = #{item.status,jdbcType=TINYINT},
+	      </if>
+	      <if test="item.reason != null" >
+	        reason = #{item.reason,jdbcType=VARCHAR},
+	      </if>
+	      <if test="item.updatedTime != null" >
+	        updated_time = #{item.updatedTime,jdbcType=TIMESTAMP},
+	      </if>
+	    </set>
+	    where advertiser_id = #{item.advertiserId,jdbcType=INTEGER}
+	    and user_id = #{item.userId,jdbcType=VARCHAR}
+	 </foreach>
+  </update>
+</mapper>

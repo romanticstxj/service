@@ -32,10 +32,10 @@ public interface IAdvertiserService {
 	 * @param uploadedMedias
 	 * @param dspId
 	 * @param advertiserKey
-	 * @param mediaIds
+	 * @param errorMsg
 	 * @return
 	 */
-	String validateAdKeyAndMedias(List<SysMedia> uploadedMedias, String dspId, String advertiserKey);
+	public Advertiser validateAdKeyAndMedias(List<SysMedia> uploadedMedias, String dspId, String advertiserKey, StringBuilder errorMsg);
 
 	/**
 	 * 广告主提交媒体后更改状态为审核中

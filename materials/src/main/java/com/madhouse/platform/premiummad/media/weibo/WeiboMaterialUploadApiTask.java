@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.HttpStatus;
@@ -22,10 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.druid.util.Base64;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.madhouse.platform.premiummad.constant.AdvertiserUserStatusCode;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -33,6 +32,7 @@ import com.madhouse.platform.premiummad.dao.AdvertiserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
+import com.madhouse.platform.premiummad.entity.MaterialUnion;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboErrorCode;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboIndustryMapping;
@@ -79,9 +79,6 @@ public class WeiboMaterialUploadApiTask {
 	@Value("${weibo.token}")
 	private String token;
 
-	@Value("${weibo.uid}")
-	private String uid;
-
 	@Value("${material_meidaGroupMapping_weibo}")
 	private String mediaGroupStr;
 	
@@ -122,17 +119,6 @@ public class WeiboMaterialUploadApiTask {
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Weibo upload material begin+++++++++++");
 
-		/* 代码配置处理方式
-		// 媒体组没有映射到具体的媒体不处理
-		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
-		if (StringUtils.isBlank(value)) {
-			return;
-		}
-
-		// 获取媒体组下的具体媒体
-		int[] mediaIds = StringUtils.splitToIntArray(value);
-		*/
-
 		// 根据媒体组ID和审核对象获取具体的媒体ID
 		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
 
@@ -144,17 +130,19 @@ public class WeiboMaterialUploadApiTask {
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");*/
 			LOGGER.info("Weibo没有未上传的素材");
 			return;
 		}
 
-		// 上传到媒体
-		LOGGER.info("WeiboMaterialUploadApiTask-weibo", unSubmitMaterials.size());
-
-		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
+		// 校验广告主与用户ID绑定关系是否处理
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
-		for (Material material : unSubmitMaterials) {
+		List<MaterialUnion> uploadMaterials = processAdIdAndUserId(unSubmitMaterials, rejusedMaterials, mediaIds);
+		
+		// 上传到媒体数量
+		LOGGER.info("uploadMaterials size is {}", uploadMaterials.size());
+				
+		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
+		for (MaterialUnion material : uploadMaterials) {
 			// 校验广告形式是否支持
 			if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout())))) {
 				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
@@ -247,7 +235,7 @@ public class WeiboMaterialUploadApiTask {
 					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(WeiboErrorCode.getDescrip(weiboMaterialUploadErrorResponse.getRet_msg().get(0).getErr_code()));
 					rejusedMaterials.add(rejuseItem);
-					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + WeiboErrorCode.getDescrip(weiboMaterialUploadResponse.getErr_code().intValue()));
+					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + WeiboErrorCode.getDescrip(weiboMaterialUploadErrorResponse.getRet_msg().get(0).getErr_code()));
 				}
 			}
 		}
@@ -271,7 +259,7 @@ public class WeiboMaterialUploadApiTask {
 	 * @param material
 	 * @return
 	 */
-	private String buildRequest(Material material, WeiboMaterialUploadRequest uploadRequest) {
+	private String buildRequest(MaterialUnion material, WeiboMaterialUploadRequest uploadRequest) {
 		// 获取该素材的广告主,若广告主不存在不做处理
 		String[] advertiserKeys = { material.getAdvertiserKey() };
 		List<Advertiser> advertisers = advertiserDao.selectByAdvertiserKeysAndDspId(advertiserKeys, String.valueOf(material.getDspId()), material.getMediaId());
@@ -319,7 +307,7 @@ public class WeiboMaterialUploadApiTask {
 		if (CREATIVE_BANNER.equals(creativeType)) {
 			WeiboBanner weiboBanner = new WeiboBanner();
 			weiboBanner.setAd_url(material.getAdMaterials().split("\\|")[0]);
-			weiboBanner.setClient_id(String.valueOf(advertiser.getId()));
+			weiboBanner.setClient_id(advertiser.getMediaAdvertiserKey());
 			weiboBanner.setClient_name(advertiser.getAdvertiserName());
 			weiboBanner.setClk_url(clkUrls);
 			weiboBanner.setContent_category(String.valueOf(WeiboIndustryMapping.getMediaIndustryId(advertiser.getIndustry())));
@@ -329,7 +317,7 @@ public class WeiboMaterialUploadApiTask {
 			weiboBanners.add(weiboBanner);
 		} else if (CREATIVE_FEED.equals(creativeType)) {
 			WeiboFeed weiboFeed = new WeiboFeed();
-			weiboFeed.setClient_id(String.valueOf(advertiser.getId()));
+			weiboFeed.setClient_id(advertiser.getMediaAdvertiserKey());
 			weiboFeed.setClient_name(advertiser.getAdvertiserName());
 			weiboFeed.setClk_url(clkUrls);
 			weiboFeed.setContent_category(String.valueOf(WeiboIndustryMapping.getMediaIndustryId(advertiser.getIndustry())));
@@ -338,14 +326,14 @@ public class WeiboMaterialUploadApiTask {
 			weiboFeed.setMonitor_url(impUrls);
 			weiboFeed.setObj_id("");
 			weiboFeed.setPics(Arrays.asList(material.getAdMaterials().split("\\|")));
-			weiboFeed.setUid(uid);
+			weiboFeed.setUid(material.getUserId());
 			weiboFeeds.add(weiboFeed);
 		} else if (CREATIVE_FEED_ACTIVITY.equals(creativeType)) {
 			WeiboFeedActivity weiboFeedActivity = new WeiboFeedActivity();
 			weiboFeedActivity.setAd_url(material.getAdMaterials().split("\\|")[0]);
 			weiboFeedActivity.setButton_type("none");
 			weiboFeedActivity.setButton_url("");
-			weiboFeedActivity.setClient_id(String.valueOf(advertiser.getId()));
+			weiboFeedActivity.setClient_id(advertiser.getMediaAdvertiserKey());
 			weiboFeedActivity.setClient_name(advertiser.getAdvertiserName());
 			weiboFeedActivity.setClk_url(clkUrls);
 			weiboFeedActivity.setContent_category(String.valueOf(WeiboIndustryMapping.getMediaIndustryId(advertiser.getIndustry())));
@@ -355,7 +343,7 @@ public class WeiboMaterialUploadApiTask {
 			weiboFeedActivity.setMblog_text(material.getContent());
 			weiboFeedActivity.setMonitor_url(impUrls);
 			weiboFeedActivity.setTitle(material.getTitle());
-			weiboFeedActivity.setUid(uid);
+			weiboFeedActivity.setUid(material.getUserId());
 			weiboFeedActivitys.add(weiboFeedActivity);
 		} else if (CREATIVE_FEED_VIDEO.equals(creativeType)) {
 			WeiboFeedVideo weiboFeedVideo = new WeiboFeedVideo();
@@ -363,7 +351,7 @@ public class WeiboMaterialUploadApiTask {
 			weiboFeedVideo.setVideo_url(material.getMediaMaterialUrl()); // 上传到媒体的地址
 			weiboFeedVideo.setButton_type("none");
 			weiboFeedVideo.setButton_url("");
-			weiboFeedVideo.setClient_id(String.valueOf(advertiser.getId()));
+			weiboFeedVideo.setClient_id(advertiser.getMediaAdvertiserKey());
 			weiboFeedVideo.setClient_name(advertiser.getAdvertiserName());
 			weiboFeedVideo.setClk_url(clkUrls);
 			weiboFeedVideo.setContent_category(String.valueOf(WeiboIndustryMapping.getMediaIndustryId(advertiser.getIndustry())));
@@ -373,7 +361,7 @@ public class WeiboMaterialUploadApiTask {
 			weiboFeedVideo.setMblog_text(material.getContent());
 			weiboFeedVideo.setMonitor_url(impUrls);
 			weiboFeedVideo.setTitle(material.getTitle());
-			weiboFeedVideo.setUid(uid);
+			weiboFeedVideo.setUid(material.getUserId());
 			weiboFeedVideos.add(weiboFeedVideo);
 		} else {
 			return "广告形式不支持";
@@ -567,5 +555,58 @@ public class WeiboMaterialUploadApiTask {
 			LOGGER.info("获取视频出现异常-" + e.getMessage());
 		}
 		return inputStream;
+	}
+	
+	/**
+	 * 处理广告主与用户ID绑定关系的审核
+	 * 
+	 * @param processingMaterials
+	 * @param rejusedMaterials
+	 * @param mediaIds
+	 * @return
+	 */
+	private List<MaterialUnion> processAdIdAndUserId(List<Material> processingMaterials, List<MaterialAuditResultModel> rejusedMaterials, int[] mediaIds) {
+		List<MaterialUnion> unSubmitMaterials = new ArrayList<MaterialUnion>();
+
+		// 获取素材ID列表
+		List<Integer> ids = new ArrayList<Integer>();
+		for (Material material : processingMaterials) {
+			ids.add(material.getId());
+		}
+		List<MaterialUnion> materialUnions = materialDao.selectUnionByIds(ids);
+
+		// 判断广告主和用户的绑定关系审核状态
+		for (MaterialUnion materialUnion : materialUnions) {
+			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
+			auditItem.setId(String.valueOf(materialUnion.getId()));
+			auditItem.setMediaIds(mediaIds);
+
+			if (materialUnion.getAdvertiserUserId() != null) {
+				if (materialUnion.getAdvertiserUserStatus() == null) {
+					// 手动驳回，关联广告主和用户id绑定关系为找到
+					auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+					auditItem.setErrorMessage("用户ID与广告主ID绑定关系错误{不存在}");
+					rejusedMaterials.add(auditItem);
+				} else if (AdvertiserUserStatusCode.AUC10001.getValue() == materialUnion.getAdvertiserUserStatus().intValue()) {
+					// 广告主和用户id绑定关系驳回，该条素材也要驳回
+					auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+					auditItem.setErrorMessage("用户ID与广告主ID绑定关系错误{" + materialUnion.getAdvertiserUserReason() + "}");
+					rejusedMaterials.add(auditItem);
+				} else if (AdvertiserUserStatusCode.AUC10004.getValue() == materialUnion.getAdvertiserUserStatus().intValue()) {
+					// 广告主和用户id绑定关系已审核，加入待上传列表
+					unSubmitMaterials.add(materialUnion);
+				} else {
+					// 其他状态，待提交和待审核，不处理
+					LOGGER.info("广告主和用户ID{materialId=}绑定关系状态为{}", materialUnion.getId(), AdvertiserUserStatusCode.getDescrip(materialUnion.getAdvertiserUserStatus().intValue()));
+				}
+			} else {
+				// 手动驳回，未关联广告主和用户id绑定关系表
+				auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				auditItem.setErrorMessage("用户ID与广告主ID绑定关系错误{未关联}");
+				rejusedMaterials.add(auditItem);
+			}
+		}
+
+		return unSubmitMaterials;
 	}
 }
