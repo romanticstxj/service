@@ -17,5 +17,7 @@ public interface ReportTaskDao {
 
 	void updateStatus(List<ReportTask> reportTasks);
 
+	int updateOneTaskStatus(ReportTask reportTask);
+
 	ReportTask queryById(Integer id);
 }
