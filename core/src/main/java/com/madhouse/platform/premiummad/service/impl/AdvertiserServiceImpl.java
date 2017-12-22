@@ -284,10 +284,11 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 	 * @param uploadedMedias
 	 * @param dspId
 	 * @param advertiserKey
+	 * @param errorMsg
 	 * @return
 	 */
 	@Override
-	public String validateAdKeyAndMedias(List<SysMedia> uploadedMedias, String dspId, String advertiserKey) {
+	public Advertiser validateAdKeyAndMedias(List<SysMedia> uploadedMedias, String dspId, String advertiserKey, StringBuilder errorMsg) {
 		// 获取媒体ID
 		List<Integer> mediaIds = new ArrayList<Integer>();
 		for (SysMedia media : uploadedMedias) {
@@ -302,7 +303,6 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 		List<Advertiser> advetisers = advertiserDao.selectByAdvertiserKeyAndMediaIds(param);
 
 		// 校验需要审核的媒体是否关联的广告主都已审核通过
-		StringBuilder errorMsg = new StringBuilder();
 		for (SysMedia media : uploadedMedias) {
 			// 广告主不需要审核的不校验
 			if (AdvertiserAuditMode.AAM10001.getValue() == media.getAdvertiserAuditMode().intValue()) {
@@ -325,7 +325,7 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 				errorMsg.append("广告主[" + advertiserKey + "],媒体[" + media.getId().intValue() + "]" + auditedStatus);
 			}
 		}
-		return errorMsg.length() > 0 ? errorMsg.substring(1) : "";
+		return (advetisers != null && advetisers.size() > 0) ? advetisers.get(0) : null;
 	}
 	
 	@Override
@@ -341,12 +341,12 @@ public class AdvertiserServiceImpl implements IAdvertiserService {
 	@Override
 	public boolean auditAdvertiser(String[] ids, Integer status, String reason, Integer userId) {
 		if(ids == null || ids.length == 0){
-			throw new BusinessException(StatusCode.SC422);
+			throw new BusinessException(StatusCode.SC20702);
 		}
 		
 		List<String> idList = advertiserDao.selectAuditableAdvertisers(ids);
 		if(idList == null || idList.size() == 0){ //请至少选择一个可以审核的记录
-			throw new BusinessException(StatusCode.SC421);
+			throw new BusinessException(StatusCode.SC20701);
 		}
 		String[] auditableIds = idList.toArray(new String[]{});
 		advertiserDao.auditAdvertiser(auditableIds, status, reason, userId);

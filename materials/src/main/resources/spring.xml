@@ -183,9 +183,12 @@
         <task:scheduled ref="weiboMaterialStatusApiTask" method="getStatus" cron="${cron.weiboMaterialStatusApiTask}"/>
         <task:scheduled ref="weiboClientUploadApiTask" method="uploadClient" cron="${cron.weiboClientUploadApiTask}"/>
         <task:scheduled ref="weiboClientStatusApiTask" method="getStatus" cron="${cron.weiboClientStatusApiTask}"/>
-		
+        <task:scheduled ref="weiboClientUserBindTask" method="bindClientUser" cron="${cron.weiboClientUserBindTask}"/>
+        <task:scheduled ref="weiboClientUserStatusTask" method="getClientUserStatus" cron="${cron.weiboClientUserStatusTask}"/>
+
 		<!-- autohome -->
         <task:scheduled ref="autohomeMaterialUploadApiTask" method="uploadMaterial" cron="${cron.autohomeMaterialUploadApiTask}"/>
         <task:scheduled ref="autohomeMaterialStatusApiTask" method="getStatus" cron="${cron.autohomeMaterialStatusApiTask}"/>
+	
 	</task:scheduled-tasks>
 </beans>

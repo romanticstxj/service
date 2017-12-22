@@ -2,24 +2,29 @@ package com.madhouse.platform.premiummad.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.madhouse.platform.premiummad.constant.MaterialAuditMode;
+import com.madhouse.platform.premiummad.constant.AdvertiserUserStatusCode;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.MediaNeedAdspace;
+import com.madhouse.platform.premiummad.constant.MediaNeedUserId;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
+import com.madhouse.platform.premiummad.dao.AdvertiserUserMapper;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.dao.PolicyDao;
 import com.madhouse.platform.premiummad.dao.SysMediaMapper;
 import com.madhouse.platform.premiummad.entity.Adspace;
+import com.madhouse.platform.premiummad.entity.Advertiser;
+import com.madhouse.platform.premiummad.entity.AdvertiserUser;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.entity.Policy;
 import com.madhouse.platform.premiummad.entity.SysMedia;
@@ -27,6 +32,7 @@ import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.model.MaterialModel;
 import com.madhouse.platform.premiummad.model.MediaAuditMaterialModel;
+import com.madhouse.platform.premiummad.rule.AdvertiserUserRule;
 import com.madhouse.platform.premiummad.rule.MaterialRule;
 import com.madhouse.platform.premiummad.rule.MediaRule;
 import com.madhouse.platform.premiummad.service.IAdvertiserService;
@@ -52,6 +58,9 @@ public class MaterialServiceImpl implements IMaterialService {
 	
 	@Autowired
 	private AdspaceDao adspaceDao;
+	
+	@Autowired
+	private AdvertiserUserMapper advertiserUserDao;
 	
 	/**
 	 * 根据媒体返回的结果更新状态-通过媒体key更新
@@ -227,10 +236,17 @@ public class MaterialServiceImpl implements IMaterialService {
 		// 媒体需要提交广告位时，需要校验广告位是否必须
 		if (MediaNeedAdspace.getValue(uploadedMedias.get(0).getApiType().intValue())) {
 			if (entity.getAdspaceId() == null || entity.getAdspaceId().isEmpty()) {
-				throw new BusinessException(StatusCode.SC400, "媒体[" + entity.getMediaId() + "广告位必须");
+				throw new BusinessException(StatusCode.SC400, "媒体[" + entity.getMediaId() + "广告位必须[adspaceId]");
 			}
 		}
-		
+
+		// 媒体需要提交userId时，需要校验userId是否必须
+		if (MediaNeedUserId.getValue(uploadedMedias.get(0).getApiType().intValue())) {
+			if (StringUtils.isBlank(entity.getUserId())) {
+				throw new BusinessException(StatusCode.SC400, "媒体[" + entity.getMediaId() + "用户ID必须[userId]");
+			}
+		}
+
 		// 如果传了广告位，校验其合法性
 		if (entity.getAdspaceId() != null && !entity.getAdspaceId().isEmpty()) {
 			List<Adspace> adspaces = adspaceDao.selectByIds(entity.getAdspaceId());
@@ -244,13 +260,14 @@ public class MaterialServiceImpl implements IMaterialService {
 		}
 		
 		// 判断所有需要广告主需要审核的媒体是否都已审核通过
-		String errorMsg = advertiserService.validateAdKeyAndMedias(uploadedMedias, entity.getDspId(), entity.getAdvertiserId());
-		if (!StringUtils.isBlank(errorMsg)) {
+		StringBuilder advertiserErrorMsg = new StringBuilder();
+		Advertiser relatedAdvertiser = advertiserService.validateAdKeyAndMedias(uploadedMedias, entity.getDspId(), entity.getAdvertiserId(), advertiserErrorMsg);
+		if (!StringUtils.isBlank(advertiserErrorMsg.toString())) {
 			StatusCode code = StatusCode.SC414;
-			if (!errorMsg.endsWith("未上传")) {
+			if (!advertiserErrorMsg.toString().endsWith("未上传")) {
 				code = StatusCode.SC413;
 			}
-			throw new BusinessException(code, errorMsg);
+			throw new BusinessException(code, advertiserErrorMsg.length() > 0 ? advertiserErrorMsg.substring(1) : "");
 		}
 
 		// 判断素材与媒体是否已存在
@@ -260,9 +277,14 @@ public class MaterialServiceImpl implements IMaterialService {
 		MaterialRule.classifyMaterials(uploadedMedias.get(0), adspaceIds, materials, entity, classfiedMaps);
 
 		// 存在待审核、审核中，审核通过的不允许推送，提示信息
-		errorMsg = MaterialRule.validateMaterials(classfiedMaps, entity.getId(), uploadedMedias.get(0));
-		if (errorMsg != null) {
-			throw new BusinessException(StatusCode.SC411, errorMsg);
+		String materialErrorMsg = MaterialRule.validateMaterials(classfiedMaps, entity.getId(), uploadedMedias.get(0));
+		if (!StringUtils.isBlank(materialErrorMsg)) {
+			throw new BusinessException(StatusCode.SC411, materialErrorMsg);
+		}
+		
+		// 用户ID必须时，广告主与用户信息处理
+		if (MediaNeedUserId.getValue(uploadedMedias.get(0).getApiType().intValue())) {
+			processAdvertiserUser(entity, relatedAdvertiser, classfiedMaps);
 		}
 
 		// 数据存储
@@ -285,45 +307,50 @@ public class MaterialServiceImpl implements IMaterialService {
 				throw new BusinessException(StatusCode.SC500);
 			}
 		}
-
-		// 根据媒体审核模式处理 一次上传一个媒体
-		//audit(adspaceIds, uploadedMedias.get(0), classfiedMaps.get(4), classfiedMaps.get(3));
 	}
-
-	public void audit(List<Integer> uploadedAdspaceIds, SysMedia media, Map<Integer, Material> unUploadedMaterials, Map<Integer, Material> rejectedMaterials) {
-		// 媒体审核不处理
-		if (MaterialAuditMode.MAM10003.getValue() == media.getMaterialAuditMode().intValue()) {
-			return;
+	
+	/**
+	 * 处理广告主与用户的绑定关系
+	 * 
+	 * @param entity
+	 * @param relatedAdvertiser
+	 * @param classfiedMaps
+	 */
+	private void processAdvertiserUser(MaterialModel entity, Advertiser relatedAdvertiser, List<Map<Integer, Material>> classfiedMaps) {
+		if (relatedAdvertiser == null) {
+			throw new BusinessException(StatusCode.SC414, "userId必须时广告主必须上传");
 		}
-		
-		for (Integer adspaceId : uploadedAdspaceIds) {
-			Material item = unUploadedMaterials.get(adspaceId);
-			if (item == null) {
-				item = rejectedMaterials.get(adspaceId);
-			}
-			if (item != null) {
-				Material updateItem = new Material();
-				updateItem.setUpdatedTime(new Date());
-				updateItem.setId(item.getId());
-				
-				// 如果模式是不审核，审核状态修改为审核通过
-				if (MaterialAuditMode.MAM10001.getValue() == media.getMaterialAuditMode().intValue()) {
-					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10004.getValue())));
 
-					int effortRows = materialDao.updateByPrimaryKeySelective(updateItem);
-					if (effortRows != 1) {
+		// 素材获取 广告主与用户绑定关系ID
+		AdvertiserUser advertiserUser = advertiserUserDao.selectAdvertiserUser(relatedAdvertiser.getId(), entity.getUserId());
+		for (Map<Integer, Material> map : classfiedMaps) {
+			Iterator<Entry<Integer, Material>> iterator = map.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<Integer, Material> entry = iterator.next();
+				if (advertiserUser == null) { // 不存在该条记录 -- 新增
+					// 构建广告主和用户绑定关系对象
+					advertiserUser = AdvertiserUserRule.buildAdvertiserUser(advertiserUser, relatedAdvertiser.getId(), entity);
+
+					// 插入数据
+					int effectRows = advertiserUserDao.insertAdvertiserUser(advertiserUser);
+					if (effectRows != 1) {
 						throw new BusinessException(StatusCode.SC500);
 					}
-				}
-				// 如果是平台审核，审核状态修改为待审核
-				if (MaterialAuditMode.MAM10002.getValue() == media.getMaterialAuditMode().intValue()) {
-					updateItem.setStatus(Byte.valueOf(String.valueOf(MaterialStatusCode.MSC10003.getValue())));
+				} else if (advertiserUser != null) { // 存在该条记录 -- 直接获取该条记录的ID
+					// 已驳回 -- 更新
+					if (advertiserUser.getStatus().intValue() == AdvertiserUserStatusCode.AUC10001.getValue()) {
+						AdvertiserUser updateItem = AdvertiserUserRule.buildAdvertiserUser(advertiserUser, relatedAdvertiser.getId(), entity);
 
-					int effortRows = materialDao.updateByPrimaryKeySelective(updateItem);
-					if (effortRows != 1) {
-						throw new BusinessException(StatusCode.SC500);
+						// 更新数据
+						int effectRows = advertiserUserDao.updateByPrimaryKeySelective(updateItem);
+						if (effectRows != 1) {
+							throw new BusinessException(StatusCode.SC500);
+						}
 					}
 				}
+
+				// 回写素材的 advertiser_user_id 字段
+				entry.getValue().setAdvertiserUserId(advertiserUser.getId());
 			}
 		}
 	}
@@ -341,12 +368,12 @@ public class MaterialServiceImpl implements IMaterialService {
 	@Override
 	public boolean auditMaterial(String[] ids, Integer status, String reason, Integer userId) {
 		if(ids == null || ids.length == 0){
-			throw new BusinessException(StatusCode.SC422);
+			throw new BusinessException(StatusCode.SC20702);
 		}
 		
 		List<String> idList = materialDao.selectAuditableMaterials(ids);
 		if(idList == null || idList.size() == 0){ //请至少选择一个可以审核的记录
-			throw new BusinessException(StatusCode.SC421);
+			throw new BusinessException(StatusCode.SC20701);
 		}
 		String[] auditableIds = idList.toArray(new String[]{});
 		materialDao.auditMaterial(auditableIds, status, reason, userId);
