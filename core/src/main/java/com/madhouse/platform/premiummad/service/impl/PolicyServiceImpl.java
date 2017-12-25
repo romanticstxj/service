@@ -77,6 +77,7 @@ public class PolicyServiceImpl implements IPolicyService {
 		Policy policy = policyDao.selectCascadedlyByPrimaryKey(id);
 		List<PolicyAdspace> policyAdspaces = policy.getPolicyAdspaces();
 		List<PolicyAdspace> newPolicyAdspaces = new ArrayList<PolicyAdspace>();
+		//显示此用户有权限的策略中的广告位
 		for(int i=0; i<policyAdspaces.size(); i++){
 			Adspace adspace = policyAdspaces.get(i).getAdspace();
 			if(adspace != null){

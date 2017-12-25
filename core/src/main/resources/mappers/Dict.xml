@@ -67,7 +67,7 @@
 		<include refid="locationList">
         </include>
         FROM mad_dict_location l 
-        ORDER BY l.code
+        ORDER BY l.domestic, l.level, l.code
 	</select>
 	
 	<select id="queryAllReqBlockTypeList" resultMap="mediaResultMap">

@@ -12,6 +12,7 @@
 
   <properties>
   	<dev.version>2.0.0</dev.version>
+  	<core.version>2.0.1</core.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   
@@ -24,7 +25,7 @@
         <dependency>
             <groupId>com.madhouse.platform</groupId>
             <artifactId>core</artifactId>
-            <version>2.0.0</version>
+            <version>${core.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
