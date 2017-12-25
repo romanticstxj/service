@@ -1,6 +1,7 @@
 package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -14,6 +15,7 @@ import com.madhouse.platform.premiummad.entity.PolicyAdspace;
 import com.madhouse.platform.premiummad.entity.PolicyDsp;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
+import com.madhouse.platform.premiummad.util.DateUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class PolicyRule extends BaseRule{
@@ -107,6 +109,9 @@ public class PolicyRule extends BaseRule{
 		Integer isEndDate = policyDto.getEndDate() == null ? 0 : 1;
 		policyDto.setIsEndDate(isEndDate);
 		
+		//判断策略的过期与否状态，给前端显示
+		updateStatusForOverdue(policyDto);
+		
 		if(policyAdspaceDtos != null){
 			for(int i=0; i<policyAdspaceDtos.size(); i++){
 				//设置policy广告位列表里的每个具体广告位信息
@@ -123,6 +128,30 @@ public class PolicyRule extends BaseRule{
 		List<PolicyDto> result = new ArrayList<PolicyDto>();
 		result.add(policyDto);
 		return result;
+	}
+	
+	/**
+	 * 如果策略的结束日期小于今天，那么返回状态码2，表示策略过期
+	 * @param policy
+	 */
+	private static void updateStatusForOverdue(PolicyDto policy) {
+		if(judgeOverdue(policy)){
+			policy.setOverdue(SystemConstant.DB.POLICY_STATUS_OVERDUE); 
+		}
+	}
+	
+	/**
+	 * 判断策略是否过期
+	 * @param policy
+	 * @return
+	 */
+	private static boolean judgeOverdue(PolicyDto policy) {
+		Date endDate = policy.getEndDate();
+		long overdueDays = 0;
+		if(endDate != null){ //如果有结束日期，则判断结束日期是否过期
+			overdueDays = DateUtils.getDateSubtract(endDate, new Date());
+		}
+		return overdueDays > 0;
 	}
 	
 	/**
@@ -168,6 +197,10 @@ public class PolicyRule extends BaseRule{
     		}
     	}
         
+        if(judgeOverdue(policyDto)){ //如果策略过期，返回错误信息
+        	throw new BusinessException(StatusCode.SC20402);
+        }
+        
         for(int i=0; i<policyDspDtos.size(); i++){
         	BaseRule.validateDto(policyDspDtos.get(i));
         }
@@ -179,11 +212,14 @@ public class PolicyRule extends BaseRule{
         for(int i=0; i<policyDtos.size(); i++){
         	List<PolicyDspDto> policyDspDtos = new ArrayList<PolicyDspDto>();
             BeanUtils.copyList(policies.get(i).getPolicyDsps(), policyDspDtos, PolicyDspDto.class);
-            policyDtos.get(i).setPolicyDsps(policyDspDtos);
+            PolicyDto policyDto = policyDtos.get(i);
+            policyDto.setPolicyDsps(policyDspDtos);
             
         	//设置前端结束时间限制与否的开关
-    		Integer isEndDate = policyDtos.get(i).getEndDate() == null ? 0 : 1;
-    		policyDtos.get(i).setIsEndDate(isEndDate);
+    		Integer isEndDate = policyDto.getEndDate() == null ? 0 : 1;
+    		policyDto.setIsEndDate(isEndDate);
+    		//判断策略的过期与否状态，给前端显示
+    		updateStatusForOverdue(policyDto);
         }
         
         return policyDtos;
