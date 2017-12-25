@@ -12,8 +12,8 @@ public class AutohomeMaterialStatusApiTask {
 	@Value("${autohome.dspId}")
 	private String dspId;
 
-	@Value("${autohome.dispName}")
-	private String dispName;
+	@Value("${autohome.dspName}")
+	private String dspName;
 
 	@Value("${autohome.signKey}")
 	private String signKey;

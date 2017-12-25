@@ -1,10 +1,10 @@
 package com.madhouse.platform.premiummad.media.autohome.response;
 
-public class CreativeResponse<T> {
+public class CreativeUploadResponse {
 	/**
 	 * 具体传输数据
 	 */
-	private T data;
+	private CreativeUploadData data;
 	
 	/**
 	 * 为1表示成功
@@ -16,11 +16,11 @@ public class CreativeResponse<T> {
 	 */
 	private StatusInfo statusInfo;
 
-	public T getData() {
+	public CreativeUploadData getData() {
 		return data;
 	}
 
-	public void setData(T data) {
+	public void setData(CreativeUploadData data) {
 		this.data = data;
 	}
 
