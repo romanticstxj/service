@@ -125,7 +125,7 @@
 	</update>
 	
 	<update id="updateOneTaskStatus" parameterType="ReportTask">
-		UPDATE mad_report_task SET status = 1 WHERE id = #{id} 
+		UPDATE mad_report_task SET status = #{status} WHERE id = #{id} 
 	</update>
 	
 	<select id="queryById" parameterType="integer" resultMap="BaseResultMap">
