@@ -69,6 +69,8 @@ public class PolicyDto implements Serializable{
     @Length(max=SystemConstant.DB.DESC_LENGTH, groups={Update.class, Insert.class})
     private String description;
     
+    private Integer overdue = SystemConstant.DB.POLICY_STATUS_NO_OVERDUE;
+    
     private List<PolicyAdspaceDto> policyAdspaces;
     
     private List<PolicyDspDto> policyDsps;
@@ -271,6 +273,14 @@ public class PolicyDto implements Serializable{
 
 	public void setPushRatio(Integer pushRatio) {
 		this.pushRatio = pushRatio;
+	}
+
+	public Integer getOverdue() {
+		return overdue;
+	}
+
+	public void setOverdue(Integer overdue) {
+		this.overdue = overdue;
 	}
 
 }
