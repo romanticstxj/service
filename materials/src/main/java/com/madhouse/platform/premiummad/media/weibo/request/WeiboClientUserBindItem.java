@@ -13,7 +13,7 @@ public class WeiboClientUserBindItem {
 	private String uid;
 
 	// 与绑定uid相关的资质文件信息
-	private List<String> qualification_files;
+	private List<WeiboQualificationFile> qualification_files;
 
 	public String getClient_id() {
 		return client_id;
@@ -39,11 +39,11 @@ public class WeiboClientUserBindItem {
 		this.uid = uid;
 	}
 
-	public List<String> getQualification_files() {
+	public List<WeiboQualificationFile> getQualification_files() {
 		return qualification_files;
 	}
 
-	public void setQualification_files(List<String> qualification_files) {
+	public void setQualification_files(List<WeiboQualificationFile> qualification_files) {
 		this.qualification_files = qualification_files;
 	}
 }

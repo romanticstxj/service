@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.druid.util.Base64;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -40,7 +42,9 @@ import com.madhouse.platform.premiummad.media.weibo.request.WeiboAdInfo;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboBanner;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboFeed;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboFeedActivity;
+import com.madhouse.platform.premiummad.media.weibo.request.WeiboFeedGrid;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboFeedVideo;
+import com.madhouse.platform.premiummad.media.weibo.request.WeiboGrid;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboMaterialUploadRequest;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboMediaInitRequest;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboMediaUploadRequest;
@@ -63,6 +67,7 @@ public class WeiboMaterialUploadApiTask {
 	private static String CREATIVE_FEED = "002";
 	private static String CREATIVE_FEED_ACTIVITY = "003";
 	private static String CREATIVE_FEED_VIDEO = "004";
+	private static String CREATIVE_FEED_GRID = "005";
 
 	@Value("${weibo.materialUploadUrl}")
 	private String uploadMaterialUrl;
@@ -103,15 +108,15 @@ public class WeiboMaterialUploadApiTask {
 
 	static {
 		supportedLayoutSet = new HashSet<Integer>();
-		//supportedLayoutSet.add(Integer.valueOf(Layout.LO10001.getValue()));// banner 媒体1.2.0版本取消
+		supportedLayoutSet.add(Integer.valueOf(Layout.LO10001.getValue()));// banner
 		supportedLayoutSet.add(Integer.valueOf(Layout.LO30001.getValue()));// 图文信息流1图
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30002.getValue()));// 图文信息流2图
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30003.getValue()));// 图文信息流3图
+//		supportedLayoutSet.add(Integer.valueOf(Layout.LO30002.getValue()));// 图文信息流2图
+//		supportedLayoutSet.add(Integer.valueOf(Layout.LO30003.getValue()));// 图文信息流3图
 		supportedLayoutSet.add(Integer.valueOf(Layout.LO30004.getValue()));// 图文信息流4图
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30005.getValue()));// 图文信息流5图
+//		supportedLayoutSet.add(Integer.valueOf(Layout.LO30005.getValue()));// 图文信息流5图
 		supportedLayoutSet.add(Integer.valueOf(Layout.LO30006.getValue()));// 图文信息流6图
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30007.getValue()));// 图文信息流7图
-		supportedLayoutSet.add(Integer.valueOf(Layout.LO30008.getValue()));// 图文信息流8图
+//		supportedLayoutSet.add(Integer.valueOf(Layout.LO30007.getValue()));// 图文信息流7图
+//		supportedLayoutSet.add(Integer.valueOf(Layout.LO30008.getValue()));// 图文信息流8图
 		supportedLayoutSet.add(Integer.valueOf(Layout.LO30009.getValue()));// 图文信息流9图
 		supportedLayoutSet.add(Integer.valueOf(Layout.LO30011.getValue()));// 视频信息流
 	}
@@ -156,7 +161,7 @@ public class WeiboMaterialUploadApiTask {
 			}
 
 			String creativeType = getCreateType(material.getLayout());
-
+			
 			// 视频的话需要先上传视频到媒体 - 视频上传成功但是素材上传失败的时候不需要再上传视频
 			if (CREATIVE_FEED_VIDEO.equals(creativeType) && (StringUtils.isBlank(material.getMediaMaterialUrl()) || !StringUtils.isBlank(material.getMediaQueryKey()))) {
 				StringBuilder mediaMaterialUrl = new StringBuilder();
@@ -277,6 +282,7 @@ public class WeiboMaterialUploadApiTask {
 		List<WeiboFeed> weiboFeeds = new ArrayList<WeiboFeed>();
 		List<WeiboFeedActivity> weiboFeedActivitys = new ArrayList<WeiboFeedActivity>();
 		List<WeiboFeedVideo> weiboFeedVideos = new ArrayList<WeiboFeedVideo>();
+		List<WeiboFeedGrid> weiboFeedGrids = new ArrayList<WeiboFeedGrid>();
 
 		// 曝光监控地址
 		List<String> impUrls = new ArrayList<String>();
@@ -363,6 +369,26 @@ public class WeiboMaterialUploadApiTask {
 			weiboFeedVideo.setTitle(material.getTitle());
 			weiboFeedVideo.setUid(material.getUserId());
 			weiboFeedVideos.add(weiboFeedVideo);
+		} else if (CREATIVE_FEED_GRID.equals(creativeType)) {
+			WeiboFeedGrid weiboFeedGrid = new WeiboFeedGrid();
+			weiboFeedGrid.setCreative_id(String.valueOf(material.getId()));
+			weiboFeedGrid.setContent_category(String.valueOf(WeiboIndustryMapping.getMediaIndustryId(advertiser.getIndustry())));
+			weiboFeedGrid.setClient_id(advertiser.getMediaAdvertiserKey());
+			weiboFeedGrid.setClient_name(advertiser.getAdvertiserName());
+			weiboFeedGrid.setMonitor_ur(impUrls);
+			weiboFeedGrid.setClick_url(clkUrls);
+			weiboFeedGrid.setUid(material.getUserId());
+			weiboFeedGrid.setMblog_text(material.getContent());
+
+			List<WeiboGrid> grids = new ArrayList<WeiboGrid>();
+			for (String adUrl : material.getAdMaterials().split("\\|")) {
+				WeiboGrid grid = new WeiboGrid();
+				grid.setPic_ur(adUrl);
+				grid.setTag_type(6); //6 代表了解详情
+				grids.add(grid);
+			}
+			
+			weiboFeedGrids.add(weiboFeedGrid);
 		} else {
 			return "广告形式不支持";
 		}
@@ -371,6 +397,7 @@ public class WeiboMaterialUploadApiTask {
 		weiboAdInfo.setFeed(weiboFeeds);
 		weiboAdInfo.setFeed_activity(weiboFeedActivitys);
 		weiboAdInfo.setFeed_video(weiboFeedVideos);
+		weiboAdInfo.setFeed_grid(weiboFeedGrids);
 		uploadRequest.setAd_info(weiboAdInfo);
 
 		return "";
@@ -392,9 +419,19 @@ public class WeiboMaterialUploadApiTask {
 			return CREATIVE_FEED_VIDEO;
 		}
 
-		// 图文信息流,对多支持9张
-		if (layout >= Layout.LO30001.getValue() && layout <= Layout.LO30009.getValue()) {
-			return CREATIVE_FEED;
+		// 图文信息流,对多支持9张 暂时不用
+//		if (layout >= Layout.LO30001.getValue() && layout <= Layout.LO30009.getValue()) {
+//			return CREATIVE_FEED;
+//		}
+
+		// 品牌大card
+		if (layout == Layout.LO30001.getValue()) {
+			return CREATIVE_FEED_ACTIVITY;
+		}
+
+		// 九宫格
+		if (layout == Layout.LO30004.getValue() || layout == Layout.LO30006.getValue() || layout == Layout.LO30009.getValue()) {
+			return CREATIVE_FEED_GRID;
 		}
 
 		return "";
