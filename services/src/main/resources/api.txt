@@ -917,7 +917,8 @@
                     "body": [
                         {
                         	"id": "<*||integer||comment:策略ID(对于PDB和PD，此id就是策略的dealID)>",
-		                	"status": "<integer||comment:状态(0:禁用,1:开启,2:过期)>",
+		                	"status": "<integer||comment:状态(0:禁用,1:开启)>",
+		                	"overdue": "<integer||comment:状态(0:未过期,1:过期)>",
 		                	"createdTime": "<date||comment:策略的创建时间>",
                             "name": "<*||string||comment:策略名称>",
 		                	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>",
@@ -1019,6 +1020,7 @@
                         {
                         	"id": "<*||integer||comment:策略ID(对于PDB和PD，此id就是策略的dealID)>",
 		                	"status": "<integer||comment:状态>",
+		                	"overdue": "<integer||comment:状态(0:未过期,1:过期)>",
 		                	"createdTime": "<date||comment:策略的创建时间>",
                             "name": "<*||string||comment:策略名称>",
 		                	"type": "<*||integer||comment:策略类型(1: PDB, 2: PD, 8: RTB)>",

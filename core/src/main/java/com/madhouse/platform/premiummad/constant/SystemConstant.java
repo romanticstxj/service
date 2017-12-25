@@ -144,7 +144,8 @@ public interface SystemConstant {
 		
 		String impUrlsDelimiter = "`";
 		
-		int POLICY_STATUS_OVERDUE = 2;
+		int POLICY_STATUS_OVERDUE = 1;
+		int POLICY_STATUS_NO_OVERDUE = 0;
 	}
 	
 	/* 媒体审核对象 */
