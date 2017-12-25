@@ -22,9 +22,6 @@
       <if test="userId != null" >
         user_id,
       </if>
-      <if test="qualificationFile != null" >
-        qualification_file,
-      </if>
       <if test="status != null" >
         status,
       </if>
@@ -48,9 +45,6 @@
       <if test="userId != null" >
         #{userId,jdbcType=VARCHAR},
       </if>
-      <if test="qualificationFile != null" >
-        #{qualificationFile,jdbcType=VARCHAR},
-      </if>
       <if test="status != null" >
         #{status,jdbcType=TINYINT},
       </if>
@@ -72,9 +66,9 @@
 		t.id AS id,
 		t.advertiser_id AS advertiserId,
 		t.user_id AS userId,
-		t.qualification_file AS qualificationFile,
 		t.`status` AS STATUS,
 		t.reason AS reason,
+		ad.license AS qualificationFile,
 		ad.`status` AS advertiserStatus,
 		ad.advertiser_name AS advertiserName,
 		ad.media_advertiser_key AS mediaAdvertiserKey
@@ -90,9 +84,6 @@
   	<foreach collection="list" item="item" index="index" separator=";" open="" close="">
 	    update mad_sys_advertiser_user
 	    <set >
-	      <if test="item.qualificationFile != null" >
-	        qualification_file = #{item.qualificationFile,jdbcType=VARCHAR},
-	      </if>
 	      <if test="item.status != null" >
 	        status = #{item.status,jdbcType=TINYINT},
 	      </if>

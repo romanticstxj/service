@@ -1,15 +1,12 @@
 package com.madhouse.platform.premiummad.media.weibo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.AdvertiserUserStatusCode;
 import com.madhouse.platform.premiummad.dao.AdvertiserUserMapper;
@@ -18,6 +15,7 @@ import com.madhouse.platform.premiummad.media.weibo.constant.WeiboConstant;
 import com.madhouse.platform.premiummad.media.weibo.constant.WeiboErrorCode;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboClientUserBindItem;
 import com.madhouse.platform.premiummad.media.weibo.request.WeiboClientUserBindRequest;
+import com.madhouse.platform.premiummad.media.weibo.request.WeiboQualificationFile;
 import com.madhouse.platform.premiummad.media.weibo.response.WeiboAdvertiserUserBindErrorResponse;
 import com.madhouse.platform.premiummad.media.weibo.response.WeiboAdvertiserUserBindResponseDetail;
 import com.madhouse.platform.premiummad.media.weibo.response.WeiboResponse;
@@ -128,7 +126,18 @@ public class WeiboClientUserBindTask {
 		item.setClient_id(advertiserUserUnion.getMediaAdvertiserKey());
 		item.setClient_name(advertiserUserUnion.getAdvertiserName());
 		item.setUid(advertiserUserUnion.getUserId());
-		item.setQualification_files(Arrays.asList(org.springframework.util.StringUtils.tokenizeToStringArray(advertiserUserUnion.getQualificationFile(), ",")));
+		// 认证文件
+		if (!StringUtils.isBlank(advertiserUserUnion.getQualificationFile())) {
+			List<WeiboQualificationFile> qualificationFiles = new ArrayList<WeiboQualificationFile>();
+			String[] licences = advertiserUserUnion.getQualificationFile().split("\\|");
+			for (String licence : licences) {
+				WeiboQualificationFile file = new WeiboQualificationFile();
+				file.setFile_url(licence);
+				file.setFile_name("资质文件"); // 默认写死
+				qualificationFiles.add(file);
+			}
+			item.setQualification_files(qualificationFiles);
+		}
 		clientUsers.add(item);
 
 		request.setClient_user(clientUsers);

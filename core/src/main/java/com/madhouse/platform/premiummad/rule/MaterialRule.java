@@ -205,13 +205,6 @@ public class MaterialRule extends BaseRule {
 				}
 			}
 		}
-		if (entity.getQualificationFile() != null && !entity.getQualificationFile().isEmpty()) {
-			for (String qualificationFile : entity.getQualificationFile()) {
-				if (!isUrl(qualificationFile)) {
-					throw new BusinessException(StatusCode.SC419, "用户资质文件URL格式错误[qualificationFile]");
-				}
-			}
-		}
 	}
 
 	/**
