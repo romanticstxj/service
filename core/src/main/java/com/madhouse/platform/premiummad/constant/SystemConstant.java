@@ -143,6 +143,9 @@ public interface SystemConstant {
 		String ORDER_BY_DESC = "DESC";
 		
 		String impUrlsDelimiter = "`";
+		
+		int POLICY_STATUS_OVERDUE = 1;
+		int POLICY_STATUS_NO_OVERDUE = 0;
 	}
 	
 	/* 媒体审核对象 */

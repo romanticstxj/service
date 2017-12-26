@@ -88,7 +88,7 @@ public class ReportProcessAsyncTask {
 				}
 				
 				if(csvReport != null){ //报表正常生成，直接更新状态
-					reportTask.setStatus((short) 1);
+					reportTask.setStatus((short) SystemConstant.DB.REPORT_TASK_STATUS_FINISHED);
 					reportTaskService.updateStatus(reportTask);
 				}
 				logger.debug(threadName + " with taskId " + taskId + " succeeded");
