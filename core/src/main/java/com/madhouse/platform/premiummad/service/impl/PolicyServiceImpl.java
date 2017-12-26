@@ -20,6 +20,7 @@ import com.madhouse.platform.premiummad.entity.PolicyDsp;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
+import com.madhouse.platform.premiummad.util.DateUtils;
 
 @Service
 @Transactional(rollbackFor = RuntimeException.class)
@@ -101,6 +102,9 @@ public class PolicyServiceImpl implements IPolicyService {
             if (count > 0)
             	throw new BusinessException(StatusCode.SC20401);
         }
+        if(DateUtils.judgeOverdue(queryResult.getEndDate())){ //查看当前数据库里的策略是否已经过期
+        	throw new BusinessException(StatusCode.SC20403);
+        }
         
         Integer policyId = policy.getId();
         List<PolicyAdspace> policyAdspaces = policy.getPolicyAdspaces();
@@ -152,6 +156,9 @@ public class PolicyServiceImpl implements IPolicyService {
 		Policy queryResult = policyDao.selectByPrimaryKey(policy.getId());
         if (queryResult == null)
         	throw new BusinessException(StatusCode.SC20003);
+        if(DateUtils.judgeOverdue(queryResult.getEndDate())){ //查看当前数据库里的策略是否已经过期
+        	throw new BusinessException(StatusCode.SC20403);
+        }
 		return policyDao.updateStatus(policy);
 	}
 

@@ -1,7 +1,6 @@
 package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -135,23 +134,9 @@ public class PolicyRule extends BaseRule{
 	 * @param policy
 	 */
 	private static void updateStatusForOverdue(PolicyDto policy) {
-		if(judgeOverdue(policy)){
+		if(DateUtils.judgeOverdue(policy.getEndDate())){
 			policy.setOverdue(SystemConstant.DB.POLICY_STATUS_OVERDUE); 
 		}
-	}
-	
-	/**
-	 * 判断策略是否过期
-	 * @param policy
-	 * @return
-	 */
-	private static boolean judgeOverdue(PolicyDto policy) {
-		Date endDate = policy.getEndDate();
-		long overdueDays = 0;
-		if(endDate != null){ //如果有结束日期，则判断结束日期是否过期
-			overdueDays = DateUtils.getDateSubtract(endDate, new Date());
-		}
-		return overdueDays > 0;
 	}
 	
 	/**
@@ -197,7 +182,7 @@ public class PolicyRule extends BaseRule{
     		}
     	}
         
-        if(judgeOverdue(policyDto)){ //如果策略过期，返回错误信息
+        if(DateUtils.judgeOverdue(policyDto.getEndDate())){ //如果策略过期，返回错误信息
         	throw new BusinessException(StatusCode.SC20402);
         }
         
