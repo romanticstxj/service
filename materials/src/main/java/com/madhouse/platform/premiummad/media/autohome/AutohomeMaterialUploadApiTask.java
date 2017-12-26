@@ -24,6 +24,7 @@ import com.madhouse.platform.premiummad.media.autohome.request.AppAdsnippet;
 import com.madhouse.platform.premiummad.media.autohome.request.AppCreative;
 import com.madhouse.platform.premiummad.media.autohome.request.CreativeUploadRequest;
 import com.madhouse.platform.premiummad.media.autohome.response.CreativeUploadResponse;
+import com.madhouse.platform.premiummad.media.autohome.util.AutohomeCommonUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IMediaService;
@@ -62,9 +63,11 @@ public class AutohomeMaterialUploadApiTask {
 	@Autowired
 	private IMediaService mediaService;
 	
+	// TODO
 	@Value("${imp.url}")
 	private String impUrl;
 
+	// TODO
 	@Value("${clk.url}")
 	private String clkUrl;
 
@@ -188,7 +191,7 @@ public class AutohomeMaterialUploadApiTask {
 		String size = material.getSize();
 		if (!StringUtils.isBlank(size) && size.split("*").length == 2) {
 			item.setWidth(Integer.valueOf(size.split("*")[0]));
-			item.setWidth(Integer.valueOf(size.split("*")[1]));
+			item.setHeight(Integer.valueOf(size.split("*")[1]));
 		}
 		// 模板ID
 		item.setTemplateId(AutohomeConstant.Template.APP_NATIVE);
@@ -199,10 +202,18 @@ public class AutohomeMaterialUploadApiTask {
 		// 平台
 		item.setPlatform(AutohomeConstant.Platform.APP);
 		creative.add(item);
+		request.setCreative(creative);
 
-		// TODO
-		// request.setTimestamp(timestamp);
-		// AutohomeCommonUtil.getSign(JSON.toJSONString(request), signKey);
+		// 校验串 TODO
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("dspId", dspId);
+		jsonObj.put("dspName", dspName);
+		jsonObj.put("creative", JSON.parseObject(JSON.toJSONString(request.getCreative())));
+		request.setSign(AutohomeCommonUtil.getSign(jsonObj, signKey));
+
+		// 时间戳
+		request.setTimestamp(System.currentTimeMillis());
+
 		return "";
 	}
 	

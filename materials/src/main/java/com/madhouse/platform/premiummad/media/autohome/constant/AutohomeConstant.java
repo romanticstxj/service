@@ -24,4 +24,10 @@ public interface AutohomeConstant {
 		int MOBLILE = 1;
 		int APP = 2;
 	}
+	
+	interface AuditStatus {
+		int UNAUDIT = 0;
+		int AUDITED = 1;
+		int REJECTED = 2;
+	}
 }

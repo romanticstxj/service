@@ -9,6 +9,22 @@ import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class AutohomeCommonUtil {
+	
+	/**
+	 * 构建请求 get URL
+	 * @param params
+	 * @return
+	 */
+	public static String getRequest(Map<String, String> params) {
+		List<String> keyList = new ArrayList<>();
+		keyList.addAll(params.keySet());
+		Collections.sort(keyList);
+		List<String> paramList = new ArrayList<>();
+		for (String key : keyList) {
+			paramList.add(key + "=" + params.get(key));
+		}
+		return org.apache.commons.lang3.StringUtils.join(paramList, "&");
+	}
 
 	/**
 	 * 普通的Get和POST
@@ -27,7 +43,7 @@ public class AutohomeCommonUtil {
 			paramList.add(key + "=" + params.get(key));
 		}
 		paramList.add("timestamp=" + System.currentTimeMillis());
-		String str = org.apache.commons.lang3.StringUtils.join(paramList, " ");
+		String str = org.apache.commons.lang3.StringUtils.join(paramList, "&");
 		String sign = StringUtils.getMD5(StringUtils.encode(str + signKey));
 		return sign;
 	}
