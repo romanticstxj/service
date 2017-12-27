@@ -24,8 +24,8 @@ public class ReportControllerTest {
 	public void dspReport(){
 //		String link = "http://172.16.25.31:8080/services/report/dsp?type=16&dims=35&realtime=0&startDate=20170801"
 //				+ "&endDate=20170925";
-		String link = "http://localhost:8080/services/report/dsp?type=32&dims=32&realtime=0&startDate=20170801"
-				+ "&endDate=20170925";
+		String link = "http://localhost:8080/services/report/dsp?type=64&dims=32&realtime=0&startDate=20170801"
+				+ "&endDate=20171225&dspId=600021";
 		HttpUtilTest.httpGet(link);
 	}
 	

@@ -14,6 +14,7 @@ public class ReportCriterion{
 	public static final int DIM_SORTING_LOCATION = SystemConstant.DB.DIM_SORTING_LOCATION;
 	public static final int DIM_SORTING_DATE = SystemConstant.DB.DIM_SORTING_DATE;
 	public static final int DIM_SORTING_HOUR = SystemConstant.DB.DIM_SORTING_HOUR;
+	public static final int DIM_SORTING_CAMPAIGN = SystemConstant.DB.DIM_SORTING_CAMPAIGN;
 	
 	private Integer type; //查找的报表类型，后台实现其实是关联到哪个表(1:默认,2:运营商,4:设备类型,8:联网方式,16:地域)
 

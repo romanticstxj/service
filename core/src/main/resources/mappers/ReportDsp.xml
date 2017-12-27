@@ -26,6 +26,11 @@
     SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost
   </sql>
   
+  <sql id="Dsp_Campaign_Column_List">
+    ${alias}.id, ${alias}.dsp_id, SUM(${alias}.bids) bids, SUM(${alias}.imps) imps, SUM(${alias}.clks) clks, 
+    SUM(${alias}.vimps) vimps1, SUM(${alias}.vclks) vclks, CAST(SUM(${alias}.cost)/100000 as DECIMAL(15,2)) cost
+  </sql>
+  
   <sql id="mediaAuthCondition">
   	<if test="mediaIds != null and mediaIds.size() > 0">
     	AND rp.media_id IN 
@@ -126,6 +131,49 @@
 		        <when test="lastOrderPosition == DIM_SORTING_DSP">vimps1 DESC</when>
 	    		<otherwise>rp.dsp_id DESC</otherwise>
 	    	 </choose>
+    		 <if test="hasDate != null and hasDate == true">, rp.date</if>
+    		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
+  </select>
+  
+  <select id="queryDspCampaignReport" resultMap="BaseResultMap" parameterType="ReportCriterion" >
+    SELECT <include refid="Dsp_Campaign_Column_List"><property name="alias" value="rp" /></include> 
+    ,d.name dspName, rp.campaign_id campaignId
+    <if test="hasMedia != null and hasMedia == true">, rp.media_id, m.name mediaName </if>
+    <if test="hasAdspace != null and hasAdspace == true"> ,rp.adspace_id, a.name adspaceName </if>
+    <if test="hasDate != null and hasDate == true"> ,rp.date </if>
+    <if test="hasHour != null and hasHour == true"> ,rp.hour </if>
+    FROM mad_report_dsp_campaign rp
+    INNER JOIN mad_sys_dsp d ON rp.dsp_id = d.id
+    <if test="hasMedia != null and hasMedia == true">INNER JOIN mad_sys_media m ON rp.media_id = m.id </if>
+    <if test="hasAdspace != null and hasAdspace == true"> INNER JOIN mad_sys_adspace a ON rp.adspace_id = a.id </if>
+    WHERE rp.date &gt;= DATE_FORMAT(#{startDate}, '%Y-%m-%d') AND rp.date &lt;= DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    <if test="hasMedia != null and hasMedia == true"><include refid="mediaAuthCondition"/></if>
+    <if test="dspId != null"> AND rp.dsp_id = #{dspId}</if>
+    GROUP BY rp.dsp_id, rp.campaign_id
+    <if test="hasMedia != null and hasMedia == true">, rp.media_id </if>
+    <if test="hasAdspace != null and hasAdspace == true">, rp.adspace_id</if>
+    <if test="hasDate != null and hasDate == true">, rp.date</if>
+    <if test="hasHour != null and hasHour == true">, rp.hour</if>
+    ORDER BY <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_DSP">vimps1 DESC</when>
+	    		<otherwise>rp.dsp_id DESC</otherwise>
+	    	 </choose>
+	    	 <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_CAMPAIGN">, vimps1 DESC</when>
+	    		<otherwise>, rp.campaign_id DESC</otherwise>
+	    	 </choose>
+	    	 <if test="hasMedia != null and hasMedia == true">
+	         <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_MEDIA">, vimps1 DESC</when>
+	    		<otherwise>, rp.media_id DESC</otherwise>
+	    	 </choose>
+	    	 </if>
+	    	 <if test="hasAdspace != null and hasAdspace == true">
+	    	 <choose>
+		        <when test="lastOrderPosition == DIM_SORTING_ADSPACE">, vimps1 DESC</when>
+	    		<otherwise>, rp.adspace_id DESC</otherwise>
+	    	 </choose>
+	    	 </if>
     		 <if test="hasDate != null and hasDate == true">, rp.date</if>
     		 <if test="hasHour != null and hasHour == true">, rp.hour</if>
   </select>

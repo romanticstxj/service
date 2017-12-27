@@ -1412,7 +1412,7 @@
                     	"id": "<*||integer||comment:dsp报表ID>",
 	                	"dspId": "<integer||comment:DSP ID>",
 	                	"dspName": "<*||string||comment:DSP名称>",
-	                	"campaignId": "<*||integer||comment:campaign ID>",
+	                	"campaignId": "<*||string||comment:campaign ID>",
 	                	"mediaId": "<*||string||comment:媒体ID>",
 	                	"mediaName": "<*||string||comment:媒体名称>",
 	                	"carrier": "<integer||comment:运营商code>",
