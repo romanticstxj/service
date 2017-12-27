@@ -6,9 +6,9 @@ public class AdvertiserUserUnion {
 
 	private Integer advertiserId;
 
-	private String userId;
-
 	private String qualificationFile;
+	
+	private String userId;
 
 	private Byte status;
 
@@ -37,20 +37,20 @@ public class AdvertiserUserUnion {
 		this.advertiserId = advertiserId;
 	}
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
 	public String getQualificationFile() {
 		return qualificationFile;
 	}
 
 	public void setQualificationFile(String qualificationFile) {
 		this.qualificationFile = qualificationFile;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public Byte getStatus() {

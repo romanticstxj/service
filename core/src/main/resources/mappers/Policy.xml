@@ -47,7 +47,7 @@
   	</sql>
   	
   	<select id="selectByPrimaryKey" parameterType="integer" resultMap="baseResultMap">
-	    select p.id, p.name
+	    select p.id, p.name, p.end_date
 	    from mad_sys_policy p
 	    where p.id = #{id}
   	</select>
