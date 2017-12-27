@@ -1398,7 +1398,7 @@
             "_summary": "",
             "parameters": {
                 "query": {
-                    "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、需求方三个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上),32:媒体(同上)>",
+                    "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、需求方三个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上),32:媒体(同上),64:活动(同上)>",
                 	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,4:媒体,8:广告位,32:需求方>",
                 	"realTime": "<*||integer||comment:(单选)1 实时,0 离线>",
                 	"dspId": "<integer||comment:Dsp id(过滤)>",
@@ -1412,6 +1412,7 @@
                     	"id": "<*||integer||comment:dsp报表ID>",
 	                	"dspId": "<integer||comment:DSP ID>",
 	                	"dspName": "<*||string||comment:DSP名称>",
+	                	"campaignId": "<*||integer||comment:campaign ID>",
 	                	"mediaId": "<*||string||comment:媒体ID>",
 	                	"mediaName": "<*||string||comment:媒体名称>",
 	                	"carrier": "<integer||comment:运营商code>",
