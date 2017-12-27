@@ -1489,6 +1489,50 @@
             }
         }
     },
+    "/dspauth/media/query": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                    "dspId": "<*||integer||comment:dspId>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": {
+                    	"dspId": "<*||integer||comment:dspId>",
+	                    "adspaces": [{
+	                    	"mediaId": "<*||integer||comment:mediaId(-1代表所有媒体权限)>",
+	                    	"id": "<*||integer||comment:adspaceId(-1代表所有广告位权限)>"
+	                    }]
+                    }
+                }
+            }
+        }
+    },
+    "/dspauth/media/update": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                    "dspId": "<*||integer||comment:dspId>",
+                    "adspaces": [{
+                    	"mediaId": "<*||integer||comment:mediaId(-1代表所有媒体权限)>",
+                    	"id": "<*||integer||comment:adspaceId(-1代表所有广告位权限)>"
+                    }]
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
     "/userauth/media/query": {
         "get": {
             "_summary": "",
