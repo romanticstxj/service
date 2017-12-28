@@ -51,7 +51,7 @@ public class AdspaceController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/list")
-    public ResponseDto<AdspaceDto> list(@RequestParam(value="ids", required=false) String mediaIds,
+    public ResponseDto<AdspaceDto> list(@RequestParam(value="mediaIds", required=false) String mediaIds,
     		@RequestParam(value="status", required=false) Integer status,
     		@RequestParam(value="userId", required=false) Integer userIdByGet,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {

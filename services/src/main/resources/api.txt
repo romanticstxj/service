@@ -177,7 +177,7 @@
             "_summary": "广告位列表，若未提供媒体id则全局查询，否则根据媒体id查询",
             "parameters": {
                 "query": {
-                	"ids" : "<||string||comment:1）若无ids参数，则查询当前用户下所有权限的广告位 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分广告位数据，但查询出的也都是当前用户的权限下的广告位>"
+                	"mediaIds" : "<||string||comment:1）若无mediaIds参数，则查询当前用户下所有权限的广告位 2）若有mediaIds参数（mediaIds是用逗号分隔的媒体id组），则查询部分媒体下的广告位数据，但查询出的也都是当前用户的权限下的广告位>"
                 }
             },
             "responses": {
@@ -1398,7 +1398,7 @@
             "_summary": "",
             "parameters": {
                 "query": {
-                    "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、需求方三个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上),32:媒体(同上)>",
+                    "type": "<*||integer||comment:报表类型(单选), 1:默认类型(包括日期、时间、需求方三个维度可以选择),2:运营商(必有运营商维度,可选维度同上),4:设备类型(同上),8:联网方式(同上),16:地域(同上),32:媒体(同上),64:活动(同上)>",
                 	"dims": "<*||string||comment:维度选择(多选), 1:日期,2:时间,4:媒体,8:广告位,32:需求方>",
                 	"realTime": "<*||integer||comment:(单选)1 实时,0 离线>",
                 	"dspId": "<integer||comment:Dsp id(过滤)>",
@@ -1412,6 +1412,7 @@
                     	"id": "<*||integer||comment:dsp报表ID>",
 	                	"dspId": "<integer||comment:DSP ID>",
 	                	"dspName": "<*||string||comment:DSP名称>",
+	                	"campaignId": "<*||string||comment:campaign ID>",
 	                	"mediaId": "<*||string||comment:媒体ID>",
 	                	"mediaName": "<*||string||comment:媒体名称>",
 	                	"carrier": "<integer||comment:运营商code>",
@@ -1485,50 +1486,6 @@
 	                	"income": "<*||integer||comment:媒体收入>",
 	                	"cost": "<*||integer||comment:DSP成本>"
                     }
-                }
-            }
-        }
-    },
-    "/dspauth/media/query": {
-        "get": {
-            "_summary": "",
-            "parameters": {
-                "query": {
-                    "dspId": "<*||integer||comment:dspId>"
-                }
-            },
-            "responses": {
-                "200": {
-                    "body": {
-                    	"dspId": "<*||integer||comment:dspId>",
-	                    "adspaces": [{
-	                    	"mediaId": "<*||integer||comment:mediaId(-1代表所有媒体权限)>",
-	                    	"id": "<*||integer||comment:adspaceId(-1代表所有广告位权限)>"
-	                    }]
-                    }
-                }
-            }
-        }
-    },
-    "/dspauth/media/update": {
-        "post": {
-            "_summary": "",
-            "parameters": {
-                "body": {
-                    "dspId": "<*||integer||comment:dspId>",
-                    "adspaces": [{
-                    	"mediaId": "<*||integer||comment:mediaId(-1代表所有媒体权限)>",
-                    	"id": "<*||integer||comment:adspaceId(-1代表所有广告位权限)>"
-                    }]
-                }
-            },
-            "responses": {
-                "200": {
-                    "body": [
-                        {
-                            "result": true
-                        }
-                    ]
                 }
             }
         }

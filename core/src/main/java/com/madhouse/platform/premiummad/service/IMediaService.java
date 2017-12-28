@@ -24,4 +24,6 @@ public interface IMediaService extends IBaseService<Media>{
 	 * @return
 	 */
 	int[] getMeidaIds(String meidaGroups, Byte meidaAuditMode);
+
+	List<Media> queryAll(List<Integer> ids, Integer category);
 }
