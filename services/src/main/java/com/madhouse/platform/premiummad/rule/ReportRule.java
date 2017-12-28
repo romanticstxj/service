@@ -139,6 +139,10 @@ public class ReportRule extends BaseRule{
 				entity.setHasMedia(true);
 				dimsSorting.add(SystemConstant.DB.DIM_SORTING_MEDIA);
 				break;
+			case SystemConstant.DB.TYPE_CAMPAIGN: 
+				//type为活动，则在排序规则里添加活动这个列
+				dimsSorting.add(SystemConstant.DB.DIM_SORTING_CAMPAIGN);
+				break;
 			default:
 		}
 		

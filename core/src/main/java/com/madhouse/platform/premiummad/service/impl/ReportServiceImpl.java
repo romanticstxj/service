@@ -75,6 +75,8 @@ public class ReportServiceImpl implements IReportService {
 				reportDsps = reportDspDao.queryDspLocationReport(reportCriterion);
 			} else if (type.intValue() == SystemConstant.DB.TYPE_MEDIA){
 				reportDsps = reportDspDao.queryDspMediaReport(reportCriterion);
+			} else if (type.intValue() == SystemConstant.DB.TYPE_CAMPAIGN){
+				reportDsps = reportDspDao.queryDspCampaignReport(reportCriterion);
 			}
 		} else if(realtime.intValue() == SystemConstant.DB.IS_REALTIME){
 			reportDsps = reportDspDao.queryRtDspReport(reportCriterion);

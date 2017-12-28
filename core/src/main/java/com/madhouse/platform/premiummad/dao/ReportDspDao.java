@@ -14,4 +14,6 @@ public interface ReportDspDao {
 	List<ReportDsp> queryDspLocationReport(ReportCriterion reportCriterion);
 	
 	List<ReportDsp> queryRtDspReport(ReportCriterion reportCriterion);
+
+	List<ReportDsp> queryDspCampaignReport(ReportCriterion reportCriterion);
 }
