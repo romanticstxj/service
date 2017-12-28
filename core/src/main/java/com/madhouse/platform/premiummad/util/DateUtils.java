@@ -85,4 +85,17 @@ public class DateUtils {
 		Date date = getFormatDateByPattern("yyyyMMdd", new Date());
 		return date;
 	}
+	
+	/**
+	 * 判断策略是否过期
+	 * @param endDate
+	 * @return
+	 */
+	public static boolean judgeOverdue(Date endDate) {
+		long overdueDays = 0;
+		if(endDate != null){ //如果有结束日期，则判断结束日期是否过期
+			overdueDays = DateUtils.getDateSubtract(endDate, new Date());
+		}
+		return overdueDays > 0;
+	}
 }

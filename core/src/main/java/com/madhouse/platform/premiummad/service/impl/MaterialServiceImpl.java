@@ -329,7 +329,7 @@ public class MaterialServiceImpl implements IMaterialService {
 				Entry<Integer, Material> entry = iterator.next();
 				if (advertiserUser == null) { // 不存在该条记录 -- 新增
 					// 构建广告主和用户绑定关系对象
-					advertiserUser = AdvertiserUserRule.buildAdvertiserUser(advertiserUser, relatedAdvertiser.getId(), entity);
+					advertiserUser = AdvertiserUserRule.buildAdvertiserUser(advertiserUser, relatedAdvertiser, entity);
 
 					// 插入数据
 					int effectRows = advertiserUserDao.insertAdvertiserUser(advertiserUser);
@@ -339,7 +339,7 @@ public class MaterialServiceImpl implements IMaterialService {
 				} else if (advertiserUser != null) { // 存在该条记录 -- 直接获取该条记录的ID
 					// 已驳回 -- 更新
 					if (advertiserUser.getStatus().intValue() == AdvertiserUserStatusCode.AUC10001.getValue()) {
-						AdvertiserUser updateItem = AdvertiserUserRule.buildAdvertiserUser(advertiserUser, relatedAdvertiser.getId(), entity);
+						AdvertiserUser updateItem = AdvertiserUserRule.buildAdvertiserUser(advertiserUser, relatedAdvertiser, entity);
 
 						// 更新数据
 						int effectRows = advertiserUserDao.updateByPrimaryKeySelective(updateItem);

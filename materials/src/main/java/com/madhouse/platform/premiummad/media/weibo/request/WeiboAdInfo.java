@@ -7,6 +7,7 @@ public class WeiboAdInfo {
 	private List<WeiboFeedVideo> feed_video;
 	private List<WeiboFeed> feed;
 	private List<WeiboFeedActivity> feed_activity;
+	private List<WeiboFeedGrid> feed_grid;
 
 	public List<WeiboFeed> getFeed() {
 		return feed;
@@ -38,5 +39,13 @@ public class WeiboAdInfo {
 
 	public void setFeed_video(List<WeiboFeedVideo> feed_video) {
 		this.feed_video = feed_video;
+	}
+
+	public List<WeiboFeedGrid> getFeed_grid() {
+		return feed_grid;
+	}
+
+	public void setFeed_grid(List<WeiboFeedGrid> feed_grid) {
+		this.feed_grid = feed_grid;
 	}
 }
