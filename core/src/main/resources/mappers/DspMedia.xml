@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.madhouse.platform.premiummad.dao.DspMediaMapper" >
+  <select id="selectByDspId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from mad_sys_dsp_media
+    where dsp_id = #{dspId,jdbcType=INTEGER}
+  </select>
+</mapper>

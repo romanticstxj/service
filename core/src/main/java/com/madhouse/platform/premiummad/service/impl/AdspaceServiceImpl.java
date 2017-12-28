@@ -12,14 +12,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.AdspaceDao;
+import com.madhouse.platform.premiummad.dao.DspMediaMapper;
 import com.madhouse.platform.premiummad.dao.MimesDao;
 import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.AdspaceMapping;
 import com.madhouse.platform.premiummad.entity.AdspaceUnion;
+import com.madhouse.platform.premiummad.entity.AuditedAdspaceQueryParam;
 import com.madhouse.platform.premiummad.entity.DspMapping;
+import com.madhouse.platform.premiummad.entity.DspMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.model.AdspaceModel;
 import com.madhouse.platform.premiummad.rule.AdspaceRule;
+import com.madhouse.platform.premiummad.rule.DspMediaRule;
 import com.madhouse.platform.premiummad.service.IAdspaceService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -39,6 +43,9 @@ public class AdspaceServiceImpl implements IAdspaceService {
 
 //	@Autowired
 //	private AdspaceMappingDspMapper adspaceMappingDspDao;
+
+	@Autowired
+	private DspMediaMapper dspMediaDao;
 
 	@Override
 	public List<Adspace> queryAllByParams(List<Integer> mediaIdList, Integer status) {
@@ -221,8 +228,20 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	@Override
 	public List<AdspaceModel> getAuditedAdspaces(String dspId) {
 		List<AdspaceModel> adspaces = new ArrayList<AdspaceModel>();
+
+		// 获取该dsp下有权限的广告位和媒体
+		List<DspMedia> dspMedias = dspMediaDao.selectByDspId(dspId);
+		if (dspMedias == null || dspMedias.isEmpty()) {
+			return adspaces;
+		}
+		
+		// 构造查询请求参数
+		AuditedAdspaceQueryParam queryParam = new AuditedAdspaceQueryParam();
+		queryParam.setDspId(dspId);
+		DspMediaRule.splitMeidaAndAds(queryParam, dspMedias);
+
 		// 获取已启用的广告位
-		List<AdspaceUnion> auditedAdspaces = adspaceDao.selectAuditedAdspaces(Integer.valueOf(dspId));
+		List<AdspaceUnion> auditedAdspaces = adspaceDao.selectAuditedAdspaces(queryParam);
 		if (auditedAdspaces == null || auditedAdspaces.isEmpty()) {
 			return adspaces;
 		}
