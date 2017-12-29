@@ -85,22 +85,4 @@ public class DspControllerTest {
 		HttpUtilTest.httpGet(url);
 	}
 	
-//	public static void main(String[] args) {
-//		for(int i=0; i<100; i++){
-//			new Thread(new Runnable(){
-//
-//				@Override
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					updateDspMediaAuth();
-////					try {
-////						Thread.sleep(2000);
-////					} catch (InterruptedException e) {
-////						// TODO Auto-generated catch block
-////						e.printStackTrace();
-////					}
-//				}}).start();
-//		}
-//	}
-//	
 }
