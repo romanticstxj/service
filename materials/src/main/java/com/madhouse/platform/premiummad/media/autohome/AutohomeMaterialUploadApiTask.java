@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.AdevertiserIndustry;
@@ -90,10 +92,31 @@ public class AutohomeMaterialUploadApiTask {
 		}
 
 		// 上传到媒体，逐条上传
-		LOGGER.info("AutohomeMaterialUploadApiTask-weibo", unSubmitMaterials.size());
+		LOGGER.info("AutohomeMaterialUploadApiTask", unSubmitMaterials.size());
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
+
+		// 为了过滤DSP相同的key只上传一次
+		Map<String, String[]> successMaps = new HashMap<String, String[]>();// <key, mediaQueryAndMaterialKeys>
+		Map<String, String> refusedMap = new HashMap<String, String>();// <key, errorMsg>
 		for (Material material : unSubmitMaterials) {
+			String key = material.getDspId() + "-" + material.getMaterialKey() + "-" + material.getMediaId();
+			// 上传成功的
+			if (successMaps.containsKey(key)) {
+				materialIdKeys.put(material.getId(), successMaps.get(key));
+				continue;
+			}
+			// 自动驳回的
+			if (refusedMap.containsKey(key)) {
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage(refusedMap.get(key));
+				rejusedMaterials.add(rejuseItem);
+				continue;
+			}
+			
 			// 构造请求参数
 			CreativeUploadRequest<AppCreative> request = new CreativeUploadRequest<AppCreative>();
 			String errorMsg = buildRequest(request, material);
@@ -104,6 +127,9 @@ public class AutohomeMaterialUploadApiTask {
 				rejuseItem.setMediaIds(mediaIds);
 				rejuseItem.setErrorMessage(errorMsg.toString());
 				rejusedMaterials.add(rejuseItem);
+				
+				// 过滤重复的 MaterialKey
+				refusedMap.put(key, errorMsg.toString());
 				LOGGER.error(rejuseItem.getErrorMessage());
 				continue;
 			}
@@ -114,6 +140,20 @@ public class AutohomeMaterialUploadApiTask {
 			String responseJson = HttpUtils.post(creativeUploadUrl, requestJson);
 			LOGGER.info("response:{}", responseJson);
 
+			// TODO just test
+			if (responseJson.contains("403 Forbidden")) {
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage("403 Forbidden");
+				rejusedMaterials.add(rejuseItem);
+
+				// 过滤重复的 MaterialKey
+				refusedMap.put(key, "403 Forbidden");
+				continue;
+			}
+			
 			// 处理返回结果
 			if (!StringUtils.isBlank(responseJson)) {
 				CreativeUploadResponse creativeUploadResponse = JSONObject.parseObject(responseJson, CreativeUploadResponse.class);
@@ -126,6 +166,9 @@ public class AutohomeMaterialUploadApiTask {
 							String mediaKey = String.valueOf(creativeUploadResponse.getData().getCreativeIds().get(i));
 							String[] mediaQueryAndMaterialKeys = { mediaKey, mediaKey };
 							materialIdKeys.put(unSubmitMaterials.get(i).getId(), mediaQueryAndMaterialKeys);
+							
+							// 过滤重复的 MaterialKey
+							successMaps.put(key, mediaQueryAndMaterialKeys);
 						}
 					} else {
 						LOGGER.error("返回结果的条数与上传条数不一致");
@@ -138,6 +181,9 @@ public class AutohomeMaterialUploadApiTask {
 					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(creativeUploadResponse.getStatusInfo().getGlobals());
 					rejusedMaterials.add(rejuseItem);
+					
+					// 过滤重复的 MaterialKey
+					refusedMap.put(key, creativeUploadResponse.getStatusInfo().getGlobals());
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + creativeUploadResponse.getStatusInfo().getGlobals());
 				}
 			} else {
@@ -189,9 +235,9 @@ public class AutohomeMaterialUploadApiTask {
 		item.setCreativeTypeId(AutohomeConstant.MaterialType.NATIVE);
 		// 广告位宽高，用图片尺寸
 		String size = material.getSize();
-		if (!StringUtils.isBlank(size) && size.split("*").length == 2) {
-			item.setWidth(Integer.valueOf(size.split("*")[0]));
-			item.setHeight(Integer.valueOf(size.split("*")[1]));
+		if (!StringUtils.isBlank(size) && size.split("\\*").length == 2) {
+			item.setWidth(Integer.valueOf(size.split("\\*")[0]));
+			item.setHeight(Integer.valueOf(size.split("\\*")[1]));
 		}
 		// 模板ID
 		item.setTemplateId(AutohomeConstant.Template.APP_NATIVE);
@@ -208,7 +254,7 @@ public class AutohomeMaterialUploadApiTask {
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("dspId", dspId);
 		jsonObj.put("dspName", dspName);
-		jsonObj.put("creative", JSON.parseObject(JSON.toJSONString(request.getCreative())));
+		jsonObj.put("creative", JSON.parse(JSON.toJSONString(request.getCreative())));
 		request.setSign(AutohomeCommonUtil.getSign(jsonObj, signKey));
 
 		// 时间戳

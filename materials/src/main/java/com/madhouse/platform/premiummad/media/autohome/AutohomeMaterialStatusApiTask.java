@@ -2,14 +2,18 @@ package com.madhouse.platform.premiummad.media.autohome;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -149,8 +153,14 @@ public class AutohomeMaterialStatusApiTask {
 	 */
 	private Map<String, String> buildRequest(List<Material> unAuditMaterials) {
 		Map<String, String> paramMap = new HashMap<String, String>();
+		Set<String> distinctIds = new HashSet<String>();
 		List<String> creativeId = new ArrayList<String>();
 		for (Material material : unAuditMaterials) {
+			// 去重
+			if (distinctIds.contains(material.getMediaQueryKey())) {
+				continue;
+			}
+			distinctIds.add(material.getMediaQueryKey());
 			creativeId.add(material.getMediaQueryKey());
 		}
 		paramMap.put("creativeId", StringUtils.collectionToDelimitedString(creativeId, ","));
