@@ -130,7 +130,7 @@ public class AutohomeMaterialUploadApiTask {
 				
 				// 过滤重复的 MaterialKey
 				refusedMap.put(key, errorMsg.toString());
-				LOGGER.error(rejuseItem.getErrorMessage());
+				LOGGER.error(errorMsg.toString());
 				continue;
 			}
 

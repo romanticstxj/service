@@ -87,7 +87,28 @@ public class IQiyiMaterialUploadApiTask {
 		LOGGER.info("IQiyiMaterialUploadApiTask-iqiyi", unSubmitMaterials.size());
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
+		
+		// 为了过滤DSP相同的key只上传一次
+		Map<String, String[]> successMaps = new HashMap<String, String[]>();// <key, mediaQueryAndMaterialKeys>
+		Map<String, String> refusedMap = new HashMap<String, String>();// <key, errorMsg>
 		for (Material material : unSubmitMaterials) {
+			String key = material.getDspId() + "-" + material.getMaterialKey() + "-" + material.getMediaId();
+			// 上传成功的
+			if (successMaps.containsKey(key)) {
+				materialIdKeys.put(material.getId(), successMaps.get(key));
+				continue;
+			}
+			// 自动驳回的
+			if (refusedMap.containsKey(key)) {
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage(refusedMap.get(key));
+				rejusedMaterials.add(rejuseItem);
+				continue;
+			}
+			
 			String postResult = handleMaterialRequest(material);
 			if (!StringUtils.isEmpty(postResult)) {
 				IQiyiUploadMaterialResponse iqiyiUploadMaterialResponse = JSON.parseObject(postResult, IQiyiUploadMaterialResponse.class);
@@ -106,6 +127,9 @@ public class IQiyiMaterialUploadApiTask {
 						rejuseItem.setMediaIds(mediaIds);
 						rejuseItem.setErrorMessage(iqiyiUploadMaterialResponse.getDesc());
 						rejusedMaterials.add(rejuseItem);
+						
+						// 过滤重复的 MaterialKey
+						refusedMap.put(key, iqiyiUploadMaterialResponse.getDesc());
 						LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + iqiyiUploadMaterialResponse.getDesc());
 					}
 				} else {

@@ -104,6 +104,7 @@ public class MojiMaterialUploadApiTask {
 
 		// 处理我方两个广告位对应媒体一个广告位 <mediaAdspaceId|materialKey, mediaMaterialKey>
 		Map<String, String[]> mediaAdspace = new HashMap<String, String[]>();
+		Map<String, String> refusedMap = new HashMap<String, String>();// <key, errorMsg>
 		
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
@@ -113,6 +114,17 @@ public class MojiMaterialUploadApiTask {
 			// 如果同一个素材属于同一个媒体广告位已经上传一个，则直接将起媒体返回的key赋值给当前素材，不用再推送一次
 			if (mediaAdspace.containsKey(key)) {
 				materialIdKeys.put(material.getId(), mediaAdspace.get(key));
+				continue;
+			}
+			
+			// 自动驳回的
+			if (refusedMap.containsKey(key)) {
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage(refusedMap.get(key));
+				rejusedMaterials.add(rejuseItem);
 				continue;
 			}
 			
@@ -133,6 +145,9 @@ public class MojiMaterialUploadApiTask {
 					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(response.getMessage());
 					rejusedMaterials.add(rejuseItem);
+					
+					// 过滤重复的 MaterialKey
+					refusedMap.put(key, response.getMessage());
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + response.getCode() + " " + response.getMessage());
 				}
 			} else {

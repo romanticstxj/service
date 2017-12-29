@@ -1,13 +1,17 @@
 package com.madhouse.platform.premiummad.media.weibo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -53,17 +57,6 @@ public class WeiboMaterialStatusApiTask {
 	
 	public void getStatus() {
 		LOGGER.info("++++++++++Weibo get material status begin+++++++++++");
-
-		/* 代码配置处理方式
-		// 媒体组没有映射到具体的媒体不处理
-		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
-		if (com.madhouse.platform.premiummad.util.StringUtils.isBlank(value)) {
-			return;
-		}
-
-		// 获取媒体组下的具体媒体
-		int[] mediaIds = com.madhouse.platform.premiummad.util.StringUtils.splitToIntArray(value);
-		*/
 		
 		// 根据媒体组ID和审核对象获取具体的媒体ID
 		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
@@ -76,14 +69,19 @@ public class WeiboMaterialStatusApiTask {
 		// 我方系统未审核的素材
 		List<Material> unAuditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unAuditMaterials == null || unAuditMaterials.isEmpty()) {
-			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有素材需要审核");*/
 			LOGGER.info("Weibo没有素材需要审核");
 			return;
 		}
 
 		// 设置request参数
+		Set<String> distinctIds = new HashSet<String>();
 		List<String> creative_ids = new ArrayList<String>();
 		for (Material material : unAuditMaterials) {
+			// 去重
+			if (distinctIds.contains(material.getMediaQueryKey())) {
+				continue;
+			}
+			distinctIds.add(material.getMediaQueryKey());
 			creative_ids.add(material.getMediaQueryKey());
 		}
 		WeiboMaterialStatusRequest weiboMaterialStatusRequest = new WeiboMaterialStatusRequest();

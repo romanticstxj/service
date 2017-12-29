@@ -12,11 +12,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.Layout;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
@@ -87,17 +89,6 @@ public class MomoMaterialUploadApiTask {
 	public void uploadMaterial() {
 		LOGGER.info("++++++++++Momo upload material begin+++++++++++");
 
-		/* 代码处理方式
-		// 媒体组没有映射到具体的媒体不处理
-		String value = MediaTypeMapping.getValue(MediaTypeMapping.MOMO.getGroupId());
-		if (StringUtils.isBlank(value)) {
-			return;
-		}
-
-		// 获取媒体组下的具体媒体
-		int[] mediaIds = StringUtils.splitToIntArray(value);
-		*/
-
 		// 根据媒体组ID和审核对象获取具体的媒体ID
 		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
 
@@ -109,7 +100,6 @@ public class MomoMaterialUploadApiTask {
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10002.getValue());
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
-			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有未上传的素材");*/
 			LOGGER.info("Momo没有未上传的素材");
 			return;
 		}
@@ -119,7 +109,28 @@ public class MomoMaterialUploadApiTask {
 
 		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
+		
+		// 为了过滤DSP相同的key只上传一次
+		Map<String, String[]> successMaps = new HashMap<String, String[]>();// <key, mediaQueryAndMaterialKeys>
+		Map<String, String> refusedMap = new HashMap<String, String>();// <key, errorMsg>
 		for (Material material : unSubmitMaterials) {
+			String key = material.getDspId() + "-" + material.getMaterialKey() + "-" + material.getMediaId();
+			// 上传成功的
+			if (successMaps.containsKey(key)) {
+				materialIdKeys.put(material.getId(), successMaps.get(key));
+				continue;
+			}
+			// 自动驳回的
+			if (refusedMap.containsKey(key)) {
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage(refusedMap.get(key));
+				rejusedMaterials.add(rejuseItem);
+				continue;
+			}
+
 			// 校验广告形式是否支持,不支持自动驳回
 			String size = material.getLayout().intValue() == 301 ? "(" + material.getSize() +")" : "";
 			if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout()) + size))) {
@@ -129,6 +140,9 @@ public class MomoMaterialUploadApiTask {
 				rejuseItem.setMediaIds(mediaIds);
 				rejuseItem.setErrorMessage("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
 				rejusedMaterials.add(rejuseItem);
+				
+				// 过滤重复的 MaterialKey
+				refusedMap.put(key, rejuseItem.getErrorMessage());
 				LOGGER.error(rejuseItem.getErrorMessage());
 				continue;
 			}
@@ -143,6 +157,9 @@ public class MomoMaterialUploadApiTask {
 				rejuseItem.setMediaIds(mediaIds);
 				rejuseItem.setErrorMessage(errorMsg);
 				rejusedMaterials.add(rejuseItem);
+				
+				// 过滤重复的 MaterialKey
+				refusedMap.put(key, errorMsg);
 				continue;
 			}
 			
@@ -165,6 +182,9 @@ public class MomoMaterialUploadApiTask {
 				if (response.getEc() == 200) {
 					String[] mediaQueryAndMaterialKeys = {material.getMediaQueryKey()};
 					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
+					
+					// 过滤重复的 MaterialKey
+					successMaps.put(key, mediaQueryAndMaterialKeys);
 				} else {
 					// 自动驳回
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
@@ -173,6 +193,9 @@ public class MomoMaterialUploadApiTask {
 					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(response.getEm());
 					rejusedMaterials.add(rejuseItem);
+					
+					// 过滤重复的 MaterialKey
+					refusedMap.put(key, response.getEm());
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + response.getEm());
 				}
 			} else {

@@ -6,11 +6,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -56,17 +58,6 @@ public class MomoGetStatusApiTask {
 	public void getStatusResponse() throws Exception {
 		LOGGER.info("++++++++++Momo get material status begin+++++++++++");
 		
-		/* 代码处理方式
-		// 媒体组没有映射到具体的媒体不处理
-		String value = MediaTypeMapping.getValue(MediaTypeMapping.MOMO.getGroupId());
-		if (StringUtils.isBlank(value)) {
-			return;
-		}
-		
-		// 获取媒体组下的具体媒体
-		int[] mediaIds = StringUtils.splitToIntArray(value);
-		*/
-		
 		// 根据媒体组ID和审核对象获取具体的媒体ID
 		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
 
@@ -78,14 +69,19 @@ public class MomoGetStatusApiTask {
 		// 获取审核中的素材
 		List<Material> unauditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unauditMaterials == null || unauditMaterials.isEmpty()) {
-			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的素材");*/
 			LOGGER.info("Momo无需要审核的素材");
 			return;
 		}
 		
 		// 获取媒体方的素材 crid
 		Set<String> crids = new HashSet<>();
+		Set<String> distinctIds = new HashSet<String>();
 		for (Material material : unauditMaterials) {
+			// 去重
+			if (distinctIds.contains(material.getMediaQueryKey())) {
+				continue;
+			}
+			distinctIds.add(material.getMediaQueryKey());
 			crids.add(material.getMediaQueryKey());
 		}
 

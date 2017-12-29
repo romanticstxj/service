@@ -2,8 +2,10 @@ package com.madhouse.platform.premiummad.media.iqiyi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,8 +70,14 @@ public class IQiyiMaterialStatusApiTask {
 		}
 
 		// 获取未审核媒体的key列表
+		Set<String> distinctIds = new HashSet<String>();
 		String mediaQueryKeys = "";
 		for (Material material : unAuditMaterials) {
+			// 去重
+			if (distinctIds.contains(material.getMediaQueryKey())) {
+				continue;
+			}
+			distinctIds.add(material.getMediaQueryKey());
 			mediaQueryKeys = "," + mediaQueryKeys + material.getMediaQueryKey();
 		}
 
