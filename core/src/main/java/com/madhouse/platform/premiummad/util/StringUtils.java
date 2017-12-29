@@ -414,4 +414,8 @@ public class StringUtils {
 		Matcher matcher = pattern.matcher(bidUrl);
 		return matcher.matches();
 	}
+	
+	public static boolean intEquals(Integer i1, int i2){
+		return i1 != null && i1.intValue() == i2;
+	}
 }

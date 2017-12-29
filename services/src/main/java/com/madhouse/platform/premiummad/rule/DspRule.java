@@ -65,12 +65,15 @@ public class DspRule extends BaseRule{
 		DspAuth singleDspAuth = dspAuths.get(0);
 		int adspaceId = singleDspAuth.getAdspaceId();
 		int mediaId = singleDspAuth.getMediaId();
-		if(adspaceId == SystemConstant.DB.DSP_MEDIA_AUTH_ALL){
+		if(dspAuths.size() > 1){ //如果数据不止一条，不能有所有的概念
+			for(DspAuth da: dspAuths){
+				if(StringUtils.intEquals(da.getAdspaceId(), SystemConstant.DB.DSP_MEDIA_AUTH_ALL)){
+					throw new BusinessException(StatusCode.SC31006);
+				}
+			}
+		} else if(adspaceId == SystemConstant.DB.DSP_MEDIA_AUTH_ALL){ //如果数据只有一条，广告位id是-1，媒体id也须-1
 			if(mediaId != SystemConstant.DB.DSP_MEDIA_AUTH_ALL){
 				singleDspAuth.setMediaId(SystemConstant.DB.DSP_MEDIA_AUTH_ALL);
-			}
-			if(dspAuths.size() != 1){
-				throw new BusinessException(StatusCode.SC31006);
 			}
 		}
 	}
