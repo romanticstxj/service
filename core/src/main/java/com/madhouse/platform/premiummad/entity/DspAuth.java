@@ -2,14 +2,15 @@ package com.madhouse.platform.premiummad.entity;
 
 import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
 
-public class DspAuth {
+public class DspAuth extends BaseEntity{
 
 	private Integer id;
-	
 	@NotNullAndBlank
 	private Integer dspId;
 	@NotNullAndBlank
-	private Adspace[] adspaces;
+	private Integer mediaId;
+	@NotNullAndBlank
+	private Integer adspaceId;
 
 	public Integer getId() {
 		return id;
@@ -27,12 +28,20 @@ public class DspAuth {
 		this.dspId = dspId;
 	}
 
-	public Adspace[] getAdspaces() {
-		return adspaces;
+	public Integer getMediaId() {
+		return mediaId;
 	}
 
-	public void setAdspaces(Adspace[] adspaces) {
-		this.adspaces = adspaces;
+	public void setMediaId(Integer mediaId) {
+		this.mediaId = mediaId;
 	}
-	
+
+	public Integer getAdspaceId() {
+		return adspaceId;
+	}
+
+	public void setAdspaceId(Integer adspaceId) {
+		this.adspaceId = adspaceId;
+	}
+
 }

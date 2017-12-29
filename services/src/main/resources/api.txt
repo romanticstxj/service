@@ -5,6 +5,7 @@
             "parameters": {
                 "query": {
             		"ids" : "<string||comment:1）若无ids参数，则查询当前用户下所有权限的媒体 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分媒体数据，但查询出的也都是当前用户的权限下的媒体>",
+            		"category" : "<integer||comment:媒体分类>",
             		"userId" : "<integer||comment:查询某个userId权限下的所有媒体>"
             	}
             },
@@ -619,6 +620,47 @@
                             "id": "<*||integer||comment:dsp id>"
                         }
                     ]
+                }
+            }
+        }
+    },
+    "/dsp/mediaAuth/update": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": [{
+                    "dspId": "<*||integer||comment:dspId>",
+                    "mediaId": "<*||integer||comment:mediaId(如果选择了所有媒体，则传-1,此时广告位id也传-1;不然,传媒体id)>",
+                    "adspaceId": "<*||integer||comment:adspaceId(如果选择了某个媒体下的所有广告位，则传-1;不然,传广告位id)>"
+                }]
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/dsp/mediaAuth/query": {
+        "get": {
+            "_summary": "",
+            "parameters": {
+                "query": {
+                    "dspId": "<*||integer||comment:dspId>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [{
+                    	"id": "<*||integer||comment:id>",
+	                    "dspId": "<*||integer||comment:dspId>",
+	                    "mediaId": "<*||integer||comment:mediaId(如果选择了所有媒体，则传-1,此时广告位id也传-1;不然,传媒体id)>",
+	                    "adspaceId": "<*||integer||comment:adspaceId(如果选择了某个媒体下的所有广告位，则传-1;不然,传广告位id)>"
+	                }]
                 }
             }
         }

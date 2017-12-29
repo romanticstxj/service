@@ -1,9 +1,13 @@
 package com.madhouse.platform.premiummad.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.dto.DspDto;
+import com.madhouse.platform.premiummad.entity.DspAuth;
 
 public class DspControllerTest {
 	@Test
@@ -53,4 +57,50 @@ public class DspControllerTest {
 		HttpUtilTest.httpGet(url);
 	}
 	
+	@Test
+	public void updateDspMediaAuth(){
+		List<DspAuth> dspAuths = new ArrayList<>();
+		DspAuth dspAuth = new DspAuth();
+		dspAuth.setDspId(600009);
+		dspAuth.setAdspaceId(200036);
+		dspAuth.setMediaId(100016);
+		dspAuths.add(dspAuth);
+		dspAuth = new DspAuth();
+		dspAuth.setDspId(600009);
+		dspAuth.setAdspaceId(200038);
+		dspAuth.setMediaId(100016);
+		dspAuths.add(dspAuth);
+		dspAuth = new DspAuth();
+		dspAuth.setDspId(600009);
+		dspAuth.setAdspaceId(200037);
+		dspAuth.setMediaId(100017);
+		dspAuths.add(dspAuth);
+		String url = "http://localhost:8080/services/dsp/mediaAuth/update";
+		HttpUtilTest.httpPost(url, JSON.toJSONString(dspAuths));
+	}
+	
+	@Test
+	public void queryDspMediaAuth(){
+		String url = "http://localhost:8080/services/dsp/mediaAuth/query?dspId=600009";
+		HttpUtilTest.httpGet(url);
+	}
+	
+//	public static void main(String[] args) {
+//		for(int i=0; i<100; i++){
+//			new Thread(new Runnable(){
+//
+//				@Override
+//				public void run() {
+//					// TODO Auto-generated method stub
+//					updateDspMediaAuth();
+////					try {
+////						Thread.sleep(2000);
+////					} catch (InterruptedException e) {
+////						// TODO Auto-generated catch block
+////						e.printStackTrace();
+////					}
+//				}}).start();
+//		}
+//	}
+//	
 }

@@ -149,6 +149,8 @@ public interface SystemConstant {
 		
 		int POLICY_STATUS_OVERDUE = 1;
 		int POLICY_STATUS_NO_OVERDUE = 0;
+		
+		int DSP_MEDIA_AUTH_ALL = -1;
 	}
 	
 	/* 媒体审核对象 */
