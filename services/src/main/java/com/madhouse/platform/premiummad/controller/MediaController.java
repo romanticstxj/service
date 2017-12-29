@@ -21,6 +21,7 @@ import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
+import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
@@ -101,7 +102,7 @@ public class MediaController {
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
     	//权限check
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
-		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
+		if(ObjectUtils.isEmpty(mediaIdList) || StringUtils.intNotEquals(mediaIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
@@ -122,7 +123,7 @@ public class MediaController {
 		//权限check
 		Integer id = mediaDto.getId();
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
-		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
+		if(ObjectUtils.isEmpty(mediaIdList) || StringUtils.intNotEquals(mediaIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
@@ -154,7 +155,7 @@ public class MediaController {
 		//权限check
 		Integer id = mediaDto.getId();
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
-		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
+		if(ObjectUtils.isEmpty(mediaIdList) || StringUtils.intNotEquals(mediaIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 				

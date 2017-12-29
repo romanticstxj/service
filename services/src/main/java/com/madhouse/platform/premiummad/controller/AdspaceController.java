@@ -106,7 +106,7 @@ public class AdspaceController {
     public ResponseDto<AdspaceDto> getAdspace(@RequestParam(value="id", required=true) Integer id,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
 		List<Integer> adspaceIdList = userAuthService.queryAdspaceIdList(userId, String.valueOf(id));
-		if(userId == null || ObjectUtils.isEmpty(adspaceIdList) || adspaceIdList.get(0).intValue() != id.intValue()){
+		if(userId == null || ObjectUtils.isEmpty(adspaceIdList) || StringUtils.intNotEquals(adspaceIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
@@ -124,7 +124,7 @@ public class AdspaceController {
     public ResponseDto<PolicyAdspaceDto> getAdspacePolicies(@RequestParam(value="id", required=true) Integer id,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
 		List<Integer> adspaceIdList = userAuthService.queryAdspaceIdList(userId, String.valueOf(id));
-		if(userId == null || ObjectUtils.isEmpty(adspaceIdList) || adspaceIdList.get(0).intValue() != id.intValue()){
+		if(userId == null || ObjectUtils.isEmpty(adspaceIdList) || StringUtils.intNotEquals(adspaceIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		

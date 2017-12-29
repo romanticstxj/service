@@ -418,4 +418,8 @@ public class StringUtils {
 	public static boolean intEquals(Integer i1, int i2){
 		return i1 != null && i1.intValue() == i2;
 	}
+	
+	public static boolean intNotEquals(Integer i1, int i2){
+		return i1 != null && i1.intValue() != i2;
+	}
 }
