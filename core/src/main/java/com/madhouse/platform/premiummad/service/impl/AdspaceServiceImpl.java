@@ -38,18 +38,12 @@ public class AdspaceServiceImpl implements IAdspaceService {
 	@Autowired
 	private MimesDao mimesDao;
 	
-//	@Autowired
-//	private SysMediaMapper mediaDao; 
-
-//	@Autowired
-//	private AdspaceMappingDspMapper adspaceMappingDspDao;
-
 	@Autowired
 	private DspMediaMapper dspMediaDao;
 
 	@Override
-	public List<Adspace> queryAllByParams(List<Integer> mediaIdList, Integer status) {
-		return adspaceDao.queryAllByParams(mediaIdList, status);
+	public List<Adspace> queryAllByParams(List<Integer> mediaIdList, Integer status, Integer mediaCategory) {
+		return adspaceDao.queryAllByParams(mediaIdList, status, mediaCategory);
 	}
 
 	@Override

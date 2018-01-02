@@ -12,7 +12,7 @@ public interface IAdspaceService extends IBaseService<Adspace>{
      * 查询所有广告位
      * @return List
      */
-    List<Adspace> queryAllByParams(List<Integer> mediaIdList, Integer status);
+    List<Adspace> queryAllByParams(List<Integer> mediaIdList, Integer status, Integer mediaCategory);
     
     Adspace queryAdspacePolicies(Integer id);
 

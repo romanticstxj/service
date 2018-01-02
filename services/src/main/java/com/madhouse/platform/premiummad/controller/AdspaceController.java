@@ -52,6 +52,7 @@ public class AdspaceController {
 	 */
 	@RequestMapping("/list")
     public ResponseDto<AdspaceDto> list(@RequestParam(value="mediaIds", required=false) String mediaIds,
+    		@RequestParam(value="mediaCategory", required=false) Integer mediaCategory,
     		@RequestParam(value="status", required=false) Integer status,
     		@RequestParam(value="userId", required=false) Integer userIdByGet,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
@@ -63,7 +64,7 @@ public class AdspaceController {
 		}
 		
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
-		return listByParams(mediaIdList, status);
+		return listByParams(mediaIdList, status, mediaCategory);
     }
 	
 	/**
@@ -71,12 +72,12 @@ public class AdspaceController {
 	 * @param ids
 	 * @return
 	 */
-	private ResponseDto<AdspaceDto> listByParams(List<Integer> mediaIdList, Integer status){
+	private ResponseDto<AdspaceDto> listByParams(List<Integer> mediaIdList, Integer status, Integer mediaCategory){
 		//无权限查看任何媒体
 		if(ObjectUtils.isEmpty(mediaIdList)){
 	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<AdspaceDto>());
 		} else{ 
-			List<Adspace> adspaces = adspaceService.queryAllByParams(mediaIdList, status);
+			List<Adspace> adspaces = adspaceService.queryAllByParams(mediaIdList, status, mediaCategory);
 			List<AdspaceDto> result = AdspaceRule.convertToDtoList(adspaces, new ArrayList<AdspaceDto>());
 	        return ResponseUtils.response(StatusCode.SC20000, result);
 		}

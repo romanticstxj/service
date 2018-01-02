@@ -110,6 +110,9 @@
             	#{mediaId,jdbcType=INTEGER}
             </foreach>
         </if>
+        <if test="mediaCategory != null">
+        	AND m.category = #{mediaCategory, jdbcType=INTEGER}
+        </if>
         <if test="status != null">
         	AND a.status = #{status, jdbcType=INTEGER}
         </if>

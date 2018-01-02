@@ -178,7 +178,9 @@
             "_summary": "广告位列表，若未提供媒体id则全局查询，否则根据媒体id查询",
             "parameters": {
                 "query": {
-                	"mediaIds" : "<||string||comment:1）若无mediaIds参数，则查询当前用户下所有权限的广告位 2）若有mediaIds参数（mediaIds是用逗号分隔的媒体id组），则查询部分媒体下的广告位数据，但查询出的也都是当前用户的权限下的广告位>"
+                	"mediaIds" : "<string||comment:1）若无mediaIds参数，则查询当前用户下所有权限的广告位 2）若有mediaIds参数（mediaIds是用逗号分隔的媒体id组），则查询部分媒体下的广告位数据，但查询出的也都是当前用户的权限下的广告位>",
+                	"mediaCategory": "<integer||comment:所属的媒体分类>",
+                	"status": "<integer||comment:广告位状态>"
                 }
             },
             "responses": {
