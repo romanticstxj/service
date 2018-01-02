@@ -21,6 +21,7 @@ import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
+import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
@@ -37,12 +38,13 @@ public class MediaController {
 	
 	/**
 	 * 媒体列表接口，1）若无ids参数，则查询当前用户下所有权限的媒体 2）若有ids参数（ids是用逗号分隔的媒体id组），则查询部分媒体数据，但查询出的也都是当前用户的权限下的媒体
-	 * @param userId
+	 * @param userId, category(媒体分类), 内部userid的暗门
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping("/list")
     public ResponseDto<MediaDto> list(@RequestParam(value="ids", required=false) String mediaIds,
+    		@RequestParam(value="category", required=false) Integer category,
     		@RequestParam(value="userId", required=false) Integer userIdByGet,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
 		//获得userId，可以从url中获得（方便通过get请求获取数据），更为一般的是从requestHeader里获取
@@ -51,19 +53,19 @@ public class MediaController {
 		}
 		
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, mediaIds);
-		return listByMediaIds(mediaIdList);
+		return listByMediaIds(mediaIdList, category);
     }
 	
 	/**
-     * 供应方媒体列表，内部调用接口（含参ids）
+     * 供应方媒体列表，内部调用接口（含参ids和category）
      * @return ResponseDto
 	 * @throws Exception 
      */
-    private ResponseDto<MediaDto> listByMediaIds(List<Integer> mediaIdList) throws Exception {
+    private ResponseDto<MediaDto> listByMediaIds(List<Integer> mediaIdList, Integer category) throws Exception {
 		if(ObjectUtils.isEmpty(mediaIdList)){ //无权限查看任何媒体
 	        return ResponseUtils.response(StatusCode.SC20000, new ArrayList<MediaDto>());
 		} else{
-			List<Media> medias = mediaService.queryAll(mediaIdList);
+			List<Media> medias = mediaService.queryAll(mediaIdList, category);
 			List<MediaDto> mediaDtos = new ArrayList<>();
 	        BeanUtils.copyList(medias,mediaDtos,MediaDto.class);
 	        return ResponseUtils.response(StatusCode.SC20000,mediaDtos);
@@ -100,7 +102,7 @@ public class MediaController {
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
     	//权限check
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
-		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
+		if(ObjectUtils.isEmpty(mediaIdList) || StringUtils.intNotEquals(mediaIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
@@ -121,7 +123,7 @@ public class MediaController {
 		//权限check
 		Integer id = mediaDto.getId();
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
-		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
+		if(ObjectUtils.isEmpty(mediaIdList) || StringUtils.intNotEquals(mediaIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
@@ -153,7 +155,7 @@ public class MediaController {
 		//权限check
 		Integer id = mediaDto.getId();
 		List<Integer> mediaIdList = userAuthService.queryMediaIdList(userId, String.valueOf(id));
-		if(ObjectUtils.isEmpty(mediaIdList) || mediaIdList.get(0).intValue() != id.intValue()){
+		if(ObjectUtils.isEmpty(mediaIdList) || StringUtils.intNotEquals(mediaIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 				

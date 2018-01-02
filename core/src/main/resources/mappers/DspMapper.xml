@@ -21,6 +21,14 @@
     <result column="updated_user" jdbcType="INTEGER" property="updatedUser" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
   </resultMap>
+  <resultMap id="dspMediaAuthMap" type="com.madhouse.platform.premiummad.entity.DspAuth">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="dsp_id" jdbcType="INTEGER" property="dspId" />
+    <result property="mediaId" column="media_id" jdbcType="INTEGER" />
+    <result property="adspaceId" column="adspace_id" jdbcType="INTEGER" />
+    <result column="created_user" jdbcType="INTEGER" property="createdUser" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+  </resultMap>
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbggenerated
@@ -29,6 +37,9 @@
     -->
     id, name, bid_url, winnotice_url, delivery_type, bid_percent, token, status, max_qps, 
     created_user, created_time, updated_user, updated_time
+  </sql>
+  <sql id="DSP_MEDIA_AUTH_Column_List">
+    id, dsp_id, media_id, adspace_id, created_user, created_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--
@@ -238,5 +249,32 @@
         </if>
         ORDER BY d.id DESC
 	</select>
+	
+	<select id="queryDspMediaAuths" parameterType="java.lang.Integer" resultMap="dspMediaAuthMap">
+		SELECT <include refid="DSP_MEDIA_AUTH_Column_List"/>
+        FROM mad_sys_dsp_media
+        WHERE dsp_id = #{dspId,jdbcType=INTEGER}
+	</select>
+	
+	<insert id="batchInsertDspMediaAuth" parameterType="string">
+   		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
+	        SELECT LAST_INSERT_ID()  
+	    </selectKey>  
+          	INSERT INTO mad_sys_dsp_media(dsp_id, media_id, adspace_id, created_user, created_time) VALUES
+         		<foreach collection="dspAuths" index="index" item="dspAuth" separator=",">
+         			(
+         				#{dspAuth.dspId},
+         				#{dspAuth.mediaId},
+         				#{dspAuth.adspaceId},
+         				#{dspAuth.createdUser},
+         				#{dspAuth.createdTime}
+         			)
+     		</foreach>
+	</insert>
+	
+	<delete id="batchDeleteDspMediaAuth" parameterType="java.lang.Integer">
+	    DELETE FROM mad_sys_dsp_media
+	    WHERE dsp_id = #{dspId,jdbcType=INTEGER}
+	 </delete>
 	
 </mapper>

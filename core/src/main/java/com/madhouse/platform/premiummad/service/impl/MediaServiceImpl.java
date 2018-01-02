@@ -30,8 +30,8 @@ public class MediaServiceImpl implements IMediaService {
 	private SysMediaMapper sysMediaMapper;
 
 	@Override
-	public List<Media> queryAll(List<Integer> ids) {
-		return mediaDao.queryAll(ids);
+	public List<Media> queryAll(List<Integer> ids, Integer category) {
+		return mediaDao.queryAll(ids, category);
 	}
 
 	@Override
@@ -115,5 +115,11 @@ public class MediaServiceImpl implements IMediaService {
 			mediaIds[i] = medias.get(i).getId();
 		}
 		return mediaIds;
+	}
+
+	@Override
+	public List<Media> queryAll(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

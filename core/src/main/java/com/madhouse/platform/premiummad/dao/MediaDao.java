@@ -14,7 +14,7 @@ public interface MediaDao {
 
 	public Media queryMediaById(Integer mediaId);
 
-	public List<Media> queryAll(@Param("idStrs") List<Integer> idStrs);
+	public List<Media> queryAll(@Param("idStrs") List<Integer> idStrs, @Param("category") Integer category);
 
 	public Integer update(Media media);
 

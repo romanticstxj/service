@@ -51,7 +51,7 @@ public class AdspaceController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/list")
-    public ResponseDto<AdspaceDto> list(@RequestParam(value="ids", required=false) String mediaIds,
+    public ResponseDto<AdspaceDto> list(@RequestParam(value="mediaIds", required=false) String mediaIds,
     		@RequestParam(value="status", required=false) Integer status,
     		@RequestParam(value="userId", required=false) Integer userIdByGet,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) throws Exception {
@@ -106,7 +106,7 @@ public class AdspaceController {
     public ResponseDto<AdspaceDto> getAdspace(@RequestParam(value="id", required=true) Integer id,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
 		List<Integer> adspaceIdList = userAuthService.queryAdspaceIdList(userId, String.valueOf(id));
-		if(userId == null || ObjectUtils.isEmpty(adspaceIdList) || adspaceIdList.get(0).intValue() != id.intValue()){
+		if(userId == null || ObjectUtils.isEmpty(adspaceIdList) || StringUtils.intNotEquals(adspaceIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		
@@ -124,7 +124,7 @@ public class AdspaceController {
     public ResponseDto<PolicyAdspaceDto> getAdspacePolicies(@RequestParam(value="id", required=true) Integer id,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
 		List<Integer> adspaceIdList = userAuthService.queryAdspaceIdList(userId, String.valueOf(id));
-		if(userId == null || ObjectUtils.isEmpty(adspaceIdList) || adspaceIdList.get(0).intValue() != id.intValue()){
+		if(userId == null || ObjectUtils.isEmpty(adspaceIdList) || StringUtils.intNotEquals(adspaceIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		

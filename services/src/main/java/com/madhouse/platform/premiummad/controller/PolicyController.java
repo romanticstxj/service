@@ -20,6 +20,7 @@ import com.madhouse.platform.premiummad.service.IPolicyService;
 import com.madhouse.platform.premiummad.service.IUserAuthService;
 import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
+import com.madhouse.platform.premiummad.util.StringUtils;
 import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
@@ -85,7 +86,7 @@ public class PolicyController {
     		@RequestParam(value="type", required=false) Integer type,
     		@RequestHeader(value="X-User-Id", required=false) Integer userId) {
 		List<Integer> policyIdList = userAuthService.queryPolicyIdList(userId, String.valueOf(id));
-		if(userId == null || ObjectUtils.isEmpty(policyIdList) || policyIdList.get(0).intValue() != id.intValue()){
+		if(userId == null || ObjectUtils.isEmpty(policyIdList) || StringUtils.intNotEquals(policyIdList.get(0), id.intValue())){
 			return ResponseUtils.response(StatusCode.SC20001, null);
 		}
 		

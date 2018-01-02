@@ -142,14 +142,14 @@ public class AdspaceControllerTest {
 	@Test
 	public void detailPolicies(){
 //		String link = "http://172.16.25.48:8080/services/adspace/detail?id=200000";
-		String link = "http://localhost:8080/services/adspace/detail/policyList?id=200061";
+		String link = "http://localhost:8080/services/adspace/detail/policyList?id=201120";
 		HttpUtilTest.httpGet(link);
 	}
 	
 	@Test
 	public void list(){
 //		String link = "http://172.16.25.48:8080/services/adspace/list";
-		String link = "http://localhost:8080/services/adspace/list";
+		String link = "http://localhost:8080/services/adspace/list?mediaIds=100013,100012";
 		HttpUtilTest.httpGet(link);
 	}
 	

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.madhouse.platform.premiummad.entity.Dsp;
+import com.madhouse.platform.premiummad.entity.DspAuth;
 
 public interface DspMapper {
     /**
@@ -83,5 +84,11 @@ public interface DspMapper {
 	 * @return
 	 */
 	List<Dsp> queryAll(@Param("idStrs") String[] idStrs, @Param("dsp") Dsp dsp);
+	
+	int batchInsertDspMediaAuth(@Param("dspAuths") List<DspAuth> dspAuths);
+	
+	int batchDeleteDspMediaAuth(Integer dspId);
+	
+	List<DspAuth> queryDspMediaAuths(Integer dspId);
 
 }

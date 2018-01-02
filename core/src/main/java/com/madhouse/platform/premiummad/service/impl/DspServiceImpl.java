@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dao.DspMapper;
 import com.madhouse.platform.premiummad.entity.Dsp;
+import com.madhouse.platform.premiummad.entity.DspAuth;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.service.IDspService;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -120,8 +121,36 @@ public class DspServiceImpl implements IDspService {
 	}
 	
 	@Override
+	public void updateDspMediaAuth(List<DspAuth> dspAuths) {
+		if(dspAuths == null || dspAuths.size() == 0){
+			return;
+		}
+		Integer dspId = dspAuths.get(0).getDspId();
+		List<DspAuth> queryResult = dspDao.queryDspMediaAuths(dspId);
+		//防止并发批操作异常，检查操作返回数，保证一旦有异常就回滚
+		int queryCount = queryResult.size();
+		if(queryResult != null){ //如果有这个dsp的权限，则先删除此dsp权限
+			int deleteCount = dspDao.batchDeleteDspMediaAuth(dspId);
+			if(deleteCount != queryCount){
+				throw new BusinessException(StatusCode.SC30002);
+			}
+		}
+		
+		int toInsertCount = dspAuths.size();
+		int intsertCount = dspDao.batchInsertDspMediaAuth(dspAuths);
+		if(intsertCount != toInsertCount){
+			throw new BusinessException(StatusCode.SC30002);
+		}
+	}
+	
+	@Override
 	public List<Dsp> queryAll(String[] ids, Dsp dsp) {
 		return dspDao.queryAll(ids, dsp);
+	}
+	
+	@Override
+	public List<DspAuth> queryDspMediaAuths(Integer dspId) {
+		return dspDao.queryDspMediaAuths(dspId);
 	}
 
 	@Override

@@ -1,9 +1,13 @@
 package com.madhouse.platform.premiummad.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.dto.DspDto;
+import com.madhouse.platform.premiummad.entity.DspAuth;
 
 public class DspControllerTest {
 	@Test
@@ -50,6 +54,34 @@ public class DspControllerTest {
 	@Test
 	public void list(){
 		String url = "http://172.16.25.48:8080/services/dsp/list?status=1&deliveryType=8";
+		HttpUtilTest.httpGet(url);
+	}
+	
+	@Test
+	public void updateDspMediaAuth(){
+		List<DspAuth> dspAuths = new ArrayList<>();
+		DspAuth dspAuth = new DspAuth();
+		dspAuth.setDspId(600009);
+		dspAuth.setAdspaceId(200036);
+		dspAuth.setMediaId(100016);
+		dspAuths.add(dspAuth);
+		dspAuth = new DspAuth();
+		dspAuth.setDspId(600009);
+		dspAuth.setAdspaceId(200038);
+		dspAuth.setMediaId(100016);
+		dspAuths.add(dspAuth);
+		dspAuth = new DspAuth();
+		dspAuth.setDspId(600009);
+		dspAuth.setAdspaceId(200037);
+		dspAuth.setMediaId(100017);
+		dspAuths.add(dspAuth);
+		String url = "http://localhost:8080/services/dsp/mediaAuth/update";
+		HttpUtilTest.httpPost(url, JSON.toJSONString(dspAuths));
+	}
+	
+	@Test
+	public void queryDspMediaAuth(){
+		String url = "http://localhost:8080/services/dsp/mediaAuth/query?dspId=600009";
 		HttpUtilTest.httpGet(url);
 	}
 	

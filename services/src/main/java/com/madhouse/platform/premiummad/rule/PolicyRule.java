@@ -133,7 +133,7 @@ public class PolicyRule extends BaseRule{
 	 * 如果策略的结束日期小于今天，那么返回状态码2，表示策略过期
 	 * @param policy
 	 */
-	private static void updateStatusForOverdue(PolicyDto policy) {
+	public static void updateStatusForOverdue(PolicyDto policy) {
 		if(DateUtils.judgeOverdue(policy.getEndDate())){
 			policy.setOverdue(SystemConstant.DB.POLICY_STATUS_OVERDUE); 
 		}
