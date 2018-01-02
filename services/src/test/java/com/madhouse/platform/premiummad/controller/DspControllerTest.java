@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.dto.DspDto;
-import com.madhouse.platform.premiummad.entity.DspAuth;
+import com.madhouse.platform.premiummad.entity.DspMedia;
 
 public class DspControllerTest {
 	@Test
@@ -59,18 +59,18 @@ public class DspControllerTest {
 	
 	@Test
 	public void updateDspMediaAuth(){
-		List<DspAuth> dspAuths = new ArrayList<>();
-		DspAuth dspAuth = new DspAuth();
+		List<DspMedia> dspAuths = new ArrayList<>();
+		DspMedia dspAuth = new DspMedia();
 		dspAuth.setDspId(600009);
 		dspAuth.setAdspaceId(200036);
 		dspAuth.setMediaId(100016);
 		dspAuths.add(dspAuth);
-		dspAuth = new DspAuth();
+		dspAuth = new DspMedia();
 		dspAuth.setDspId(600009);
 		dspAuth.setAdspaceId(200038);
 		dspAuth.setMediaId(100016);
 		dspAuths.add(dspAuth);
-		dspAuth = new DspAuth();
+		dspAuth = new DspMedia();
 		dspAuth.setDspId(600009);
 		dspAuth.setAdspaceId(200037);
 		dspAuth.setMediaId(100017);

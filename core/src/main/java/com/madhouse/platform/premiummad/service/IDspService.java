@@ -3,7 +3,7 @@ package com.madhouse.platform.premiummad.service;
 import java.util.List;
 
 import com.madhouse.platform.premiummad.entity.Dsp;
-import com.madhouse.platform.premiummad.entity.DspAuth;
+import com.madhouse.platform.premiummad.entity.DspMedia;
 
 public interface IDspService extends IBaseService<Dsp>{
 
@@ -23,7 +23,7 @@ public interface IDspService extends IBaseService<Dsp>{
 
 	List<Dsp> queryAll(String[] ids, Dsp dsp);
 
-	void updateDspMediaAuth(List<DspAuth> dspAuths);
+	void updateDspMediaAuth(List<DspMedia> dspAuths);
 
-	List<DspAuth> queryDspMediaAuths(Integer dspId);
+	List<DspMedia> queryDspMediaAuths(Integer dspId);
 }

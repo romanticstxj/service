@@ -15,7 +15,7 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.dto.DspDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Dsp;
-import com.madhouse.platform.premiummad.entity.DspAuth;
+import com.madhouse.platform.premiummad.entity.DspMedia;
 import com.madhouse.platform.premiummad.rule.BaseRule;
 import com.madhouse.platform.premiummad.rule.DspRule;
 import com.madhouse.platform.premiummad.service.IDspService;
@@ -101,15 +101,15 @@ public class DspController {
     }
 	
 	@RequestMapping("/mediaAuth/update")
-    public ResponseDto<DspAuth> updateDspMediaAuth(@RequestBody List<DspAuth> dspAuthDtos){
-		List<DspAuth> dspAuths = DspRule.convertToDspAuthModelList(dspAuthDtos, true);
+    public ResponseDto<DspMedia> updateDspMediaAuth(@RequestBody List<DspMedia> dspAuthDtos){
+		List<DspMedia> dspAuths = DspRule.convertToDspAuthModelList(dspAuthDtos, true);
 		dspService.updateDspMediaAuth(dspAuths);
     	return ResponseUtils.response(StatusCode.SC20000, dspAuths);
 	}
 	
 	@RequestMapping("/mediaAuth/query")
-	public ResponseDto<DspAuth> getDspMediaAuth(@RequestParam Integer dspId) {
-		List<DspAuth> dspAuths = dspService.queryDspMediaAuths(dspId);
+	public ResponseDto<DspMedia> getDspMediaAuth(@RequestParam Integer dspId) {
+		List<DspMedia> dspAuths = dspService.queryDspMediaAuths(dspId);
         return ResponseUtils.response(StatusCode.SC20000, dspAuths);
     }
 	

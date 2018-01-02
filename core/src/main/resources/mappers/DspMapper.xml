@@ -21,7 +21,7 @@
     <result column="updated_user" jdbcType="INTEGER" property="updatedUser" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
   </resultMap>
-  <resultMap id="dspMediaAuthMap" type="com.madhouse.platform.premiummad.entity.DspAuth">
+  <resultMap id="dspMediaAuthMap" type="com.madhouse.platform.premiummad.entity.DspMedia">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="dsp_id" jdbcType="INTEGER" property="dspId" />
     <result property="mediaId" column="media_id" jdbcType="INTEGER" />

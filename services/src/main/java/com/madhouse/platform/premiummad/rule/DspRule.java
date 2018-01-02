@@ -8,7 +8,7 @@ import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.DspDto;
 import com.madhouse.platform.premiummad.entity.Dsp;
-import com.madhouse.platform.premiummad.entity.DspAuth;
+import com.madhouse.platform.premiummad.entity.DspMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -48,8 +48,8 @@ public class DspRule extends BaseRule{
         return dtos;
 	}
 
-	public static List<DspAuth> convertToDspAuthModelList(List<DspAuth> dspAuthDtos, boolean b) {
-		List<DspAuth> dspAuths = JSONArray.parseArray(dspAuthDtos.toString(), DspAuth.class);
+	public static List<DspMedia> convertToDspAuthModelList(List<DspMedia> dspAuthDtos, boolean b) {
+		List<DspMedia> dspAuths = JSONArray.parseArray(dspAuthDtos.toString(), DspMedia.class);
 		if(BeanUtils.isEmpty(dspAuths)){
 			return null;
 		}
@@ -61,12 +61,12 @@ public class DspRule extends BaseRule{
 		return dspAuths;
 	}
 
-	private static void checkIntegrity(List<DspAuth> dspAuths) {
-		DspAuth singleDspAuth = dspAuths.get(0);
+	private static void checkIntegrity(List<DspMedia> dspAuths) {
+		DspMedia singleDspAuth = dspAuths.get(0);
 		int adspaceId = singleDspAuth.getAdspaceId();
 		int mediaId = singleDspAuth.getMediaId();
 		if(dspAuths.size() > 1){ //如果数据不止一条，不能有所有的概念
-			for(DspAuth da: dspAuths){
+			for(DspMedia da: dspAuths){
 				if(StringUtils.intEquals(da.getAdspaceId(), SystemConstant.DB.DSP_MEDIA_AUTH_ALL)){
 					throw new BusinessException(StatusCode.SC31006);
 				}
