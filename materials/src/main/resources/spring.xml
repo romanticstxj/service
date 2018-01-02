@@ -186,9 +186,9 @@
         <task:scheduled ref="weiboClientUserBindTask" method="bindClientUser" cron="${cron.weiboClientUserBindTask}"/>
         <task:scheduled ref="weiboClientUserStatusTask" method="getClientUserStatus" cron="${cron.weiboClientUserStatusTask}"/>
 
-		<!-- autohome -->
+		<!-- autohome
         <task:scheduled ref="autohomeMaterialUploadApiTask" method="uploadMaterial" cron="${cron.autohomeMaterialUploadApiTask}"/>
-        <task:scheduled ref="autohomeMaterialStatusApiTask" method="getStatus" cron="${cron.autohomeMaterialStatusApiTask}"/>
+        <task:scheduled ref="autohomeMaterialStatusApiTask" method="getStatus" cron="${cron.autohomeMaterialStatusApiTask}"/> -->
 	
 	</task:scheduled-tasks>
 </beans>
