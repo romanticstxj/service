@@ -341,7 +341,7 @@
         </foreach>
 	</select>
 	
-	<select id="selectAuditedAdspaces" parameterType="Integer" resultType="com.madhouse.platform.premiummad.entity.AdspaceUnion">
+	<select id="selectAuditedAdspaces" parameterType="com.madhouse.platform.premiummad.entity.AuditedAdspaceQueryParam" resultType="com.madhouse.platform.premiummad.entity.AdspaceUnion">
         SELECT
 			ads.id,
 			ads.`name`,
@@ -351,6 +351,7 @@
 			ads.support_https supportHttps,
 			ads.bid_type bidType,
 			ads.bid_floor bidFloor,
+			CONVERT ((ads.layout / 100), signed) AS adtype,
 			ads.layout layout,
 			ads.material_type materialType,
 			ads.material_size materialSize,
@@ -375,8 +376,36 @@
 			mad_sys_adspace ads
 		LEFT JOIN mad_sys_media media ON ads.media_id = media.id
 		LEFT JOIN mad_sys_adspace_mapping_dsp adsdsp ON ads.id = adsdsp.adspace_id
-		AND dsp_id = #{dspId, jdbcType=INTEGER}
+		AND adsdsp.dsp_id = #{queryParam.dspId, jdbcType=INTEGER}
 		WHERE
 			ads. STATUS = 1
+		    <if test="queryParam.mediaIds.size() > 0 and queryParam.adspaceIds.size() > 0">
+		    	AND (
+			    	ads.media_id in
+				    <foreach collection="queryParam.mediaIds" item="item" index="index"
+			           open="(" close=")" separator=",">
+			           #{item,jdbcType=INTEGER}
+			        </foreach>
+			        OR ads.id in
+				    <foreach collection="queryParam.adspaceIds" item="item" index="index"
+				       open="(" close=")" separator=",">
+				       #{item,jdbcType=INTEGER}
+				    </foreach>
+			    )
+		    </if>
+		    <if test="queryParam.mediaIds.size() > 0 and queryParam.adspaceIds.size() == 0">
+		    	AND ads.media_id in
+				<foreach collection="queryParam.mediaIds" item="item" index="index"
+			       open="(" close=")" separator=",">
+			       #{item,jdbcType=INTEGER}
+			    </foreach>
+		    </if>
+		    <if test="queryParam.mediaIds.size() == 0 and queryParam.adspaceIds.size() > 0">
+		    	AND ads.id in
+				<foreach collection="queryParam.adspaceIds" item="item" index="index"
+			       open="(" close=")" separator=",">
+			       #{item,jdbcType=INTEGER}
+			    </foreach>
+		    </if>
 	</select>
 </mapper>

@@ -1,12 +1,16 @@
 package com.madhouse.platform.premiummad.media.valuemaker;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
@@ -47,16 +51,6 @@ public class ValueMakerStatusApiTask {
 	public void getValueMakerMaterialStatus() {
 		LOGGER.info("++++++++++ValueMaker get material status begin+++++++++++");
 
-		/* 代码配置处理方式
-		// 媒体组没有映射到具体的媒体不处理
-		String value = MediaTypeMapping.getValue(MediaTypeMapping.VALUEMAKER.getGroupId());
-		if (StringUtils.isBlank(value)) {
-			return;
-		}
-		// 获取媒体组下的具体媒体
-		int[] mediaIds = StringUtils.splitToIntArray(value);
-		*/
-
 		// 根据媒体组ID和审核对象获取具体的媒体ID
 		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
 
@@ -68,13 +62,19 @@ public class ValueMakerStatusApiTask {
 		// 获取审核中的素材
 		List<Material> unauditMaterials = materialDao.selectMaterialsByMeidaIds(mediaIds, MaterialStatusCode.MSC10003.getValue());
 		if (unauditMaterials == null || unauditMaterials.isEmpty()) {
-			/* LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的素材"); */
 			LOGGER.info("ValueMaker无需要审核的素材");
 			return;
 		}
 
 		// 向媒体获取审核状态
+		Set<String> distinctIds = new HashSet<String>();
 		for (Material item : unauditMaterials) {
+			// 去重
+			if (distinctIds.contains(item.getMediaQueryKey())) {
+				continue;
+			}
+			distinctIds.add(item.getMediaQueryKey());
+
 			LOGGER.info("request: " + item.getMediaQueryKey());
 			String result = valueMakerHttpUtil.get(getMaterialStatusUrl, item.getMediaQueryKey());
 			LOGGER.info("Response: " + result);

@@ -20,6 +20,7 @@ import com.madhouse.platform.premiummad.media.dianping.request.DianpingCreativeI
 import com.madhouse.platform.premiummad.media.dianping.request.DianpingUploadCreativeRequest;
 import com.madhouse.platform.premiummad.media.dianping.response.DianpingUploadCreativeResponse;
 import com.madhouse.platform.premiummad.media.dianping.util.DianpingHttpUtil;
+import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IMediaService;
 import com.madhouse.platform.premiummad.util.StringUtils;
@@ -99,8 +100,29 @@ public class DianpingMaterialUploadApiTask {
 		// 上传到媒体
 		LOGGER.info("DianpingMaterialUploadApiTask-Dianping", unSubmitMaterials.size());
 
+		// 为了过滤DSP相同的key只上传一次
+		Map<String, String[]> successMaps = new HashMap<String, String[]>();// <key, mediaQueryAndMaterialKeys>
+		Map<String, String> refusedMap = new HashMap<String, String>();// <key, errorMsg>
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
+		List<MaterialAuditResultModel> rejusedMaterials = new ArrayList<MaterialAuditResultModel>();
 		for (Material material : unSubmitMaterials) {
+			String key = material.getDspId() + "-" + material.getMaterialKey() + "-" + material.getMediaId();
+			// 上传成功的
+			if (successMaps.containsKey(key)) {
+				materialIdKeys.put(material.getId(), successMaps.get(key));
+				continue;
+			}
+			// 自动驳回的
+			if (refusedMap.containsKey(key)) {
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage(refusedMap.get(key));
+				rejusedMaterials.add(rejuseItem);
+				continue;
+			}
+			
 			Map<String, String> paramMap = buildMaterialRequest(material);
 			String brandType = "001";// TODO
 			String postResult = dianpingHttpUtil.post(uploadMaterialUrl, paramMap, brandType);
@@ -111,7 +133,19 @@ public class DianpingMaterialUploadApiTask {
 					LOGGER.info("DianpingUploadMaterial--SUCCESS");
 					String[] mediaQueryAndMaterialKeys = {dianpingGetStatusResponse.getData().getCreativeId(), dianpingGetStatusResponse.getData().getCreativeId()};
 					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
+					
+					// 过滤重复的 MaterialKey
+					successMaps.put(key, mediaQueryAndMaterialKeys);
 				} else {
+					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+					rejuseItem.setId(String.valueOf(material.getId()));
+					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+					rejuseItem.setMediaIds(mediaIds);
+					rejuseItem.setErrorMessage(dianpingGetStatusResponse.getMsg());
+					rejusedMaterials.add(rejuseItem);
+
+					// 过滤重复的 MaterialKey
+					refusedMap.put(key, dianpingGetStatusResponse.getMsg());
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + dianpingGetStatusResponse.getRet() + " " + dianpingGetStatusResponse.getMsg());
 				}
 			} else {

@@ -3,8 +3,10 @@ package com.madhouse.platform.premiummad.media.dianping;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +72,13 @@ public class DianpingGetStatusApiTask {
 		
 		// 获取媒体方的素材ID
 		List<String> creativeIdList = new ArrayList<String>();
+		Set<String> distinctIds = new HashSet<String>();
 		for (Material material : unAuditMaterials) {
+			// 去重
+			if (distinctIds.contains(material.getMediaQueryKey())) {
+				continue;
+			}
+			distinctIds.add(material.getMediaQueryKey());
 			creativeIdList.add(material.getMediaQueryKey());
 		}
 		LOGGER.info("美团点评获取创意审核状态信息的请求创意ID列表:{}", creativeIdList.toString());

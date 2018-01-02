@@ -53,17 +53,6 @@ public class WeiboClientStatusApiTask {
 	public void getStatus() {
 		LOGGER.info("++++++++++Weibo get client status begin+++++++++++");
 
-		/* 代码配置处理方式
-		// 媒体组没有映射到具体的媒体不处理
-		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
-		if (com.madhouse.platform.premiummad.util.StringUtils.isBlank(value)) {
-			return;
-		}
-
-		// 获取媒体组下的具体媒体
-		int[] mediaIds =com.madhouse.platform.premiummad.util.StringUtils.splitToIntArray(value);
-		*/
-
 		// 根据媒体组ID和审核对象获取具体的媒体ID
 		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.ADVERTISER);
 
@@ -75,7 +64,6 @@ public class WeiboClientStatusApiTask {
 		// 获取我方媒体待审核的广告主
 		List<Advertiser> unAuditAdvertisers = advertiserDao.selectAdvertisersByMedias(mediaIds, AdvertiserStatusCode.ASC10003.getValue());
 		if (unAuditAdvertisers == null || unAuditAdvertisers.isEmpty()) {
-			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "无需要审核的广告主");*/
 			LOGGER.info("Weibo无需要审核的广告主");
 			return;
 		}

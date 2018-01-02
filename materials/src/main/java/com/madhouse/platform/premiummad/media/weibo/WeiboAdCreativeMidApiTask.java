@@ -51,17 +51,6 @@ public class WeiboAdCreativeMidApiTask {
 	public void getMid(String[] creativeIds) {
 		LOGGER.info("++++++++++Weibo get material mid begin+++++++++++");
 
-		/* 代码配置处理方式
-		// 媒体组没有映射到具体的媒体不处理
-		String value = MediaTypeMapping.getValue(MediaTypeMapping.WEIBO.getGroupId());
-		if (StringUtils.isBlank(value)) {
-			return;
-		}
-
-		// 获取媒体组下的具体媒体
-		int[] mediaIds = StringUtils.splitToIntArray(value);
-		*/
-
 		// 根据媒体组ID和审核对象获取具体的媒体ID
 		int[] mediaIds = mediaService.getMeidaIds(mediaGroupStr, SystemConstant.MediaAuditObject.MATERIAL);
 
@@ -73,7 +62,6 @@ public class WeiboAdCreativeMidApiTask {
 		// 获取审核通过，mid没有回写的素材
 		List<Material> noMidMaterials = materialDao.selectMaterials(creativeIds, mediaIds);
 		if (noMidMaterials == null || noMidMaterials.isEmpty()) {
-			/*LOGGER.info(MediaMapping.getDescrip(mediaIds) + "没有需要获取 Mid 的素材");*/
 			LOGGER.info("Weibo没有需要获取 Mid 的素材");
 			return;
 		}

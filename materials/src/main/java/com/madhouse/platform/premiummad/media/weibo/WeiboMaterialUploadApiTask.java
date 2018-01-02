@@ -147,7 +147,28 @@ public class WeiboMaterialUploadApiTask {
 		LOGGER.info("uploadMaterials size is {}", uploadMaterials.size());
 				
 		Map<Integer, String[]> materialIdKeys = new HashMap<Integer, String[]>();
+		
+		// 为了过滤DSP相同的key只上传一次
+		Map<String, String[]> successMaps = new HashMap<String, String[]>();// <key, mediaQueryAndMaterialKeys>
+		Map<String, String> refusedMap = new HashMap<String, String>();// <key, errorMsg>
 		for (MaterialUnion material : uploadMaterials) {
+			String key = material.getDspId() + "-" + material.getMaterialKey() + "-" + material.getMediaId();
+			// 上传成功的
+			if (successMaps.containsKey(key)) {
+				materialIdKeys.put(material.getId(), successMaps.get(key));
+				continue;
+			}
+			// 自动驳回的
+			if (refusedMap.containsKey(key)) {
+				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
+				rejuseItem.setId(String.valueOf(material.getId()));
+				rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+				rejuseItem.setMediaIds(mediaIds);
+				rejuseItem.setErrorMessage(refusedMap.get(key));
+				rejusedMaterials.add(rejuseItem);
+				continue;
+			}
+			
 			// 校验广告形式是否支持
 			if (!(supportedLayoutSet.contains(Integer.valueOf(material.getLayout())))) {
 				MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
@@ -156,6 +177,9 @@ public class WeiboMaterialUploadApiTask {
 				rejuseItem.setMediaIds(mediaIds);
 				rejuseItem.setErrorMessage("媒体只支持如下广告形式：" + Arrays.toString(supportedLayoutSet.toArray()));
 				rejusedMaterials.add(rejuseItem);
+				
+				// 过滤重复的 MaterialKey
+				refusedMap.put(key, rejuseItem.getErrorMessage());
 				LOGGER.error(rejuseItem.getErrorMessage());
 				continue;
 			}
@@ -174,6 +198,9 @@ public class WeiboMaterialUploadApiTask {
 					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(uploadMaterialErrorMsg.toString());
 					rejusedMaterials.add(rejuseItem);
+					
+					// 过滤重复的 MaterialKey
+					refusedMap.put(key, uploadMaterialErrorMsg.toString());
 					LOGGER.error("素材关联的视频上传到媒体失败[materialId=" + material.getId() + "]-" + uploadMaterialErrorMsg.toString());
 				}
 
@@ -201,6 +228,9 @@ public class WeiboMaterialUploadApiTask {
 				rejuseItem.setMediaIds(mediaIds);
 				rejuseItem.setErrorMessage(errorMsg.toString());
 				rejusedMaterials.add(rejuseItem);
+				
+				// 过滤重复的 MaterialKey
+				refusedMap.put(key, rejuseItem.getErrorMessage());
 				LOGGER.error(rejuseItem.getErrorMessage());
 				continue;
 			}
@@ -218,6 +248,9 @@ public class WeiboMaterialUploadApiTask {
 				if (WeiboConstant.RESPONSE_SUCCESS.getValue() == retCode && WeiboErrorCode.WEC000.getValue() == errorCode) {
 					String[] mediaQueryAndMaterialKeys = { String.valueOf(material.getId()) };
 					materialIdKeys.put(material.getId(), mediaQueryAndMaterialKeys);
+					
+					// 过滤重复的 MaterialKey
+					successMaps.put(key, mediaQueryAndMaterialKeys);
 				} else {
 					WeiboMaterialUploadErrorResponse weiboMaterialUploadErrorResponse = JSON.parseObject(responseJson, WeiboMaterialUploadErrorResponse.class);
 
@@ -240,6 +273,9 @@ public class WeiboMaterialUploadApiTask {
 					rejuseItem.setMediaIds(mediaIds);
 					rejuseItem.setErrorMessage(WeiboErrorCode.getDescrip(weiboMaterialUploadErrorResponse.getRet_msg().get(0).getErr_code()));
 					rejusedMaterials.add(rejuseItem);
+					
+					// 过滤重复的 MaterialKey
+					refusedMap.put(key, rejuseItem.getErrorMessage());
 					LOGGER.error("素材[materialId=" + material.getId() + "]上传失败-" + WeiboErrorCode.getDescrip(weiboMaterialUploadErrorResponse.getRet_msg().get(0).getErr_code()));
 				}
 			}

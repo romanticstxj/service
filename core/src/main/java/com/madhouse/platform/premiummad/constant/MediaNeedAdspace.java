@@ -7,16 +7,17 @@ public enum MediaNeedAdspace {
 	SOHUNEWS(101, false), 
 	SOHUTV(102, false),
 	TENCENT_NOT_OTV(103, true),
-	TENCENT(104, true),
+	TENCENT(104, true), 
 	DIANPING(113, true),
 	MOJI(107, true),
-	IQYI(111, false),
-	LETV(110, false),
-	MOMO(106, false),
+	IQYI(111, true),
+	LETV(110, true),
+	MOMO(106, true),
 	TOUTIAO(109, false),
-	VALUEMAKER(108, false),
+	VALUEMAKER(108, true),
 	FUNADX(112, false),
-	WEIBO(105, false);
+	AUTOHOME(114, true),
+	WEIBO(105, true);
 
 	int key;
 	boolean value;
