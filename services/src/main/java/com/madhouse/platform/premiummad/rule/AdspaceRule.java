@@ -83,6 +83,8 @@ public class AdspaceRule extends BaseRule{
 				PolicyDto policyDto = new PolicyDto();
 				BeanUtils.copyProperties(adspace.getAdspacePolicies().get(i).getPolicy(), policyDto);
 				adspacePolicyDtos.get(i).setPolicy(policyDto);
+				//判断策略的过期与否状态，给前端显示
+				PolicyRule.updateStatusForOverdue(policyDto);
 			}
     	}
         
