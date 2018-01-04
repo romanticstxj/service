@@ -190,5 +190,8 @@
         <task:scheduled ref="autohomeMaterialUploadApiTask" method="uploadMaterial" cron="${cron.autohomeMaterialUploadApiTask}"/>
         <task:scheduled ref="autohomeMaterialStatusApiTask" method="getStatus" cron="${cron.autohomeMaterialStatusApiTask}"/> -->
 	
+	    <!-- yiche -->
+        <task:scheduled ref="yicheMaterialUploadApiTask" method="uploadMaterial" cron="${cron.yicheMaterialUploadApiTask}"/>
+        <task:scheduled ref="yicheMaterialStatusApiTask" method="getStatus" cron="${cron.yicheMaterialStatusApiTask}"/>
 	</task:scheduled-tasks>
 </beans>
