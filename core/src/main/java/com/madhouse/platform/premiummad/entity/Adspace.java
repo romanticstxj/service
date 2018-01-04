@@ -11,6 +11,8 @@ public class Adspace extends BaseEntity{
 	private String adspaceKey;
 	private Integer mediaId;
 	private String mediaName;
+	private Integer mediaCategory;
+	private String mediaCategoryName;
 	private Integer mediaStatus;
 	private Integer terminalType; 
 	private Integer terminalOs;
@@ -315,6 +317,22 @@ public class Adspace extends BaseEntity{
 
 	public void setAdspacePolicies(List<PolicyAdspace> adspacePolicies) {
 		this.adspacePolicies = adspacePolicies;
+	}
+
+	public Integer getMediaCategory() {
+		return mediaCategory;
+	}
+
+	public void setMediaCategory(Integer mediaCategory) {
+		this.mediaCategory = mediaCategory;
+	}
+
+	public String getMediaCategoryName() {
+		return mediaCategoryName;
+	}
+
+	public void setMediaCategoryName(String mediaCategoryName) {
+		this.mediaCategoryName = mediaCategoryName;
 	}
 
 }
