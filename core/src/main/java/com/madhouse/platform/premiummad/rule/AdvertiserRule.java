@@ -47,7 +47,7 @@ public class AdvertiserRule extends BaseRule {
 	 */
 	public static void paramterValidate(AdvertiserModel entity) {
 		if (AdevertiserIndustry.getDescrip(entity.getIndustry().intValue()) == null) {
-			throw new BusinessException(StatusCode.SC412, "广告主所属工业编码不存在[mediaId]");
+			throw new BusinessException(StatusCode.SC412, "广告主所属工业编码不存在[industry]");
 		}
 		if (entity.getMediaId() == null || entity.getMediaId().isEmpty()) {
 			throw new BusinessException(StatusCode.SC400, "广告主关联的媒体ID必须[mediaId]");
@@ -78,10 +78,10 @@ public class AdvertiserRule extends BaseRule {
 	public static String validateAdvertisers(List<Map<Integer, Advertiser>> classfiedMaps, String advertiserKey) {
 		StringBuilder errorMsg = new StringBuilder();
 		if (classfiedMaps.get(0) != null && classfiedMaps.get(0).size() > 0) {
-			errorMsg.append("媒体" + Arrays.toString(classfiedMaps.get(0).keySet().toArray()) + "重复提交，状态为待审核;");
+			errorMsg.append("媒体" + Arrays.toString(classfiedMaps.get(0).keySet().toArray()) + "重复提交，状态为待提交;");
 		}
 		if (classfiedMaps.get(1) != null && classfiedMaps.get(1).size() > 0) {
-			errorMsg.append("媒体" + Arrays.toString(classfiedMaps.get(1).keySet().toArray()) + "重复提交，状态为审核中;");
+			errorMsg.append("媒体" + Arrays.toString(classfiedMaps.get(1).keySet().toArray()) + "重复提交，状态为待审核;");
 		}
 		if (classfiedMaps.get(2) != null && classfiedMaps.get(2).size() > 0) {
 			errorMsg.append("媒体" + Arrays.toString(classfiedMaps.get(2).keySet().toArray()) + "重复提交，状态为审核通过;");
