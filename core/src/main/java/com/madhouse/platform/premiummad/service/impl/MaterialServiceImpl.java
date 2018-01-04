@@ -236,14 +236,14 @@ public class MaterialServiceImpl implements IMaterialService {
 		// 媒体需要提交广告位时，需要校验广告位是否必须
 		if (MediaNeedAdspace.getValue(uploadedMedias.get(0).getApiType().intValue())) {
 			if (entity.getAdspaceId() == null || entity.getAdspaceId().isEmpty()) {
-				throw new BusinessException(StatusCode.SC400, "媒体[" + entity.getMediaId() + "广告位必须[adspaceId]");
+				throw new BusinessException(StatusCode.SC400, "媒体[" + entity.getMediaId() + "]广告位必须[adspaceId]");
 			}
 		}
 
 		// 媒体需要提交userId时，需要校验userId是否必须
 		if (MediaNeedUserId.getValue(uploadedMedias.get(0).getApiType().intValue())) {
 			if (StringUtils.isBlank(entity.getUserId())) {
-				throw new BusinessException(StatusCode.SC400, "媒体[" + entity.getMediaId() + "用户ID必须[userId]");
+				throw new BusinessException(StatusCode.SC400, "媒体[" + entity.getMediaId() + "]用户ID必须[userId]");
 			}
 		}
 

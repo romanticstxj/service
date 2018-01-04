@@ -3,6 +3,8 @@ package com.madhouse.platform.premiummad.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,7 @@ public class AdvertiserController {
 	 */
 	@TokenFilter
 	@RequestMapping("/upload")
-	public ResponseDto<Void> upload(@RequestBody AdvertiserDto advertiserDto, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
+	public ResponseDto<Void> upload(@RequestBody @Valid AdvertiserDto advertiserDto, @RequestParam(value = "dspId") String dspId, @RequestParam(value = "token") String token) throws Exception {
 		LOGGER.info("DSP advertiser upload request[{}]-{}", advertiserDto.getId(), JSON.toJSONString(advertiserDto));
 		AdvertiserModel entity = new AdvertiserModel();
 		BeanUtils.copyProperties(advertiserDto, entity);

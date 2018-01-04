@@ -2,9 +2,11 @@ package com.madhouse.platform.premiummad.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -29,6 +31,13 @@ public class CommonExceptionHandler {
 		} else if (ex instanceof JSONException) {
 			LOGGER.error(LogUtils.getDetailException(ex));
 			response = ResponseUtils.response(StatusCode.SC400);
+		} else if (ex instanceof MethodArgumentNotValidException) {
+			LOGGER.error(LogUtils.getDetailException(ex));
+			String[] msgArray = ex.getMessage().split(";");
+			String lastMsg = msgArray[msgArray.length - 1];
+			String mainMsg = lastMsg.replace("default message", "").trim();
+			String errorMsg = mainMsg.substring(1, mainMsg.length() - 2);
+			response = ResponseUtils.response(StatusCode.SC400, null, errorMsg);
 		} else {
 			LOGGER.error(LogUtils.getDetailException(ex));
 			response = ResponseUtils.response(StatusCode.SC500, null, ex.getMessage());

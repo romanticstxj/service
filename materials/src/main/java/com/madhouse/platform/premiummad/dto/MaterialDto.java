@@ -3,7 +3,7 @@ package com.madhouse.platform.premiummad.dto;
 import java.io.Serializable;
 import java.util.List;
 
-import com.madhouse.platform.premiummad.annotation.NotNullAndBlank;
+import javax.validation.constraints.NotNull;
 
 public class MaterialDto implements Serializable {
 
@@ -12,32 +12,32 @@ public class MaterialDto implements Serializable {
 	/**
 	 * DSP 定义的素材ID
 	 */
-	@NotNullAndBlank
+	@NotNull(message = "素材ID必须[id]")
 	private String id;
 	
 	/**
 	 * 素材名称
 	 */
-	@NotNullAndBlank
+	@NotNull(message = "素材名称必须[name]")
 	private String name;
 	
 	/**
 	 * 广告形式
 	 */
-	@NotNullAndBlank
+	@NotNull(message = "广告形式必须[layout]")
 	private Integer layout;
 	
 	/**
 	 * DSP 平台定义的广告主ID
 	 */
-	@NotNullAndBlank
+	@NotNull(message = "广告主ID必须[advertiserId]")
 	private String advertiserId;
 	
 	/**
 	 * 投放类型
 	 * 1: PDB、2:PD、4:PMP、8:RTB
 	 */
-	@NotNullAndBlank
+	@NotNull(message = "投放类型必须[deliveryType]")
 	private Integer deliveryType;
 	
 	/**
@@ -63,19 +63,18 @@ public class MaterialDto implements Serializable {
 	/**
 	 * 有效日期(yyyy-MM-dd)
 	 */
-	@NotNullAndBlank
 	private String startDate;
 	
 	/**
 	 * 失效日期(yyyy-MM-dd)
 	 */
-	@NotNullAndBlank
+	@NotNull(message = "失效日期必须[endDate]")
 	private String endDate;
 	
 	/**
 	 * PremiumMAD 平台定义的媒体ID
 	 */
-	@NotNullAndBlank
+	@NotNull(message = "媒体ID必须[mediaId]")
 	private Integer mediaId;
 	
 	/**
@@ -86,13 +85,13 @@ public class MaterialDto implements Serializable {
 	/**
 	 * 广告素材宽度（单位:pixel)
 	 */
-	@NotNullAndBlank
+	@NotNull(message = "素材宽必须[w]")
 	private Integer w;
 	
 	/**
 	 * 广告素材高度（单位:pixel)
 	 */
-	@NotNullAndBlank
+	@NotNull(message = "素材高必须[h]")
 	private Integer h;
 	
 	/**
@@ -123,7 +122,6 @@ public class MaterialDto implements Serializable {
 	/**
 	 * 广告素材URL
 	 */
-	@NotNullAndBlank
 	private List<String> adm;
 	
 	/**
