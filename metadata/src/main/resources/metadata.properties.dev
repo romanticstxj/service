@@ -55,6 +55,8 @@ ALL_BLOCKED_DEVICE_IFA = set:all_blocked_ifa
 ALL_BLOCKED_DEVICE_DIDMD5 = set:all_blocked_didmd5
 #DPID(AndroidId\OpenUDID)
 ALL_BLOCKED_DEVICE_DPIDMD5 = set:all_blocked_dpidmd5
+#媒体白名单ID
+ALL_MEDIA_WHITELIST = set:all_media_whitelist
 
 
 
