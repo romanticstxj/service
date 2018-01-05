@@ -137,12 +137,26 @@ public class DspServiceImpl implements IDspService {
 		}
 		
 		int toInsertCount = dspAuths.size();
-		int intsertCount = dspDao.batchInsertDspMediaAuth(dspAuths);
-		if(intsertCount != toInsertCount){
+		//删除某个dsp的所有媒体广告位权限
+		if(ifDelete(dspAuths)){
+			return;
+		}
+		int insertCount = dspDao.batchInsertDspMediaAuth(dspAuths);
+		if(insertCount != toInsertCount){
 			throw new BusinessException(StatusCode.SC30002);
 		}
 	}
 	
+	/**
+	 * 判断是否要删除某个dsp的媒体广告位权限（根据前端参数）
+	 * @param dspAuths
+	 * @return
+	 */
+	private boolean ifDelete(List<DspMedia> dspAuths) {
+		return dspAuths.size() == 1 && (dspAuths.get(0).getAdspaceId() == null || dspAuths.get(0).getAdspaceId().intValue() == 0
+				|| dspAuths.get(0).getMediaId() == null || dspAuths.get(0).getMediaId().intValue() == 0);
+	}
+
 	@Override
 	public List<Dsp> queryAll(String[] ids, Dsp dsp) {
 		return dspDao.queryAll(ids, dsp);
