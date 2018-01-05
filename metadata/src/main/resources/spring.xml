@@ -80,6 +80,7 @@
     	<task:scheduled ref="plcmtTask" method="loadMediaMappingData" initial-delay="0" fixed-delay="60000"/>
     	<task:scheduled ref="materialTask" method="loadMaterialMetaData" initial-delay="0" fixed-delay="60000"/>
     	<task:scheduled ref="reqBlockTask" method="loadReqBlockMetaData" initial-delay="0" fixed-delay="60000"/>
+    	<task:scheduled ref="mediaWhiteTask" method="loadMediaWhiteMetaData" initial-delay="0" fixed-delay="60000"/>
     </task:scheduled-tasks>
 
 

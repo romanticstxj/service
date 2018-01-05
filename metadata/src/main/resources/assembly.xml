@@ -11,7 +11,7 @@
     <files>
         <file>
             <source>${project.build.directory}/${project.build.finalName}.${project.packaging}</source>
-            <destName>metadata.jar</destName>
+            <destName>metadata-${project.version}.jar</destName>
             <outputDirectory>/</outputDirectory>
         </file>
     </files>
