@@ -669,4 +669,25 @@
 	        #{id,jdbcType=INTEGER}
 	    </foreach>
   </select>
+  
+  <select id="selectMeidaMaterials" resultMap="BaseResultMap">
+    select 
+    <include refid="materialBaseColumns">
+    	<property name="alias" value="ma" />
+    </include>
+    from mad_sys_material ma
+    left join mad_sys_media me on ma.media_id = me.id
+    where me.material_audit_mode = 2
+	  and ma.media_id in
+	    <foreach collection="mediaIds" item="id" index="index" open="(" close=")" separator=",">
+	        #{id,jdbcType=INTEGER}
+	    </foreach>
+	  and ma.status = #{auditStatus,jdbcType=INTEGER}
+	  <if test="hasMediaUrl" >
+	  	and ma.media_material_url != ''
+	  </if>
+	  <if test="!hasMediaUrl" >
+	  	and ma.media_material_url = ''
+	  </if>
+  </select>
 </mapper>

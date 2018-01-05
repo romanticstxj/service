@@ -157,4 +157,13 @@ public interface MaterialMapper {
 	 * @return
 	 */
 	List<MaterialUnion> selectUnionByIds(@Param("ids") List<Integer> ids);
+	
+	/**
+	 * 获取需要审核媒体的素材,其中素材需要上传到媒体
+	 * 
+	 * @param mediaIds
+	 * @param auditStatus
+	 * @return
+	 */
+	List<Material> selectMeidaMaterials(@Param("mediaIds")int[] mediaIds, @Param("auditStatus")Integer auditStatus, @Param("hasMediaUrl")boolean hasMediaUrl);
 }

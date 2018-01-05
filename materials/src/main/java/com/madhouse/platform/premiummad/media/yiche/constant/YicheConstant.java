@@ -17,7 +17,7 @@ public interface YicheConstant {
 
 	// 素材模板 TODO
 	interface Template {
-		int APP_NATIVE = 10002; // APP - 信息流广告
+		int LISTAD = 0; // 图文
 	}
 	
 	// 投放平台

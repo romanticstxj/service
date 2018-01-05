@@ -1,11 +1,7 @@
 package com.madhouse.platform.premiummad.media.yiche;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +11,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.media.autohome.constant.AutohomeConstant;
-import com.madhouse.platform.premiummad.media.autohome.response.CreativeAuditResultData;
-import com.madhouse.platform.premiummad.media.autohome.response.CreativeStatusData;
-import com.madhouse.platform.premiummad.media.autohome.response.CreativeStatusResponse;
-import com.madhouse.platform.premiummad.media.autohome.util.AutohomeCommonUtil;
+import com.madhouse.platform.premiummad.media.yiche.constant.YicheConstant;
+import com.madhouse.platform.premiummad.media.yiche.request.MaterialStatusRequest;
+import com.madhouse.platform.premiummad.media.yiche.response.MaterialStatusResponse;
+import com.madhouse.platform.premiummad.media.yiche.util.YicheCommonUtil;
 import com.madhouse.platform.premiummad.model.MaterialAuditResultModel;
 import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IMediaService;
@@ -35,7 +31,7 @@ public class YicheMaterialStatusApiTask {
 	private static final Logger LOGGER = LoggerFactory.getLogger(YicheMaterialStatusApiTask.class);
 
 	@Value("${yiche.getStatusUrl}")
-	private String getAuditInfoUrl;
+	private String getStatusUrl;
 
 	@Value("${yiche.dspId}")
 	private String dspId;
@@ -73,62 +69,51 @@ public class YicheMaterialStatusApiTask {
 			return;
 		}
 
-		// 设置request参数
-		Map<String, String> paramMap = buildRequest(unAuditMaterials);
-		String request = AutohomeCommonUtil.getRequest(paramMap);
-
-		// 调用接口
-		LOGGER.info("request: " + request);
-		Map<String, Object> resultMap = HttpUtils.get(getAuditInfoUrl + "?" + request);
-		String result = resultMap.get(HttpUtils.RESPONSE_BODY_KEY).toString();
-		LOGGER.info("response: " + result);
-
-		// 解析返回结果
-		if (!StringUtils.isEmpty(result)) {
-			CreativeStatusResponse response = JSON.parseObject(result, CreativeStatusResponse.class);
-			if (AutohomeConstant.RetCode.AUTOHOME_STATUS_SUCCESS == response.getStatus()) {
-				if (response.getData() == null || response.getData().getCreative() == null) {
-					LOGGER.info("Response is empty");
-					return;
-				}
-				// 正常返回结果
-				processResult(response.getData(), mediaIds);
-			} else {
-				// 异常返回
-				LOGGER.info("Response is exceptional." + result);
-			}
-		} else {
-			LOGGER.info("Response is null");
-		}
-
-		LOGGER.info("++++++++++Autohome get material status end+++++++++++");
-	}
-
-	/**
-	 * 处理正常返回结果
-	 * 
-	 * @param data
-	 * @param mediaIds
-	 */
-	private void processResult(CreativeStatusData data, int[] mediaIds) {
+		// 单条查询
 		List<MaterialAuditResultModel> auditResults = new ArrayList<MaterialAuditResultModel>();
-		for (CreativeAuditResultData item : data.getCreative()) {
-			MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
-			auditItem.setMediaQueryKey(String.valueOf(item.getId()));
-			auditItem.setMediaIds(mediaIds);
+		for (Material material : unAuditMaterials) {
+			// 设置request参数
+			MaterialStatusRequest request = buildRequest(material);
+			String requestJson = JSON.toJSONString(request);
 
-			// 根据返回的状态设置
-			if (AutohomeConstant.AuditStatus.AUDITED == item.getAuditStatus()) {
-				// 审核通过
-				auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
-			} else if (AutohomeConstant.AuditStatus.REJECTED == item.getAuditStatus()) {
-				// 驳回
-				auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-				auditItem.setErrorMessage(item.getAuditComment());
-				auditResults.add(auditItem);
-			} else if (AutohomeConstant.AuditStatus.UNAUDIT == item.getAuditStatus()) {
-				// 未审核
-				LOGGER.info("素材媒体未审核[meidaQueryKey=" + item.getId() + "]");
+			// 调用接口
+			LOGGER.info("request: " + requestJson);
+			String result = HttpUtils.post(getStatusUrl, requestJson);
+			LOGGER.info("response: " + result);
+
+			// 解析返回结果
+			if (!StringUtils.isEmpty(result)) {
+				MaterialStatusResponse response = JSON.parseObject(result, MaterialStatusResponse.class);
+				if (YicheConstant.ErrorCode.SUCCESS == response.getErrorCode()) {
+					if (response.getResult() == null) {
+						LOGGER.info("Response is empty");
+						return;
+					}
+
+					// 正常返回结果
+					MaterialAuditResultModel auditItem = new MaterialAuditResultModel();
+					auditItem.setMediaQueryKey(request.getDepositId());
+					auditItem.setMediaIds(mediaIds);
+
+					// 根据返回的状态设置
+					if (YicheConstant.AuditStatus.AUDITED.equals(response.getResult())) {
+						// 审核通过
+						auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
+					} else if (YicheConstant.AuditStatus.REJECTED.equals(response.getResult())) {
+						// 驳回
+						auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
+						auditItem.setErrorMessage(response.getErrorMsg());
+						auditResults.add(auditItem);
+					} else if (YicheConstant.AuditStatus.UNAUDIT.equals(response.getResult())) {
+						// 未审核
+						LOGGER.info("素材媒体未审核[meidaQueryKey=" + request.getDepositId() + "]");
+					}
+				} else {
+					// 异常返回
+					LOGGER.info("Response is exceptional." + result);
+				}
+			} else {
+				LOGGER.info("Response is null");
 			}
 		}
 
@@ -136,6 +121,8 @@ public class YicheMaterialStatusApiTask {
 		if (!auditResults.isEmpty()) {
 			materialService.updateStatusToMedia(auditResults);
 		}
+
+		LOGGER.info("++++++++++Yiche get material status end+++++++++++");
 	}
 
 	/**
@@ -144,21 +131,19 @@ public class YicheMaterialStatusApiTask {
 	 * @param unAuditMaterials
 	 * @return
 	 */
-	private Map<String, String> buildRequest(List<Material> unAuditMaterials) {
-		Map<String, String> paramMap = new HashMap<String, String>();
-		Set<String> distinctIds = new HashSet<String>();
-		List<String> creativeId = new ArrayList<String>();
-		for (Material material : unAuditMaterials) {
-			// 去重
-			if (distinctIds.contains(material.getMediaQueryKey())) {
-				continue;
-			}
-			distinctIds.add(material.getMediaQueryKey());
-			creativeId.add(material.getMediaQueryKey());
-		}
-		paramMap.put("creativeId", StringUtils.collectionToDelimitedString(creativeId, ","));
-		paramMap.put("dspId", dspId);
-		paramMap.put("sign", AutohomeCommonUtil.getSign(paramMap, signKey)); // TODO
-		return paramMap;
+	private MaterialStatusRequest buildRequest(Material material) {
+		MaterialStatusRequest request = new MaterialStatusRequest();
+		request.setDspId(dspId);
+		request.setDepositId(material.getMediaQueryKey());
+
+		// 校验串 TODO
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("dspId", dspId);
+		jsonObj.put("depositId", material.getMediaQueryKey());
+		request.setSign(YicheCommonUtil.getSign(jsonObj, signKey));
+
+		// 当前请求时间戳
+		request.setTimestamp(System.currentTimeMillis());
+		return request;
 	}
 }

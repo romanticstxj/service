@@ -1,6 +1,6 @@
 package com.madhouse.platform.premiummad.media.yiche.request;
 
-public class Material {
+public class CreativeData {
 	// 订单编号
 	private String orderCode;
 	// 广告主ID

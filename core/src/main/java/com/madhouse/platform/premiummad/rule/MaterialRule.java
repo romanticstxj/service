@@ -327,6 +327,8 @@ public class MaterialRule extends BaseRule {
 			material.setUpdatedTime(material.getCreatedTime());
 		} else { // 更新
 			material.setUpdatedTime(new Date());
+			// 重置
+			material.setMediaMaterialUrl("");
 		}
 
 		// 媒体不需要广告主，则不保存广告主信息
