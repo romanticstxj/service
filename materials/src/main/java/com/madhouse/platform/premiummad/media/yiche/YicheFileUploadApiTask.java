@@ -1,11 +1,17 @@
 package com.madhouse.platform.premiummad.media.yiche;
 
+import java.io.InputStream;
 import java.util.List;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
@@ -21,11 +27,11 @@ public class YicheFileUploadApiTask {
 	@Value("${yiche.fileUploadUrl}")
 	private String fileUploadUrl;
 
-	@Value("${yiche.dspId}")
-	private String dspId;
+	@Value("${yiche.bucket}")
+	private String bucket;
 
-	@Value("${yiche.signKey}")
-	private String signKey;
+	@Value("${yiche.rsa_oss_ciphertext}")
+	private String rsa_oss_ciphertext;
 
 	@Value("${material_meidaGroupMapping_yiche}")
 	private String mediaGroupStr;
@@ -38,6 +44,8 @@ public class YicheFileUploadApiTask {
 
 	@Autowired
 	private IMediaService mediaService;
+	
+	private static HttpClient httpClient = new HttpClient();
 
 	public void uploadFile() {
 		LOGGER.info("++++++++++yiche upload file begin+++++++++++");
@@ -58,7 +66,30 @@ public class YicheFileUploadApiTask {
 		}
 
 		// TODO
-
+		// step1 下载
+		
+		// step2 上传到 OSS
+		
+		// step3 更新我方数据87
 		LOGGER.info("++++++++++yiche upload file status end+++++++++++");
+	}
+	
+	/**
+	 * 获取流文件内容
+	 * 
+	 * @param filePath
+	 * @return
+	 */
+	private InputStream getStreamContent(String filePath) {
+		GetMethod getMethod = new GetMethod(filePath);
+		InputStream inputStream = null;
+		try {
+			if (httpClient.executeMethod(getMethod) == HttpStatus.SC_OK) {
+				inputStream = getMethod.getResponseBodyAsStream();
+			}
+		} catch (Exception e) {
+			LOGGER.info("获取视频出现异常-" + e.getMessage());
+		}
+		return inputStream;
 	}
 }
