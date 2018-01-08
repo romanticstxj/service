@@ -260,7 +260,7 @@
    		<selectKey resultType ="java.lang.Long" keyProperty= "id" order= "AFTER">  
 	        SELECT LAST_INSERT_ID()  
 	    </selectKey>  
-          	INSERT INTO mad_sys_dsp_media(dsp_id, media_id, adspace_id, created_user, created_time) VALUES
+          	INSERT IGNORE INTO mad_sys_dsp_media(dsp_id, media_id, adspace_id, created_user, created_time) VALUES
          		<foreach collection="dspAuths" index="index" item="dspAuth" separator=",">
          			(
          				#{dspAuth.dspId},
