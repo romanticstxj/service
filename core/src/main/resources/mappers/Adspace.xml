@@ -349,6 +349,7 @@
 			ads.id,
 			ads.`name`,
 			ads.media_id mediaId,
+			ads.adblock_id blockId,
 			ads.terminal_os terminalOs,
 			ads.terminal_type terminalType,
 			ads.support_https supportHttps,
@@ -374,6 +375,9 @@
 			ads.`status`,
 			adsdsp.dsp_adspace_key,
 			media.`name` mediaName,
+			media.advertiser_audit_mode advertiserAuditMode,
+			media.material_audit_mode materialAuditMode,
+			media.`status` mediaStatus,
 			adsdsp.dsp_adspace_key adspaceKey
 		FROM
 			mad_sys_adspace ads
