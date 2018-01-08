@@ -387,7 +387,8 @@
 		LEFT JOIN mad_sys_adspace_mapping_dsp adsdsp ON ads.id = adsdsp.adspace_id
 		AND adsdsp.dsp_id = #{queryParam.dspId, jdbcType=INTEGER}
 		WHERE
-			ads. STATUS = 1
+			ads.`status` > 0
+			and media.`status` > 0
 		    <if test="queryParam.mediaIds.size() > 0 and queryParam.adspaceIds.size() > 0">
 		    	AND (
 			    	ads.media_id in
