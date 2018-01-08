@@ -118,9 +118,6 @@ public class MaterialRule extends BaseRule {
 				throw new BusinessException(StatusCode.SC400, "广告点击行为编码不存在[actType]");
 			}
 		}
-		if (entity.getMediaId() == null) {
-			throw new BusinessException(StatusCode.SC400, "素材关联的媒体ID必须[media]");
-		}
 		if (entity.getAdm() == null || entity.getAdm().isEmpty()) {
 			throw new BusinessException(StatusCode.SC400, "广告素材url必须[adm]");
 		}
@@ -138,9 +135,6 @@ public class MaterialRule extends BaseRule {
 			if (!isDate(entity.getStartDate(), DateUtils.FORMATE_YYYY_MM_DD)) {
 				throw new BusinessException(StatusCode.SC400, "有效日期格式错误,必须为yyyy-MM-dd[startDate]");
 			}
-//			if (entity.getStartDate().compareTo(todayStr) < 0) {
-//				throw new BusinessException(StatusCode.SC400, "有效日期[startDate]无效，必须大于当前日期");
-//			}
 		}
 		if (!StringUtils.isBlank(entity.getEndDate())) {
 			if (!isDate(entity.getEndDate(), DateUtils.FORMATE_YYYY_MM_DD)) {
@@ -217,10 +211,10 @@ public class MaterialRule extends BaseRule {
 	public static String validateMaterials(List<Map<Integer, Material>> classfiedMaps, String materailKey, SysMedia media) {
 		StringBuilder errorMsg = new StringBuilder();
 		if (classfiedMaps.get(0) != null && classfiedMaps.get(0).size() > 0) {
-			errorMsg.append((MediaNeedAdspace.getValue(media.getApiType().intValue()) ? "广告主" + Arrays.toString(classfiedMaps.get(0).keySet().toArray()) : "") + "重复提交，状态为待审核");
+			errorMsg.append((MediaNeedAdspace.getValue(media.getApiType().intValue()) ? "广告主" + Arrays.toString(classfiedMaps.get(0).keySet().toArray()) : "") + "重复提交，状态为待提交");
 		}
 		if (classfiedMaps.get(1) != null && classfiedMaps.get(1).size() > 0) {
-			errorMsg.append((MediaNeedAdspace.getValue(media.getApiType().intValue()) ? "广告主" + Arrays.toString(classfiedMaps.get(1).keySet().toArray()) : "") + "重复提交，状态为审核中");
+			errorMsg.append((MediaNeedAdspace.getValue(media.getApiType().intValue()) ? "广告主" + Arrays.toString(classfiedMaps.get(1).keySet().toArray()) : "") + "重复提交，状态为待审核");
 		}
 		if (classfiedMaps.get(2) != null && classfiedMaps.get(2).size() > 0) {
 			errorMsg.append((MediaNeedAdspace.getValue(media.getApiType().intValue()) ? "广告主" + Arrays.toString(classfiedMaps.get(2).keySet().toArray()) : "") + "重复提交，状态为审核通过");
