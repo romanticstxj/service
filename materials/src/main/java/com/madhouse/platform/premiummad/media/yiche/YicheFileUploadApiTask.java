@@ -14,9 +14,9 @@ import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IMediaService;
 
 @Component
-public class YicheUploadFileApiTask {
+public class YicheFileUploadApiTask {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(YicheUploadFileApiTask.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(YicheFileUploadApiTask.class);
 
 	@Value("${yiche.fileUploadUrl}")
 	private String fileUploadUrl;
