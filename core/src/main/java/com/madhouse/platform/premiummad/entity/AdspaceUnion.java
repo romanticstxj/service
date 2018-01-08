@@ -7,6 +7,7 @@ public class AdspaceUnion extends BaseEntity {
 	private Integer mediaId;
 	private Integer terminalType;
 	private Integer terminalOs;
+	private Integer blockId;
 	private Integer supportHttps;
 	private Integer bidType;
 	private Integer bidFloor;
@@ -95,6 +96,14 @@ public class AdspaceUnion extends BaseEntity {
 
 	public Integer getSupportHttps() {
 		return supportHttps;
+	}
+
+	public Integer getBlockId() {
+		return blockId;
+	}
+
+	public void setBlockId(Integer blockId) {
+		this.blockId = blockId;
 	}
 
 	public void setSupportHttps(Integer supportHttps) {

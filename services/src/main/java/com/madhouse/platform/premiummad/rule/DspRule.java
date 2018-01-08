@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.alibaba.fastjson.JSONArray;
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -48,7 +49,7 @@ public class DspRule extends BaseRule{
         return dtos;
 	}
 
-	public static List<DspMedia> convertToDspAuthModelList(List<DspMedia> dspAuthDtos, boolean isCreate) {
+	public static List<DspMedia> convertToDspAuthModelList(Set<DspMedia> dspAuthDtos, boolean isCreate) {
 		List<DspMedia> dspAuths = JSONArray.parseArray(dspAuthDtos.toString(), DspMedia.class);
 		if(BeanUtils.isEmpty(dspAuths)){
 			return null;
