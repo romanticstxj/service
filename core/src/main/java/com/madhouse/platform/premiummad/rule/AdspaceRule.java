@@ -46,7 +46,10 @@ public class AdspaceRule {
 		BeanUtils.copyProperties(adspace, adspaceModel);
 		// 平台类型
 		adspaceModel.setOsType(adspace.getTerminalOs());
-		
+
+		// 是否支持https(0:否,1:是)
+		adspaceModel.setEnableHttps(adspace.getSupportHttps().intValue() == 0 ? false : true);
+
 		/*// 媒体相关值返回名称
 		if (media != null) {
 			adspaceModel.setMediaName(media.getName());
