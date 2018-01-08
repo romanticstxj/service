@@ -35,7 +35,9 @@ public class PerformanceFilter implements Filter {
 
 		long endTime = System.currentTimeMillis();
 		String url = req.getRequestURL().toString();
+		String remoteAddr = req.getRemoteAddr();
 		String lineSeparator = System.getProperty("line.separator", "\n");
+		LOGGER.debug("remote addr: " + remoteAddr);
 		LOGGER.debug(url + "  " + (endTime - beginTime) + "ms" + lineSeparator); // 每次请求换行
 	}
 

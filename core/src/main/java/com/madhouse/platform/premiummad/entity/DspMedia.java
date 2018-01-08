@@ -7,9 +7,9 @@ public class DspMedia extends BaseEntity{
 	private Integer id;
 	@NotNullAndBlank
 	private Integer dspId;
-	@NotNullAndBlank
+	
 	private Integer mediaId;
-	@NotNullAndBlank
+	
 	private Integer adspaceId;
 
 	public Integer getId() {
