@@ -72,8 +72,8 @@ public class DspControllerTest {
 		dspAuths.add(dspAuth);
 		dspAuth = new DspMedia();
 		dspAuth.setDspId(600009);
-		dspAuth.setAdspaceId(200037);
-		dspAuth.setMediaId(100017);
+		dspAuth.setAdspaceId(200038);
+		dspAuth.setMediaId(100016);
 		dspAuths.add(dspAuth);
 		String url = "http://localhost:8080/services/dsp/mediaAuth/update";
 		HttpUtilTest.httpPost(url, JSON.toJSONString(dspAuths));
