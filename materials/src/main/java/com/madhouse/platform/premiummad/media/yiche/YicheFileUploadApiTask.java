@@ -2,7 +2,6 @@ package com.madhouse.platform.premiummad.media.yiche;
 
 import java.io.InputStream;
 import java.util.List;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.HttpStatus;
@@ -11,12 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
-import com.madhouse.platform.premiummad.service.IMaterialService;
 import com.madhouse.platform.premiummad.service.IMediaService;
 
 @Component
@@ -38,9 +35,6 @@ public class YicheFileUploadApiTask {
 
 	@Autowired
 	private MaterialMapper materialDao;
-
-	@Autowired
-	private IMaterialService materialService;
 
 	@Autowired
 	private IMediaService mediaService;
@@ -65,13 +59,33 @@ public class YicheFileUploadApiTask {
 			return;
 		}
 
-		// TODO
-		// step1 下载
-		
-		// step2 上传到 OSS
-		
-		// step3 更新我方数据87
+		// 解析素材图片路径并上传
+		for (Material material : unUploadFileMaterials) {
+			String[] adUrls = material.getAdMaterials().split("//|");
+			String mediaUrls = "";
+			for (String adUrl : adUrls) {
+				// 上传到媒体
+				String mediaUrl = uploadToMedia(adUrl);
+				mediaUrls = mediaUrls + "|" + mediaUrl;
+			}
+			// 更新我方数据
+			Material updateMeterialMediaUrlItem = new Material();
+			updateMeterialMediaUrlItem.setMediaMaterialUrl(mediaUrls.substring(1));
+			updateMeterialMediaUrlItem.setId(material.getId());
+			materialDao.updateByPrimaryKeySelective(updateMeterialMediaUrlItem);
+		}
 		LOGGER.info("++++++++++yiche upload file status end+++++++++++");
+	}
+
+	/**
+	 * 上传到媒体
+	 * 
+	 * @param fileUrl
+	 * @return
+	 */
+	private String uploadToMedia(String fileUrl) {
+		// TODO
+		return "";
 	}
 	
 	/**
