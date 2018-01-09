@@ -125,6 +125,14 @@ public class AdspaceUnion extends BaseEntity {
 	public void setBidFloor(Integer bidFloor) {
 		this.bidFloor = bidFloor;
 	}
+	
+	public Integer getLayout() {
+		return layout;
+	}
+
+	public void setLayout(Integer layout) {
+		this.layout = layout;
+	}
 
 	public Integer getAdType() {
 		return adType;
@@ -132,14 +140,6 @@ public class AdspaceUnion extends BaseEntity {
 
 	public void setAdType(Integer adType) {
 		this.adType = adType;
-	}
-
-	public Integer getLayout() {
-		return layout;
-	}
-
-	public void setLayout(Integer layout) {
-		this.layout = layout;
 	}
 
 	public Integer getMaterialType() {

@@ -7,7 +7,6 @@ public class AdspaceModel {
 	private String name;
 	private Integer mediaId;
 	private String mediaName;
-	private Integer adType;
 	private List<Size> sizes;
 	private Integer layout;
 	private Integer blockId;
@@ -208,14 +207,6 @@ public class AdspaceModel {
 
 	public void setMediaId(Integer mediaId) {
 		this.mediaId = mediaId;
-	}
-
-	public Integer getAdType() {
-		return adType;
-	}
-
-	public void setAdType(Integer adType) {
-		this.adType = adType;
 	}
 
 	public Integer getLayout() {
