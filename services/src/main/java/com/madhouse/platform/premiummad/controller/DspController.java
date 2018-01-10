@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -101,7 +102,7 @@ public class DspController {
     }
 	
 	@RequestMapping("/mediaAuth/update")
-    public ResponseDto<DspMedia> updateDspMediaAuth(@RequestBody List<DspMedia> dspAuthDtos){
+    public ResponseDto<DspMedia> updateDspMediaAuth(@RequestBody Set<DspMedia> dspAuthDtos){
 		List<DspMedia> dspAuths = DspRule.convertToDspAuthModelList(dspAuthDtos, true);
 		dspService.updateDspMediaAuth(dspAuths);
     	return ResponseUtils.response(StatusCode.SC20000, dspAuths);

@@ -29,6 +29,8 @@ public class AdspaceDto implements Serializable{
 	@NotNullAndBlank
 	private Integer mediaId;
 	private String mediaName;
+	private Integer mediaCategory;
+	private String mediaCategoryName;
 	private Integer mediaStatus;
 	@NotNullAndBlank
 	private Integer terminalType; 
@@ -347,6 +349,22 @@ public class AdspaceDto implements Serializable{
 
 	public void setAdspacePolicies(List<PolicyAdspaceDto> adspacePolicies) {
 		this.adspacePolicies = adspacePolicies;
+	}
+
+	public Integer getMediaCategory() {
+		return mediaCategory;
+	}
+
+	public void setMediaCategory(Integer mediaCategory) {
+		this.mediaCategory = mediaCategory;
+	}
+
+	public String getMediaCategoryName() {
+		return mediaCategoryName;
+	}
+
+	public void setMediaCategoryName(String mediaCategoryName) {
+		this.mediaCategoryName = mediaCategoryName;
 	}
 
 	@Override

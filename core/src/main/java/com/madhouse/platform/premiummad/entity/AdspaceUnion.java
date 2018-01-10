@@ -7,6 +7,7 @@ public class AdspaceUnion extends BaseEntity {
 	private Integer mediaId;
 	private Integer terminalType;
 	private Integer terminalOs;
+	private Integer blockId;
 	private Integer supportHttps;
 	private Integer bidType;
 	private Integer bidFloor;
@@ -97,6 +98,14 @@ public class AdspaceUnion extends BaseEntity {
 		return supportHttps;
 	}
 
+	public Integer getBlockId() {
+		return blockId;
+	}
+
+	public void setBlockId(Integer blockId) {
+		this.blockId = blockId;
+	}
+
 	public void setSupportHttps(Integer supportHttps) {
 		this.supportHttps = supportHttps;
 	}
@@ -116,6 +125,14 @@ public class AdspaceUnion extends BaseEntity {
 	public void setBidFloor(Integer bidFloor) {
 		this.bidFloor = bidFloor;
 	}
+	
+	public Integer getLayout() {
+		return layout;
+	}
+
+	public void setLayout(Integer layout) {
+		this.layout = layout;
+	}
 
 	public Integer getAdType() {
 		return adType;
@@ -123,14 +140,6 @@ public class AdspaceUnion extends BaseEntity {
 
 	public void setAdType(Integer adType) {
 		this.adType = adType;
-	}
-
-	public Integer getLayout() {
-		return layout;
-	}
-
-	public void setLayout(Integer layout) {
-		this.layout = layout;
 	}
 
 	public Integer getMaterialType() {

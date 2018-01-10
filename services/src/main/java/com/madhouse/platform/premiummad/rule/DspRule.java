@@ -2,6 +2,7 @@ package com.madhouse.platform.premiummad.rule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.alibaba.fastjson.JSONArray;
 import com.madhouse.platform.premiummad.constant.StatusCode;
@@ -48,7 +49,7 @@ public class DspRule extends BaseRule{
         return dtos;
 	}
 
-	public static List<DspMedia> convertToDspAuthModelList(List<DspMedia> dspAuthDtos, boolean b) {
+	public static List<DspMedia> convertToDspAuthModelList(Set<DspMedia> dspAuthDtos, boolean isCreate) {
 		List<DspMedia> dspAuths = JSONArray.parseArray(dspAuthDtos.toString(), DspMedia.class);
 		if(BeanUtils.isEmpty(dspAuths)){
 			return null;
@@ -56,23 +57,23 @@ public class DspRule extends BaseRule{
 		checkIntegrity(dspAuths);
 		for(int i=0;i<dspAuths.size();i++){
 			BaseRule.validateAndProcessDto(dspAuths.get(i));
-			BeanUtils.setCommonParam(dspAuths.get(i), true);
+			BeanUtils.setCommonParam(dspAuths.get(i), isCreate);
 		}
 		return dspAuths;
 	}
 
 	private static void checkIntegrity(List<DspMedia> dspAuths) {
 		DspMedia singleDspAuth = dspAuths.get(0);
-		int adspaceId = singleDspAuth.getAdspaceId();
-		int mediaId = singleDspAuth.getMediaId();
+		Integer adspaceId = singleDspAuth.getAdspaceId();
+		Integer mediaId = singleDspAuth.getMediaId();
 		if(dspAuths.size() > 1){ //如果数据不止一条，不能有所有的概念
 			for(DspMedia da: dspAuths){
 				if(StringUtils.intEquals(da.getAdspaceId(), SystemConstant.DB.DSP_MEDIA_AUTH_ALL)){
 					throw new BusinessException(StatusCode.SC31006);
 				}
 			}
-		} else if(adspaceId == SystemConstant.DB.DSP_MEDIA_AUTH_ALL){ //如果数据只有一条，广告位id是-1，媒体id也须-1
-			if(mediaId != SystemConstant.DB.DSP_MEDIA_AUTH_ALL){
+		} else if(StringUtils.intEquals(adspaceId, SystemConstant.DB.DSP_MEDIA_AUTH_ALL)){ //如果数据只有一条，广告位id是-1，媒体id也须-1
+			if(StringUtils.intNotEquals(mediaId, SystemConstant.DB.DSP_MEDIA_AUTH_ALL)){
 				singleDspAuth.setMediaId(SystemConstant.DB.DSP_MEDIA_AUTH_ALL);
 			}
 		}

@@ -191,6 +191,8 @@
                             "name": "<*||string||comment:广告位名称>",
                             "mediaId": "<*||integer||comment:所属的媒体id>",
                             "mediaName": "<*||string||comment:所属的媒体名称>",
+                            "mediaCategory": "<*||integer||comment:所属的媒体分类>",
+                            "mediaCategoryName": "<*||string||comment:所属的媒体分类名称>",
                             "terminalType": "<*||integer||comment:终端类型(1: Mobile, 2: OTT)>",
                             "layout": "<*||integer||comment:广告形式(列表)>",
                             "layoutName": "<*||integer||comment:广告形式名称>",
