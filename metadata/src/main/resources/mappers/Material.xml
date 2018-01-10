@@ -29,44 +29,51 @@
   	<result column="media_query_key" property="mediaQueryKey" jdbcType="VARCHAR" />
   	<result column="media_material_key" property="mediaMaterialKey" jdbcType="VARCHAR" />
   	<result column="media_material_url" property="mediaMaterialUrl" jdbcType="VARCHAR" />
+  	<result column="advertiser_id" property="advertiserId" jdbcType="INTEGER" />
+  	<result column="advertiser_name" property="advertiserName" jdbcType="VARCHAR" />
   </resultMap>
   
   <select id="queryAll" resultMap="baseResult">
   	SELECT
-		id,
+		msm.id,
 		DATE_FORMAT(start_date, '%Y-%m-%d') start_date,
 		DATE_FORMAT(end_date, '%Y-%m-%d') end_date,
-		ad_materials,
-		adspace_id,
-		media_id,
-		dsp_id,
-		material_key,
-		material_name,
-		layout,
-		media_id,
-		deal_id,
-		brand,
-		size,
-		icon,
-		title,
-		description,
-		content,
-		cover,
-		duration,
-		lpg_url,
-		active_type,
-		imp_urls,
-		clk_urls,
-		sec_urls,
-		audited_user,
-		media_query_key,
-		media_material_key,
-		media_material_url
+		msm.ad_materials,
+		msm.adspace_id,
+		msm.media_id,
+		msm.dsp_id,
+		msm.material_key,
+		msm.material_name,
+		msm.layout,
+		msm.media_id,
+		msm.deal_id,
+		msm.brand,
+		msm.size,
+		msm.icon,
+		msm.title,
+		msm.description,
+		msm.content,
+		msm.cover,
+		msm.duration,
+		msm.lpg_url,
+		msm.active_type,
+		msm.imp_urls,
+		msm.clk_urls,
+		msm.sec_urls,
+		msm.audited_user,
+		msm.media_query_key,
+		msm.media_material_key,
+		msm.media_material_url,
+		msa.id advertiser_id,
+		msa.advertiser_name
 	FROM
-		mad_sys_material
+		mad_sys_material msm
+	LEFT JOIN mad_sys_advertiser msa ON msm.advertiser_key = msa.advertiser_key
+		AND msm.dsp_id = msa.dsp_id
+		AND msm.media_id = msa.media_id
 	WHERE
-		`status` = 2
-		<![CDATA[ AND start_date <=  DATE_FORMAT(SYSDATE(),'%Y-%m-%d') AND ( end_date IS NULL OR end_date >= DATE_FORMAT(SYSDATE(),'%Y-%m-%d')) ]]>  
+		 msm. STATUS = 2
+		<![CDATA[ AND msm.start_date <=  DATE_FORMAT(SYSDATE(),'%Y-%m-%d') AND ( msm.end_date IS NULL OR msm.end_date >= DATE_FORMAT(SYSDATE(),'%Y-%m-%d')) ]]>  
   </select>
   
 </mapper>
