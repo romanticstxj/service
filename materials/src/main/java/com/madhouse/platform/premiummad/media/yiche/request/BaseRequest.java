@@ -14,7 +14,7 @@ public class BaseRequest {
 	/**
 	 * 当前请求时间戳
 	 */
-	private long timestamp;
+	private String timestamp;
 
 	public String getDspId() {
 		return dspId;
@@ -32,12 +32,11 @@ public class BaseRequest {
 		this.sign = sign;
 	}
 
-	public long getTimestamp() {
+	public String getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(long timestamp) {
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
-
 }

@@ -17,7 +17,8 @@ public enum MediaNeedAdspace {
 	VALUEMAKER(108, true),
 	FUNADX(112, false),
 	AUTOHOME(114, true),
-	WEIBO(105, true);
+	WEIBO(105, true),
+	YICHE(115, true);
 
 	int key;
 	boolean value;

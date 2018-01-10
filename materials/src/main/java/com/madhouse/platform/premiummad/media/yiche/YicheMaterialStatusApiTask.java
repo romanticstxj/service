@@ -2,14 +2,12 @@ package com.madhouse.platform.premiummad.media.yiche;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
@@ -50,7 +48,7 @@ public class YicheMaterialStatusApiTask {
 
 	@Autowired
 	private IMediaService mediaService;
-
+	
 	public void getStatus() {
 		LOGGER.info("++++++++++Yiche get material status begin+++++++++++");
 
@@ -84,7 +82,7 @@ public class YicheMaterialStatusApiTask {
 			// 解析返回结果
 			if (!StringUtils.isEmpty(result)) {
 				MaterialStatusResponse response = JSON.parseObject(result, MaterialStatusResponse.class);
-				if (YicheConstant.ErrorCode.SUCCESS == response.getErrorCode()) {
+				if (YicheConstant.ErrorCode.REQUEST_SUCCESS == response.getErrorCode()) {
 					if (response.getResult() == null) {
 						LOGGER.info("Response is empty");
 						return;
@@ -96,15 +94,16 @@ public class YicheMaterialStatusApiTask {
 					auditItem.setMediaIds(mediaIds);
 
 					// 根据返回的状态设置
-					if (YicheConstant.AuditStatus.AUDITED.equals(response.getResult())) {
+					if (YicheConstant.AuditStatus.AUDITED.equals(response.getResult().getStatus())) {
 						// 审核通过
 						auditItem.setStatus(MaterialStatusCode.MSC10004.getValue());
-					} else if (YicheConstant.AuditStatus.REJECTED.equals(response.getResult())) {
+						auditResults.add(auditItem);
+					} else if (YicheConstant.AuditStatus.REJECTED.equals(response.getResult().getStatus())) {
 						// 驳回
 						auditItem.setStatus(MaterialStatusCode.MSC10001.getValue());
-						auditItem.setErrorMessage(response.getErrorMsg());
+						auditItem.setErrorMessage(response.getResult().getReason());
 						auditResults.add(auditItem);
-					} else if (YicheConstant.AuditStatus.UNAUDIT.equals(response.getResult())) {
+					} else if (YicheConstant.AuditStatus.UNAUDIT.equals(response.getResult().getStatus())) {
 						// 未审核
 						LOGGER.info("素材媒体未审核[meidaQueryKey=" + request.getDepositId() + "]");
 					}
@@ -128,22 +127,23 @@ public class YicheMaterialStatusApiTask {
 	/**
 	 * 构造请求参数
 	 * 
-	 * @param unAuditMaterials
+	 * @param material
 	 * @return
 	 */
 	private MaterialStatusRequest buildRequest(Material material) {
 		MaterialStatusRequest request = new MaterialStatusRequest();
 		request.setDspId(dspId);
 		request.setDepositId(material.getMediaQueryKey());
+		// 当前请求时间戳
+		request.setTimestamp(String.valueOf(System.currentTimeMillis()));
 
-		// 校验串 TODO
+		// 校验串
 		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("timestamp", request.getTimestamp());
 		jsonObj.put("dspId", dspId);
 		jsonObj.put("depositId", material.getMediaQueryKey());
 		request.setSign(YicheCommonUtil.getSign(jsonObj, signKey));
 
-		// 当前请求时间戳
-		request.setTimestamp(System.currentTimeMillis());
 		return request;
 	}
 }

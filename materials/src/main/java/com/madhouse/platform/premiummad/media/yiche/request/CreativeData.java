@@ -33,10 +33,6 @@ public class CreativeData {
 	private String content;
 	// 投放平台
 	private int platform;
-	// H5类型时，先写html代码
-	private String htmlContent;
-	// H5类型时，填写js代码
-	private String jsContent;
 
 	public String getOrderCode() {
 		return orderCode;
@@ -164,21 +160,5 @@ public class CreativeData {
 
 	public void setPlatform(int platform) {
 		this.platform = platform;
-	}
-
-	public String getHtmlContent() {
-		return htmlContent;
-	}
-
-	public void setHtmlContent(String htmlContent) {
-		this.htmlContent = htmlContent;
-	}
-
-	public String getJsContent() {
-		return jsContent;
-	}
-
-	public void setJsContent(String jsContent) {
-		this.jsContent = jsContent;
 	}
 }

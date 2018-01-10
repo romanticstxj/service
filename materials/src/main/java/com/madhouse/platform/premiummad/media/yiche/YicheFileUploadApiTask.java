@@ -1,19 +1,19 @@
 package com.madhouse.platform.premiummad.media.yiche;
 
-import java.io.InputStream;
 import java.util.List;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import com.alibaba.fastjson.JSONObject;
 import com.madhouse.platform.premiummad.constant.MaterialStatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dao.MaterialMapper;
 import com.madhouse.platform.premiummad.entity.Material;
+import com.madhouse.platform.premiummad.media.yiche.constant.YicheConstant;
+import com.madhouse.platform.premiummad.media.yiche.response.UploadFileResponse;
+import com.madhouse.platform.premiummad.media.yiche.util.YicheCommonUtil;
 import com.madhouse.platform.premiummad.service.IMediaService;
 
 @Component
@@ -27,6 +27,9 @@ public class YicheFileUploadApiTask {
 	@Value("${yiche.bucket}")
 	private String bucket;
 
+	@Value("${yiche.password}")
+	private String password;
+	
 	@Value("${yiche.rsa_oss_ciphertext}")
 	private String rsa_oss_ciphertext;
 
@@ -39,8 +42,6 @@ public class YicheFileUploadApiTask {
 	@Autowired
 	private IMediaService mediaService;
 	
-	private static HttpClient httpClient = new HttpClient();
-
 	public void uploadFile() {
 		LOGGER.info("++++++++++yiche upload file begin+++++++++++");
 
@@ -61,49 +62,32 @@ public class YicheFileUploadApiTask {
 
 		// 解析素材图片路径并上传
 		for (Material material : unUploadFileMaterials) {
-			String[] adUrls = material.getAdMaterials().split("//|");
+			String[] adUrls = material.getAdMaterials().split("\\|");
 			String mediaUrls = "";
+			boolean allSuccess = true;
 			for (String adUrl : adUrls) {
-				// 上传到媒体
-				String mediaUrl = uploadToMedia(adUrl);
-				mediaUrls = mediaUrls + "|" + mediaUrl;
+				String result = YicheCommonUtil.postForm(fileUploadUrl, adUrl, bucket, password, rsa_oss_ciphertext);
+				UploadFileResponse response = JSONObject.parseObject(result, UploadFileResponse.class);
+				LOGGER.info("response:" + result);
+				if (response.getErrorCode() == YicheConstant.ErrorCode.REQUEST_SUCCESS) {
+					// 成功
+					mediaUrls = mediaUrls + "|" + response.getResult();
+				} else {
+					allSuccess = false;
+					LOGGER.error("素材[id={}],文件[fileUrl={}]上传失败", material.getId(), adUrl);
+					break;
+				}
+
 			}
-			// 更新我方数据
-			Material updateMeterialMediaUrlItem = new Material();
-			updateMeterialMediaUrlItem.setMediaMaterialUrl(mediaUrls.substring(1));
-			updateMeterialMediaUrlItem.setId(material.getId());
-			materialDao.updateByPrimaryKeySelective(updateMeterialMediaUrlItem);
+
+			// 更新我方数据,只有所有素材上传成功才更新
+			if (allSuccess) {
+				Material updateMeterialMediaUrlItem = new Material();
+				updateMeterialMediaUrlItem.setMediaMaterialUrl(mediaUrls.substring(1));
+				updateMeterialMediaUrlItem.setId(material.getId());
+				materialDao.updateByPrimaryKeySelective(updateMeterialMediaUrlItem);
+			}
 		}
 		LOGGER.info("++++++++++yiche upload file status end+++++++++++");
-	}
-
-	/**
-	 * 上传到媒体
-	 * 
-	 * @param fileUrl
-	 * @return
-	 */
-	private String uploadToMedia(String fileUrl) {
-		// TODO
-		return "";
-	}
-	
-	/**
-	 * 获取流文件内容
-	 * 
-	 * @param filePath
-	 * @return
-	 */
-	private InputStream getStreamContent(String filePath) {
-		GetMethod getMethod = new GetMethod(filePath);
-		InputStream inputStream = null;
-		try {
-			if (httpClient.executeMethod(getMethod) == HttpStatus.SC_OK) {
-				inputStream = getMethod.getResponseBodyAsStream();
-			}
-		} catch (Exception e) {
-			LOGGER.info("获取视频出现异常-" + e.getMessage());
-		}
-		return inputStream;
 	}
 }

@@ -22,6 +22,7 @@ import com.madhouse.platform.premiummad.entity.Adspace;
 import com.madhouse.platform.premiummad.entity.Advertiser;
 import com.madhouse.platform.premiummad.entity.Material;
 import com.madhouse.platform.premiummad.media.yiche.constant.YicheConstant;
+import com.madhouse.platform.premiummad.media.yiche.constant.YicheTempMaterialTypeMapping;
 import com.madhouse.platform.premiummad.media.yiche.request.CreativeData;
 import com.madhouse.platform.premiummad.media.yiche.request.UploadMaterialRequest;
 import com.madhouse.platform.premiummad.media.yiche.response.UploadMaterialResponse;
@@ -81,6 +82,7 @@ public class YicheMaterialUploadApiTask {
 
 		// 查询所有待审核且媒体的素材的审核状态是媒体审核的
 		List<Material> unSubmitMaterials = materialDao.selectMeidaMaterials(mediaIds, MaterialStatusCode.MSC10002.getValue(), Boolean.TRUE);
+
 		if (unSubmitMaterials == null || unSubmitMaterials.isEmpty()) {
 			LOGGER.info("yiche没有未上传的素材");
 			return;
@@ -116,7 +118,7 @@ public class YicheMaterialUploadApiTask {
 				UploadMaterialResponse uploadMaterialResponse = JSONObject.parseObject(responseJson, UploadMaterialResponse.class);
 
 				// 成功
-				if (YicheConstant.ErrorCode.SUCCESS == uploadMaterialResponse.getErrorCode()) {
+				if (YicheConstant.ErrorCode.REQUEST_SUCCESS == uploadMaterialResponse.getErrorCode()) {
 					// 返回结果的条数与上传条数一致，按顺序返回主键ID
 					if (uploadMaterialResponse.getResult() != null) {
 						String mediaKey = uploadMaterialResponse.getResult().getDepositId();
@@ -125,8 +127,8 @@ public class YicheMaterialUploadApiTask {
 					} else {
 						LOGGER.error("返回结果的条数与上传条数不一致");
 					}
-				} else if (YicheConstant.ErrorCode.ERROR == uploadMaterialResponse.getErrorCode()) {
-					// 上传失败
+				} else if (YicheConstant.ErrorCode.TEMPLATE_NOT_EXIST == uploadMaterialResponse.getErrorCode() || YicheConstant.ErrorCode.ORDER_NOT_EXIST == uploadMaterialResponse.getErrorCode() || YicheConstant.ErrorCode.REQUEST_FAIL == uploadMaterialResponse.getErrorCode()) {
+					// 参数校验失败
 					MaterialAuditResultModel rejuseItem = new MaterialAuditResultModel();
 					rejuseItem.setId(String.valueOf(material.getId()));
 					rejuseItem.setStatus(MaterialStatusCode.MSC10001.getValue());
@@ -164,7 +166,6 @@ public class YicheMaterialUploadApiTask {
 	 */
 	private String buildRequest(UploadMaterialRequest request, Material material) {
 		request.setDspId(dspId);
-
 		CreativeData creative = new CreativeData();
 
 		// 订单编号
@@ -178,10 +179,10 @@ public class YicheMaterialUploadApiTask {
 		}
 		Advertiser advertiser = advertisers.get(0);
 		creative.setAdvertiserId(advertiser.getId());
+		// 模板ID
+		creative.setTemplateId(YicheConstant.Template.QUOTE_LIST);
 		// 素材类型
-		creative.setMaterialType(YicheConstant.MaterialType.NATIVE);
-		// 模板ID TODO
-		creative.setTemplateId(YicheConstant.Template.LISTAD);
+		creative.setMaterialType(YicheTempMaterialTypeMapping.getMaterialType(creative.getTemplateId()));
 		// 素材名称
 		creative.setMaterialName(material.getMaterialName());
 		// 广告位宽高，用图片尺寸
@@ -191,7 +192,8 @@ public class YicheMaterialUploadApiTask {
 			creative.setHeight(Integer.valueOf(size.split("\\*")[1]));
 		}
 		// 图片、flash 的 URL 地址
-		creative.setImgUrl(material.getMediaMaterialUrl());
+		creative.setImgUrl(material.getMediaMaterialUrl().split("\\|")[0]);
+		creative.setViewUrl("");
 		// 标题
 		creative.setTitle(material.getTitle());
 		// 跳转链接地址
@@ -212,14 +214,12 @@ public class YicheMaterialUploadApiTask {
 			return "广告位不存在";
 		}
 		creative.setPlatform(getMediaPlatform(adspaces.get(0)));
-		creative.setHtmlContent("");
-		creative.setJsContent("");
 
 		request.setMaterialList(creative);
-		request.setTimestamp(System.currentTimeMillis());
+		request.setTimestamp(String.valueOf(System.currentTimeMillis()));
 		request.setExpireTime(StringUtils.addDay(material.getEndDate(), 1).getTime());
 
-		// 校验串 TODO
+		// 校验串
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("timestamp", request.getTimestamp());
 		jsonObj.put("dspId", dspId);
