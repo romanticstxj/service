@@ -8,7 +8,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -421,5 +423,25 @@ public class StringUtils {
 	
 	public static boolean intNotEquals(Integer i1, int i2){
 		return i1 != null && i1.intValue() != i2;
+	}
+	
+	/**
+	 * 日期加n天
+	 * @param date
+	 * @param n
+	 * @return
+	 */
+	public static Date addDay(Date date, int n) {
+		try {
+			Calendar cd = Calendar.getInstance();
+			cd.setTime(date);
+			cd.add(Calendar.DATE, n);// 增加一天
+
+			return cd.getTime();
+
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 }
