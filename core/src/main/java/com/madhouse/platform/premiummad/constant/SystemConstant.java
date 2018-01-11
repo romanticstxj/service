@@ -76,6 +76,9 @@ public interface SystemConstant {
 		String ERROR_WEIGHT_FORMAT = "权重格式错误";
 		
 		String NOT_PAST = "日期必须大于等于今天";
+		
+		/* 媒体白名单 */
+		String NO_CREATE_COMPULSORY_PARAMS = "请检查创建时的必填参数";
 	}
 	
 	interface DB{
