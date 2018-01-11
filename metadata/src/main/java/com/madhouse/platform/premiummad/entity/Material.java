@@ -54,7 +54,27 @@ public class Material {
     private String mediaMaterialKey;
     private String mediaMaterialUrl;
     
-    public String getMediaMaterialKey() {
+    private Integer advertiserId;
+    
+    private String advertiserName;
+    
+    public Integer getAdvertiserId() {
+		return advertiserId;
+	}
+
+	public void setAdvertiserId(Integer advertiserId) {
+		this.advertiserId = advertiserId;
+	}
+
+	public String getAdvertiserName() {
+		return advertiserName;
+	}
+
+	public void setAdvertiserName(String advertiserName) {
+		this.advertiserName = advertiserName;
+	}
+
+	public String getMediaMaterialKey() {
         return mediaMaterialKey;
     }
 

@@ -6,7 +6,7 @@
 	
 	<groupId>com.madhouse.platform</groupId>
 	<artifactId>metadata</artifactId>
-	<version>3.5.3</version>
+	<version>1.0.0</version>
 	
 	<name>metadata</name>
 	<url>http://www.madhouse.cn</url>
@@ -268,7 +268,7 @@
         </plugins>
     </build>
 	
-	<!-- 配置scm信息 -->
+	<!-- 配置scm信息 
     <scm>
         <connection>
             scm:svn:http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-task
@@ -279,7 +279,7 @@
         <url>http://172.16.27.97/repos/smart-exchange/Branches/${release.version}/service/smartexchange-task</url>
     </scm>
 
-    <!-- 配置将build生成的jar包上传到nexus仓库 -->
+     配置将build生成的jar包上传到nexus仓库 
     <distributionManagement>
         <repository>
             <id>nexus-releases</id>
@@ -291,5 +291,5 @@
             <name>Nexus Snapshots Repository</name>
             <url>http://172.16.25.49:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
-    </distributionManagement>
+    </distributionManagement>-->
 </project>
