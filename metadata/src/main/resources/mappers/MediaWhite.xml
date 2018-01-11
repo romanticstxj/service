@@ -4,7 +4,7 @@
 <mapper namespace="com.madhouse.platform.premiummad.dao.MediaWhiteDao">
 	
     <select id="queryAll"  resultType="integer">
-		select media_id from mad_sys_media_whitelist
+		select media_id from mad_sys_media_whitelist where status = 1
 	</select>
 	
 	
