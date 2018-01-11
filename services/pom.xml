@@ -11,8 +11,8 @@
   <url>http://www.madhouse.cn</url>
 
   <properties>
-  	<dev.version>2.0.2</dev.version>
-  	<core.version>2.0.2</core.version>
+  	<dev.version>2.0.3</dev.version>
+  	<core.version>2.0.3</core.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   
