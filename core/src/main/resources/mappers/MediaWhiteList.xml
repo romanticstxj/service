@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.madhouse.platform.premiummad.dao.MediaWhiteListDao" >
+  <resultMap id="BaseResultMap" type="com.madhouse.platform.premiummad.entity.MediaWhiteList" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="media_id" property="mediaId" jdbcType="INTEGER" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="created_user" property="createdUser" jdbcType="INTEGER" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="updated_user" property="updatedUser" jdbcType="INTEGER" />
+    <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ${alias}.id, ${alias}.media_id, ${alias}.status, ${alias}.description, ${alias}.created_user, 
+    ${alias}.created_time, ${alias}.updated_user, ${alias}.updated_time
+  </sql>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" 
+  	parameterType="com.madhouse.platform.premiummad.entity.MediaWhiteList" >
+    insert into mad_sys_media_whitelist
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mediaId != null" >
+        media_id,
+      </if>
+        status,
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="createdUser != null" >
+        created_user,
+      </if>
+      <if test="createdTime != null" >
+        created_time,
+      </if>
+      <if test="updatedUser != null" >
+        updated_user,
+      </if>
+      <if test="updatedTime != null" >
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mediaId != null" >
+        #{mediaId,jdbcType=INTEGER},
+      </if>
+        1,
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createdUser != null" >
+        #{createdUser,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedUser != null" >
+        #{updatedUser,jdbcType=INTEGER},
+      </if>
+      <if test="updatedTime != null" >
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="delete" parameterType="integer" >
+    UPDATE mad_sys_media_whitelist
+    SET status = 0
+    WHERE id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="list" parameterType="integer" resultMap="BaseResultMap">
+	   SELECT <include refid="Base_Column_List">
+           <property name="alias" value="mwl" />
+       </include>, m.name mediaName, m.category mediaCategory, dmc.name mediaCategoryName
+       FROM mad_sys_media_whitelist mwl
+       INNER JOIN mad_sys_media m ON mwl.media_id = m.id
+       INNER JOIN mad_dict_media_category dmc ON dmc.code = m.category
+       WHERE mwl.status = 1
+       <if test="mediaCategory != null"> AND m.category = #{mediaCategory}</if>
+  </select>
+  
+  <select id="checkName" parameterType="integer" resultType="integer">
+	   SELECT count(0) FROM mad_sys_media_whitelist 
+	   WHERE media_id = #{mediaId} AND status = 1
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="integer" resultMap="BaseResultMap">
+	   SELECT <include refid="Base_Column_List">
+           <property name="alias" value="mwl" />
+       </include>
+       FROM mad_sys_media_whitelist mwl
+       WHERE mwl.id = #{id,jdbcType=INTEGER}
+  </select>
+</mapper>
