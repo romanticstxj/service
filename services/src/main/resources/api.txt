@@ -1257,6 +1257,71 @@
             }
         }
     },
+    "/mediaWhiteList/list": {
+        "get": {
+            "_summary": "媒体白名单列表",
+            "parameters": {
+                "query": {
+                	"mediaCategory": "<integer||comment:媒体分类>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                        	"id": "<*||integer||comment:ID>",
+		                	"mediaId": "<*||integer||comment:媒体ID>",
+		                	"mediaName": "<*||string||comment:媒体名称>",
+                            "mediaCategory": "<*||integer||comment:媒体分类>",
+		                	"mediaCategoryName": "<*||string||comment:媒体分类名称>",
+		                	"description": "<*||string||comment:描述>",
+                            "status": "<*||integer||comment:状态>",
+		                	"createdTime": "<date||comment:更新时间>"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/mediaWhiteList/create": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"mediaId": "<*||integer||comment:媒体ID>",
+                	"description": "<*||string||comment:描述>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "/mediaWhiteList/delete": {
+        "post": {
+            "_summary": "",
+            "parameters": {
+                "body": {
+                	"id": "<*||integer||comment:ID>"
+                }
+            },
+            "responses": {
+                "200": {
+                    "body": [
+                        {
+                            "result": true
+                        }
+                    ]
+                }
+            }
+        }
+    },
     "/reportTask/create": {
         "post": {
             "_summary": "",
