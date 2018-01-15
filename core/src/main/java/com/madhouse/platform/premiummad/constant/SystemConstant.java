@@ -51,6 +51,8 @@ public interface SystemConstant {
 		
 		int BUFFER_SIZE = 1024;
 		
+		int HALF_YEAR_DAYS = 180;
+		
 	}
 	
 	interface Properties{
