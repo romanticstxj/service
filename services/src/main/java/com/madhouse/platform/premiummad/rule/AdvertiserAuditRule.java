@@ -38,7 +38,8 @@ public class AdvertiserAuditRule extends BaseRule{
 	 */
 	public static void validateDto(Object dto){
 		String fieldName = BeanUtils.processEmptyField(dto);
-        if (fieldName != null)
+        if (fieldName != null){
         	throw new BusinessException(StatusCode.SC20002, FieldType.getChineseMessage(fieldName) + "不能为空");
+        }
 	}
 }

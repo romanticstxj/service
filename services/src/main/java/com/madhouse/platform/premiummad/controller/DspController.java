@@ -53,8 +53,10 @@ public class DspController {
     		@RequestHeader(value="X-FROM", required=false) String xFrom) {
 		BaseRule.validateDto(dspDto);
         Integer count = dspService.checkName(dspDto.getName().trim());
-        if (count > 0) //检查名称
-            return ResponseUtils.response(StatusCode.SC20302,null);
+        if (count > 0) {
+        	//检查名称
+        	return ResponseUtils.response(StatusCode.SC20302,null);
+        }
         Dsp dsp = DspRule.convertToModel(dspDto, new Dsp(), true);
         dspService.insertWithParamsProcess(dsp, xFrom);
         List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());

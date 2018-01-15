@@ -82,8 +82,10 @@ public class MediaController {
     public ResponseDto<MediaDto> addMedia(@RequestBody @Validated(Insert.class) MediaDto mediaDto) {
 		BaseRule.validateDto(mediaDto);
         Integer count = mediaService.checkName(mediaDto.getName().trim());
-        if (count > 0) //检查名称
-            return ResponseUtils.response(StatusCode.SC20101,null);
+        if (count > 0) {
+        	//检查名称
+        	return ResponseUtils.response(StatusCode.SC20101,null);
+        }
         Media media = new Media();
         BeanUtils.copyProperties(mediaDto, media);
         BeanUtils.setCommonParam(media, true);
@@ -128,12 +130,14 @@ public class MediaController {
 		}
 		
         Media media = mediaService.queryById(mediaDto.getId());
-        if (media == null)
-            return ResponseUtils.response(StatusCode.SC20003, null);
+        if (media == null){
+        	return ResponseUtils.response(StatusCode.SC20003, null);
+        }
         if (!mediaDto.getName().equals(media.getName())) { //名称不相等,检查名称
             Integer count = mediaService.checkName(mediaDto.getName().trim());
-            if (count > 0)
-                return ResponseUtils.response(StatusCode.SC20101,null);
+            if (count > 0){
+            	return ResponseUtils.response(StatusCode.SC20101,null);
+            }
         }
         BeanUtils.copyProperties(mediaDto, media);
         BeanUtils.setCommonParam(media, false);
@@ -161,8 +165,9 @@ public class MediaController {
 				
 		//更新媒体的状态
 		Media media = mediaService.queryById(mediaDto.getId());
-        if (media == null)
-            return ResponseUtils.response(StatusCode.SC20003, null);
+        if (media == null){
+        	return ResponseUtils.response(StatusCode.SC20003, null);
+        }
         BeanUtils.copyProperties(mediaDto, media);
         BeanUtils.setCommonParam(media, false);
         mediaService.updateStatus(media);

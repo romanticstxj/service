@@ -24,7 +24,7 @@ public class ReportTaskRule {
 			throw new BusinessException(StatusCode.SC20506);
 		} else if(startDate.after(endDate)){ //开始日期不能在结束日期之后
 			throw new BusinessException(StatusCode.SC20505);
-		} else if(DateUtils.getDateSubtract(startDate, endDate) > 180){ //?开始和结束日期相差不能超过半年
+		} else if(DateUtils.getDateSubtract(startDate, endDate) > SystemConstant.OtherConstant.HALF_YEAR_DAYS){ //?开始和结束日期相差不能超过半年
 			
 		}
 		

@@ -33,6 +33,11 @@ import com.madhouse.platform.premiummad.validator.Insert;
 import com.madhouse.platform.premiummad.validator.Update;
 import com.madhouse.platform.premiummad.validator.UpdateStatus;
 
+/**
+ * 广告位控制器
+ * @author xingjie.teng
+ *
+ */
 @RestController
 @RequestMapping("/adspace")
 public class AdspaceController {
@@ -157,8 +162,9 @@ public class AdspaceController {
     public ResponseDto<AdspaceDto> updateAdspaceStatus(
     		@RequestBody @Validated(UpdateStatus.class) AdspaceDto adspaceDto) {
 		Adspace adspace = adspaceService.queryById(adspaceDto.getId());
-        if (adspace == null)
-            return ResponseUtils.response(StatusCode.SC20003, null);
+        if (adspace == null){
+        	return ResponseUtils.response(StatusCode.SC20003, null);
+        }
         BeanUtils.copyProperties(adspaceDto, adspace);
         BeanUtils.setUpdateParam(adspace);
         adspaceService.updateStatus(adspace);
