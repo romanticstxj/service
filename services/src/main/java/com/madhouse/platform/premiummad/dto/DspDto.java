@@ -13,8 +13,11 @@ public class DspDto {
 	private Integer id;
 	@NotNullAndBlank
 	private String name;
-	@NotNullAndBlank
+	
 	private String bidUrl; //dsp url
+	
+	private RequestUrl[] requestUrl;
+	
 	@NotNullAndBlank
 	private String deliveryType; //合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)
 	
@@ -26,6 +29,29 @@ public class DspDto {
 	@NotNull(message=SystemConstant.ErrorMessage.NO_UPDATE_STATUS, groups=UpdateStatus.class)
 //	@Size(message=SystemCommonMsg.ERROR_UPDATE_STATUS, min=0, max=2, groups=UpdateStatus.class)
 	private Integer status;
+	
+	public static class RequestUrl{
+		
+		private Integer deliveryType;
+		
+		private String bidUrl;
+		
+		public Integer getDeliveryType() {
+			return deliveryType;
+		}
+
+		public void setDeliveryType(Integer deliveryType) {
+			this.deliveryType = deliveryType;
+		}
+
+		public String getBidUrl() {
+			return bidUrl;
+		}
+
+		public void setBidUrl(String bidUrl) {
+			this.bidUrl = bidUrl;
+		}
+	}
 
 	public Integer getId() {
 		return id;
@@ -90,4 +116,13 @@ public class DspDto {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+
+	public RequestUrl[] getRequestUrl() {
+		return requestUrl;
+	}
+
+	public void setRequestUrl(RequestUrl[] requestUrl) {
+		this.requestUrl = requestUrl;
+	}
+	
 }

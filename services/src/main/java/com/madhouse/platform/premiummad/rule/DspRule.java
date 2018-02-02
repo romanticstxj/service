@@ -23,7 +23,13 @@ public class DspRule extends BaseRule{
         //把页面上的部分多选项转化为数据库的单值
         int deliveryType = StringUtils.convertMultiChoiceToSingleChoice(dto.getDeliveryType());
         entity.setDeliveryType((byte) deliveryType);
-		
+        
+        //把dspUrls转化成requestUrl
+        if(dto.getRequestUrl() != null && dto.getRequestUrl().length > 0){
+        	String requestUrl = JSONArray.toJSONString(dto.getRequestUrl());
+        	entity.setRequestUrl(requestUrl);
+        }
+        
 		return entity;
 	}
 	
@@ -35,6 +41,16 @@ public class DspRule extends BaseRule{
         String deliveryTypeStr = StringUtils.convertSingleChoiceToMultiChoice((int)entity.getDeliveryType());
         dto.setDeliveryType(deliveryTypeStr);
         
+        //把requestUrl转换成dspUrls
+        String requestUrl = entity.getRequestUrl();
+        if(requestUrl != null && requestUrl.length() > 0){
+        	List<DspDto.RequestUrl> list = JSONArray.parseArray(requestUrl, DspDto.RequestUrl.class);
+        	if(list != null && list.size() > 0){
+        		DspDto.RequestUrl[] arr = list.toArray(new DspDto.RequestUrl[list.size()]);
+        		dto.setRequestUrl(arr);
+        	}
+        }
+        
 		return dtos;
 	}
 	
@@ -43,6 +59,17 @@ public class DspRule extends BaseRule{
 		BeanUtils.copyList(entities,dtos,DspDto.class);
         for(int i=0; i<dtos.size(); i++){
     		String deliveryTypeStr = StringUtils.convertSingleChoiceToMultiChoice((int)entities.get(i).getDeliveryType());
+    		
+    		//把requestUrl转换成dspUrls
+            String requestUrl = entities.get(i).getRequestUrl();
+            if(requestUrl != null && requestUrl.length() > 0){
+            	List<DspDto.RequestUrl> list = JSONArray.parseArray(requestUrl, DspDto.RequestUrl.class);
+            	if(list != null && list.size() > 0){
+            		DspDto.RequestUrl[] arr = list.toArray(new DspDto.RequestUrl[list.size()]);
+            		dtos.get(i).setRequestUrl(arr);
+            	}
+            }
+    		
     		dtos.get(i).setDeliveryType(deliveryTypeStr);
         }
         
