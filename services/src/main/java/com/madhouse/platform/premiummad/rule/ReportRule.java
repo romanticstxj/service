@@ -182,7 +182,7 @@ public class ReportRule extends BaseRule{
 		for(ReportMedia rm: reportMedias){
 			if(dims != null && dims.intValue() == SystemConstant.DB.DIM_DATE){ //仅仅有日期一个维度的情况下
 				Date date = rm.getDate();
-				if(date != null && (!date.before(startDate) && !date.after(endDate))){
+				if(date != null && (!date.before(startDate) && !date.after(endDate))){ //日期在有效范围内
 					int dur = (int) DateUtils.getDateSubtract(startDate, date);
 					processedReportMedias[dur][0] = rm;
 				}
