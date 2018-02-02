@@ -8,13 +8,47 @@ import com.alibaba.fastjson.JSONArray;
 import com.madhouse.platform.premiummad.constant.StatusCode;
 import com.madhouse.platform.premiummad.constant.SystemConstant;
 import com.madhouse.platform.premiummad.dto.DspDto;
+import com.madhouse.platform.premiummad.dto.DspDto.RequestUrl;
 import com.madhouse.platform.premiummad.entity.Dsp;
 import com.madhouse.platform.premiummad.entity.DspMedia;
 import com.madhouse.platform.premiummad.exception.BusinessException;
 import com.madhouse.platform.premiummad.util.BeanUtils;
+import com.madhouse.platform.premiummad.util.ObjectUtils;
 import com.madhouse.platform.premiummad.util.StringUtils;
 
 public class DspRule extends BaseRule{
+	
+	public static void validateDto(Object dto){
+		BaseRule.validateDto(dto);
+		
+		DspDto dspDto = (DspDto) dto;
+		String bidUrl = dspDto.getBidUrl();
+		RequestUrl[] requestUrl = dspDto.getRequestUrl();
+		//判断如果bidUrl，requestUrl有且只能有一个有值
+		if(!(StringUtils.isEmpty(bidUrl) ^ ObjectUtils.isEmpty(requestUrl))){
+			throw new BusinessException(StatusCode.SC20304);
+		}
+		
+		//验证url pattern是否正确
+		boolean matchesUrlPattern = StringUtils.matchesUrlPattern(bidUrl);
+		if(!matchesUrlPattern){
+			throw new BusinessException(StatusCode.SC20303);
+		}
+		if(!ObjectUtils.isEmpty(requestUrl)){
+			//如果requestUrl填了信息，那么要满足url正则表达式
+			for(RequestUrl url: requestUrl){
+				Integer deliveryType = url.getDeliveryType();
+				String innerBidUrl = url.getBidUrl();
+				if(StringUtils.isEmpty(deliveryType) || StringUtils.isEmpty(innerBidUrl)){
+					throw new BusinessException(StatusCode.SC20304);
+				}
+				matchesUrlPattern = StringUtils.matchesUrlPattern(innerBidUrl);
+				if(!matchesUrlPattern){
+					throw new BusinessException(StatusCode.SC20303);
+				}
+			}
+		}
+	}
 	
 	public static Dsp convertToModel(DspDto dto, Dsp entity, boolean isCreate){
 		BeanUtils.copyProperties(dto, entity);

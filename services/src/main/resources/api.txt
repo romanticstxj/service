@@ -544,6 +544,10 @@
                     "name": "<*||string||comment:需求方平台名称>",
                 	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
                     "bidUrl": "<string||comment:DSP URL>",
+                    "requestUrl": [{
+                    	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+                    	"bidUrl": "<string||comment:DSP URL>"
+                    }],
                     "maxQPS": "<integer||comment:最大QPS>",
                     "bidPercent": "<integer||comment:加价百分比>"
                 }
@@ -577,6 +581,11 @@
 		                    "status": "<integer||comment:状态(0: 停用, 1: 启用)>",
 		                    "createdTime": "<||date||comment:创建时间>",
 		                    "bidPercent": "<integer||comment:加价百分比>",
+		                    "bidUrl": "<string||comment:DSP URL>",
+		                    "requestUrl": [{
+		                    	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+		                    	"bidUrl": "<string||comment:DSP URL>"
+		                    }],
 		                    "token": "<*||string||comment:dsp token>"
                         }
                     ]
@@ -593,6 +602,10 @@
                 	"name": "<*||string||comment:需求方平台名称>",
                 	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
                 	"bidUrl": "<*||string||comment:DSP URL>",
+                	"requestUrl": [{
+                    	"deliveryType": "<*||integer||comment:合作模式(1: PDB, 2: PD, 4: PMP, 8: RTB)>",
+                    	"bidUrl": "<string||comment:DSP URL>"
+                    }],
                 	"maxQPS": "<integer||comment:最大QPS>",
                     "token": "<*string||comment:dsp Token(是新增dsp时返回给前端的token)>"
                 }

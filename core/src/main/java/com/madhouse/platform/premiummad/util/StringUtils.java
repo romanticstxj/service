@@ -412,6 +412,9 @@ public class StringUtils {
 	}
 
 	public static boolean matchesUrlPattern(String bidUrl) {
+		if(StringUtils.isEmpty(bidUrl)){
+			return true;
+		}
 		Pattern pattern = Pattern.compile(SystemConstant.OtherConstant.URL_REGEX, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(bidUrl);
 		return matcher.matches();

@@ -17,7 +17,6 @@ import com.madhouse.platform.premiummad.dto.DspDto;
 import com.madhouse.platform.premiummad.dto.ResponseDto;
 import com.madhouse.platform.premiummad.entity.Dsp;
 import com.madhouse.platform.premiummad.entity.DspMedia;
-import com.madhouse.platform.premiummad.rule.BaseRule;
 import com.madhouse.platform.premiummad.rule.DspRule;
 import com.madhouse.platform.premiummad.service.IDspService;
 import com.madhouse.platform.premiummad.util.ResponseUtils;
@@ -51,7 +50,7 @@ public class DspController {
 	@RequestMapping("/create")
     public ResponseDto<DspDto> addDsp(@RequestBody DspDto dspDto,
     		@RequestHeader(value="X-FROM", required=false) String xFrom) {
-		BaseRule.validateDto(dspDto);
+		DspRule.validateDto(dspDto);
         Integer count = dspService.checkName(dspDto.getName().trim());
         if (count > 0) {
         	//检查名称
@@ -82,7 +81,7 @@ public class DspController {
 	 */
 	@RequestMapping("/update")
     public ResponseDto<DspDto> updateDsp(@RequestBody @Validated(Update.class) DspDto dspDto) {
-		BaseRule.validateDto(dspDto);
+		DspRule.validateDto(dspDto);
         Dsp dsp = DspRule.convertToModel(dspDto, new Dsp(), false);
         dspService.update(dsp);
         List<DspDto> result = DspRule.convertToDto(dsp, new DspDto());
